@@ -1,0 +1,236 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Schema for backend model and fontend interface",
+
+  "definitions": {
+    "backend_schema": {
+      "type": "object",
+      "patternProperties": {
+        "[a-z0-9_]": {
+          "$ref": "#/definitions/backend_schema_t"
+        }
+      }
+    },
+    "backend_schema_t": {
+      "oneOf": [{
+        "$ref": "#/definitions/backend_schema_prim"
+      },{
+        "$ref": "#/definitions/backend_schema_object"
+      },{
+        "$ref": "#/definitions/backend_schema_array"
+      }]
+    },
+    "backend_schema_array": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "enum": [
+            "Array"
+          ]
+        },
+        "items": {
+          "$ref": "#/definitions/backend_schema_t"
+        }
+      }
+    },
+    "backend_schema_object": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "enum": [
+            "Object"
+          ]
+        },
+        "properties": {
+          "$ref": "#/definitions/backend_schema"
+        }
+      }
+    },
+    "backend_schema_prim": {
+      "type": "object",
+      "required": ["label"],
+      "additionalProperties": false,
+      "properties": {
+        "label": {
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "Date",
+            "String",
+            "Number",
+            "ObjectId",
+            "Mixed"
+          ]
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "maxlength": {
+          "type": "number"
+        },
+        "minlength": {
+          "type": "number"
+        },
+        "min": {
+          "type": "number"
+        },
+        "max": {
+          "type": "number"
+        },
+        "match": {
+          "type": "number"
+        },
+        "restricted": {
+          "oneOf": [{
+            "type": "boolean"
+          },{
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "read": {
+                "type": ["string", "boolean"]
+              },
+              "create": {
+                "type": ["string", "boolean"]
+              },
+              "update": {
+                "type": ["string", "boolean"]
+              }
+            }
+          }]
+        },
+        "enum": {
+          "type": "array"
+        },
+        "labels": {
+          "type": "array"
+        },
+        "default": {
+          "type": ["array", "boolean", "integer", "number", "null", "object", "string" ]
+        },
+        "items": {
+          "type": "object"
+        },
+        "ref": {
+          "type": "string"
+        },
+        "set_current_user": {
+          "type": "boolean"
+        }
+      }
+    }
+  },
+
+  "id": "root",
+  "type": "object",
+  "required": ["singular", "backend", "frontend"],
+  "additionalProperties": false,
+  "properties": {
+    "singular": {
+      "id": "singular",
+      "type": "string"
+    },
+    "backend": {
+      "id": "backend",
+      "type": "object",
+      "required": ["schema", "permissions"],
+      "properties": {
+        "ignore_perm_err": {
+          "id": "backend/ignore_perm_err",
+          "type": "boolean"
+        },
+        "prefix": {
+          "id": "backend/prefix",
+          "type": "string"
+        },
+        "options": {
+          "type": "object",
+          "properties": {
+            "collection": {
+              "id": "backend/collection",
+              "type": "string"
+            }
+          }
+        },
+        "permissions": {
+          "id": "backend/permissions",
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "read": {
+              "type": ["string", "boolean"]
+            },
+            "list": {
+              "type": ["string", "boolean"]
+            },
+            "create": {
+              "type": ["string", "boolean"]
+            },
+            "update": {
+              "type": ["string", "boolean"]
+            },
+            "delete": {
+              "type": ["string", "boolean"]
+            }
+          }
+        },
+        "schema": {
+          "$ref": "root#/definitions/backend_schema"
+        }
+      }
+    },
+    "frontend": {
+      "id": "frontend",
+      "type": "object",
+      "required": ["forms", "navbar"],
+      "additionalProperties": false,
+      "properties": {
+        "navbar": {
+          "id": "frontend/navbar",
+          "type": "object",
+          "properties": {
+            "label": {
+              "id": "frontend/navbar/label",
+              "type": "string"
+            }
+          }
+        },
+        "buttons": {
+          "id": "frontend/buttons",
+          "type": "object"
+        },
+        "list": {
+          "id": "frontend/list",
+          "type": "object",
+          "patternProperties": {
+            "[a-z0-9_]": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "enum": ["number", "select", "text", "date-range"]
+                }
+              }
+            }
+          }
+        },
+        "forms": {
+          "id": "frontend/forms",
+          "type": "object",
+          "patternProperties": {
+            "[a-z0-9_]": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "enum": ["text", "number", "email", "password", "date", "select", "checklist", "static", "textarea", "list"]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

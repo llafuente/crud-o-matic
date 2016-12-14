@@ -107,7 +107,7 @@ frontend:
     created_at:
       label: "Created at"
       type: "date-range"
-  schema:
+  forms:
     id:
       type: "static"
       create: false

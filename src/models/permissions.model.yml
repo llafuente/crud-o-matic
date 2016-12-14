@@ -28,7 +28,7 @@ frontend:
       type: "text"
     label:
       type: "text"
-  schema:
+  forms:
     _id:
       type: "static"
       create: false

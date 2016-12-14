@@ -109,6 +109,143 @@ test('check models', function(t) {
   t.end();
 });
 
+test('check backend fields list', function(t) {
+  const user = g.schemas.user;
+  const list = [];
+  user.eachBack(function(obj) {
+    list.push(obj);
+  });
+
+  const realpath = _.map(list, 'realpath');
+  const types = _.map(list, 'backField.type');
+
+  t.deepEqual(types, [
+    'Number',
+    'String',
+    'String',
+    'String',
+    'Array',
+    'String',
+    'Array',
+    'String',
+    'String',
+    'Object',
+    'String',
+    'String',
+  ]);
+
+  t.deepEqual(realpath, [
+    'id',
+    'username',
+    'password',
+    'salt',
+    'roles',
+    'roles[roles_id]',
+    'permissions',
+    'permissions[permissions_id]',
+    'state',
+    'data',
+    'data.first_name',
+    'data.last_name',
+  ]);
+
+  t.end();
+});
+
+test('check front fields list', function(t) {
+  const user = g.schemas.user;
+  const list = [];
+  user.eachFrontList(function(obj) {
+    list.push(obj);
+  });
+
+  const realpath = _.map(list, 'realpath');
+  const types = _.map(list, 'frontField.type');
+
+  t.deepEqual(types, [
+    'number',
+    'text',
+    'select',
+    'select',
+    'text',
+    'text',
+  ]);
+
+  t.deepEqual(realpath, [
+    'id',
+    'username',
+    'roles',
+    'state',
+    'data.first_name',
+    'data.last_name',
+  ]);
+
+  t.end();
+});
+
+
+test('check front fields create', function(t) {
+  const user = g.schemas.user;
+  const list = [];
+  user.eachFrontForm('create', function(obj) {
+    list.push(obj);
+  });
+
+  const realpath = _.map(list, 'realpath');
+  const types = _.map(list, 'frontField.type');
+
+  t.deepEqual(types, [
+    'number',
+    'text',
+    'select',
+    'select',
+    'text',
+    'text',
+  ]);
+
+  t.deepEqual(realpath, [
+    'id',
+    'username',
+    'roles',
+    'state',
+    'data.first_name',
+    'data.last_name',
+  ]);
+
+  t.end();
+});
+
+test('check front fields update', function(t) {
+  const user = g.schemas.user;
+  const list = [];
+  user.eachFrontForm('update', function(obj) {
+    list.push(obj);
+  });
+
+  const realpath = _.map(list, 'realpath');
+  const types = _.map(list, 'frontField.type');
+
+  t.deepEqual(types, [
+    'number',
+    'text',
+    'select',
+    'select',
+    'text',
+    'text',
+  ]);
+
+  t.deepEqual(realpath, [
+    'id',
+    'username',
+    'roles',
+    'state',
+    'data.first_name',
+    'data.last_name',
+  ]);
+
+  t.end();
+});
+
 
 testUtils.finish(test);
 

@@ -3,8 +3,22 @@ const eachOf = require('async/eachOf');
 const _ = require('lodash');
 const pluralize = require('pluralize');
 
+const ajv = require('ajv')({
+  allErrors: true
+});
+const schema = require('./validation/schema.json');
+const validate = ajv.compile(schema);
+
 module.exports = class Schema {
   constructor(generator, schemaObj) {
+    // validate
+    const valid = validate(schemaObj);
+    if (!valid) {
+      $log.error(validate.errors);
+      $log.error(schemaObj);
+      throw new Error('invalid schema');
+    }
+
     this.generator = generator;
     this.schema = schemaObj;
 
@@ -91,6 +105,31 @@ module.exports = class Schema {
   finalize() {
     this.mongooseModel = this.generator.mongoose.model(this.getPlural(), this.mongooseSchema);
   }
+  eachBack(cb) {
+    traverse(this.schema.backend.schema, cb);
+  }
+
+  eachFrontList(cb) {
+    const list = this.schema.frontend.list;
+
+    this.eachBack(function(data) {
+      if (list[data.realpath]) {
+        data.frontField = list[data.realpath];
+        cb(data);
+      }
+    });
+  }
+
+  eachFrontForm(action, cb) {
+    const list = this.schema.frontend.list;
+
+    this.eachBack(function(data) {
+      if (list[data.realpath]) {
+        data.frontField = list[data.realpath];
+        cb(data);
+      }
+    });
+  }
 };
 
 
@@ -109,5 +148,48 @@ function simplifySchema(obj, prop, value) {
       obj[prop] = [value.items];
       simplifySchema(obj[prop]);
     }
+  }
+}
+
+
+// cb(value, path, parent, prop_in_parent, realpath)
+function traverse(obj, cb, prop, value, path, realpath) {
+  const path2 = path || [];
+  const realpath2 = realpath || [];
+
+  if (!value) {
+    for (const i in obj) {
+      traverse(obj, cb, i, obj[i], path2, realpath2);
+    }
+  } else {
+    path2.push(prop);
+
+    if (value.type === 'Array') {
+      realpath2.push(prop);
+    } else if (obj.type !== 'Array') {
+      realpath2.push(prop);
+    }
+
+    cb({
+      backField: value,
+      path: path2.join('.').replace(/\.\[/g, '['),
+      parent: obj,
+      property: prop,
+      realpath: realpath2.join('.').replace(/\.\[/g, '[')
+    });
+    //console.log("value.type", value.type, "items", value.items);
+    switch (value.type) {
+    case 'Object':
+      traverse(value.properties, cb, 'properties', null, path2, realpath2);
+      break;
+    case 'Array':
+      realpath2.push(`[${prop}_id]`);
+      traverse(value, cb, 'items', value.items, path2, realpath2);
+      realpath2.pop();
+      break;
+    }
+
+    path2.pop();
+    realpath2.pop();
   }
 }

@@ -40,7 +40,7 @@ frontend:
       source_url:
         method: "GET"
         url: "/api/permissions"
-  schema:
+  forms:
     id:
       type: "static"
       create: false
