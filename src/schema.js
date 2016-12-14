@@ -11,6 +11,7 @@ const validate = ajv.compile(schema);
 
 module.exports = class Schema {
   constructor(generator, schemaObj) {
+    applyDefaults(schemaObj);
     // validate
     const valid = validate(schemaObj);
     if (!valid) {
@@ -113,7 +114,11 @@ module.exports = class Schema {
     const list = this.schema.frontend.list;
 
     this.eachBack(function(data) {
-      if (list[data.realpath]) {
+      if (
+        list[data.realpath] // path in the list
+        &&
+        (!data.backField.restricted || data.backField.restricted.read === false)
+      ) {
         data.frontField = list[data.realpath];
         cb(data);
       }
@@ -121,12 +126,21 @@ module.exports = class Schema {
   }
 
   eachFrontForm(action, cb) {
-    const list = this.schema.frontend.list;
+    const list = this.schema.frontend.forms;
 
     this.eachBack(function(data) {
-      if (list[data.realpath]) {
+      if (
+        list[data.realpath]
+      // TODO ignoreRestrictions: true
+      // STUDY id is static should be sent...
+      //  &&
+      //  (!data.backField.restricted || data.backField.restricted[action] === false)
+      ) {
         data.frontField = list[data.realpath];
-        cb(data);
+
+        if (data.frontField[action] !== false) {
+          cb(data);
+        }
       }
     });
   }
@@ -192,4 +206,71 @@ function traverse(obj, cb, prop, value, path, realpath) {
     path2.pop();
     realpath2.pop();
   }
+}
+
+const defaultBackField = {
+  restricted: {
+    create: false,
+    update: false,
+    read: false
+  }
+};
+
+function applyDefaults(schemaObj) {
+  traverse(schemaObj.backend.schema, function(data) {
+    switch (data.backField.type) {
+    case 'String':
+    case 'Number':
+    case 'ObjectId':
+    case 'Mixed':
+      _.defaults(data.backField, defaultBackField);
+      break;
+    default:
+      return;
+    }
+
+    // shortcut: can update/create cant read
+    if (data.backField.restricted === true) {
+      data.backField.restricted = {
+        create: false,
+        update: false,
+        read: true
+      };
+    }
+
+    // shortcut: can update/create/read
+    if (data.backField.restricted === false) {
+      data.backField.restricted = {
+        create: false,
+        update: false,
+        read: false
+      };
+    }
+  });
+
+  schemaObj.backend.schema.id = {
+    type: 'Number',
+    label: 'Id',
+    restricted: {read: false, create: true, update: true}
+  };
+
+  schemaObj.backend.schema.created_at = {
+    type: 'Date',
+    label: 'Created at',
+    restricted: {read: false, create: true, update: true}
+  };
+
+  schemaObj.backend.schema.updated_at = {
+    type: 'Date',
+    label: 'Updated at',
+    restricted: {read: false, create: true, update: true}
+  };
+
+  // NOTE __v need to be manually declared, or wont be in the paths
+  schemaObj.backend.schema.__v = {
+    type: 'Number',
+    label: 'Version',
+    //select: false,
+    restricted: {read: true, create: true, update: true}
+  };
 }

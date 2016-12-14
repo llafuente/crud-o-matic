@@ -1,16 +1,25 @@
+const path = require('path');
 const mongoose = require('mongoose');
 const _ = require('lodash');
 const test = require('tap').test;
 const testUtils = require('../test.utils.js');
 const theGenerator = require('../../index.js');
 const sinon = require('sinon');
-
+const fs = require('fs');
+var cheerio = require("cheerio");
 
 testUtils.start(test);
-
+const generationPath = path.join(__dirname, 'tmp');
 let g;
 test('instance theGenerator', function(t) {
-  g = theGenerator({auth: {secret: 'xxx'}}, mongoose);
+  //require("fs").mkdirSync(generationPath);
+  g = theGenerator({
+    auth: {
+      secret: 'xxx'
+    },
+    generationPath: generationPath
+  }, mongoose);
+
   t.ok(!!g.schemas.permission);
   t.ok(!!g.schemas.permission.mongooseSchema);
   t.ok(!!g.schemas.role);
@@ -33,6 +42,8 @@ test('check role paths', function(t) {
     '_id',
     'label',
     'permissions',
+    'id',
+    '__v',
     'updated_at',
     'created_at',
   ]);
@@ -49,6 +60,8 @@ test('check permission paths', function(t) {
   t.deepEqual(paths, [
     '_id',
     'label',
+    'id',
+    '__v',
     'updated_at',
     'created_at',
   ]);
@@ -72,6 +85,7 @@ test('check user paths', function(t) {
     'state',
     'data.first_name',
     'data.last_name',
+    '__v',
     '_id',
     'updated_at',
     'created_at',
@@ -132,6 +146,9 @@ test('check backend fields list', function(t) {
     'Object',
     'String',
     'String',
+    'Date',
+    'Date',
+    'Number',
   ]);
 
   t.deepEqual(realpath, [
@@ -147,6 +164,9 @@ test('check backend fields list', function(t) {
     'data',
     'data.first_name',
     'data.last_name',
+    'created_at',
+    'updated_at',
+    '__v',
   ]);
 
   t.end();
@@ -169,6 +189,7 @@ test('check front fields list', function(t) {
     'select',
     'text',
     'text',
+    'date-range',
   ]);
 
   t.deepEqual(realpath, [
@@ -178,6 +199,7 @@ test('check front fields list', function(t) {
     'state',
     'data.first_name',
     'data.last_name',
+    'created_at',
   ]);
 
   t.end();
@@ -195,19 +217,19 @@ test('check front fields create', function(t) {
   const types = _.map(list, 'frontField.type');
 
   t.deepEqual(types, [
-    'number',
-    'text',
-    'select',
-    'select',
+    'email',
+    'password',
+    'checklist',
+    'checklist',
     'text',
     'text',
   ]);
 
   t.deepEqual(realpath, [
-    'id',
     'username',
+    'password',
     'roles',
-    'state',
+    'permissions',
     'data.first_name',
     'data.last_name',
   ]);
@@ -226,9 +248,11 @@ test('check front fields update', function(t) {
   const types = _.map(list, 'frontField.type');
 
   t.deepEqual(types, [
-    'number',
-    'text',
-    'select',
+    'static',
+    'email',
+    'password',
+    'checklist',
+    'checklist',
     'select',
     'text',
     'text',
@@ -237,7 +261,9 @@ test('check front fields update', function(t) {
   t.deepEqual(realpath, [
     'id',
     'username',
+    'password',
     'roles',
+    'permissions',
     'state',
     'data.first_name',
     'data.last_name',
@@ -246,6 +272,31 @@ test('check front fields update', function(t) {
   t.end();
 });
 
+test('check front fields for create role', function(t) {
+  g.generateForm(g.schemas.role, 'create', function(err) {
+    t.error(err);
+    const filename = path.join(generationPath, 'role.create.tpl.html');
+    t.ok(fs.existsSync(filename));
+
+    var $ = cheerio.load(fs.readFileSync(filename, 'utf-8'));
+    t.equal($(".form-vertical").toArray().length, 1);
+    t.equal($(".control-container").toArray().length, 2);
+    t.equal($("input").toArray().length, 2);
+    t.equal($("button").toArray().length, 1);
+
+    t.end();
+  });
+});
+
+/*
+test('check front fields update', function(t) {
+  t.plan(1);
+  g.generateForms(function(err) {
+    t.ok(!!err);
+    console.log(err);
+  });
+});
+*/
 
 testUtils.finish(test);
 

@@ -116,7 +116,6 @@ frontend:
       type: "email"
     password:
       type: "password"
-      restricted: true
       constraints:
         ng-required: "crud_action == 'create'"
     state:

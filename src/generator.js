@@ -5,6 +5,8 @@ const readFileSync = require('fs').readFileSync;
 const _ = require('lodash');
 const Schema = require('./schema.js');
 const userSchemaOverride = require('./models/user.model.js');
+const formGenerator = require('./form.generator.js');
+const eachSeries = require('async/eachSeries');
 
 module.exports = class Generator extends EventEmitter {
   constructor(config, mongoose) {
@@ -13,6 +15,10 @@ module.exports = class Generator extends EventEmitter {
     this.mongoose = mongoose;
     this.schemas = {};
     this.models = mongoose.models;
+
+    if (!this.config.generationPath) {
+      throw new Error('generationPath is required in config');
+    }
 
     mongoose.model('autoincrements', new mongoose.Schema({
       _id: {
@@ -69,7 +75,40 @@ module.exports = class Generator extends EventEmitter {
 
   forEachSchema(cb) {
     for (const schemaName in this.schemas) {
-      cb(this.schemas[schemaName], schemaName);
+      cb.call(this, this.schemas[schemaName], schemaName);
     }
+  }
+
+  generateAll(cb) {
+    this.generateForms(cb);
+  }
+
+  generateForms(cb) {
+    let errors = [];
+    function gatherer(err, result) {
+      if (err) {
+        return errors = errors.concat(err);
+      }
+    }
+
+    eachSeries(this.schemas, function(schema, next) {
+      const partialNext = _.after(2, next);
+
+      this.generateForm(schema, 'create', partialNext);
+      this.generateForm(schema, 'update', partialNext);
+    }.bind(this), function(err) {
+      cb(err);
+    });
+  }
+
+  generateForm(schema, formAction, cb) {
+    const generatorOptions = {
+      action: formAction,
+      formPath: 'form',
+      basePath: 'entity',
+      layout: 'horizontal'
+    };
+
+    formGenerator(this, schema, generatorOptions, cb);
   }
 };

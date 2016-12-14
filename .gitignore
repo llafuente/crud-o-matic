@@ -8,3 +8,6 @@ coverage/
 e2e/gen/
 tests/gen/
 bower_components/
+
+# tests
+tests/generator/tmp/

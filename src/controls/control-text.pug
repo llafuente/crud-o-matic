@@ -1,0 +1,7 @@
+block control
+  input.form-control(
+    id="control-" + control.backField.name
+    type="text"
+    name=control.name
+    ng-model=control.realpath
+  )&attributes(control.constraints)
