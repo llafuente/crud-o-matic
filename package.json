@@ -1,0 +1,31 @@
+{
+  "name": "generator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "tap -b tests/*.test.js tests/*/*.test.js",
+    "testncv": "tap -b --cov --coverage-report=lcov tests/*/*.test.js",
+    "lint": "eslint src/ tests/ --fix"
+  },
+  "author": "llafuente@noboxout.com",
+  "license": "Copyright Luis Lafuente Morales",
+  "devDependencies": {
+    "babel-eslint": "^7.1.1",
+    "cheerio": "0.19.0",
+    "eslint": "^3.12.1",
+    "sinon": "^1.17.6",
+    "supertest": "^1.2.0",
+    "syntax-error": "1.1.5",
+    "tap": "5.2.0"
+  },
+  "nyc": {
+    "exclude": [
+      "tests",
+      "server/winston-readable-console.js"
+    ]
+  }
+}
