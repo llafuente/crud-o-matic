@@ -6,7 +6,7 @@ div.control-container.form-group.has-feedback(
   id= control.backField.name + "-container"
   )&attributes(control.container)
   block labelBlock
-    label.col-xs-4.control-label(for=control.backField.name translate="")= control.label
+    label.col-xs-4.control-label(for=control.backField.name translate="")= control.frontField.label || control.backField.label
   block contentBlock
     div.col-xs-8
       div.control-wapper
@@ -14,9 +14,9 @@ div.control-container.form-group.has-feedback(
         //span.glyphicon.glyphicon-ok.form-control-feedback.ng-hide(ng-show= control.formModel + ".$valid")
         //span.glyphicon.glyphicon-remove.form-control-feedback.ng-hide(ng-show= control.formModel + ".$invalid")
 
-  if control.help
+  if control.frontField.help
     div.clearfix
-    div.col-xs-offset-4.col-xs-8.help-block(translate="")= control.help
+    div.col-xs-offset-4.col-xs-8.help-block(translate="")= control.frontField.help
 
   div.clearfix
   block errorsBlock

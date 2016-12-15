@@ -4,8 +4,8 @@
   };
   $http(<%= JSON.stringify(control.frontField.sourceHttp) %>)
   .then(function(response) {
-    $scope["<%= control.cfgModel %>"].values = response.data;
+    $scope.<%= control.cfgModel %>_values = response.data;
   });
 /*<% } else { %>*/
-  $scope["<%= control.cfgModel %>_values"] = $injector.get("<%= control.frontField.label_values %>")();
+  //$scope.<%= control.cfgModel %>_values = $injector.get("<%= control.frontField.label_values %>")();
 /*<% } %>*/

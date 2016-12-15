@@ -20,8 +20,19 @@ backend:
       required: true
       restricted: false
 frontend:
-  navbar:
-    label: "Permisos"
+  buttons:
+    list_create:
+      text: "Crear nuevo permiso"
+    update:
+      text: "Guardar permiso"
+      tooltip: "Editar permiso"
+      inprogress: "Guardando"
+    create:
+      text: "Crear permiso"
+      inprogress: "Creando"
+    delete:
+      tooltip: "Eliminar permiso"
+      alert: "¿está seguro de eliminar el permiso?"
   list:
     _id:
       type: "text"

@@ -1,26 +1,37 @@
 section#update
-  form.form-vertical(novalidate="" autocomplete="off" name=name role="form")
+  form.form-vertical(novalidate="" autocomplete="off" name=generatorOptions.formPath role="form")
     fieldset
       legend(translate="")= legend
       each c in controls
         form-control!= c
       div.clearfix
-        button.btn.btn-primary.btn-update(type=button ng-click=name + ".$valid ? submit() : null" ng-hide="submitting" ng-disabled=name + ".$invalid")
+        button.btn.btn-primary.btn-update(
+          type=button
+          ng-click=`${generatorOptions.formPath}.$valid ? submit() : null`
+          ng-hide="submitting"
+          ng-disabled=`${generatorOptions.formPath}.$invalid`
+        )
           i.fa.fa-save.fa-lg
-          span(translate="")= button.text
-        span.btn.btn-secondary(translate="" ng-show="submitting")= button.inprogress
+          span(translate="")= schema.getButton(generatorOptions.action).text
+        span.btn.btn-secondary(translate="" ng-show="submitting")= schema.getButton(generatorOptions.action).inprogress
       div.clearfix
       div.row
         div.col-xs-4
-          pre= '{{' + name + ' | json}}'
+          pre= `{{${generatorOptions.formPath} | json}}`
         div.col-xs-4
-          pre= '{{' + name + '.$error | json}}'
-        div.col-xs-1(ng-class="{'bg-danger': " + name + ".$dirty, 'bg-success': !" + name + ".$dirty }")
-          span.btn= 'dirty: {{' + name + '.$dirty | json}}'
-        div.col-xs-1(ng-class="{'bg-danger': !" + name + ".$valid, 'bg-success': " + name + ".$valid }")
-          span.btn= 'valid: {{' + name + '.$valid | json}}'
-        div.col-xs-1(ng-class="{'bg-danger': " + name + ".$submitted, 'bg-success': !" + name + ".$submitted }")
-          span.btn= 'submitted: {{' + name + '.$submitted | json}}'
+          pre= `{{${generatorOptions.formPath}.$error | json}}`
+        div.col-xs-1(ng-class="{" +
+          `bg-danger': ${generatorOptions.formPath}.$dirty` +
+          `bg-success': !${generatorOptions.formPath}.$dirty }`
+        )
+          span.btn= `dirty: {{${generatorOptions.formPath}.$dirty | json}}`
+        div.col-xs-1(ng-class="{" +
+          `'bg-danger': !${generatorOptions.formPath}.$valid,` +
+          `'bg-success': ${generatorOptions.formPath}.$valid }`
+        )
+          span.btn= `valid: {{${generatorOptions.formPath}.$valid | json}}`
+        div.col-xs-1(ng-class="{'bg-danger': ${generatorOptions.formPath}.$submitted, 'bg-success': !${generatorOptions.formPath}.$submitted }")
+          span.btn= `submitted: {{${generatorOptions.formPath}.$submitted | json}}`
         div.col-xs-1(ng-class="{'bg-danger': !submitting, 'bg-success': submitting }")
           span.btn= 'submitting: {{submitting | json}}'
         div.col-xs-4

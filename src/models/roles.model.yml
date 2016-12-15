@@ -27,8 +27,19 @@ backend:
         ref: "permissions"
         restricted: false
 frontend:
-  navbar:
-    label: "Roles"
+  buttons:
+    list_create:
+      text: "Crear nuevo rol"
+    update:
+      text: "Guardar rol"
+      tooltip: "Editar rol"
+      inprogress: "Guardando"
+    create:
+      text: "Crear rol"
+      inprogress: "Creando"
+    delete:
+      tooltip: "Eliminar rol"
+      alert: "¿está seguro de eliminar el rol?"
   list:
     id:
       type: "text"

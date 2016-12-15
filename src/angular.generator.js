@@ -2,6 +2,7 @@ const assert = require('assert');
 const _ = require('lodash');
 const join = require('path').join;
 const eachSeries = require('async/eachSeries');
+const pug = require('pug');
 
 const fs = require('fs');
 
@@ -11,27 +12,90 @@ function load(filename) {
   return compiled;
 }
 
+function loadPug(filename) {
+  const html = fs.readFileSync(filename, 'utf-8');
+  return pug.compile(html, {
+    basedir: __dirname,
+    filename: filename,
+    pretty: true,
+  });
+}
+
 const templates = {
   create: load(join(__dirname, 'angular', 'create.controller.js')),
   update: load(join(__dirname, 'angular', 'update.controller.js')),
   module: load(join(__dirname, 'angular', 'module.js')),
+  routes: load(join(__dirname, 'angular', 'routes.config.js')),
+  listHTML: loadPug(join(__dirname, 'templates', 'list.pug')),
+  list: load(join(__dirname, 'angular', 'list.controller.js')),
 };
+
 
 module.exports = function(generator, schema, generatorOptions, cb) {
   eachSeries([
-    createControler,
-    updateControler,
+    createController,
+    updateController,
+    routesConfig,
+    listController,
+    listHTML,
     moduleInit,
   ], function(func, next) {
     func(generator, schema, generatorOptions, next);
   }, cb);
 };
 
-function listControler(generator, schema, generatorOptions, cb) {
+function routesConfig(generator, schema, generatorOptions, cb) {
+  const routesJS = templates.routes({
+    schema: schema,
+    generatorOptions: generatorOptions,
+  });
+  const routeFile = join(
+    generator.config.generationPath,
+    `${schema.getName()}.routes.config.js`
+  );
 
+  fs.writeFileSync(routeFile, routesJS, {encoding: 'utf-8'});
+
+  cb();
 }
 
-function createControler(generator, schema, generatorOptions, cb) {
+function listController(generator, schema, generatorOptions, cb) {
+  const routesJS = templates.list({
+    schema: schema,
+    generatorOptions: generatorOptions,
+  });
+
+  const routeFile = join(
+    generator.config.generationPath,
+    `${schema.getName()}.list.controller.js`
+  );
+
+  fs.writeFileSync(routeFile, routesJS, {encoding: 'utf-8'});
+
+  cb();
+}
+
+function listHTML(generator, schema, generatorOptions, cb) {
+  const listableFields = [];
+  schema.eachFrontList(function(control) {
+    listableFields.push(control);
+  });
+
+  const routesJS = templates.listHTML({
+    schema: schema,
+    generatorOptions: generatorOptions,
+    listableFields: listableFields,
+  });
+  const routeFile = join(
+    generator.config.generationPath,
+    `${schema.getName()}.list.tpl.html`
+  );
+
+  fs.writeFileSync(routeFile, routesJS, {encoding: 'utf-8'});
+  cb();
+}
+
+function createController(generator, schema, generatorOptions, cb) {
   const opt = _.cloneDeep(generatorOptions);
   opt.action = 'create';
 
@@ -56,7 +120,7 @@ function createControler(generator, schema, generatorOptions, cb) {
   });
 }
 
-function updateControler(generator, schema, generatorOptions, cb) {
+function updateController(generator, schema, generatorOptions, cb) {
   const opt = _.cloneDeep(generatorOptions);
   opt.action = 'update';
 
@@ -82,17 +146,16 @@ function updateControler(generator, schema, generatorOptions, cb) {
 }
 
 function moduleInit(generator, schema, generatorOptions, cb) {
-  // MODULE
-  const moduleHTML = templates.module({
+  const moduleJS = templates.module({
     schema: schema,
-    generatorOptions: generatorOptions
+    generatorOptions: generatorOptions,
   });
   const moduleFile = join(
     generator.config.generationPath,
-    `${schema.getName()}.module.controller.js`
+    `${schema.getName()}.module.js`
   );
 
-  fs.writeFileSync(moduleFile, moduleHTML, {encoding: 'utf-8'});
+  fs.writeFileSync(moduleFile, moduleJS, {encoding: 'utf-8'});
 
   cb();
 }

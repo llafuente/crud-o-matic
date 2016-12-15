@@ -1,6 +1,9 @@
 export default class <%= schema.getName() %>UpdateController {
-  constructor($rootScope, $scope, $http, $state, confirmStateExit, $log, $injector) {
-    confirmStateExit($scope, "form.$dirty && !submitted");
+  constructor($scope, $http, entity, $state, $stateParams, $log) {
+    $log.debug('(<%= schema.getName() %>UpdateController) start');
+
+    // TODO
+    // confirmStateExit($scope, 'form.$dirty && !submitted');
 
     $scope.crud_action = 'update';
     $scope.entity = entity;
@@ -8,24 +11,29 @@ export default class <%= schema.getName() %>UpdateController {
     $scope.submitting = false;
 
     $scope.submit = function() {
-      if ($scope.submitting) return;
+      if ($scope.submitting) {
+        return;
+      }
 
       // TODO gather only changes!
 
       $scope.submitting = true;
       $http({
         method: 'PATCH',
-        url: '<%= schema.apiUrls.update %>/'.replace(':<%= schema.apiIdParam %>', $stateParams['<%= schema.apiIdParam %>']),
+        url: '<%= schema.apiUrls.update %>/'.replace(':<%= schema.apiIdParam %>', $stateParams.<%= schema.apiIdParam %>),
         data: $scope.entity,
       }).then(function() {
         $scope.submitted = true;
-        $state.go("^.list");
+        $state.go('^.list');
       })
       .finally(function() {
         $scope.submitting = false;
       });
     }
 
-    <%= controlsJS %>;
+    /* control specific JS */
+
+    <%= controlsJS %>
+
   }
 }

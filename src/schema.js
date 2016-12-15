@@ -107,6 +107,14 @@ module.exports = class Schema {
       update: `permission/${this.schema.plural}-update`,
       delete: `permission/${this.schema.plural}-delete`,
     };
+
+    const root = this.getPlural();
+    this.states = {
+      root: root,
+      list: `${root}.list`,
+      create: `${root}.create`,
+      update: `${root}.update`,
+    };
   }
   getName() {
     return this.schema.singular;
@@ -170,6 +178,15 @@ module.exports = class Schema {
     const safeName = control.realpath.replace(/\./g, '_');
     control.cfgModel = `control_${safeName}`;
     control.formModel = `${generatorOptions.formPath}.${safeName}`;
+    control.searchModel = `query.${safeName}`;
+  }
+
+  getButton(name) {
+    let b = this.schema.frontend.buttons[name];
+    if (!b) {
+      throw new Error(`Button not found: ${name}`);
+    }
+    return b;
   }
 };
 

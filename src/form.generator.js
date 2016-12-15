@@ -1,5 +1,5 @@
 const assert = require('assert');
-const jade = require('pug');
+const pug = require('pug');
 const join = require('path').join;
 const eachSeries = require('async/eachSeries');
 
@@ -37,7 +37,7 @@ function generateDefaultControl(control, generatorOptions, cb) {
   //const layout = join(__dirname, 'layouts', `layout-${generatorOptions.layout}.pug`);
   const layout = `./layouts/layout-${generatorOptions.layout}.pug`;
   const templateFinal = `extends ${layout}\n\n${template}`;
-  const compiled = jade.compile(templateFinal, {
+  const compiled = pug.compile(templateFinal, {
     basedir: __dirname,
     filename: join(__dirname, `${control.frontField.type}.pug`),
     pretty: generatorOptions.pretty === undefined ? true : generatorOptions.pretty,
@@ -49,7 +49,7 @@ function generateDefaultControl(control, generatorOptions, cb) {
   try {
     html = compiled({
       //debug: true,
-      render: jade.render,
+      render: pug.render,
 
       generatorOptions: generatorOptions,
       control: control
@@ -101,7 +101,7 @@ module.exports = function(generator, schema, generatorOptions, cb) {
 
     $log.info(`all controls rendered: ${controlsHTML.length}`);
 
-    const compiled = jade.compile(templates.form, {
+    const compiled = pug.compile(templates.form, {
       basedir: __dirname,
       filename: join(__dirname, 'form.pug'),
       pretty: generatorOptions.pretty === undefined ? true : generatorOptions.pretty,
@@ -110,10 +110,11 @@ module.exports = function(generator, schema, generatorOptions, cb) {
     let html;
     try {
       html = compiled({
-        name: generatorOptions.formPath,
-        button: {},
+        schema: schema,
+        generatorOptions: generatorOptions,
+
         controls: controlsHTML,
-        render: jade.render
+        render: pug.render
       });
     } catch (e) {
         /* istanbul ignore next */

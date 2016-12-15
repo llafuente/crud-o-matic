@@ -191,19 +191,9 @@
     "frontend": {
       "id": "frontend",
       "type": "object",
-      "required": ["forms", "navbar"],
+      "required": ["forms", "buttons"],
       "additionalProperties": false,
       "properties": {
-        "navbar": {
-          "id": "frontend/navbar",
-          "type": "object",
-          "properties": {
-            "label": {
-              "id": "frontend/navbar/label",
-              "type": "string"
-            }
-          }
-        },
         "buttons": {
           "id": "frontend/buttons",
           "type": "object"

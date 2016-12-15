@@ -9,7 +9,8 @@ const fs = require('fs');
 const cheerio = require('cheerio');
 
 testUtils.start(test);
-const generationPath = path.join(__dirname, 'tmp');
+//const generationPath = path.join(__dirname, 'tmp');
+const generationPath = '/home/llafuente/angular-stack/app/entities'
 let g;
 test('instance theGenerator', function(t) {
   //require("fs").mkdirSync(generationPath);
