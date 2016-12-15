@@ -483,20 +483,31 @@ test('configure a server to include all routers', function(t) {
   t.end();
 });
 
+let userId;
 test('api role create', function(t) {
-  $log.info(g.schemas.role.mongooseSchema);
   supertest(app)
   .post(g.schemas.user.apiUrls.create)
   .send({
     username: 'admin@admin.com',
     password: 'admin'
   })
-  //.expect(201)
+  .expect(201)
   .end(function(err, res) {
     t.error(err);
-    $log.silly('body', res.body);
+    userId = res.body._id;
     t.equal(res.body.username, 'admin@admin.com');
     t.notEqual(res.body.password, 'Administrator');
+
+    t.end();
+  });
+});
+
+test('api user delete', function(t) {
+  supertest(app)
+  .delete(g.schemas.user.apiUrls.delete.replace(`:${g.schemas.user.apiIdParam}`, userId))
+  .expect(204)
+  .end(function(err, res) {
+    t.error(err);
 
     t.end();
   });

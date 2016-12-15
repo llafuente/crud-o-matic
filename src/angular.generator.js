@@ -1,5 +1,6 @@
 const assert = require('assert');
 const _ = require('lodash');
+const ejs = require('ejs');
 const join = require('path').join;
 const eachSeries = require('async/eachSeries');
 const pug = require('pug');
@@ -7,7 +8,7 @@ const pug = require('pug');
 const fs = require('fs');
 
 function load(filename) {
-  const compiled = _.template(fs.readFileSync(filename, 'utf-8'));
+  const compiled = ejs.compile(fs.readFileSync(filename, 'utf-8'));
 
   return compiled;
 }

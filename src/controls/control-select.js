@@ -5,5 +5,5 @@
     $scope.<%= control.cfgModel%>_values = response.data;
   });
 /*<% } else { %>*/
-  $scope.<%= control.cfgModel%>_values = $injector.get("<%= control.label_values%>")();
+  //$scope.<%= control.cfgModel%>_values = $injector.get("<%- control.label_values %>")();
 /*<% } %>*/

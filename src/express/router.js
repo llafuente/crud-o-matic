@@ -1,6 +1,7 @@
 const express = require('express');
 
 const create = require('./<%= schema.getName() %>.express.create.js');
+const destroy = require('./<%= schema.getName() %>.express.destroy.js');
 /*
 const read = require('./<%= schema.getName() %>.express.read.js');
 const create = require('./crud/create.js');
@@ -67,15 +68,14 @@ function show(status_code, stored_at) {
     show(200, 'entity')
   ]);
 <% } %>
-
+*/
 <% if (schema.permissions.delete) { %>
   r.delete('<%= schema.apiUrls.delete %>', [
-    auth.authorization(),
-    auth.hasPermission('<%= schema.permissions.delete %>'),
-    destroy,
-    show(204)
+    //auth.authorization(),
+    //auth.hasPermission('<%= schema.permissions.delete %>'),
+    destroy
   ]);
 <% } %>
-*/
+
 // error-handler
 r.use(errorHandler);
