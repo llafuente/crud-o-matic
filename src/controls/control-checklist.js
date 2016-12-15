@@ -1,11 +1,11 @@
 /*<% if (control.frontField.sourceHttp) { %>*/
-  $scope["<%= control.cfgModel -%>"] = {
+  $scope["<%= control.cfgModel %>"] = {
     values: []
   };
-  $http(<%= JSON.stringify(control.frontField.sourceHttp) -%>)
+  $http(<%= JSON.stringify(control.frontField.sourceHttp) %>)
   .then(function(response) {
-    $scope["<%= control.cfgModel -%>"].values = response.data;
+    $scope["<%= control.cfgModel %>"].values = response.data;
   });
 /*<% } else { %>*/
-  $scope["<%= control.cfgModel -%>"].values = $injector.get("<%= control.frontField.label_values -%>")();
+  $scope["<%= control.cfgModel %>_values"] = $injector.get("<%= control.frontField.label_values %>")();
 /*<% } %>*/

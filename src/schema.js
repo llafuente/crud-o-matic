@@ -1,4 +1,5 @@
 const timestamps = require('mongoose-timestamp');
+const path = require('path');
 const _ = require('lodash');
 const pluralize = require('pluralize');
 
@@ -88,6 +89,24 @@ module.exports = class Schema {
 
     this.schema.plural = this.schema.plural || pluralize(this.getName());
     $log.silly('plural ${this.schema.plural}');
+
+
+    this.apiIdParam = `${this.schema.singular}_id`;
+    const list = path.join('/', this.schema.backend.prefix, this.schema.plural);
+    this.apiUrls = {
+      list: list,
+      create: list,
+      read: path.join(list, '/:' + this.apiIdParam),
+      update: path.join(list, '/:' + this.apiIdParam),
+      delete: path.join(list, '/:' + this.apiIdParam),
+    };
+    this.permissions = {
+      list: `permission/${this.schema.plural}-list`,
+      create: `permission/${this.schema.plural}-create`,
+      read: `permission/${this.schema.plural}-read`,
+      update: `permission/${this.schema.plural}-update`,
+      delete: `permission/${this.schema.plural}-delete`,
+    };
   }
   getName() {
     return this.schema.singular;
@@ -142,6 +161,15 @@ module.exports = class Schema {
         }
       }
     });
+  }
+
+  applyGeneratorOptions(control, generatorOptions) {
+    // ng-model
+    control.model = `${generatorOptions.basePath}.${control.realpath}`;
+    // controller will store data here for the control
+    const safeName = control.realpath.replace(/\./g, '_');
+    control.cfgModel = `control_${safeName}`;
+    control.formModel = `${generatorOptions.formPath}.${safeName}`;
   }
 };
 

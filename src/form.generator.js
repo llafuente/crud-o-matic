@@ -75,12 +75,7 @@ module.exports = function(generator, schema, generatorOptions, cb) {
     const handler = handlers[control.frontField.type];
     $log.info(`control found: ${control.path} ${control.realpath} ${control.frontField.type} using ${generator.name}`);
 
-    // ng-model
-    control.model = `${generatorOptions.basePath}.${control.realpath}`;
-    // controller will store data here for the control
-    const safeName = control.realpath.replace(/\./g, '_');
-    control.cfgModel = `controls.${safeName}`;
-    control.formModel = `${generatorOptions.formPath}.${safeName}`;
+    schema.applyGeneratorOptions(control, generatorOptions);
 
     // TODO REVIEW
     // unsused: control.container applied @ div.control-container

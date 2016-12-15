@@ -6,6 +6,7 @@ const _ = require('lodash');
 const Schema = require('./schema.js');
 const userSchemaOverride = require('./models/user.model.js');
 const formGenerator = require('./form.generator.js');
+const angularGenerator = require('./angular.generator.js');
 const eachSeries = require('async/eachSeries');
 
 module.exports = class Generator extends EventEmitter {
@@ -83,7 +84,24 @@ module.exports = class Generator extends EventEmitter {
     this.generateForms(cb);
   }
 
-  generateForms(cb) {
+  generateAngularAll(cb) {
+    eachSeries(this.schemas, function(schema, next) {
+      this.generateAngular(schema, next);
+    }.bind(this), function(err) {
+      cb(err);
+    });
+  }
+
+  generateAngular(schema, cb) {
+    const generatorOptions = {
+      formPath: 'form',
+      basePath: 'entity',
+    };
+
+    angularGenerator(this, schema, generatorOptions, cb);
+  }
+
+  generateFormAll(cb) {
     eachSeries(this.schemas, function(schema, next) {
       const partialNext = _.after(2, next);
 

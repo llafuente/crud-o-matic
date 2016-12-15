@@ -1,7 +1,7 @@
 block contentBlock
   div(class=generatorOptions.layout === "horizontal" ? "col-xs-8" : undefined)
     div.control-wapper.checkbox
-      div(ng-repeat=`item in ${control.cfgModel}.values`)
+      div(ng-repeat=`item in ${control.cfgModel}_values`)
         label
           input(
             id=`${control.backField.name}-{{$index}}`

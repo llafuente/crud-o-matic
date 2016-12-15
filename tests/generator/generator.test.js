@@ -17,6 +17,7 @@ test('instance theGenerator', function(t) {
     auth: {
       secret: 'xxx'
     },
+    apiBasePath: '/api',
     generationPath: generationPath
   }, mongoose);
 
@@ -90,6 +91,26 @@ test('check user paths', function(t) {
     'updated_at',
     'created_at',
   ]);
+
+  t.end();
+});
+
+test('check user apiUrls/permissions', function(t) {
+  const paths = [];
+  t.deepEqual(g.schemas.user.apiUrls, {
+    'create': '/api/users',
+    'delete': '/api/users/:user_id',
+    'list': '/api/users',
+    'read': '/api/users/:user_id',
+    'update': '/api/users/:user_id',
+  });
+  t.deepEqual(g.schemas.user.permissions, {
+    'create': 'permission/users-create',
+    'delete': 'permission/users-delete',
+    'list': 'permission/users-list',
+    'read': 'permission/users-read',
+    'update': 'permission/users-update',
+  });
 
   t.end();
 });
@@ -389,6 +410,31 @@ test('check front fields for create role', function(t) {
     t.end();
   });
 });
+
+test('check front fields for create role', function(t) {
+  g.generateAngular(g.schemas.role, function(err) {
+    t.error(err);
+    /*
+
+    const filename = path.join(generationPath, 'role.update.tpl.html');
+    t.ok(fs.existsSync(filename));
+
+    const html = fs.readFileSync(filename, 'utf-8');
+    t.equal(html.indexOf('undefined'), -1);
+
+    const $ = cheerio.load(html);
+
+    t.equal($('.form-vertical').toArray().length, 1);
+    t.equal($('.control-container').toArray().length, 3);
+    t.equal($('input').toArray().length, 2);
+    t.equal($('button').toArray().length, 1);
+    */
+
+
+    t.end();
+  });
+});
+
 
 /*
 test('check front fields update', function(t) {
