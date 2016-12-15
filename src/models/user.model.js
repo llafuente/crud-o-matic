@@ -73,7 +73,7 @@ module.exports = function(generator, schema) {
           return cb(err);
         }
 
-        user.filterQuery(query, cb);
+        return user.filterQuery(query, cb);
       });
     }
     /*

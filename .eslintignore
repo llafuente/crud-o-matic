@@ -1,1 +1,2 @@
-app/services/version-service.js
+src/controls/*.js
+src/winston.readableconsole.js

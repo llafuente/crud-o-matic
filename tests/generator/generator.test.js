@@ -6,7 +6,7 @@ const testUtils = require('../test.utils.js');
 const theGenerator = require('../../index.js');
 const sinon = require('sinon');
 const fs = require('fs');
-var cheerio = require("cheerio");
+const cheerio = require('cheerio');
 
 testUtils.start(test);
 const generationPath = path.join(__dirname, 'tmp');
@@ -278,11 +278,11 @@ test('check front fields for create role', function(t) {
     const filename = path.join(generationPath, 'role.create.tpl.html');
     t.ok(fs.existsSync(filename));
 
-    var $ = cheerio.load(fs.readFileSync(filename, 'utf-8'));
-    t.equal($(".form-vertical").toArray().length, 1);
-    t.equal($(".control-container").toArray().length, 2);
-    t.equal($("input").toArray().length, 2);
-    t.equal($("button").toArray().length, 1);
+    const $ = cheerio.load(fs.readFileSync(filename, 'utf-8'));
+    t.equal($('.form-vertical').toArray().length, 1);
+    t.equal($('.control-container').toArray().length, 2);
+    t.equal($('input').toArray().length, 2);
+    t.equal($('button').toArray().length, 1);
 
     t.end();
   });

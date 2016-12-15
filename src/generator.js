@@ -84,13 +84,6 @@ module.exports = class Generator extends EventEmitter {
   }
 
   generateForms(cb) {
-    let errors = [];
-    function gatherer(err, result) {
-      if (err) {
-        return errors = errors.concat(err);
-      }
-    }
-
     eachSeries(this.schemas, function(schema, next) {
       const partialNext = _.after(2, next);
 

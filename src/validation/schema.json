@@ -24,6 +24,9 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
+        "name": {
+          "type": "string"
+        },
         "type": {
           "enum": [
             "Array"
@@ -38,6 +41,9 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
+        "name": {
+          "type": "string"
+        },
         "type": {
           "enum": [
             "Object"
@@ -53,6 +59,9 @@
       "required": ["label"],
       "additionalProperties": false,
       "properties": {
+        "name": {
+          "type": "string"
+        },
         "label": {
           "type": "string"
         },

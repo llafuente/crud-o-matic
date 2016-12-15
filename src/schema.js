@@ -1,5 +1,4 @@
 const timestamps = require('mongoose-timestamp');
-const eachOf = require('async/eachOf');
 const _ = require('lodash');
 const pluralize = require('pluralize');
 
@@ -229,6 +228,8 @@ function applyDefaults(schemaObj) {
       return;
     }
 
+    data.backField.name = data.property;
+
     // shortcut: can update/create cant read
     if (data.backField.restricted === true) {
       data.backField.restricted = {
@@ -250,18 +251,21 @@ function applyDefaults(schemaObj) {
 
   schemaObj.backend.schema.id = {
     type: 'Number',
+    name: 'id',
     label: 'Id',
     restricted: {read: false, create: true, update: true}
   };
 
   schemaObj.backend.schema.created_at = {
     type: 'Date',
+    name: 'created_at',
     label: 'Created at',
     restricted: {read: false, create: true, update: true}
   };
 
   schemaObj.backend.schema.updated_at = {
     type: 'Date',
+    name: 'updated_at',
     label: 'Updated at',
     restricted: {read: false, create: true, update: true}
   };
@@ -269,6 +273,7 @@ function applyDefaults(schemaObj) {
   // NOTE __v need to be manually declared, or wont be in the paths
   schemaObj.backend.schema.__v = {
     type: 'Number',
+    name: '__v',
     label: 'Version',
     //select: false,
     restricted: {read: true, create: true, update: true}

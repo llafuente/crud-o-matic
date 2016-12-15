@@ -1,0 +1,15 @@
+block contentBlock
+  div(class=generatorOptions.layout === "horizontal" ? "col-xs-8" : undefined)
+    div.control-wapper.checkbox
+      div(ng-repeat=`item in ${control.cfgModel}.values`)
+        label
+          input(
+            id=`${control.backField.name}-{{$index}}`
+            type="checkbox"
+            checklist-model=control.model
+            name=control.backField.name
+            checklist-value="item._id"
+          )
+          span {{item.label}}
+        br
+

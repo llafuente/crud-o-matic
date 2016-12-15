@@ -1,6 +1,6 @@
 extends tpl-errors.pug
 
-block error
+block errorBlock
   p.help-block.error-block.ng-hide(ng-show= "(" +control_path + ".$touched || " + form_path + ".$dirty) && " + control_path + ".$error." + key)
     //span &times;&nbsp;
     span ·&nbsp;&nbsp;

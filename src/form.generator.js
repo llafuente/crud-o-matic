@@ -8,14 +8,14 @@ const fs = require('fs');
 
 const handlers = {
   text: generateDefaultControl,
-  number: generateDefaultControl,
-  email: generateDefaultControl,
-  password: generateDefaultControl,
-  date: generateDefaultControl,
-  select: generateDefaultControl,
+  //number: generateDefaultControl,
+  //email: generateDefaultControl,
+  //password: generateDefaultControl,
+  //date: generateDefaultControl,
+  //select: generateDefaultControl,
   checklist: generateDefaultControl,
-  static: generateDefaultControl,
-  textarea: generateDefaultControl,
+  //static: generateDefaultControl,
+  //textarea: generateDefaultControl,
   //list: generateList,
 };
 
@@ -28,8 +28,8 @@ const controlTpls = {
 };
 
 for (const controlName in handlers) {
-  //const file = join(__dirname, 'controls', `control-${controlName}.pug`);
-  controlTpls[controlName] = fs.readFileSync(join(__dirname, 'controls', 'control-text.pug'), 'utf-8');
+  const file = join(__dirname, 'controls', `control-${controlName}.pug`);
+  controlTpls[controlName] = fs.readFileSync(file, 'utf-8');
 }
 
 function generateDefaultControl(control, generatorOptions, cb) {
@@ -75,6 +75,20 @@ module.exports = function(generator, schema, generatorOptions, cb) {
     const handler = handlers[control.frontField.type];
     $log.info(`control found: ${control.path} ${control.realpath} ${control.frontField.type} using ${generator.name}`);
 
+    // ng-model
+    control.model = `${generatorOptions.basePath}.${control.realpath}`;
+    // controller will store data here for the control
+    const safeName = control.realpath.replace(/\./g, '_');
+    control.cfgModel = `controls.${safeName}`;
+    control.formModel = `${generatorOptions.formPath}.${safeName}`;
+
+    // TODO REVIEW
+    // unsused: control.container applied @ div.control-container
+
+    // TODO DEBUG REMOVE
+    delete control.parent;
+    $log.debug(control.backField);
+
     // choose a generator
     return handler(control, generatorOptions, function(err, html) {
       /* istanbul ignore next */ if (err) {
@@ -94,7 +108,7 @@ module.exports = function(generator, schema, generatorOptions, cb) {
 
     const compiled = jade.compile(templates.form, {
       basedir: __dirname,
-      filename: join(__dirname, `form.pug`),
+      filename: join(__dirname, 'form.pug'),
       pretty: generatorOptions.pretty === undefined ? true : generatorOptions.pretty,
     });
 
@@ -117,7 +131,7 @@ module.exports = function(generator, schema, generatorOptions, cb) {
     );
 
     fs.writeFileSync(targetFilename, html, {encoding: 'utf-8'});
-    $log.info(`written: ${targetFilename}`)
+    $log.info(`written: ${targetFilename}`);
 
     return cb(null, html);
   });
