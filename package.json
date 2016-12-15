@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test": "tap -b tests/*.test.js tests/*/*.test.js",
-    "testncv": "tap -b --cov --coverage-report=lcov tests/*/*.test.js",
+    "testcv": "tap -b --cov --coverage-report=lcov tests/*/*.test.js",
     "lint": "eslint src/ tests/ --fix"
   },
   "author": "llafuente@noboxout.com",

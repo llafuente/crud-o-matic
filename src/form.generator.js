@@ -9,10 +9,10 @@ const fs = require('fs');
 const handlers = {
   text: generateDefaultControl,
   //number: generateDefaultControl,
-  //email: generateDefaultControl,
-  //password: generateDefaultControl,
+  email: generateDefaultControl,
+  password: generateDefaultControl,
   //date: generateDefaultControl,
-  //select: generateDefaultControl,
+  select: generateDefaultControl,
   checklist: generateDefaultControl,
   static: generateDefaultControl,
   //textarea: generateDefaultControl,
@@ -73,6 +73,10 @@ module.exports = function(generator, schema, generatorOptions, cb) {
 
   eachSeries(controls, function(control, next) {
     const handler = handlers[control.frontField.type];
+    if (!handler) {
+      throw new Error(`can't find handler for ${control.frontField.type}`);
+    }
+
     $log.info(`control found: ${control.path} ${control.realpath} ${control.frontField.type} using ${generator.name}`);
 
     schema.applyGeneratorOptions(control, generatorOptions);

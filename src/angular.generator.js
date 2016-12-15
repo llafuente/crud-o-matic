@@ -162,6 +162,7 @@ function moduleInit(generator, schema, generatorOptions, cb) {
 
 const controlControllers = {
   checklist: load(join(__dirname, 'controls', 'control-checklist.js')),
+  select: load(join(__dirname, 'controls', 'control-select.js')),
 };
 
 // specific code that some controls need in the controller

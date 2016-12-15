@@ -81,7 +81,10 @@ module.exports = class Generator extends EventEmitter {
   }
 
   generateAll(cb) {
-    this.generateForms(cb);
+    const next = _.after(2, cb);
+
+    this.generateFormAll(next);
+    this.generateAngularAll(next);
   }
 
   generateAngularAll(cb) {

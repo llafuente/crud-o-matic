@@ -435,4 +435,27 @@ test('check all js files', function(t) {
   t.end();
 });
 
+test('g.generateAll', function(t) {
+  g.generateAll(function(err) {
+    t.error(err);
+    t.end();
+  });
+});
+
+test('smoke test for everything generated', function(t) {
+  ['role', 'permission', 'user'].forEach(function(entity) {
+    testUtils.checkJS(t, path.join(generationPath, `${entity}.create.controller.js`));
+    testUtils.checkJS(t, path.join(generationPath, `${entity}.list.controller.js`));
+    testUtils.checkJS(t, path.join(generationPath, `${entity}.module.js`));
+    testUtils.checkJS(t, path.join(generationPath, `${entity}.routes.config.js`));
+    testUtils.checkJS(t, path.join(generationPath, `${entity}.update.controller.js`));
+
+    testUtils.checkHTML(t, path.join(generationPath, `${entity}.list.tpl.html`));
+    testUtils.checkHTML(t, path.join(generationPath, `${entity}.create.tpl.html`));
+    testUtils.checkHTML(t, path.join(generationPath, `${entity}.update.tpl.html`));
+  });
+
+  t.end();
+});
+
 testUtils.finish(test);

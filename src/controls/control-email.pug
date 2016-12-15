@@ -1,0 +1,7 @@
+block controlBlock
+  input.form-control(
+    id="control-" + control.backField.name
+    type="email"
+    name=control.backField.name
+    ng-model=control.model
+  )&attributes(control.constraints)
