@@ -44,7 +44,7 @@ frontend:
     id:
       type: "static"
       create: false
-      update: false
+      update: true
     label:
       type: "text"
     permissions:

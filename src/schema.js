@@ -175,6 +175,8 @@ function traverse(obj, cb, prop, value, path, realpath) {
       traverse(obj, cb, i, obj[i], path2, realpath2);
     }
   } else {
+    if (!prop) {throw new Error('??');}
+
     path2.push(prop);
 
     if (value.type === 'Array') {
@@ -217,6 +219,8 @@ const defaultBackField = {
 
 function applyDefaults(schemaObj) {
   traverse(schemaObj.backend.schema, function(data) {
+    data.backField.name = data.realpath.replace(/(\.|\[|\])/g, '_');
+
     switch (data.backField.type) {
     case 'String':
     case 'Number':
@@ -227,8 +231,6 @@ function applyDefaults(schemaObj) {
     default:
       return;
     }
-
-    data.backField.name = data.property;
 
     // shortcut: can update/create cant read
     if (data.backField.restricted === true) {

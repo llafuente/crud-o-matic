@@ -124,6 +124,52 @@ test('check models', function(t) {
 });
 
 test('check backend fields list', function(t) {
+  const role = g.schemas.role;
+  const list = [];
+  role.eachBack(function(obj) {
+    list.push(obj);
+  });
+
+  const realpath = _.map(list, 'realpath');
+  const types = _.map(list, 'backField.type');
+  const names = _.map(list, 'backField.name');
+
+  t.deepEqual(names, [
+    '_id',
+    'label',
+    'permissions',
+    'permissions_permissions_id_',
+    'id',
+    'created_at',
+    'updated_at',
+    '__v',
+  ]);
+  t.deepEqual(types, [
+    'String',
+    'String',
+    'Array',
+    'String',
+    'Number',
+    'Date',
+    'Date',
+    'Number',
+  ]);
+
+  t.deepEqual(realpath, [
+    '_id',
+    'label',
+    'permissions',
+    'permissions[permissions_id]',
+    'id',
+    'created_at',
+    'updated_at',
+    '__v',
+  ]);
+
+  t.end();
+});
+
+test('check backend fields list', function(t) {
   const user = g.schemas.user;
   const list = [];
   user.eachBack(function(obj) {
@@ -206,7 +252,7 @@ test('check front fields list', function(t) {
 });
 
 
-test('check front fields create', function(t) {
+test('check front fields user create', function(t) {
   const user = g.schemas.user;
   const list = [];
   user.eachFrontForm('create', function(obj) {
@@ -237,7 +283,7 @@ test('check front fields create', function(t) {
   t.end();
 });
 
-test('check front fields update', function(t) {
+test('check front fields user update', function(t) {
   const user = g.schemas.user;
   const list = [];
   user.eachFrontForm('update', function(obj) {
@@ -272,17 +318,73 @@ test('check front fields update', function(t) {
   t.end();
 });
 
+test('check front fields role update', function(t) {
+  const role = g.schemas.role;
+  const list = [];
+  role.eachFrontForm('update', function(obj) {
+    list.push(obj);
+  });
+
+  const realpath = _.map(list, 'realpath');
+  const types = _.map(list, 'frontField.type');
+
+  t.deepEqual(types, [
+    'text',
+    'checklist',
+    'static',
+
+  ]);
+
+  t.deepEqual(realpath, [
+    'label',
+    'permissions',
+    'id',
+
+  ]);
+
+  t.end();
+});
+
+
 test('check front fields for create role', function(t) {
   g.generateForm(g.schemas.role, 'create', function(err) {
     t.error(err);
+
     const filename = path.join(generationPath, 'role.create.tpl.html');
     t.ok(fs.existsSync(filename));
 
-    const $ = cheerio.load(fs.readFileSync(filename, 'utf-8'));
+    const html = fs.readFileSync(filename, 'utf-8');
+    t.equal(html.indexOf('undefined'), -1);
+
+    const $ = cheerio.load(html);
+
     t.equal($('.form-vertical').toArray().length, 1);
     t.equal($('.control-container').toArray().length, 2);
     t.equal($('input').toArray().length, 2);
     t.equal($('button').toArray().length, 1);
+
+
+    t.end();
+  });
+});
+
+test('check front fields for create role', function(t) {
+  g.generateForm(g.schemas.role, 'update', function(err) {
+    t.error(err);
+
+    const filename = path.join(generationPath, 'role.update.tpl.html');
+    t.ok(fs.existsSync(filename));
+
+    const html = fs.readFileSync(filename, 'utf-8');
+    t.equal(html.indexOf('undefined'), -1);
+
+    const $ = cheerio.load(html);
+
+    t.equal($('.form-vertical').toArray().length, 1);
+    t.equal($('.control-container').toArray().length, 3);
+    t.equal($('input').toArray().length, 2);
+    t.equal($('button').toArray().length, 1);
+
 
     t.end();
   });

@@ -14,7 +14,7 @@ const handlers = {
   //date: generateDefaultControl,
   //select: generateDefaultControl,
   checklist: generateDefaultControl,
-  //static: generateDefaultControl,
+  static: generateDefaultControl,
   //textarea: generateDefaultControl,
   //list: generateList,
 };
