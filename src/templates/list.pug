@@ -37,7 +37,7 @@ section#list
     tbody
       tr(ng-repeat='row in list.list')
         each control in listableFields
-          td= '{{row.' + control.name + (control.label_filter ? ' | ' + control.label_filter : '') + '}}'
+          td= '{{row.' + control.realpath + (control.label_filter ? ' | ' + control.label_filter : '') + '}}'
         td
           a.entity-action.entity-update.ng-hide(
             ui-sref=`^.update({ ${schema.apiIdParam} : row._id })`

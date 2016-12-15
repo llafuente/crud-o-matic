@@ -9,8 +9,8 @@ const fs = require('fs');
 const cheerio = require('cheerio');
 
 testUtils.start(test);
-//const generationPath = path.join(__dirname, 'tmp');
-const generationPath = '/home/llafuente/angular-stack/app/entities'
+const generationPath = path.join(__dirname, 'tmp');
+//const generationPath = '/home/llafuente/angular-stack/app/entities'
 let g;
 test('instance theGenerator', function(t) {
   //require("fs").mkdirSync(generationPath);
@@ -368,15 +368,12 @@ test('check front fields role update', function(t) {
 });
 
 
-test('check front fields for create role', function(t) {
+test('check role.create.tpl.html', function(t) {
   g.generateForm(g.schemas.role, 'create', function(err) {
     t.error(err);
 
     const filename = path.join(generationPath, 'role.create.tpl.html');
-    t.ok(fs.existsSync(filename));
-
-    const html = fs.readFileSync(filename, 'utf-8');
-    t.equal(html.indexOf('undefined'), -1);
+    const html = testUtils.checkHTML(t, filename);
 
     const $ = cheerio.load(html);
 
@@ -390,15 +387,12 @@ test('check front fields for create role', function(t) {
   });
 });
 
-test('check front fields for create role', function(t) {
+test('check role.update.tpl.html', function(t) {
   g.generateForm(g.schemas.role, 'update', function(err) {
     t.error(err);
 
     const filename = path.join(generationPath, 'role.update.tpl.html');
-    t.ok(fs.existsSync(filename));
-
-    const html = fs.readFileSync(filename, 'utf-8');
-    t.equal(html.indexOf('undefined'), -1);
+    const html = testUtils.checkHTML(t, filename);
 
     const $ = cheerio.load(html);
 
@@ -415,37 +409,30 @@ test('check front fields for create role', function(t) {
 test('check front fields for create role', function(t) {
   g.generateAngular(g.schemas.role, function(err) {
     t.error(err);
-    /*
-
-    const filename = path.join(generationPath, 'role.update.tpl.html');
-    t.ok(fs.existsSync(filename));
-
-    const html = fs.readFileSync(filename, 'utf-8');
-    t.equal(html.indexOf('undefined'), -1);
-
-    const $ = cheerio.load(html);
-
-    t.equal($('.form-vertical').toArray().length, 1);
-    t.equal($('.control-container').toArray().length, 3);
-    t.equal($('input').toArray().length, 2);
-    t.equal($('button').toArray().length, 1);
-    */
-
 
     t.end();
   });
 });
+// this are just smoke tests
+test('check role.list.tpl.html', function(t) {
+  const filename = path.join(generationPath, 'role.list.tpl.html');
+  const html = testUtils.checkHTML(t, filename);
 
+  const $ = cheerio.load(html);
 
-/*
-test('check front fields update', function(t) {
-  t.plan(1);
-  g.generateForms(function(err) {
-    t.ok(!!err);
-    console.log(err);
-  });
+  t.equal($('.headers th').toArray().length, 4);
+
+  t.end();
 });
-*/
+
+test('check all js files', function(t) {
+  testUtils.checkJS(t, path.join(generationPath, 'role.create.controller.js'));
+  testUtils.checkJS(t, path.join(generationPath, 'role.list.controller.js'));
+  testUtils.checkJS(t, path.join(generationPath, 'role.module.js'));
+  testUtils.checkJS(t, path.join(generationPath, 'role.routes.config.js'));
+  testUtils.checkJS(t, path.join(generationPath, 'role.update.controller.js'));
+
+  t.end();
+});
 
 testUtils.finish(test);
-
