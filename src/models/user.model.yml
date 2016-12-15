@@ -2,7 +2,6 @@ singular: "user"
 backend:
   options:
     collection: "users"
-  prefix: "/api"
   permissions:
     read: "Ver usuarios"
     list: "Listar usuarios"

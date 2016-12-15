@@ -92,7 +92,7 @@ module.exports = class Schema {
 
 
     this.apiIdParam = `${this.schema.singular}_id`;
-    const list = path.join('/', this.schema.backend.prefix, this.schema.plural);
+    const list = path.join('/', this.generator.config.apiBasePath, this.schema.plural);
     this.apiUrls = {
       list: list,
       create: list,

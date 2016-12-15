@@ -2,7 +2,6 @@ singular: "permission"
 backend:
   options:
     collection: "permissions"
-  prefix: "/api"
   permissions:
     read: "Ver permisos"
     list: "Listar permisos"

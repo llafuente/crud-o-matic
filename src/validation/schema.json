@@ -146,14 +146,11 @@
       "id": "backend",
       "type": "object",
       "required": ["schema", "permissions"],
+      "additionalProperties": false,
       "properties": {
         "ignore_perm_err": {
           "id": "backend/ignore_perm_err",
           "type": "boolean"
-        },
-        "prefix": {
-          "id": "backend/prefix",
-          "type": "string"
         },
         "options": {
           "type": "object",

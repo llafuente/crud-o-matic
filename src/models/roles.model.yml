@@ -2,7 +2,6 @@ singular: "role"
 backend:
   options:
     collection: "roles"
-  prefix: "/api"
   permissions:
     read: "Ver roles"
     list: "Listar roles"
