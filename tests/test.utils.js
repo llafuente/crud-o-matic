@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const fs = require("fs");
+const fs = require('fs');
 const acornParse = require('acorn').parse;
 
 module.exports = {
@@ -12,7 +12,10 @@ module.exports = {
 
 function start(test) {
   test('test start', function(t) {
-    t.end();
+    mongoose.connect('mongodb://localhost/generator_test');
+    mongoose.connection.once('open', function () {
+      t.end();
+    });
   });
 }
 
@@ -47,7 +50,6 @@ function checkJS(t, filename) {
   } catch (err) {
     err.message = err.message + ` on ${filename}`;
     t.error(err);
-
   }
 
   return src;

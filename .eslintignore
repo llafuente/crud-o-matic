@@ -1,3 +1,4 @@
 src/controls/*.js
 src/angular/*.js
+src/express/*.js
 src/winston.readableconsole.js

@@ -9,7 +9,7 @@
   "scripts": {
     "test": "tap -b tests/*.test.js tests/*/*.test.js",
     "testcv": "tap -b --cov --coverage-report=lcov tests/*/*.test.js",
-    "lint": "eslint src/ tests/ --fix"
+    "lint": "eslint src/ tests/ server/ --fix"
   },
   "author": "llafuente@noboxout.com",
   "license": "Copyright Luis Lafuente Morales",

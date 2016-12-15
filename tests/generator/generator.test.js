@@ -1,3 +1,4 @@
+const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
 const _ = require('lodash');
@@ -7,6 +8,7 @@ const theGenerator = require('../../index.js');
 const sinon = require('sinon');
 const fs = require('fs');
 const cheerio = require('cheerio');
+const supertest = require('supertest');
 
 testUtils.start(test);
 const generationPath = path.join(__dirname, 'tmp');
@@ -119,7 +121,7 @@ test('check user apiUrls/permissions', function(t) {
 test('check invalid model', function(t) {
   t.throws(function() {
     g.schemas.permission.getModel();
-  }, new Error('finalize first'));
+  }, new Error('permission need to be finalized first'));
 
   t.end();
 });
@@ -131,10 +133,11 @@ test('finalize generator', function(t) {
   g.on('finalize:end', callbackEnd);
   g.finalize();
 
-  t.ok(callbackStart.calledOnce);
-  t.ok(callbackEnd.calledOnce);
-
-  t.end();
+  setTimeout(function() {
+    t.ok(callbackStart.calledOnce, 'finalize:start called once');
+    t.ok(callbackEnd.calledOnce, 'finalize:end called once');
+    t.end();
+  }, 2000);
 });
 
 
@@ -456,6 +459,47 @@ test('smoke test for everything generated', function(t) {
   });
 
   t.end();
+});
+
+//
+// server test
+//
+let app;
+test('configure a server to include all routers', function(t) {
+  app = express();
+
+  app.use(require('body-parser').json());
+  app.use(require('body-parser').urlencoded());
+  app.use(
+    require(path.join(generationPath, 'role.express.router.js'))
+  );
+  app.use(
+    require(path.join(generationPath, 'permission.express.router.js'))
+  );
+  app.use(
+    require(path.join(generationPath, 'user.express.router.js'))
+  );
+
+  t.end();
+});
+
+test('api role create', function(t) {
+  $log.info(g.schemas.role.mongooseSchema);
+  supertest(app)
+  .post(g.schemas.user.apiUrls.create)
+  .send({
+    username: 'admin@admin.com',
+    password: 'admin'
+  })
+  //.expect(201)
+  .end(function(err, res) {
+    t.error(err);
+    $log.silly('body', res.body);
+    t.equal(res.body.username, 'admin@admin.com');
+    t.notEqual(res.body.password, 'Administrator');
+
+    t.end();
+  });
 });
 
 testUtils.finish(test);

@@ -7,7 +7,9 @@ const Schema = require('./schema.js');
 const userSchemaOverride = require('./models/user.model.js');
 const formGenerator = require('./form.generator.js');
 const angularGenerator = require('./angular.generator.js');
+const expressGenerator = require('./express.generator.js');
 const eachSeries = require('async/eachSeries');
+const eachOfSeries = require('async/eachOfSeries');
 
 module.exports = class Generator extends EventEmitter {
   constructor(config, mongoose) {
@@ -65,13 +67,38 @@ module.exports = class Generator extends EventEmitter {
    */
   finalize() {
     this.emit('finalize:start');
+    // permissions need to be finalized first!
+    this.schemas.permission.finalize();
 
-    this.forEachSchema(function(schema/*, name*/) {
+    eachSeries(this.schemas, function(schema, next) {
       schema.finalize();
-    });
 
+      // now add permissions
+      const perm = this.schemas.permission.getModel();
 
-    this.emit('finalize:end');
+      eachOfSeries(schema.permissions, function(value, key, next2) {
+        $log.info('permission', value, key);
+
+        return perm.update({
+          _id: value
+        }, {
+          _id: value,
+          label: schema.schema.backend.permissions[key]
+        }, {
+          upsert: true,
+          setDefaultsOnInsert: true
+        }, function(err, data) {
+          $log.info(err, data);
+          next2(err);
+        });
+      }, next);
+    }.bind(this), function(err) {
+      if (err) {
+        throw err;
+      }
+
+      this.emit('finalize:end');
+    }.bind(this));
   }
 
   forEachSchema(cb) {
@@ -81,10 +108,11 @@ module.exports = class Generator extends EventEmitter {
   }
 
   generateAll(cb) {
-    const next = _.after(2, cb);
+    const next = _.after(3, cb);
 
     this.generateFormAll(next);
     this.generateAngularAll(next);
+    this.generateServerAll(next);
   }
 
   generateAngularAll(cb) {
@@ -124,5 +152,20 @@ module.exports = class Generator extends EventEmitter {
     };
 
     formGenerator(this, schema, generatorOptions, cb);
+  }
+
+  generateServerAll(cb) {
+    eachSeries(this.schemas, function(schema, next) {
+      this.generateServer(schema, next);
+    }.bind(this), function(err) {
+      cb(err);
+    });
+  }
+  generateServer(schema, cb) {
+    const generatorOptions = {
+      componentsPath: path.join(__dirname, '..', 'server')
+    };
+
+    expressGenerator(this, schema, generatorOptions, cb);
   }
 };

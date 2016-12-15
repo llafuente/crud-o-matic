@@ -47,6 +47,7 @@ module.exports = class Schema {
 
     // autoincrements id
     this.mongooseSchema.pre('save', function(next) {
+      $log.debug('fetch a readble id');
       const self = this;
       if (this.isNew) {
         return generator.mongoose.models.autoincrements.findOneAndUpdate({
@@ -125,12 +126,14 @@ module.exports = class Schema {
   }
   getModel() {
     if (!this.mongooseModel) {
-      throw new Error('finalize first');
+      throw new Error(`${this.getName()} need to be finalized first`);
     }
     return this.mongooseModel; // TODO
   }
   finalize() {
-    this.mongooseModel = this.generator.mongoose.model(this.getPlural(), this.mongooseSchema);
+    if (!this.mongooseModel) {
+      this.mongooseModel = this.generator.mongoose.model(this.getPlural(), this.mongooseSchema);
+    }
   }
   eachBack(cb) {
     traverse(this.schema.backend.schema, cb);
@@ -182,7 +185,7 @@ module.exports = class Schema {
   }
 
   getButton(name) {
-    let b = this.schema.frontend.buttons[name];
+    const b = this.schema.frontend.buttons[name];
     if (!b) {
       throw new Error(`Button not found: ${name}`);
     }
