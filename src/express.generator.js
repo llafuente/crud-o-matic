@@ -18,18 +18,25 @@ const templates = {
   list: load(join(__dirname, 'express', 'list.js')),
   read: load(join(__dirname, 'express', 'read.js')),
   update: load(join(__dirname, 'express', 'update.js')),
+  authentication: load(join(__dirname, 'express', 'authentication.js')),
 };
 
 
 module.exports = function(generator, schema, generatorOptions, cb) {
-  eachSeries([
+  const todo = [
     useDefault('router'),
     useDefault('create'),
     useDefault('destroy'),
     useDefault('list'),
     useDefault('read'),
     useDefault('update'),
-  ], function(func, next) {
+  ];
+
+  if (schema.getName() == 'user') {
+    todo.push(useDefault('authentication'));
+  }
+
+  eachSeries(todo, function(func, next) {
     func(generator, schema, generatorOptions, next);
   }, cb);
 };
@@ -39,6 +46,7 @@ function useDefault(key) {
   return function(generator, schema, generatorOptions, cb) {
     $log.silly(`generating ${key}`);
     const routesJS = templates[key]({
+      config: generator.config,
       schema: schema,
       generatorOptions: generatorOptions,
     });

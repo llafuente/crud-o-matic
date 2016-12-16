@@ -447,16 +447,28 @@ test('g.generateAll', function(t) {
 
 test('smoke test for everything generated', function(t) {
   ['role', 'permission', 'user'].forEach(function(entity) {
+    // angular
     testUtils.checkJS(t, path.join(generationPath, `${entity}.create.controller.js`));
     testUtils.checkJS(t, path.join(generationPath, `${entity}.list.controller.js`));
     testUtils.checkJS(t, path.join(generationPath, `${entity}.module.js`));
     testUtils.checkJS(t, path.join(generationPath, `${entity}.routes.config.js`));
     testUtils.checkJS(t, path.join(generationPath, `${entity}.update.controller.js`));
 
+    // templates
     testUtils.checkHTML(t, path.join(generationPath, `${entity}.list.tpl.html`));
     testUtils.checkHTML(t, path.join(generationPath, `${entity}.create.tpl.html`));
     testUtils.checkHTML(t, path.join(generationPath, `${entity}.update.tpl.html`));
+
+    // express
+    testUtils.checkJS(t, path.join(generationPath, `${entity}.express.create.js`));
+    testUtils.checkJS(t, path.join(generationPath, `${entity}.express.destroy.js`));
+    testUtils.checkJS(t, path.join(generationPath, `${entity}.express.list.js`));
+    testUtils.checkJS(t, path.join(generationPath, `${entity}.express.read.js`));
+    testUtils.checkJS(t, path.join(generationPath, `${entity}.express.router.js`));
+    testUtils.checkJS(t, path.join(generationPath, `${entity}.express.update.js`));
   });
+
+  testUtils.checkJS(t, path.join(generationPath, 'user.express.authentication.js'));
 
   t.end();
 });
@@ -471,6 +483,9 @@ test('configure a server to include all routers', function(t) {
   app.use(require('body-parser').json());
   app.use(require('body-parser').urlencoded());
   app.use(
+    require(path.join(generationPath, 'user.express.authentication.js'))(g, g.schemas.role)
+  );
+  app.use(
     require(path.join(generationPath, 'role.express.router.js'))(g, g.schemas.role)
   );
   app.use(
@@ -482,6 +497,19 @@ test('configure a server to include all routers', function(t) {
 
   t.end();
 });
+
+/*
+test('create admin user', function(t) {
+  g.mongoose.model.user.create({
+    username: 'admin@admin.com',
+    password: 'admin'
+  }, function() {
+    t.error(err);
+    t.end();
+  });
+});
+*/
+
 
 let userId;
 test('api user create', function(t) {
@@ -580,6 +608,46 @@ test('api user read', function(t) {
   });
 });
 
+
+let token;
+test('api user delete', function(t) {
+  supertest(app)
+  .post(`${g.schemas.user.apiUrls.list}/auth`)
+  .send({
+    username: 'admin2@admin.com',
+    password: 'admin'
+  })
+  .expect(200)
+  .end(function(err, res) {
+    t.error(err);
+
+    t.type(res.body.token, 'string');
+    token = res.body.token;
+
+    t.end();
+  });
+});
+
+test('api user delete', function(t) {
+  supertest(app)
+  .post(`${g.schemas.user.apiUrls.list}/me`)
+  .set('Authorization', `Bearer ${token}`)
+  .expect(200)
+  .end(function(err, res) {
+    t.error(err);
+
+    t.apiResult(res.body, {
+      '__v': 0,
+      'id': 1,
+      'permissions': [],
+      'roles': [],
+      'state': 'active',
+      'username': 'admin2@admin.com',
+    });
+
+    t.end();
+  });
+});
 
 test('api user delete', function(t) {
   supertest(app)

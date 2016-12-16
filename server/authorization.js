@@ -1,5 +1,3 @@
-
-
 module.exports = {
   authorization: authorization,
   hasPermission: hasPermission,
