@@ -18,10 +18,7 @@ const templates = {
   router: load(join(__dirname, 'express', 'router.js')),
   create: load(join(__dirname, 'express', 'create.js')),
   destroy: load(join(__dirname, 'express', 'destroy.js')),
-  //list: fs.readFileSync(join(__dirname, 'express', 'update.js'), 'utf-8'),
-  //list: fs.readFileSync(join(__dirname, 'express', 'delete.js'), 'utf-8'),
-  //list: fs.readFileSync(join(__dirname, 'express', 'read.js'), 'utf-8'),
-  //list: fs.readFileSync(join(__dirname, 'express', 'list.js'), 'utf-8'),
+  list: load(join(__dirname, 'express', 'list.js')),
 };
 
 
@@ -30,6 +27,7 @@ module.exports = function(generator, schema, generatorOptions, cb) {
     useDefault('router'),
     useDefault('create'),
     useDefault('destroy'),
+    useDefault('list'),
   ], function(func, next) {
     func(generator, schema, generatorOptions, next);
   }, cb);

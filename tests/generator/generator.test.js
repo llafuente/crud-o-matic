@@ -89,8 +89,8 @@ test('check user paths', function(t) {
     'state',
     'data.first_name',
     'data.last_name',
-    '__v',
     '_id',
+    '__v',
     'updated_at',
     'created_at',
   ]);
@@ -217,6 +217,7 @@ test('check backend fields list', function(t) {
     'Object',
     'String',
     'String',
+    'ObjectId',
     'Date',
     'Date',
     'Number',
@@ -235,6 +236,7 @@ test('check backend fields list', function(t) {
     'data',
     'data.first_name',
     'data.last_name',
+    '_id',
     'created_at',
     'updated_at',
     '__v',
@@ -471,13 +473,13 @@ test('configure a server to include all routers', function(t) {
   app.use(require('body-parser').json());
   app.use(require('body-parser').urlencoded());
   app.use(
-    require(path.join(generationPath, 'role.express.router.js'))
+    require(path.join(generationPath, 'role.express.router.js'))(g, g.schemas.role)
   );
   app.use(
-    require(path.join(generationPath, 'permission.express.router.js'))
+    require(path.join(generationPath, 'permission.express.router.js'))(g, g.schemas.permission)
   );
   app.use(
-    require(path.join(generationPath, 'user.express.router.js'))
+    require(path.join(generationPath, 'user.express.router.js'))(g, g.schemas.user)
   );
 
   t.end();
@@ -501,6 +503,22 @@ test('api role create', function(t) {
     t.end();
   });
 });
+
+test('api role create', function(t) {
+  supertest(app)
+  .get(g.schemas.user.apiUrls.list)
+  .expect(200)
+  .end(function(err, res) {
+    t.error(err);
+
+    t.type(res.body, 'object');
+
+    $log.info(res.body);
+
+    t.end();
+  });
+});
+
 
 test('api user delete', function(t) {
   supertest(app)

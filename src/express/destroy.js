@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
-module.exports = destroyMiddleware;
-module.exports.destroy = destroy;
+
+module.exports = destroy;
+module.exports.middleware = destroyMiddleware;
 
 function destroy(id, next) {
   mongoose.models['<%= schema.getName() %>'].findByIdAndRemove(id, function(err, data) {
@@ -22,6 +23,6 @@ function destroyMiddleware(req, res, next) {
       return next(err);
     }
 
-    res.status(204).json();
+    return next();
   });
 }

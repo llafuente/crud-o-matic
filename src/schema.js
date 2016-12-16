@@ -46,6 +46,7 @@ module.exports = class Schema {
     */
 
     // autoincrements id
+    this.mongooseSchema.set('autoIndex', true);
     this.mongooseSchema.pre('save', function(next) {
       $log.debug('fetch a readble id');
       const self = this;
@@ -135,6 +136,25 @@ module.exports = class Schema {
       this.mongooseModel = this.generator.mongoose.model(this.getPlural(), this.mongooseSchema);
     }
   }
+
+  // TODO
+  isPathRestricted() {
+    return false;
+  }
+
+  getField(path) {
+    $log.debug(`getField(${path})`);
+    let ret = null;
+
+    this.eachBack(function(control) {
+      if (control.path == path) {
+        ret = control;
+      }
+    });
+
+    return ret;
+  }
+
   eachBack(cb) {
     traverse(this.schema.backend.schema, cb);
   }
@@ -298,6 +318,16 @@ function applyDefaults(schemaObj) {
       };
     }
   });
+
+  if (!schemaObj.backend.schema._id) {
+    schemaObj.backend.schema._id = {
+      type: 'ObjectId',
+      name: '_id',
+      label: 'DB.Id',
+      auto: true,
+      restricted: {read: false, create: true, update: true}
+    };
+  }
 
   schemaObj.backend.schema.id = {
     type: 'Number',

@@ -1,11 +1,11 @@
-module.exports = create_middleware;
-module.exports.create = create;
+module.exports = create;
+module.exports.middleware = createMiddleware;
 
 const mongoose = require('mongoose');
 var cleanBody = require('<%= generatorOptions.componentsPath %>/clean-body.js');
 var httpError = require('<%= generatorOptions.componentsPath %>/http-error.js');
 
-function create(req, data, next) {
+function create(data, next) {
   cleanBody(data);
   delete data.__v;
 
@@ -28,7 +28,7 @@ function create(req, data, next) {
   });
 }
 
-function create_middleware(store_at) {
+function createMiddleware(store_at) {
   return function(req, res, next) {
     $log.info('create body', req.body);
 
@@ -36,7 +36,7 @@ function create_middleware(store_at) {
       return next(new httpError(422, 'body is an array'));
     }
 
-    return create(req, req.body, function(err, saved_data) {
+    return create(req.body, function(err, saved_data) {
       /* istanbul ignore next */ if (err) {
         return next(err);
       }
