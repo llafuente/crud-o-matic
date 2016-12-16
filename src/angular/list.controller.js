@@ -21,7 +21,7 @@ export default class <%= schema.getName() %>ListController {
       qs.offset = pagination.start || 0;
 
       if (tablestate.search && tablestate.search.predicateObject) {
-        for (const i in tablestate.search.predicateObject) {
+        for (const i in tablestate.search.predicateObject) { // eslint-disable-line guard-for-in
           $log.debug(i, tablestate.search.predicateObject[i]);
           qs.where[i] = tablestate.search.predicateObject[i];
         }

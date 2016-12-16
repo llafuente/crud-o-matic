@@ -2,8 +2,11 @@
 // list need the schema
 // that's very inconvenient, maybe in the future I can generate
 // all that list needs, but it's easier this way atm
+// there is some TODO code...
+/* eslint-disable no-unreachable*/
 
-let generator;
+// sent for consistency
+let generator; // eslint-disable-line no-unused-vars
 let schema;
 
 module.exports = function(_gen, _sch) {
@@ -20,15 +23,28 @@ module.exports.jsonListQuery = jsonListQuery;
 
 const mongoose = require('mongoose');
 const ValidationError = mongoose.Error.ValidationError;
-const csv_writer = require('csv-write-stream');
+const csvWriter = require('csv-write-stream');
 const jsontoxml = require('jsontoxml');
 
+function typeCanBePopulated(type) {
+  if ('function' === typeof type) {
+    return 'ObjectId' !== type.schemaName;
+  }
+
+  if (Array.isArray(type) && type.length === 1) {
+    type = type[0];
+    if ('function' === typeof type) {
+      return 'ObjectId' !== type.schemaName;
+    }
+  }
+
+  return false;
+}
 
 function listQuery(user, where, sort, limit, offset, populate, next) {
-  const query = mongoose.models.<%= schema.getName() %>.find({});
-  const qcount = (query.toConstructor())().count();
+  let query = mongoose.models.<%= schema.getName() %>.find({});
+  let qcount = (query.toConstructor())().count();
   let path;
-  let options;
 
   if ('string' === typeof where) {
     try {
@@ -102,7 +118,7 @@ function listQuery(user, where, sort, limit, offset, populate, next) {
   const ss = sort.split(' ');
   for (let i = 0; i < ss.length; ++i) {
     path = ss[i][0] === '-' ? ss[i].substring(1) : ss[i];
-    options = schema.getField(path).backField;
+    const options = schema.mongooseSchema.path(path);
     if (!options) {
       err = new ValidationError(null);
       err.errors.sort = {
@@ -144,7 +160,7 @@ function listQuery(user, where, sort, limit, offset, populate, next) {
 
   for (let i = 0; i < populate.length; ++i) {
     path = populate[i];
-    options = schema.getField(path).backField;
+    const options = schema.mongooseSchema.path(path);
     if (!options) {
       err = new ValidationError(null);
       err.errors.populate = {
@@ -156,7 +172,7 @@ function listQuery(user, where, sort, limit, offset, populate, next) {
       return next(err);
     }
 
-    if (!exutils.type_can_be_populated(options.options.type)) {
+    if (!typeCanBePopulated(options.options.type)) {
       err = new ValidationError(null);
       err.errors.populate = {
         path: 'query:populate',
@@ -167,7 +183,7 @@ function listQuery(user, where, sort, limit, offset, populate, next) {
       return next(err);
     }
 
-    if (schema_utils.isPathRestricted(path, 'read', user)) {
+    if (schema.isPathRestricted(path, 'read', user)) {
       err = new ValidationError(null);
       err.errors.populate = {
         path: 'query:populate',
@@ -182,8 +198,8 @@ function listQuery(user, where, sort, limit, offset, populate, next) {
   }
 
   // where
-  for (path in where) {
-    options = schema.getField(path).backField;
+  for (path in where) { // eslint-disable-line guard-for-in
+    const options = schema.mongooseSchema.path(path);
     if (!options) {
       err = new ValidationError(null);
       err.errors.populate = {
@@ -212,19 +228,20 @@ function middleware(req, res, next) {
       req.query.offset,
       req.query.populate,
 
-      function build_query_ok(err, query, qcount, limit, offset) {
+      function buildQueryOk(err, query, qcount, limit, offset) {
         if (err) {
           return next(err);
         }
 
-        $log.silly('build_query_ok');
+        $log.silly('buildQueryOk');
         req.list = {
           query: query,
           qcount: qcount,
           limit: limit,
           offset: offset,
         };
-        next();
+
+        return next();
       }
     );
   }
@@ -237,9 +254,9 @@ function jsonListQuery(storeAt) {
         return next(err);
       }
 
-      req.list.qcount.exec(function(err, count) {
-        /* istanbul ignore next */ if (err) {
-          return next(err);
+      return req.list.qcount.exec(function(err2, count) {
+        /* istanbul ignore next */ if (err2) {
+          return next(err2);
         }
 
         req[storeAt] = {
@@ -274,7 +291,7 @@ function csvListQuery(req, res, next) {
     case 'max': newline = '\r'; break;
     }
 
-    const writer = csv_writer({
+    const writer = csvWriter({
       sendHeaders: true,
       separator: req.query.separator || ',',
       newline: newline
@@ -285,12 +302,11 @@ function csvListQuery(req, res, next) {
     .stream()
     .on('data', function(d) {
       //TODO
-      throw 'todo';
-      /*
-      meta.$express.formatter(req, d, function(err, fd) {
+      throw new Error('todo');
+
+      formatter(req, d, function(err, fd) {
         writer.write(fd);
       });
-      */
     })
     .on('error', function() {
       writer.end();
@@ -299,7 +315,8 @@ function csvListQuery(req, res, next) {
       writer.end();
     });
   }
-  next();
+
+  return next();
 }
 
 //TODO FIXME XML - array issues
@@ -320,12 +337,12 @@ function xmlListQuery(req, res, next) {
     .stream()
     .on('data', function(d) {
       // TODO
-      throw 'todo';
-      /*
-      meta.$express.formatter(req, d, function(err, fd) {
+      throw new Error('todo');
+
+      formatter(req, d, function(err, fd) {
         const obj = {};
         // properly handled id as string
-        obj[meta.singular] = JSON.parse(JSON.stringify(fd));
+        obj[schema.getName()] = JSON.parse(JSON.stringify(fd));
 
         res.write(jsontoxml (obj, {
           escape:true,
@@ -336,7 +353,6 @@ function xmlListQuery(req, res, next) {
 
         res.write('\n');
       });
-      */
     })
     .on('error', function() {
       res.write(`</${schema.getPlural()}>`);
@@ -347,5 +363,11 @@ function xmlListQuery(req, res, next) {
       res.end();
     });
   }
-  next();
+
+  return next();
+}
+
+// TODO
+function formatter() {
+
 }

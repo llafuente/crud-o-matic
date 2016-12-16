@@ -1,5 +1,3 @@
-
-
 module.exports = errorHandler;
 
 const mongoose = require('mongoose');
@@ -10,7 +8,7 @@ const forEach = _.forEach;
 const clone = _.clone;
 const HttpError = require('./http-error.js');
 
-function mongoose_to_readable(schema, error, path) {
+function mongooseToReadable(schema, error, path) {
   const err = clone(error);
 
   if (err.name === 'CastError') {
@@ -49,7 +47,7 @@ function mongoose_to_readable(schema, error, path) {
   return err;
 }
 
-function errorHandler(err, req, res, next) {
+function errorHandler(err, req, res, next) { // eslint-disable-line no-unused-vars
   $log.error(err);
 
   if (Array.isArray(err)) {
@@ -63,14 +61,14 @@ function errorHandler(err, req, res, next) {
   if (err instanceof CastError) {
     req.log.silly('CastError');
     return res.status(400).json({
-      error: mongoose_to_readable(schema, err, err.path)
+      error: mongooseToReadable(req.schema, err, err.path)
     });
   } else if (err instanceof ValidationError) {
     req.log.silly('ValidationError');
     // cleanup error
     const errors = [];
-    forEach(err.errors, function(err, path) {
-      errors.push(mongoose_to_readable(schema, err, path));
+    forEach(err.errors, function(err2, path) {
+      errors.push(mongooseToReadable(req.schema, err2, path));
     });
 
     return res.status(400).json({error: errors});

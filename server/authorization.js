@@ -6,16 +6,16 @@ module.exports = {
   hasRole: hasRole
 };
 
-const http_error = require('./http-error.js');
+const HttpError = require('./http-error.js');
 const _ = require('lodash');
 
 // NOTE every middleware has an err parameter
 // NOTE use it to be less specific about the nature of the error
 
 function authorization(err) {
-  return function require_authorization(req, res, next) {
+  return function requireAuthorization(req, res, next) {
     if (!req.user) {
-      return next(err || new http_error(401, 'authorization is required'));
+      return next(err || new HttpError(401, 'authorization is required'));
     }
 
     return next();
@@ -27,22 +27,22 @@ function hasPermission(perm, err) {
     perm = [perm];
   }
 
-  return function must_have_permission(req, res, next) {
+  return function mustHavePermission(req, res, next) {
     if (!req.user) {
       /* istanbul ignore next */
-      return next(err || new http_error(401, 'authorization is required'));
+      return next(err || new HttpError(401, 'authorization is required'));
     }
 
     if (!req.user.permissions) {
       /* istanbul ignore next */
-      return next(err || new http_error(403, 'invalid user'));
+      return next(err || new HttpError(403, 'invalid user'));
     }
 
     // check @permissions and @roles.permissions
     let i;
     for (i = 0; i < perm.length; ++i) {
       if (!req.user.hasPermission(perm[i])) {
-        return next(err || new http_error(403, ['permission required', perm[i]]));
+        return next(err || new HttpError(403, ['permission required', perm[i]]));
       }
     }
 
@@ -55,15 +55,15 @@ function hasRole(role, err) {
     role = [role];
   }
 
-  return function must_have_role(req, res, next) {
+  return function mustHaveRole(req, res, next) {
     if (!req.user) {
       /* istanbul ignore next */
-      return next(err || new http_error(401, 'authorization is required'));
+      return next(err || new HttpError(401, 'authorization is required'));
     }
 
     if (!req.user.roles) {
       /* istanbul ignore next */
-      return next(err || new http_error(403, 'invalid user'));
+      return next(err || new HttpError(403, 'invalid user'));
     }
 
     let i;
@@ -74,7 +74,7 @@ function hasRole(role, err) {
 
     for (i = 0; i < role.length; ++i) {
       if (roles.indexOf(role[i]) === -1) {
-        return next(err || new http_error(403, ['role required', role[i]]));
+        return next(err || new HttpError(403, ['role required', role[i]]));
       }
     }
 

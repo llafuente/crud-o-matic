@@ -1,4 +1,3 @@
-const assert = require('assert');
 const _ = require('lodash');
 const ejs = require('ejs');
 const join = require('path').join;

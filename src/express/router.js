@@ -5,16 +5,22 @@ const destroy = require('./<%= schema.getName() %>.express.destroy.js');
 const list = require('./<%= schema.getName() %>.express.list.js');
 
 const errorHandler = require('<%= generatorOptions.componentsPath %>/error-handler.js');
-const auth = require('<%= generatorOptions.componentsPath %>/authorization.js');
+//const auth = require('<%= generatorOptions.componentsPath %>/authorization.js');
 
 module.exports = function(generator, schema) {
-  const r = express.Router();
+  const r = express.Router(); // eslint-disable-line new-cap
+  r.use(function(req, res, next) {
+    // used by error-handler.js
+    req.schema = schema;
 
-  function show(status_code, storedAt) {
+    next();
+  });
+
+  function show(statusCode, storedAt) {
     return function(req, res/*, next*/) {
-      res.status(status_code);
+      res.status(statusCode);
 
-      if (status_code !== 204) {
+      if (statusCode !== 204) {
         res.json(req[storedAt]);
       } else {
         res.json();

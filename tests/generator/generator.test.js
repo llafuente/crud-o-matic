@@ -6,7 +6,6 @@ const test = require('tap').test;
 const testUtils = require('../test.utils.js');
 const theGenerator = require('../../index.js');
 const sinon = require('sinon');
-const fs = require('fs');
 const cheerio = require('cheerio');
 const supertest = require('supertest');
 
@@ -99,7 +98,6 @@ test('check user paths', function(t) {
 });
 
 test('check user apiUrls/permissions', function(t) {
-  const paths = [];
   t.deepEqual(g.schemas.user.apiUrls, {
     'create': '/api/users',
     'delete': '/api/users/:user_id',
@@ -524,7 +522,7 @@ test('api user delete', function(t) {
   supertest(app)
   .delete(g.schemas.user.apiUrls.delete.replace(`:${g.schemas.user.apiIdParam}`, userId))
   .expect(204)
-  .end(function(err, res) {
+  .end(function(err/*, res*/) {
     t.error(err);
 
     t.end();

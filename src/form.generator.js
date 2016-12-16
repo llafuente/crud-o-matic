@@ -1,4 +1,3 @@
-const assert = require('assert');
 const pug = require('pug');
 const join = require('path').join;
 const eachSeries = require('async/eachSeries');
@@ -27,7 +26,7 @@ const templates = {
 const controlTpls = {
 };
 
-for (const controlName in handlers) {
+for (const controlName in handlers) { // eslint-disable-line guard-for-in
   const file = join(__dirname, 'controls', `control-${controlName}.pug`);
   controlTpls[controlName] = fs.readFileSync(file, 'utf-8');
 }

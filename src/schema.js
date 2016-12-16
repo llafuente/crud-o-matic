@@ -1,5 +1,5 @@
 const timestamps = require('mongoose-timestamp');
-const path = require('path');
+const join = require('path').join;
 const _ = require('lodash');
 const pluralize = require('pluralize');
 
@@ -94,13 +94,13 @@ module.exports = class Schema {
 
 
     this.apiIdParam = `${this.schema.singular}_id`;
-    const list = path.join('/', this.generator.config.apiBasePath, this.schema.plural);
+    const list = join('/', this.generator.config.apiBasePath, this.schema.plural);
     this.apiUrls = {
       list: list,
       create: list,
-      read: path.join(list, '/:' + this.apiIdParam),
-      update: path.join(list, '/:' + this.apiIdParam),
-      delete: path.join(list, '/:' + this.apiIdParam),
+      read: join(list, '/:' + this.apiIdParam),
+      update: join(list, '/:' + this.apiIdParam),
+      delete: join(list, '/:' + this.apiIdParam),
     };
     this.permissions = {
       list: `permission/${this.schema.plural}-list`,
@@ -142,12 +142,12 @@ module.exports = class Schema {
     return false;
   }
 
-  getField(path) {
-    $log.debug(`getField(${path})`);
+  getField(fieldPath) {
+    $log.debug(`getField(${fieldPath})`);
     let ret = null;
 
     this.eachBack(function(control) {
-      if (control.path == path) {
+      if (control.path === fieldPath) {
         ret = control;
       }
     });
@@ -216,7 +216,7 @@ module.exports = class Schema {
 
 function simplifySchema(obj, prop, value) {
   if (!prop) {
-    for (const i in obj) {
+    for (const i in obj) { // eslint-disable-line guard-for-in
       simplifySchema(obj, i, obj[i]);
     }
   } else {
@@ -239,7 +239,7 @@ function traverse(obj, cb, prop, value, path, realpath) {
   const realpath2 = realpath || [];
 
   if (!value) {
-    for (const i in obj) {
+    for (const i in obj) { // eslint-disable-line guard-for-in
       traverse(obj, cb, i, obj[i], path2, realpath2);
     }
   } else {

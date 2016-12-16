@@ -3,7 +3,7 @@ module.exports.middleware = createMiddleware;
 
 const mongoose = require('mongoose');
 var cleanBody = require('<%= generatorOptions.componentsPath %>/clean-body.js');
-var httpError = require('<%= generatorOptions.componentsPath %>/http-error.js');
+var HttpError = require('<%= generatorOptions.componentsPath %>/http-error.js');
 
 function create(data, next) {
   cleanBody(data);
@@ -14,35 +14,35 @@ function create(data, next) {
   // TODO remove restricted
   //data = meta.$express.restricted_filter(req.log, req.user, 'create', data);
 
-  return mongoose.models.<%= schema.getName() %>.create(data, function(err, saved_data) {
+  return mongoose.models.<%= schema.getName() %>.create(data, function(err, savedData) {
     if (err) {
       return next(err);
     }
 
     /* istanbul ignore next */
-    if (!saved_data) {
-      return next(new httpError(500, 'database don\'t return data'));
+    if (!savedData) {
+      return next(new HttpError(500, 'database don\'t return data'));
     }
 
-    next(null, saved_data);
+    return next(null, savedData);
   });
 }
 
-function createMiddleware(store_at) {
+function createMiddleware(storeAt) {
   return function(req, res, next) {
     $log.info('create body', req.body);
 
     if (Array.isArray(req.body)) {
-      return next(new httpError(422, 'body is an array'));
+      return next(new HttpError(422, 'body is an array'));
     }
 
-    return create(req.body, function(err, saved_data) {
+    return create(req.body, function(err, savedData) {
       /* istanbul ignore next */ if (err) {
         return next(err);
       }
 
-      req[store_at] = saved_data;
-      next();
+      req[storeAt] = savedData;
+      return next();
     });
   };
 }

@@ -1,8 +1,5 @@
-const assert = require('assert');
-const pug = require('pug');
 const join = require('path').join;
 const eachSeries = require('async/eachSeries');
-const _ = require('lodash');
 const ejs = require('ejs');
 
 // TODO use in prod: https://www.npmjs.com/package/cachedfs

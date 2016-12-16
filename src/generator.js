@@ -102,7 +102,7 @@ module.exports = class Generator extends EventEmitter {
   }
 
   forEachSchema(cb) {
-    for (const schemaName in this.schemas) {
+    for (const schemaName in this.schemas) { // eslint-disable-line guard-for-in
       cb.call(this, this.schemas[schemaName], schemaName);
     }
   }
