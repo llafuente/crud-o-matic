@@ -524,10 +524,18 @@ test('api user read', function(t) {
   .end(function(err, res) {
     t.error(err);
 
-    t.equal(res.body.username, 'admin@admin.com');
     // TODO
     //t.equal(res.body.password, undefined);
     //t.equal(res.body.salt, undefined);
+
+    t.apiResult(res.body, {
+      '__v': 0,
+      'id': 1,
+      'permissions': [],
+      'roles': [],
+      'state': 'active',
+      'username': 'admin@admin.com',
+    });
 
     t.end();
   });
@@ -559,6 +567,14 @@ test('api user read', function(t) {
     t.error(err);
 
     t.equal(res.body.username, 'admin2@admin.com');
+    t.apiResult(res.body, {
+      '__v': 0,
+      'id': 1,
+      'permissions': [],
+      'roles': [],
+      'state': 'active',
+      'username': 'admin2@admin.com',
+    });
 
     t.end();
   });

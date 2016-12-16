@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const fs = require('fs');
 const acornParse = require('acorn').parse;
+const _ = require('lodash');
+const tap = require('tap');
 
 module.exports = {
   start: start,
@@ -9,12 +11,35 @@ module.exports = {
   checkJS: checkJS,
 };
 
+// this removed random/auto data from testing
+tap.Test.prototype.addAssert('apiResult', 2, function(a, b, message, extra) {
+  message = message || 'should be a Date compatible type';
+
+  const clean = _.cloneDeep(a);
+
+  _.forEach([
+    '_id',
+    'updated_at',
+    'created_at',
+    'salt',
+    'password',
+  ], function(v) {
+    // maybe _.unset
+    delete clean[v];
+  });
+
+  return this.deepEqual(clean, b, message, extra);
+});
+
 
 function start(test) {
   test('test start', function(t) {
-    mongoose.connect('mongodb://localhost/generator_test');
+    const conn = mongoose.connect('mongodb://localhost/generator_test');
+
     mongoose.connection.once('open', function () {
-      t.end();
+      conn.connection.db.dropDatabase(function(err, result) {
+        t.end();
+      });
     });
   });
 }
