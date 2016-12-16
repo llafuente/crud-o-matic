@@ -3,6 +3,8 @@ const express = require('express');
 const create = require('./<%= schema.getName() %>.express.create.js');
 const destroy = require('./<%= schema.getName() %>.express.destroy.js');
 const list = require('./<%= schema.getName() %>.express.list.js');
+const read = require('./<%= schema.getName() %>.express.read.js');
+const update = require('./<%= schema.getName() %>.express.update.js');
 
 const errorHandler = require('<%= generatorOptions.componentsPath %>/error-handler.js');
 //const auth = require('<%= generatorOptions.componentsPath %>/authorization.js');
@@ -43,17 +45,16 @@ module.exports = function(generator, schema) {
     ]);
   <% } %>
 
-  /*
   <% if (schema.permissions.read) { %>
     r.get('<%= schema.apiUrls.read %>', [
-      auth.authorization(),
-      auth.hasPermission('<%= schema.permissions.read %>'),
-      read('entity'),
-      format('entity', 'entity'),
+      //auth.authorization(),
+      //auth.hasPermission('<%= schema.permissions.read %>'),
+      read.middleware('entity'),
+      //format('entity', 'entity'),
       show(200, 'entity')
     ]);
   <% } %>
-  */
+
   <% if (schema.permissions.create) { %>
     r.post('<%= schema.apiUrls.create %>', [
       //auth.authorization(),
@@ -63,18 +64,18 @@ module.exports = function(generator, schema) {
       show(201, 'entity')
     ]);
   <% } %>
-  /*
+
   <% if (schema.permissions.update) { %>
     r.patch('<%= schema.apiUrls.update %>', [
-      auth.authorization(),
-      auth.hasPermission('<%= schema.permissions.update %>'),
-      read('entity'),
-      update('entity'),
-      format('entity'),
-      show(200, 'entity')
+      //auth.authorization(),
+      //auth.hasPermission('<%= schema.permissions.update %>'),
+      read.middleware('entity'),
+      update.middleware('entity', 'entity2'),
+      //format('entity2'),
+      show(200, 'entity2')
     ]);
   <% } %>
-  */
+
   <% if (schema.permissions.delete) { %>
     r.delete('<%= schema.apiUrls.delete %>', [
       //auth.authorization(),

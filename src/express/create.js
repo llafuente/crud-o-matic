@@ -2,8 +2,8 @@ module.exports = create;
 module.exports.middleware = createMiddleware;
 
 const mongoose = require('mongoose');
-var cleanBody = require('<%= generatorOptions.componentsPath %>/clean-body.js');
-var HttpError = require('<%= generatorOptions.componentsPath %>/http-error.js');
+const cleanBody = require('<%= generatorOptions.componentsPath %>/clean-body.js');
+const HttpError = require('<%= generatorOptions.componentsPath %>/http-error.js');
 
 function create(data, next) {
   cleanBody(data);

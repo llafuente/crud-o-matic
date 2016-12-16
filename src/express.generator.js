@@ -16,6 +16,8 @@ const templates = {
   create: load(join(__dirname, 'express', 'create.js')),
   destroy: load(join(__dirname, 'express', 'destroy.js')),
   list: load(join(__dirname, 'express', 'list.js')),
+  read: load(join(__dirname, 'express', 'read.js')),
+  update: load(join(__dirname, 'express', 'update.js')),
 };
 
 
@@ -25,6 +27,8 @@ module.exports = function(generator, schema, generatorOptions, cb) {
     useDefault('create'),
     useDefault('destroy'),
     useDefault('list'),
+    useDefault('read'),
+    useDefault('update'),
   ], function(func, next) {
     func(generator, schema, generatorOptions, next);
   }, cb);

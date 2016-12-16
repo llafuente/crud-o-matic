@@ -484,7 +484,7 @@ test('configure a server to include all routers', function(t) {
 });
 
 let userId;
-test('api role create', function(t) {
+test('api user create', function(t) {
   supertest(app)
   .post(g.schemas.user.apiUrls.create)
   .send({
@@ -502,7 +502,7 @@ test('api role create', function(t) {
   });
 });
 
-test('api role create', function(t) {
+test('api user get list', function(t) {
   supertest(app)
   .get(g.schemas.user.apiUrls.list)
   .expect(200)
@@ -512,6 +512,53 @@ test('api role create', function(t) {
     t.type(res.body, 'object');
 
     $log.info(res.body);
+
+    t.end();
+  });
+});
+
+test('api user read', function(t) {
+  supertest(app)
+  .get(g.schemas.user.apiUrls.read.replace(`:${g.schemas.user.apiIdParam}`, userId))
+  .expect(200)
+  .end(function(err, res) {
+    t.error(err);
+
+    t.equal(res.body.username, 'admin@admin.com');
+    // TODO
+    //t.equal(res.body.password, undefined);
+    //t.equal(res.body.salt, undefined);
+
+    t.end();
+  });
+});
+
+
+test('api user update', function(t) {
+  supertest(app)
+  .patch(g.schemas.user.apiUrls.read.replace(`:${g.schemas.user.apiIdParam}`, userId))
+  .send({
+    username: 'admin2@admin.com'
+  })
+  .expect(200)
+  .end(function(err, res) {
+    t.error(err);
+
+    t.equal(res.body.username, 'admin2@admin.com');
+
+    t.end();
+  });
+});
+
+
+test('api user read', function(t) {
+  supertest(app)
+  .get(g.schemas.user.apiUrls.read.replace(`:${g.schemas.user.apiIdParam}`, userId))
+  .expect(200)
+  .end(function(err, res) {
+    t.error(err);
+
+    t.equal(res.body.username, 'admin2@admin.com');
 
     t.end();
   });
