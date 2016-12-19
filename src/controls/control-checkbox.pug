@@ -1,0 +1,16 @@
+block label
+  span
+
+block content
+  div(class=generatorOptions.layout === "horizontal" ? "col-xs-offset-4 col-xs-8" : undefined)
+    div.control-wapper.checkbox
+      label
+        input(
+          type="checkbox"
+          ng-model=control.model
+          name=control.backField.name
+          id=control.backField.name
+          ng-true-value="true"
+          ng-false-value="false"
+        )
+        span(translate="")= control.label

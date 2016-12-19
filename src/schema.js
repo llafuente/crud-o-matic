@@ -103,11 +103,11 @@ module.exports = class Schema {
       delete: join(list, '/:' + this.apiIdParam),
     };
     this.permissions = {
-      list: `permission/${this.schema.plural}-list`,
-      create: `permission/${this.schema.plural}-create`,
-      read: `permission/${this.schema.plural}-read`,
-      update: `permission/${this.schema.plural}-update`,
-      delete: `permission/${this.schema.plural}-delete`,
+      list: `permission-${this.schema.plural}-list`,
+      create: `permission-${this.schema.plural}-create`,
+      read: `permission-${this.schema.plural}-read`,
+      update: `permission-${this.schema.plural}-update`,
+      delete: `permission-${this.schema.plural}-delete`,
     };
 
     const root = this.getPlural();
@@ -210,6 +210,26 @@ module.exports = class Schema {
       throw new Error(`Button not found: ${name}`);
     }
     return b;
+  }
+
+  getSelects() {
+    const list = [];
+    this.eachBack(function(control) {
+      if (control.backField.enum) {
+        const values = [];
+
+        control.backField.enum.forEach(function(v, k) {
+          values.push({_id: v, label: control.backField.labels[k]});
+        });
+
+        list.push({
+          name: control.backField.name,
+          values: values
+        });
+      }
+    });
+
+    return list;
   }
 };
 

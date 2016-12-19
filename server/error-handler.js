@@ -59,12 +59,12 @@ function errorHandler(err, req, res, next) { // eslint-disable-line no-unused-va
   }
 
   if (err instanceof CastError) {
-    req.log.silly('CastError');
+    $log.silly('CastError');
     return res.status(400).json({
       error: mongooseToReadable(req.schema, err, err.path)
     });
   } else if (err instanceof ValidationError) {
-    req.log.silly('ValidationError');
+    $log.silly('ValidationError');
     // cleanup error
     const errors = [];
     forEach(err.errors, function(err2, path) {
@@ -77,13 +77,13 @@ function errorHandler(err, req, res, next) { // eslint-disable-line no-unused-va
   }
 
   if (err.status) {
-    req.log.silly('StatusedError: ' + err.message);
+    $log.silly('StatusedError: ' + err.message);
     return res.status(err.status).json({
       error: err.message,
       trace: err.stack
     });
   }
 
-  req.log.silly('Exception');
+  $log.silly('Exception');
   return res.status(500).json({error: err.message});
 }

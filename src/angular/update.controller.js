@@ -1,5 +1,6 @@
+/* eslint-disable */
 export default class <%= schema.getName() %>UpdateController {
-  constructor($scope, $http, entity, $state, $stateParams, $log) {
+  constructor($scope, $http, entity, $state, $stateParams, $log, $injector) {
     $log.debug('(<%= schema.getName() %>UpdateController) start');
 
     // TODO
@@ -29,11 +30,11 @@ export default class <%= schema.getName() %>UpdateController {
       .finally(function() {
         $scope.submitting = false;
       });
-    }
+    };
 
-    /* control specific JS */
+    /* control specific JS ($injector used here) */
 
-    <%= controlsJS %>
+    <%- controlsJS %>
 
   }
 }

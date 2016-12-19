@@ -1,3 +1,4 @@
+/* eslint-disable */
 import listHTML from './<%= schema.getName() %>.list.tpl.html';
 import createHTML from './<%= schema.getName() %>.create.tpl.html';
 import updateHTML from './<%= schema.getName() %>.update.tpl.html';
@@ -21,6 +22,7 @@ export default /*@ngInject*/ function <%= schema.getName() %>Routes($stateProvid
     url: '/list',
     templateUrl: listHTML,
     controller: '<%= schema.getName() %>ListController',
+    //controllerAs: 'ctrl',
     resolve: {},
     data: {
       model: 'list'
@@ -30,12 +32,14 @@ export default /*@ngInject*/ function <%= schema.getName() %>Routes($stateProvid
     url: '/create',
     templateUrl: createHTML,
     controller: '<%= schema.getName() %>CreateController',
+    //controllerAs: 'ctrl',
     resolve: {},
   })
   .state('<%= schema.states.update %>', {
     url: '/update/:<%= schema.apiIdParam %>',
     templateUrl: updateHTML,
     controller: '<%= schema.getName() %>UpdateController',
+    //controllerAs: 'ctrl',
     resolve: {
       entity: ['$http', '$state', '$stateParams', function($http, $state, $stateParams) {
         return $http({

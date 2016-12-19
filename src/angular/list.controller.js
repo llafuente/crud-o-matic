@@ -1,3 +1,4 @@
+/* eslint-disable */
 export default class <%= schema.getName() %>ListController {
   constructor($rootScope, $scope, $http, $log) {
     $log.debug('(<%= schema.getName() %>ListController) start');
@@ -20,10 +21,11 @@ export default class <%= schema.getName() %>ListController {
 
       qs.offset = pagination.start || 0;
 
-      if (tablestate.search && tablestate.search.predicateObject) {
-        for (const i in tablestate.search.predicateObject) { // eslint-disable-line guard-for-in
-          $log.debug(i, tablestate.search.predicateObject[i]);
-          qs.where[i] = tablestate.search.predicateObject[i];
+      if (tablestate.search && tablestate.search.predicateObject
+        && tablestate.search.predicateObject.query) {
+        for (const i in tablestate.search.predicateObject.query) { // eslint-disable-line guard-for-in
+          $log.debug(i, tablestate.search.predicateObject.query[i]);
+          qs.where[i] = tablestate.search.predicateObject.query[i];
         }
       }
 

@@ -1,5 +1,6 @@
+/* eslint-disable */
 export default class <%= schema.getName() %>CreateController {
-  constructor($scope, $http, $state, $log) {
+  constructor($scope, $http, $state, $log, $injector) {
     $log.debug('(<%= schema.getName() %>CreateController) start');
 
     // TODO
@@ -31,9 +32,9 @@ export default class <%= schema.getName() %>CreateController {
       });
     };
 
-    /* control specific JS */
+    /* control specific JS ($injector used here) */
 
-    <%= controlsJS %>
+    <%- controlsJS %>
 
   }
 }

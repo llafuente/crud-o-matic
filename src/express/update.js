@@ -14,17 +14,17 @@ function update(user, row, data, next) {
   // TODO review this!
   row.set(data);
 
-  row.save(function(err, saved_row) {
+  row.save(function(err, savedRow) {
     /* istanbul ignore next */ if (err) {
       return next(err);
     }
 
     /* istanbul ignore next */
-    if (!saved_row) {
+    if (!savedRow) {
       return next(new HttpError(422, 'database don\'t return data'));
     }
 
-    return next(null, saved_row);
+    return next(null, savedRow);
   });
 }
 // storedAt -> read
@@ -41,13 +41,14 @@ function middleware(storedAt, storeAt) {
      return next(new HttpError(422, 'Cannot fetch <%= schema.getName() %>'));
     }
 
-    return update(req.user, req[storedAt], req.body, function(err, saved_row) {
+    return update(req.user, req[storedAt], req.body, function(err, savedRow) {
       /* istanbul ignore next */ if (err) {
         return next(err);
       }
 
-      req[storeAt] = saved_row;
-      next();
+      req[storeAt] = savedRow;
+
+      return next();
     });
   };
 }

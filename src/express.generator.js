@@ -1,6 +1,7 @@
 const join = require('path').join;
 const eachSeries = require('async/eachSeries');
 const ejs = require('ejs');
+const _ = require('lodash');
 
 // TODO use in prod: https://www.npmjs.com/package/cachedfs
 const fs = require('fs');
@@ -32,7 +33,7 @@ module.exports = function(generator, schema, generatorOptions, cb) {
     useDefault('update'),
   ];
 
-  if (schema.getName() == 'user') {
+  if (schema.getName() === 'user') {
     todo.push(useDefault('authentication'));
   }
 
@@ -46,6 +47,7 @@ function useDefault(key) {
   return function(generator, schema, generatorOptions, cb) {
     $log.silly(`generating ${key}`);
     const routesJS = templates[key]({
+      _: _,
       config: generator.config,
       schema: schema,
       generatorOptions: generatorOptions,

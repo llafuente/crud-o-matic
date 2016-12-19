@@ -20,8 +20,9 @@ test('instance theGenerator', function(t) {
       secret: 'xxx'
     },
     apiBasePath: '/api',
-    generationPath: generationPath
-  }, mongoose);
+    generationPath: generationPath,
+    mongoose: mongoose
+  });
 
   t.ok(!!g.schemas.permission);
   t.ok(!!g.schemas.permission.mongooseSchema);
@@ -106,11 +107,11 @@ test('check user apiUrls/permissions', function(t) {
     'update': '/api/users/:user_id',
   });
   t.deepEqual(g.schemas.user.permissions, {
-    'create': 'permission/users-create',
-    'delete': 'permission/users-delete',
-    'list': 'permission/users-list',
-    'read': 'permission/users-read',
-    'update': 'permission/users-update',
+    'create': 'permission-users-create',
+    'delete': 'permission-users-delete',
+    'list': 'permission-users-list',
+    'read': 'permission-users-read',
+    'update': 'permission-users-update',
   });
 
   t.end();
@@ -140,8 +141,9 @@ test('finalize generator', function(t) {
 
 
 test('check models', function(t) {
-  t.ok(!!g.models.role);
-  t.ok(!!g.models.permission);
+  t.ok(!!g.mongoose.models.role);
+  t.ok(!!g.mongoose.models.permission);
+  t.ok(!!g.mongoose.models.user);
 
   t.end();
 });
@@ -498,41 +500,60 @@ test('configure a server to include all routers', function(t) {
   t.end();
 });
 
-/*
-test('create admin user', function(t) {
-  g.mongoose.model.user.create({
-    username: 'admin@admin.com',
-    password: 'admin'
-  }, function() {
+
+test('create admin role', function(t) {
+  mongoose.models.permission.find({}, function(err, list) {
     t.error(err);
+    const allPermissions = _.map(list, '_id');
+    mongoose.models.role.create({
+      _id: 'admin',
+      label: 'admin',
+      permissions: allPermissions
+    }, function(err2/*, role*/) {
+      t.error(err2);
+      t.end();
+    });
+  });
+});
+
+let userId;
+test('create admin user', function(t) {
+  g.mongoose.models.user.create({
+    username: 'admin@admin.com',
+    password: 'admin',
+    roles: 'admin'
+  }, function(err, user) {
+    t.error(err);
+    userId = user._id;
     t.end();
   });
 });
-*/
 
 
-let userId;
-test('api user create', function(t) {
+let token;
+test('api user delete', function(t) {
   supertest(app)
-  .post(g.schemas.user.apiUrls.create)
+  .post(`${g.schemas.user.apiUrls.list}/auth`)
   .send({
     username: 'admin@admin.com',
     password: 'admin'
   })
-  .expect(201)
+  .expect(200)
   .end(function(err, res) {
     t.error(err);
-    userId = res.body._id;
-    t.equal(res.body.username, 'admin@admin.com');
-    t.notEqual(res.body.password, 'Administrator');
+
+    t.type(res.body.token, 'string');
+    token = res.body.token;
 
     t.end();
   });
 });
 
+
 test('api user get list', function(t) {
   supertest(app)
   .get(g.schemas.user.apiUrls.list)
+  .set('Authorization', `Bearer ${token}`)
   .expect(200)
   .end(function(err, res) {
     t.error(err);
@@ -548,6 +569,7 @@ test('api user get list', function(t) {
 test('api user read', function(t) {
   supertest(app)
   .get(g.schemas.user.apiUrls.read.replace(`:${g.schemas.user.apiIdParam}`, userId))
+  .set('Authorization', `Bearer ${token}`)
   .expect(200)
   .end(function(err, res) {
     t.error(err);
@@ -560,7 +582,7 @@ test('api user read', function(t) {
       '__v': 0,
       'id': 1,
       'permissions': [],
-      'roles': [],
+      'roles': ['admin'],
       'state': 'active',
       'username': 'admin@admin.com',
     });
@@ -573,6 +595,7 @@ test('api user read', function(t) {
 test('api user update', function(t) {
   supertest(app)
   .patch(g.schemas.user.apiUrls.read.replace(`:${g.schemas.user.apiIdParam}`, userId))
+  .set('Authorization', `Bearer ${token}`)
   .send({
     username: 'admin2@admin.com'
   })
@@ -590,6 +613,7 @@ test('api user update', function(t) {
 test('api user read', function(t) {
   supertest(app)
   .get(g.schemas.user.apiUrls.read.replace(`:${g.schemas.user.apiIdParam}`, userId))
+  .set('Authorization', `Bearer ${token}`)
   .expect(200)
   .end(function(err, res) {
     t.error(err);
@@ -599,30 +623,10 @@ test('api user read', function(t) {
       '__v': 0,
       'id': 1,
       'permissions': [],
-      'roles': [],
+      'roles': ['admin'],
       'state': 'active',
       'username': 'admin2@admin.com',
     });
-
-    t.end();
-  });
-});
-
-
-let token;
-test('api user delete', function(t) {
-  supertest(app)
-  .post(`${g.schemas.user.apiUrls.list}/auth`)
-  .send({
-    username: 'admin2@admin.com',
-    password: 'admin'
-  })
-  .expect(200)
-  .end(function(err, res) {
-    t.error(err);
-
-    t.type(res.body.token, 'string');
-    token = res.body.token;
 
     t.end();
   });
@@ -636,13 +640,41 @@ test('api user delete', function(t) {
   .end(function(err, res) {
     t.error(err);
 
+    const roles = res.body.roles;
+    delete res.body.roles;
+
     t.apiResult(res.body, {
       '__v': 0,
       'id': 1,
       'permissions': [],
-      'roles': [],
+      // removed: 'roles': [],
       'state': 'active',
       'username': 'admin2@admin.com',
+    });
+
+    t.equal(roles.length, 1);
+    t.apiResult(roles[0], {
+      '__v': 0,
+      'id': 1,
+      'label': 'admin',
+      'permissions': [
+        'permission-permissions-list',
+        'permission-permissions-create',
+        'permission-permissions-read',
+        'permission-permissions-update',
+        'permission-permissions-delete',
+        'permission-roles-list',
+        'permission-roles-create',
+        'permission-roles-read',
+        'permission-roles-update',
+        'permission-roles-delete',
+        'permission-users-list',
+        'permission-users-create',
+        'permission-users-read',
+        'permission-users-update',
+        'permission-users-delete',
+      ],
+
     });
 
     t.end();
@@ -652,12 +684,32 @@ test('api user delete', function(t) {
 test('api user delete', function(t) {
   supertest(app)
   .delete(g.schemas.user.apiUrls.delete.replace(`:${g.schemas.user.apiIdParam}`, userId))
+  .set('Authorization', `Bearer ${token}`)
   .expect(204)
   .end(function(err/*, res*/) {
     t.error(err);
 
     t.end();
   });
+});
+
+test('api user delete', function(t) {
+  t.deepEqual(g.schemas.user.getSelects(), [
+    {
+      'name': 'state',
+      'values': [
+        {
+          '_id': 'active',
+          'label': 'Active'
+        },
+        {
+          '_id': 'banned',
+          'label': 'Banned'
+        }
+      ]
+    }
+  ]);
+  t.end();
 });
 
 testUtils.finish(test);

@@ -7,7 +7,7 @@ const read = require('./<%= schema.getName() %>.express.read.js');
 const update = require('./<%= schema.getName() %>.express.update.js');
 
 const errorHandler = require('<%= generatorOptions.componentsPath %>/error-handler.js');
-//const auth = require('<%= generatorOptions.componentsPath %>/authorization.js');
+const auth = require('<%= generatorOptions.componentsPath %>/authorization.js');
 
 module.exports = function(generator, schema) {
   const r = express.Router(); // eslint-disable-line new-cap
@@ -34,8 +34,8 @@ module.exports = function(generator, schema) {
   <% if (schema.permissions.list) { %>
     list(generator, schema);
     r.get('<%= schema.apiUrls.list %>', [
-      //auth.authorization(),
-      //auth.hasPermission('<%= schema.permissions.list %>'),
+      auth.authorization(),
+      auth.hasPermission('<%= schema.permissions.list %>'),
       list.middleware,
       list.csvListQuery, // if accept.indexOf('text/csv'
       list.xmlListQuery,
@@ -47,8 +47,8 @@ module.exports = function(generator, schema) {
 
   <% if (schema.permissions.read) { %>
     r.get('<%= schema.apiUrls.read %>', [
-      //auth.authorization(),
-      //auth.hasPermission('<%= schema.permissions.read %>'),
+      auth.authorization(),
+      auth.hasPermission('<%= schema.permissions.read %>'),
       read.middleware('entity'),
       //format('entity', 'entity'),
       show(200, 'entity')
@@ -57,8 +57,8 @@ module.exports = function(generator, schema) {
 
   <% if (schema.permissions.create) { %>
     r.post('<%= schema.apiUrls.create %>', [
-      //auth.authorization(),
-      //auth.hasPermission('<%= schema.permissions.create %>'),
+      auth.authorization(),
+      auth.hasPermission('<%= schema.permissions.create %>'),
       create.middleware('entity'),
       //format('entity', 'entity'),
       show(201, 'entity')
@@ -67,8 +67,8 @@ module.exports = function(generator, schema) {
 
   <% if (schema.permissions.update) { %>
     r.patch('<%= schema.apiUrls.update %>', [
-      //auth.authorization(),
-      //auth.hasPermission('<%= schema.permissions.update %>'),
+      auth.authorization(),
+      auth.hasPermission('<%= schema.permissions.update %>'),
       read.middleware('entity'),
       update.middleware('entity', 'entity2'),
       //format('entity2'),
@@ -78,8 +78,8 @@ module.exports = function(generator, schema) {
 
   <% if (schema.permissions.delete) { %>
     r.delete('<%= schema.apiUrls.delete %>', [
-      //auth.authorization(),
-      //auth.hasPermission('<%= schema.permissions.delete %>'),
+      auth.authorization(),
+      auth.hasPermission('<%= schema.permissions.delete %>'),
       destroy.middleware,
       show(204)
     ]);

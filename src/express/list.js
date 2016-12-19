@@ -46,7 +46,7 @@ function listQuery(user, where, sort, limit, offset, populate, next) {
   let qcount = (query.toConstructor())().count();
   let path;
 
-  if ('string' === typeof where) {
+  if ('string' === typeof where && where.length) {
     try {
       where = JSON.parse(where);
     } catch (_) {

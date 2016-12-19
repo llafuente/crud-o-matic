@@ -37,7 +37,8 @@ function start(test) {
     const conn = mongoose.connect('mongodb://localhost/generator_test');
 
     mongoose.connection.once('open', function () {
-      conn.connection.db.dropDatabase(function(err, result) {
+      conn.connection.db.dropDatabase(function(err/*, result*/) {
+        t.error(err);
         t.end();
       });
     });
@@ -55,7 +56,9 @@ function checkHTML(t, filename) {
   t.ok(fs.existsSync(filename), `${filename} exist`);
 
   const html = fs.readFileSync(filename, 'utf-8');
-  t.equal(html.indexOf('undefined'), -1);
+  t.equal(html.indexOf('undefined'), -1, `undefined found at: ${filename}`);
+  t.equal(html.indexOf('${generator'), -1, `\${generator found at: ${filename}`);
+  t.equal(html.indexOf('${control'), -1, `\${control found at: ${filename}`);
 
   return html;
 }

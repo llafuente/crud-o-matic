@@ -21,16 +21,19 @@ section#update
         div.col-xs-4
           pre= `{{${generatorOptions.formPath}.$error | json}}`
         div.col-xs-1(ng-class="{" +
-          `bg-danger': ${generatorOptions.formPath}.$dirty` +
-          `bg-success': !${generatorOptions.formPath}.$dirty }`
+          `'bg-danger': ${generatorOptions.formPath}.$dirty, ` +
+          `'bg-success': !${generatorOptions.formPath}.$dirty }`
         )
           span.btn= `dirty: {{${generatorOptions.formPath}.$dirty | json}}`
         div.col-xs-1(ng-class="{" +
-          `'bg-danger': !${generatorOptions.formPath}.$valid,` +
+          `'bg-danger': !${generatorOptions.formPath}.$valid, ` +
           `'bg-success': ${generatorOptions.formPath}.$valid }`
         )
           span.btn= `valid: {{${generatorOptions.formPath}.$valid | json}}`
-        div.col-xs-1(ng-class="{'bg-danger': ${generatorOptions.formPath}.$submitted, 'bg-success': !${generatorOptions.formPath}.$submitted }")
+        div.col-xs-1(ng-class="{" +
+          `'bg-danger': ${generatorOptions.formPath}.$submitted, ` +
+          `'bg-success': !${generatorOptions.formPath}.$submitted }`
+        )
           span.btn= `submitted: {{${generatorOptions.formPath}.$submitted | json}}`
         div.col-xs-1(ng-class="{'bg-danger': !submitting, 'bg-success': submitting }")
           span.btn= 'submitting: {{submitting | json}}'

@@ -14,17 +14,17 @@ function create(data, next) {
   // TODO remove restricted
   //data = meta.$express.restricted_filter(req.log, req.user, 'create', data);
 
-  return mongoose.models.<%= schema.getName() %>.create(data, function(err, savedData) {
+  return mongoose.models.<%= schema.getName() %>.create(data, function(err, savedRow) {
     if (err) {
       return next(err);
     }
 
     /* istanbul ignore next */
-    if (!savedData) {
+    if (!savedRow) {
       return next(new HttpError(500, 'database don\'t return data'));
     }
 
-    return next(null, savedData);
+    return next(null, savedRow);
   });
 }
 
@@ -36,12 +36,12 @@ function createMiddleware(storeAt) {
       return next(new HttpError(422, 'body is an array'));
     }
 
-    return create(req.body, function(err, savedData) {
+    return create(req.body, function(err, savedRow) {
       /* istanbul ignore next */ if (err) {
         return next(err);
       }
 
-      req[storeAt] = savedData;
+      req[storeAt] = savedRow;
       return next();
     });
   };

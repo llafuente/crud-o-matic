@@ -59,25 +59,26 @@ module.exports = function(generator, schema) {
 
 
   r.use(function(req, res, next) {
-    if (req.user && req.user.id) {
-      $log.silly('regenerate session: ' + req.user.id.toString());
-
-      return generator.mongoose.models.user
-      .findOne({
-        _id: req.user.id
-      })
-      .populate('roles')
-      .exec(function(err, dbuser) {
-        if (err || !dbuser) {
-          return next(new HttpError(401, 'regenerate session failed'));
-        }
-
-        req.user = dbuser;
-        $log.silly('user logged: ' + JSON.stringify(dbuser.toJSON()));
-        next();
-      });
+    if (!req.user || !req.user.id) {
+      return next();
     }
-    next();
+
+    $log.silly('regenerate session: ' + req.user.id.toString());
+
+    return generator.mongoose.models.user
+    .findOne({
+      _id: req.user.id
+    })
+    .populate('roles')
+    .exec(function(err, dbuser) {
+      if (err || !dbuser) {
+        return next(new HttpError(401, 'regenerate session failed'));
+      }
+
+      req.user = dbuser;
+      $log.silly('user logged: ' + JSON.stringify(dbuser.toJSON()));
+      return next();
+    });
   });
 
   r.post('<%= schema.apiUrls.list %>/me', function(req, res, next) {
@@ -91,6 +92,7 @@ module.exports = function(generator, schema) {
     }
 
     const u = req.user.toJSON();
+    $log.debug(u);
     // TODO
     //user.$express.formatter(req, u, function(err, output) {
     //  res.status(200).json(output);

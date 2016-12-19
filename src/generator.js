@@ -1,5 +1,6 @@
 const EventEmitter = require('events');
 const path = require('path');
+const fs = require('fs');
 const jsYAMl = require('js-yaml');
 const readFileSync = require('fs').readFileSync;
 const _ = require('lodash');
@@ -12,18 +13,19 @@ const eachSeries = require('async/eachSeries');
 const eachOfSeries = require('async/eachOfSeries');
 
 module.exports = class Generator extends EventEmitter {
-  constructor(config, mongoose) {
+  constructor(config) {
     super();
     this.config = config;
-    this.mongoose = mongoose;
     this.schemas = {};
-    this.models = mongoose.models;
+
+    this.mongoose = config.mongoose;
+    //this.models = this.mongoose.models;
 
     if (!this.config.generationPath) {
       throw new Error('generationPath is required in config');
     }
 
-    mongoose.model('autoincrements', new mongoose.Schema({
+    this.mongoose.model('autoincrements', new this.mongoose.Schema({
       _id: {
         type: 'String'
       },
@@ -108,11 +110,28 @@ module.exports = class Generator extends EventEmitter {
   }
 
   generateAll(cb) {
-    const next = _.after(3, cb);
+    const next = _.after(4, cb);
 
     this.generateFormAll(next);
     this.generateAngularAll(next);
     this.generateServerAll(next);
+    this.generateDependencies(next);
+  }
+
+  generateDependencies(next) {
+    eachSeries([
+      path.join(__dirname, '..', 'angular', 'st-date-range.js'),
+      path.join(__dirname, '..', 'angular', 'st-date-range.tpl.html'),
+      path.join(__dirname, '..', 'angular', 'st-select.js'),
+      path.join(__dirname, '..', 'server', 'authorization.js'),
+      path.join(__dirname, '..', 'server', 'clean-body.js'),
+      path.join(__dirname, '..', 'server', 'error-handler.js'),
+      path.join(__dirname, '..', 'server', 'http-error.js'),
+    ], function(file, next2) {
+      const content = fs.readFileSync(file, 'utf-8');
+      fs.writeFileSync(path.join(this.config.generationPath, path.basename(file)), content, 'utf-8');
+      next2();
+    }.bind(this), next);
   }
 
   generateAngularAll(cb) {

@@ -13,7 +13,7 @@ function load(filename) {
 }
 
 function loadPug(filename) {
-  const html = fs.readFileSync(filename, 'utf-8');
+  const html = fs.readFileSync(filename, 'utf8');
   return pug.compile(html, {
     basedir: __dirname,
     filename: filename,
@@ -46,6 +46,7 @@ module.exports = function(generator, schema, generatorOptions, cb) {
 
 function routesConfig(generator, schema, generatorOptions, cb) {
   const routesJS = templates.routes({
+    _: _,
     schema: schema,
     generatorOptions: generatorOptions,
   });
@@ -61,6 +62,7 @@ function routesConfig(generator, schema, generatorOptions, cb) {
 
 function listController(generator, schema, generatorOptions, cb) {
   const routesJS = templates.list({
+    _: _,
     schema: schema,
     generatorOptions: generatorOptions,
   });
@@ -78,10 +80,12 @@ function listController(generator, schema, generatorOptions, cb) {
 function listHTML(generator, schema, generatorOptions, cb) {
   const listableFields = [];
   schema.eachFrontList(function(control) {
+    schema.applyGeneratorOptions(control, generatorOptions);
     listableFields.push(control);
   });
 
   const routesJS = templates.listHTML({
+    _: _,
     schema: schema,
     generatorOptions: generatorOptions,
     listableFields: listableFields,
@@ -105,6 +109,7 @@ function createController(generator, schema, generatorOptions, cb) {
     }
 
     const createHTML = templates.create({
+      _: _,
       schema: schema,
       generatorOptions: generatorOptions,
       controlsJS: controlsJS,
@@ -130,6 +135,7 @@ function updateController(generator, schema, generatorOptions, cb) {
     }
 
     const updateHTML = templates.update({
+      _: _,
       schema: schema,
       generatorOptions: generatorOptions,
       controlsJS: controlsJS,
@@ -147,6 +153,7 @@ function updateController(generator, schema, generatorOptions, cb) {
 
 function moduleInit(generator, schema, generatorOptions, cb) {
   const moduleJS = templates.module({
+    _: _,
     schema: schema,
     generatorOptions: generatorOptions,
   });

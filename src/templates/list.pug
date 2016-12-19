@@ -24,13 +24,29 @@ section#list
           if (control.frontField.type)
             th
               if (control.frontField.type == "text" || control.frontField.type == "static" || control.frontField.type == "email")
-                input.input-sm.form-control(st-search=control.searchModel type="text" id=control.id)
+                input.input-sm.form-control(
+                  st-search=control.searchModel
+                  type="text"
+                  id=control.id
+                )
               if (control.frontField.type == "number")
-                input.input-sm.form-control(st-search=control.searchModel type="number" id=control.id)
+                input.input-sm.form-control(
+                  st-search=control.searchModel
+                  type="number"
+                  id=control.id
+                )
               if (control.frontField.type == "date-range")
-                st-date-range(collection=control.label_values predicate=control.searchModel id=control.id)
-              if (control.label_values)
-                st-select(collection=control.label_values predicate=control.searchModel id=control.id)
+                st-date-range(
+                predicate=control.searchModel
+                id=control.backField.name
+              )
+              if (control.backField.labels)
+                st-select(
+                  enum=JSON.stringify(control.backField.enum)
+                  labels=JSON.stringify(control.backField.labels)
+                  predicate=control.searchModel
+                  id=control.backField.name
+                )
           else
             th
         th
@@ -55,7 +71,7 @@ section#list
     tfoot
       tr
         //td.text-center(st-pagination='', st-items-by-page='list.limit', colspan=columns)
-        td(colspan=columns + 1)
+        td(colspan=listableFields.length + 1)
           span(st-pagination="", st-items-by-page="list.limit")
           span.btn.btn-secondary(ng-click="download('text/csv')")
             i.fa.fa-download
