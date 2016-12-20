@@ -1,7 +1,7 @@
 //pre= JSON.stringify(listableFields, null, 2)
 section#list
   div.pull-right
-    a.btn.btn-primary.btn-create.ng-hide(
+    button.btn.btn-primary.btn-create.ng-hide(
       ui-sref=schema.states.create
       ng-show=`$root.Auth.hasPermissions('${schema.permissions.create}')`
       )
@@ -18,7 +18,7 @@ section#list
         each control in listableFields
           th(st-sort=control.name translate="")
             span= control.frontField.label || control.backField.label
-        th(translate="") Actions
+        th.actions(translate="") Actions
       tr.filters
         each control in listableFields
           if (control.frontField.type)
@@ -54,7 +54,7 @@ section#list
       tr(ng-repeat='row in list.list')
         each control in listableFields
           td= '{{row.' + control.realpath + (control.label_filter ? ' | ' + control.label_filter : '') + '}}'
-        td
+        td.actions
           a.entity-action.entity-update.ng-hide(
             ui-sref=`^.update({ ${schema.apiIdParam} : row._id })`
             uib-tooltip=`{{'${schema.getButton('update').tooltip}' | translate}}`
