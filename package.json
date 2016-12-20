@@ -1,5 +1,5 @@
 {
-  "name": "generator",
+  "name": "crud-o-matic",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -12,7 +12,7 @@
     "lint": "eslint src/ tests/ server/ --fix"
   },
   "author": "llafuente@noboxout.com",
-  "license": "Copyright Luis Lafuente Morales",
+  "license": "MIT",
   "devDependencies": {
     "acorn": "^4.0.3",
     "babel-eslint": "^7.1.1",
