@@ -6,7 +6,7 @@ export default class <%= schema.getName() %>UpdateController {
     // TODO
     // confirmStateExit($scope, 'form.$dirty && !submitted');
 
-    $scope.crud_action = 'update';
+    $scope.crudMode = 'update';
     $scope.entity = entity;
     $scope.submitted = false;
     $scope.submitting = false;

@@ -146,7 +146,7 @@ module.exports = class Schema {
     $log.debug(`getField(${fieldPath})`);
     let ret = null;
 
-    this.eachBack(function(control) {
+    this.eachBack(function(control/*, entering*/) {
       if (control.path === fieldPath) {
         ret = control;
       }
@@ -162,7 +162,9 @@ module.exports = class Schema {
   eachFrontList(cb) {
     const list = this.schema.frontend.list;
 
-    this.eachBack(function(data) {
+    this.eachBack(function(data, entering) {
+      if (!entering) {return;}
+
       if (
         list[data.realpath] // path in the list
         &&
@@ -171,14 +173,15 @@ module.exports = class Schema {
         data.frontField = list[data.realpath];
         cb(data);
       }
+
+      return;
     });
   }
 
   eachFrontForm(action, cb) {
     const list = this.schema.frontend.forms;
-    const inAList = [];
 
-    this.eachBack(function(data) {
+    this.eachBack(function(data, entering) {
       if (
         list[data.realpath]
       // TODO ignoreRestrictions: true
@@ -188,34 +191,43 @@ module.exports = class Schema {
       ) {
         data.frontField = list[data.realpath];
 
-        if (data.frontField.type === 'list') {
-          data.subControls = [];
-          inAList.push(data);
+        if (data.frontField[action] !== false) {
+          cb(data, entering);
+        }
+      } else {
+        $log.silly(`ignore control: ${data.realpath}`);
+      }
+    });
+  }
+
+  /*
+   * @returns {Array}
+   */
+  getFrontForm(action) {
+    const controls = [];
+    const listControls = [];
+
+    this.eachFrontForm(action, function(control, entering) {
+      $log.silly(`field: ${control.backField.name} entering? ${entering} lists ${listControls.length}`);
+
+      if (control.frontField.type == 'list') {
+        if (entering) { // entering in a list. push!
+          listControls.push([]);
+        } else { // leaving a list. pop!
+          control.subControls = listControls.pop();
+          controls.push(control);
+        }
+      } else if (entering) {
+        // entering a control, push in a list if any
+        if (listControls.length) {
+          listControls[listControls.length - 1].push(control);
         } else {
-          // below the list
-          if (inAList.length) {
-            const lastList = inAList[inAList.length - 1];
-
-            if (data.realpath.indexOf(lastList.realpath) === 0) {
-              // add to the list
-              lastList.subControls.push(data);
-              return;
-            }
-
-            // list finished!
-            inAList.pop();
-            cb(lastList);
-            // continue, and cb the new one
-          }
-
-          if (data.frontField[action] !== false) {
-            cb(data);
-          }
+          controls.push(control);
         }
       }
-
-      return;
     });
+
+    return controls;
   }
 
   applyGeneratorOptions(control, generatorOptions) {
@@ -224,8 +236,9 @@ module.exports = class Schema {
     // controller will store data here for the control
     const safeName = control.realpath
       .replace(/\./g, '_')
-      .replace(/\[/g, '{{')
-      .replace(/\]/g, '}}');
+      .replace(/\[(.*)\]/g, '_');
+      //.replace(/\[/g, '{{')
+      //.replace(/\]/g, '}}');
     control.cfgModel = `control_${safeName}`;
     control.formModel = `${generatorOptions.formPath}.${safeName}`;
     control.searchModel = `query.${safeName}`;
@@ -241,7 +254,11 @@ module.exports = class Schema {
 
   getSelects() {
     const list = [];
-    this.eachBack(function(control) {
+    this.eachBack(function(control, entering) {
+      if (!entering) {
+        return;
+      }
+
       if (control.backField.enum) {
         const values = [];
 
@@ -279,8 +296,9 @@ function simplifySchema(obj, prop, value) {
   }
 }
 
-
-// cb(value, path, parent, prop_in_parent, realpath)
+// cb(control, entering)
+// control object is the same for entering/leaving
+// you can store information there if needed...
 function traverse(obj, cb, prop, value, path, realpath) {
   const path2 = path || [];
   const realpath2 = realpath || [];
@@ -302,14 +320,18 @@ function traverse(obj, cb, prop, value, path, realpath) {
       realpath2.push(prop);
     }
 
-    const goDeeper = cb({
+    const thePath = path2.join('.').replace(/\.\[/g, '[');
+    const theRealPath = realpath2.join('.').replace(/\.\[/g, '[');
+    const control = {
       backField: value,
-      path: path2.join('.').replace(/\.\[/g, '['),
+      path: thePath,
       parent: obj,
       property: prop,
       idArray: idArray,
-      realpath: realpath2.join('.').replace(/\.\[/g, '[')
-    }, true);
+      realpath: theRealPath
+    };
+
+    const goDeeper = cb(control, true);
     if (goDeeper !== false) {
       //console.log("value.type", value.type, "items", value.items);
       switch (value.type) {
@@ -323,6 +345,8 @@ function traverse(obj, cb, prop, value, path, realpath) {
         break;
       }
     }
+
+    cb(control, false);
 
     path2.pop();
     realpath2.pop();
@@ -338,7 +362,9 @@ const defaultBackField = {
 };
 
 function applyDefaults(schemaObj) {
-  traverse(schemaObj.backend.schema, function(data) {
+  traverse(schemaObj.backend.schema, function(data, entering) {
+    if (!entering) {return;}
+
     data.backField.name = data.realpath.replace(/(\.|\[|\])/g, '_');
 
     switch (data.backField.type) {

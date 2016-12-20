@@ -24,6 +24,9 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
+        "label": {
+          "type": "string"
+        },
         "name": {
           "type": "string"
         },
@@ -224,7 +227,38 @@
           "patternProperties": {
             "[a-z0-9_]": {
               "type": "object",
+              "additionalProperties": false,
               "properties": {
+                "update": {
+                  "type": "boolean"
+                },
+                "create": {
+                  "type": "boolean"
+                },
+                "source_url": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "method": {
+                      "enum": ["GET", "POST"]
+                    },
+                    "url": {
+                      "type": "string"
+                    },
+                    "as_label": {
+                      "type": "string"
+                    },
+                    "as_id": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "attributes": {
+                  "type": "object"
+                },
+                "label": {
+                  "type": "string"
+                },
                 "type": {
                   "enum": ["text", "number", "email", "password", "date", "select", "checklist", "static", "textarea", "list"]
                 }

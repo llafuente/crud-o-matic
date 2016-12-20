@@ -7,7 +7,7 @@ const fs = require('fs');
 
 const handlers = {
   text: generateDefaultControl,
-  //number: generateDefaultControl,
+  number: generateDefaultControl,
   email: generateDefaultControl,
   password: generateDefaultControl,
   //date: generateDefaultControl,
@@ -140,11 +140,7 @@ function generateControls(controls, schema, generatorOptions, cb) {
 module.exports = function(generator, schema, generatorOptions, cb) {
   $log.info(schema.getName(), generatorOptions);
 
-  const controls = [];
-
-  schema.eachFrontForm(generatorOptions.action, function(obj) {
-    controls.push(obj);
-  });
+  const controls = schema.getFrontForm(generatorOptions.action);
 
   generateControls(controls, schema, generatorOptions, function(err, controlsHTML) {
     /* istanbul ignore next */ if (err) {

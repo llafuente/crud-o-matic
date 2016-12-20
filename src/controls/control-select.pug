@@ -5,5 +5,5 @@ block controlBlock
     name=control.backField.name
     ng-model=control.model
     ng-options=`c._id as c.label for c in ${control.cfgModel}_values`
-  )&attributes(control.constraints)
+  )&attributes(control.frontField.attributes)
 

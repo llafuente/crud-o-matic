@@ -43,18 +43,16 @@ test('check list mongoose:schema/model', function(t) {
 });
 
 test('check list mongoose:schema/model', function(t) {
-  const controls = [];
-  g.schemas.list.eachFrontForm('create', function(control) {
-    controls.push(control);
-  });
-
+  const controls = g.schemas.list.getFrontForm('create');
+  $log.debug(controls);
   let names = _.map(controls, 'realpath');
   t.deepEqual(names, [
+    'label',
     'thelist',
     'text',
   ]);
 
-  names = _.map(controls[0].subControls, 'realpath');
+  names = _.map(controls[1].subControls, 'realpath');
   t.deepEqual(names, [
     'thelist[thelist_id].label',
     'thelist[thelist_id].unit',

@@ -6,7 +6,7 @@ export default class <%= schema.getName() %>CreateController {
     // TODO
     // confirmStateExit($scope, 'form.$dirty && !submitted');
 
-    $scope.crud_action = 'create';
+    $scope.crudMode = 'create';
     $scope.entity = {
     }; // TODO defaults!
 

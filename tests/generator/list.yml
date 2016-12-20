@@ -64,6 +64,8 @@ frontend:
       type: static
       create: false
       update: true
+    label:
+      type: text
     thelist:
       type: list
     thelist[thelist_id].label:

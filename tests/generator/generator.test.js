@@ -151,8 +151,10 @@ test('check models', function(t) {
 test('check backend fields list', function(t) {
   const role = g.schemas.role;
   const list = [];
-  role.eachBack(function(obj) {
-    list.push(obj);
+  role.eachBack(function(obj, entering) {
+    if (entering) {
+      list.push(obj);
+    }
   });
 
   const realpath = _.map(list, 'realpath');
@@ -197,8 +199,10 @@ test('check backend fields list', function(t) {
 test('check backend fields list', function(t) {
   const user = g.schemas.user;
   const list = [];
-  user.eachBack(function(obj) {
-    list.push(obj);
+  user.eachBack(function(obj, entering) {
+    if (entering) {
+      list.push(obj);
+    }
   });
 
   const realpath = _.map(list, 'realpath');
@@ -282,8 +286,10 @@ test('check front fields list', function(t) {
 test('check front fields user create', function(t) {
   const user = g.schemas.user;
   const list = [];
-  user.eachFrontForm('create', function(obj) {
-    list.push(obj);
+  user.eachFrontForm('create', function(control, entering) {
+    if (!entering) {return;}
+
+    list.push(control);
   });
 
   const realpath = _.map(list, 'realpath');
@@ -313,8 +319,10 @@ test('check front fields user create', function(t) {
 test('check front fields user update', function(t) {
   const user = g.schemas.user;
   const list = [];
-  user.eachFrontForm('update', function(obj) {
-    list.push(obj);
+  user.eachFrontForm('update', function(control, entering) {
+    if (!entering) {return;}
+
+    list.push(control);
   });
 
   const realpath = _.map(list, 'realpath');
@@ -348,8 +356,10 @@ test('check front fields user update', function(t) {
 test('check front fields role update', function(t) {
   const role = g.schemas.role;
   const list = [];
-  role.eachFrontForm('update', function(obj) {
-    list.push(obj);
+  role.eachFrontForm('update', function(control, entering) {
+    if (!entering) {return;}
+
+    list.push(control);
   });
 
   const realpath = _.map(list, 'realpath');
@@ -374,6 +384,14 @@ test('check front fields role update', function(t) {
 
 
 test('check role.create.tpl.html', function(t) {
+  const controls = g.schemas.role.getFrontForm('create');
+  const realpaths = _.map(controls, 'realpath');
+
+  t.deepEqual(realpaths, [
+    'label',
+    'permissions',
+  ]);
+
   g.generateForm(g.schemas.role, 'create', function(err) {
     t.error(err);
 

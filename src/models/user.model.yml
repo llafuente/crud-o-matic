@@ -33,16 +33,18 @@ backend:
         read: true
     roles:
       type: "Array"
+      label: "Roles"
       items:
-        label: "Roles"
         type: "String"
+        label: "Roles"
         ref: "role"
         restricted: false
     permissions:
       type: "Array"
+      label: "Permissions"
       items:
-        label: "Permissions"
         type: "String"
+        label: "Permissions"
         ref: "permissions"
         restricted: false
     state:
@@ -113,8 +115,8 @@ frontend:
       type: "email"
     password:
       type: "password"
-      constraints:
-        ng-required: "crud_action == 'create'"
+      attributes:
+        ng-required: "crudMode == 'create'"
     state:
       label: "Estado"
       type: "select"
