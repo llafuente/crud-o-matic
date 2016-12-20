@@ -1,7 +1,7 @@
 module.exports = update;
 module.exports.middleware = middleware;
 
-const mongoose = require('mongoose');
+//const mongoose = require('mongoose');
 const cleanBody = require('<%= generatorOptions.componentsPath %>/clean-body.js');
 const HttpError = require('<%= generatorOptions.componentsPath %>/http-error.js');
 
@@ -27,6 +27,7 @@ function update(user, row, data, next) {
     return next(null, savedRow);
   });
 }
+
 // storedAt -> read
 // storeAt -> saved
 function middleware(storedAt, storeAt) {

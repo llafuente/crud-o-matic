@@ -1,4 +1,4 @@
-/*<% if (control.source_url) { %>*/
+/*<% if (control.frontField.source_url) { %>*/
   $scope.<%= control.cfgModel %>_values = [];
   $http(<%- JSON.stringify(control.frontField.source_url) %>)
   .then(function(response) {

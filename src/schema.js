@@ -176,6 +176,7 @@ module.exports = class Schema {
 
   eachFrontForm(action, cb) {
     const list = this.schema.frontend.forms;
+    const inAList = [];
 
     this.eachBack(function(data) {
       if (
@@ -187,10 +188,33 @@ module.exports = class Schema {
       ) {
         data.frontField = list[data.realpath];
 
-        if (data.frontField[action] !== false) {
-          cb(data);
+        if (data.frontField.type === 'list') {
+          data.subControls = [];
+          inAList.push(data);
+        } else {
+          // below the list
+          if (inAList.length) {
+            const lastList = inAList[inAList.length - 1];
+
+            if (data.realpath.indexOf(lastList.realpath) === 0) {
+              // add to the list
+              lastList.subControls.push(data);
+              return;
+            }
+
+            // list finished!
+            inAList.pop();
+            cb(lastList);
+            // continue, and cb the new one
+          }
+
+          if (data.frontField[action] !== false) {
+            cb(data);
+          }
         }
       }
+
+      return;
     });
   }
 
@@ -198,7 +222,10 @@ module.exports = class Schema {
     // ng-model
     control.model = `${generatorOptions.basePath}.${control.realpath}`;
     // controller will store data here for the control
-    const safeName = control.realpath.replace(/\./g, '_');
+    const safeName = control.realpath
+      .replace(/\./g, '_')
+      .replace(/\[/g, '{{')
+      .replace(/\]/g, '}}');
     control.cfgModel = `control_${safeName}`;
     control.formModel = `${generatorOptions.formPath}.${safeName}`;
     control.searchModel = `query.${safeName}`;
@@ -264,32 +291,37 @@ function traverse(obj, cb, prop, value, path, realpath) {
     }
   } else {
     if (!prop) {throw new Error('??');}
+    let idArray = null;
 
     path2.push(prop);
 
     if (value.type === 'Array') {
       realpath2.push(prop);
+      idArray = `${prop}_id`;
     } else if (obj.type !== 'Array') {
       realpath2.push(prop);
     }
 
-    cb({
+    const goDeeper = cb({
       backField: value,
       path: path2.join('.').replace(/\.\[/g, '['),
       parent: obj,
       property: prop,
+      idArray: idArray,
       realpath: realpath2.join('.').replace(/\.\[/g, '[')
-    });
-    //console.log("value.type", value.type, "items", value.items);
-    switch (value.type) {
-    case 'Object':
-      traverse(value.properties, cb, 'properties', null, path2, realpath2);
-      break;
-    case 'Array':
-      realpath2.push(`[${prop}_id]`);
-      traverse(value, cb, 'items', value.items, path2, realpath2);
-      realpath2.pop();
-      break;
+    }, true);
+    if (goDeeper !== false) {
+      //console.log("value.type", value.type, "items", value.items);
+      switch (value.type) {
+      case 'Object':
+        traverse(value.properties, cb, 'properties', null, path2, realpath2);
+        break;
+      case 'Array':
+        realpath2.push(`[${idArray}]`);
+        traverse(value, cb, 'items', value.items, path2, realpath2);
+        realpath2.pop();
+        break;
+      }
     }
 
     path2.pop();

@@ -15,6 +15,7 @@ section#update
           span(translate="")= schema.getButton(generatorOptions.action).text
         span.btn.btn-secondary(translate="" ng-show="submitting")= schema.getButton(generatorOptions.action).inprogress
       div.clearfix
+      hr
       div.row
         div.col-xs-4
           pre= `{{${generatorOptions.formPath} | json}}`

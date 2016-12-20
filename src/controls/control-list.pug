@@ -1,0 +1,21 @@
+block contentBlock
+  button.pull-right(
+    ng-click=`push(${control.model} || (${control.model} = []), {})`
+  )
+    span.fa.fa-plus
+    span Añadir
+  div.clearfix
+  div(
+    ng-repeat=`x in ${control.model}`
+    ng-init=`${control.idArray} = $index`
+  )
+    button.pull-right(
+      ng-click=`splice(${control.model}, $index)`
+    )
+      span.fa.fa-trash-o
+      span Elimnar
+    div.clearfix
+    //pre {{x | json}}
+    //pre=JSON.stringify(subControls)
+    each c in subControls
+      form-control!= c

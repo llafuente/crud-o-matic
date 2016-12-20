@@ -14,8 +14,8 @@ const handlers = {
   select: generateDefaultControl,
   checklist: generateDefaultControl,
   static: generateDefaultControl,
-  //textarea: generateDefaultControl,
-  //list: generateList,
+  textarea: generateDefaultControl,
+  list: generateList,
 };
 
 const templates = {
@@ -31,7 +31,7 @@ for (const controlName in handlers) { // eslint-disable-line guard-for-in
   controlTpls[controlName] = fs.readFileSync(file, 'utf-8');
 }
 
-function generateDefaultControl(control, generatorOptions, cb) {
+function generateDefaultControl(control, schema, generatorOptions, cb) {
   const template = controlTpls[control.frontField.type];
   //const layout = join(__dirname, 'layouts', `layout-${generatorOptions.layout}.pug`);
   const layout = `./layouts/layout-${generatorOptions.layout}.pug`;
@@ -61,14 +61,45 @@ function generateDefaultControl(control, generatorOptions, cb) {
   return cb(null, html);
 }
 
-module.exports = function(generator, schema, generatorOptions, cb) {
-  $log.info(schema.getName(), generatorOptions);
+function generateList(control, schema, generatorOptions, cb) {
+  $log.debug('generateList', control);
 
-  const controls = [];
-  const controlsHTML = [];
-  schema.eachFrontForm(generatorOptions.action, function(obj) {
-    controls.push(obj);
+  generateControls(control.subControls, schema, generatorOptions, function(err, controlsHTML) {
+    if (err) {
+      return cb(err);
+    }
+
+    const template = controlTpls[control.frontField.type];
+
+    const compiled = pug.compile(template, {
+      basedir: __dirname,
+      filename: join(__dirname, 'templates', 'list.pug'),
+      pretty: generatorOptions.pretty === undefined ? true : generatorOptions.pretty,
+    });
+
+    control.errors = [];
+
+    let html;
+    try {
+      html = compiled({
+        //debug: true,
+        render: pug.render,
+
+        generatorOptions: generatorOptions,
+        control: control,
+        subControls: controlsHTML,
+      });
+    } catch (e) {
+      /* istanbul ignore next */
+      return cb(e, null);
+    }
+
+    return cb(null, html);
   });
+}
+//*
+function generateControls(controls, schema, generatorOptions, cb) {
+  const controlsHTML = [];
 
   eachSeries(controls, function(control, next) {
     const handler = handlers[control.frontField.type];
@@ -76,7 +107,7 @@ module.exports = function(generator, schema, generatorOptions, cb) {
       throw new Error(`can't find handler for ${control.frontField.type}`);
     }
 
-    $log.info(`control found: ${control.path} ${control.realpath} ${control.frontField.type} using ${generator.name}`);
+    $log.info(`control found: ${control.path} ${control.realpath} ${control.frontField.type} using ${handler.name}`);
 
     schema.applyGeneratorOptions(control, generatorOptions);
 
@@ -88,7 +119,7 @@ module.exports = function(generator, schema, generatorOptions, cb) {
     $log.debug(control.backField);
 
     // choose a generator
-    return handler(control, generatorOptions, function(err, html) {
+    return handler(control, schema, generatorOptions, function(err, html) {
       /* istanbul ignore next */ if (err) {
         return next(err);
       }
@@ -98,6 +129,24 @@ module.exports = function(generator, schema, generatorOptions, cb) {
       return next();
     });
   }, function(err) {
+    if (err) {
+      return cb(err);
+    }
+
+    return cb(null, controlsHTML);
+  });
+}
+
+module.exports = function(generator, schema, generatorOptions, cb) {
+  $log.info(schema.getName(), generatorOptions);
+
+  const controls = [];
+
+  schema.eachFrontForm(generatorOptions.action, function(obj) {
+    controls.push(obj);
+  });
+
+  generateControls(controls, schema, generatorOptions, function(err, controlsHTML) {
     /* istanbul ignore next */ if (err) {
       return cb(err, null);
     }
