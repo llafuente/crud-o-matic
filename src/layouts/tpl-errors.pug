@@ -1,4 +1,4 @@
 block errorsBlock
-  div.alert.alert-danger(ng-show=`(${control.formModel}.$touched || ${control.formModel}.$dirty) && ${control.formModel}.$invalid`)
-    each err_str, key in control.errors
+  div.alert.alert-danger(ng-show=`(${control.formModelExpr}.$touched || ${control.formModelExpr}.$dirty) && ${control.formModelExpr}.$invalid`)
+    each errString, errorKey in control.errors
       block errorBlock

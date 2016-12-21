@@ -53,13 +53,13 @@ module.exports.app = function(generator, generatorOptions, cb) {
 
   const routeFile = join(
     generator.config.angularPath,
-    `app.js`
+    'app.js'
   );
 
   fs.writeFileSync(routeFile, routesJS, {encoding: 'utf-8'});
 
   cb();
-}
+};
 
 function routesConfig(generator, schema, generatorOptions, cb) {
   const routesJS = templates.routes({

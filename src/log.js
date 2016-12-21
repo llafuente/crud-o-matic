@@ -3,7 +3,7 @@ require('./winston.readableconsole.js');
 const winston = require('winston');
 const logger = new (winston.Logger)({
   transports: [new (winston.transports.ReadableConsole)({
-    level: 'silly',
+    level: 'debug',
     trace: false
   })]
 });

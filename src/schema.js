@@ -186,6 +186,44 @@ module.exports = class Schema {
     control.cfgModel = `control_${safeName}`;
     control.formModel = `${generatorOptions.formPath}.${safeName}`;
     control.searchModel = `query.${safeName}`;
+    const safeUniqueName = control.realpath
+      .replace(/\./g, '_')
+      .replace(/\[/g, '{{')
+      .replace(/\]/g, '}}');
+    control.formName = `${safeUniqueName}`;
+    control.formModelExpr = `${generatorOptions.formPath}['${safeUniqueName}']`;
+
+    control.errors = {};
+    const name = control.frontField.label || control.backField.label;
+    // TODO some of these could be a expr, required should add an *, found how
+    if (control.frontField.type === 'email') {
+      control.errors.email = `${name} no es un email válido`;
+    }
+
+    if (control.frontField.type === 'number') {
+      control.errors.number = `${name} no es un número válido`;
+    }
+
+    if (control.frontField.attributes) {
+      if (control.frontField.attributes['ng-required'] !== undefined) {
+        control.errors['required'] = `${name} es obligatorio`;
+      }
+      if (control.frontField.attributes['ng-minlength'] !== undefined) {
+        control.errors.minlength = `${name} demasiado corto, debe tener al menos ${control.frontField.attributes.minlength} caracteres`;
+      }
+      if (control.frontField.attributes['ng-maxlength'] !== undefined) {
+        control.errors.maxlength = `${name} demasiado largo, debe tener cómo máximo ${control.frontField.attributes.maxlength} caracteres`;
+      }
+      if (control.frontField.attributes['ng-min'] !== undefined) {
+        control.errors['min'] = `${name} demasiado pequeño, el mínimo es: ${control.frontField.attributes['ng-min']}`;
+      }
+      if (control.frontField.attributes['ng-max'] !== undefined) {
+        control.errors['max'] = `${name} demasiado grande, el máximo es: ${control.frontField.attributes['ng-max']}`;
+      }
+      if (control.frontField.attributes['ng-pattern'] !== undefined) {
+        control.errors['ng-pattern'] = `${name} no cumple el patrón: ${control.frontField.attributes['ng-pattern']}`;
+      }
+    }
   }
 
   getButton(name) {

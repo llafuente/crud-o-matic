@@ -43,8 +43,6 @@ function generateDefaultControl(control, schema, generatorOptions, cb) {
     pretty: generatorOptions.pretty === undefined ? true : generatorOptions.pretty,
   });
 
-  // TODO!
-  control.errors = [];
   let html;
   try {
     html = compiled({
@@ -63,7 +61,7 @@ function generateDefaultControl(control, schema, generatorOptions, cb) {
 }
 
 function generateList(control, schema, generatorOptions, cb) {
-  $log.debug('generateList', control);
+  $log.debug(`generateList ${control.backField.name}`);
 
   generateControls(control.subControls, schema, generatorOptions, function(err, controlsHTML) {
     if (err) {
@@ -77,8 +75,6 @@ function generateList(control, schema, generatorOptions, cb) {
       filename: join(__dirname, 'templates', 'list.pug'),
       pretty: generatorOptions.pretty === undefined ? true : generatorOptions.pretty,
     });
-
-    control.errors = [];
 
     let html;
     try {
@@ -117,7 +113,7 @@ function generateControls(controls, schema, generatorOptions, cb) {
 
     // TODO DEBUG REMOVE
     delete control.parent;
-    $log.debug(control.backField);
+    $log.silly('control.backField', control.backField);
 
     // choose a generator
     return handler(control, schema, generatorOptions, function(err, html) {

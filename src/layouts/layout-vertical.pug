@@ -1,7 +1,7 @@
 div.control-container.form-group.has-feedback(
   ng-class= "{" +
-    "'has-error': (" + control.formModel +".$touched || " + form_path +".$dirty) && " + control.formModel +".$invalid," +
-    "'has-success': " + control.formModel +".$valid" +
+    `'has-error': (${control.formModelExpr}.$touched || ${control.formModel}.$dirty) && ${control.formModelExpr}.$invalid,` +
+    `'has-success': ${control.formModelExpr}.$valid` +
   "}"
   id=`${control.backField.name}-container`
   )&attributes(control.container)

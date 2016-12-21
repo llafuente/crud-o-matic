@@ -1,9 +1,9 @@
 div.form-group.row.has-feedback(
   ng-class= "{" +
-    `'has-error': (${control.formModel}.$touched || ${control.formModel}.$dirty) && ${control.formModel}.$invalid,` +
-    `'has-success': ${control.formModel}.$valid` +
+    `'has-error': (${control.formModelExpr}.$touched || ${control.formModel}.$dirty) && ${control.formModelExpr}.$invalid,` +
+    `'has-success': ${control.formModelExpr}.$valid` +
   "}"
-  id= control.backField.name + "-container"
+  id=`${control.backField.name}-container`
   )&attributes(control.container)
   block labelBlock
     label.col-xs-4.col-form-label.form-control-label(for=control.backField.name translate="")= control.frontField.label || control.backField.label
@@ -16,9 +16,9 @@ div.form-group.row.has-feedback(
 
   if control.frontField.help
     div.clearfix
-    div.col-xs-offset-4.col-xs-8.form-text.text-muted(translate="")= control.frontField.help
+    div.offset-xs-4.col-xs-8.form-text.text-muted(translate="")= control.frontField.help
 
   div.clearfix
   block errorsBlock
-    div.col-xs-offset-4.col-xs-8.error-list
+    div.offset-xs-4.col-xs-8.error-list
       include errors-list.pug

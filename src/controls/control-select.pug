@@ -2,7 +2,7 @@ block controlBlock
   select.form-control(
     id="control-" + control.backField.name
     type="password"
-    name=control.backField.name
+    name=control.formName
     ng-model=control.model
     ng-options=`c._id as c.label for c in ${control.cfgModel}_values`
   )&attributes(control.frontField.attributes)

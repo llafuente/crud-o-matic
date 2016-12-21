@@ -31,6 +31,24 @@
     ]
   },
   "peerDependencies": {
-    "mkdirp": "^0.5.1"
+    "ajv": "^4.10.0",
+    "async": "^2.1.4",
+    "body-parser": "^1.15.2",
+    "csv-write-stream": "^2.0.0",
+    "ejs": "^2.5.5",
+    "express": "^4.14.0",
+    "express-jwt": "^5.1.0",
+    "js-yaml": "^3.7.0",
+    "jsontoxml": "0.0.11",
+    "jsonwebtoken": "^7.2.1",
+    "lodash": "^4.17.2",
+    "method-override": "^2.3.7",
+    "mkdirp": "^0.5.1",
+    "mongoose": "^4.7.2",
+    "mongoose-timestamp": "^0.6.0",
+    "mongoosemask": "0.0.6",
+    "pluralize": "^3.1.0",
+    "pug": "^2.0.0-beta6",
+    "winston": "^2.3.0"
   }
 }

@@ -11,7 +11,10 @@ import 'checklist-model';
 // taTools is expected to be global!
 // use this workaround
 window.taTools = window.taTools || {};
-import 'rangy/lib/rangy-selectionsaverestore';
+import rangy from 'rangy';
+window.rangy = rangy;
+import selectionsaverestore from 'rangy/lib/rangy-selectionsaverestore.js';
+window.rangy.saveSelection = selectionsaverestore;
 import 'textangular/dist/textAngular-sanitize.js';
 import 'textangular/dist/textAngularSetup.js';
 import 'textangular/dist/textAngular.js';

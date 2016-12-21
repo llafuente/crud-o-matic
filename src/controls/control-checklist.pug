@@ -7,7 +7,7 @@ block contentBlock
             id=`${control.backField.name}-{{$index}}`
             type="checkbox"
             checklist-model=control.model
-            name=control.backField.name
+            name=control.formName
             checklist-value="item._id"
           )
           span {{item.label}}
