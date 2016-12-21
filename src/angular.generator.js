@@ -28,6 +28,8 @@ const templates = {
   routes: load(join(__dirname, 'angular', 'routes.config.js')),
   listHTML: loadPug(join(__dirname, 'templates', 'list.pug')),
   list: load(join(__dirname, 'angular', 'list.controller.js')),
+  app: load(join(__dirname, 'angular', 'app.js')),
+
 };
 
 
@@ -43,6 +45,21 @@ module.exports = function(generator, schema, generatorOptions, cb) {
     func(generator, schema, generatorOptions, next);
   }, cb);
 };
+module.exports.app = function(generator, generatorOptions, cb) {
+  const routesJS = templates.app({
+    schemas: Object.keys(generator.schemas),
+    generatorOptions: generatorOptions,
+  });
+
+  const routeFile = join(
+    generator.config.angularPath,
+    `app.js`
+  );
+
+  fs.writeFileSync(routeFile, routesJS, {encoding: 'utf-8'});
+
+  cb();
+}
 
 function routesConfig(generator, schema, generatorOptions, cb) {
   const routesJS = templates.routes({

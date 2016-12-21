@@ -260,7 +260,7 @@
                   "type": "string"
                 },
                 "type": {
-                  "enum": ["text", "number", "email", "password", "date", "select", "checklist", "static", "textarea", "list"]
+                  "enum": ["text", "number", "email", "password", "date", "select", "checklist", "static", "textarea", "list", "richtext"]
                 }
               }
             }

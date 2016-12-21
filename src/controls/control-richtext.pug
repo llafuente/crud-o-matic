@@ -1,0 +1,7 @@
+block controlBlock
+  text-angular.form-control(
+    id="control-" + control.backField.name
+    type="text"
+    name=control.backField.name
+    ng-model=control.model
+  )&attributes(control.frontField.attributes)

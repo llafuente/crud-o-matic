@@ -15,6 +15,7 @@ const handlers = {
   checklist: generateDefaultControl,
   static: generateDefaultControl,
   textarea: generateDefaultControl,
+  richtext: generateDefaultControl,
   list: generateList,
 };
 

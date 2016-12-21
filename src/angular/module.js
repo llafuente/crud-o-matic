@@ -6,13 +6,25 @@ import <%= schema.getName() %>Routes from './<%= schema.getName() %>.routes.conf
 import angular from 'angular';
 import 'angular-smart-table';
 import 'checklist-model';
+
+// textAngular is a bit broken
+// taTools is expected to be global!
+// use this workaround
+window.taTools = window.taTools || {};
+import 'rangy/lib/rangy-selectionsaverestore';
+import 'textangular/dist/textAngular-sanitize.js';
+import 'textangular/dist/textAngularSetup.js';
+import 'textangular/dist/textAngular.js';
+
 import stDateRange from './st-date-range.js';
 import stSelect from './st-select.js';
+
 
 angular
 .module('<%= schema.getName() %>Entity', [
   'smart-table',
   'checklist-model',
+  'textAngular',
   stDateRange,
   stSelect,
 ])

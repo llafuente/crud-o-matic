@@ -81,9 +81,10 @@ module.exports = class Generator extends EventEmitter {
     });
   }
   generateDependencies(cb) {
-    const next = _.after(3, cb);
+    const next = _.after(4, cb);
 
     expressGenerator.app(this, {}, next);
+    angularGenerator.app(this, {}, next)
 
     eachSeries([
       path.join(__dirname, '..', 'angular', 'st-date-range.js'),
