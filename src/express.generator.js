@@ -53,7 +53,7 @@ function useDefault(key) {
       generatorOptions: generatorOptions,
     });
     const routeFile = join(
-      generator.config.generationPath,
+      generator.config.expressPath,
       `${schema.getName()}.express.${key}.js`
     );
 

@@ -8,10 +8,15 @@ const theGenerator = require('../../index.js');
 const sinon = require('sinon');
 const cheerio = require('cheerio');
 const supertest = require('supertest');
+const rmrf = require('rimraf').sync;
 
 testUtils.start(test);
-const generationPath = path.join(__dirname, 'tmp');
-//const generationPath = '/home/llafuente/angular-stack/app/entities'
+
+const angularPath = path.join(__dirname, 'tmp', 'angular');
+const expressPath = path.join(__dirname, 'tmp', 'express');
+
+rmrf(path.join(__dirname, 'tmp'));
+
 let g;
 test('instance theGenerator', function(t) {
   //require("fs").mkdirSync(generationPath);
@@ -20,8 +25,9 @@ test('instance theGenerator', function(t) {
       secret: 'xxx'
     },
     apiBasePath: '/api',
-    generationPath: generationPath,
-    mongoose: mongoose
+    mongoose: mongoose,
+    angularPath: angularPath,
+    expressPath: expressPath,
   });
 
   g.schemaFile(path.join(__dirname, 'list.yml'));

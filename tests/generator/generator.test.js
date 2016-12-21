@@ -8,20 +8,24 @@ const theGenerator = require('../../index.js');
 const sinon = require('sinon');
 const cheerio = require('cheerio');
 const supertest = require('supertest');
+const rmrf = require('rimraf').sync;
 
 testUtils.start(test);
-const generationPath = path.join(__dirname, 'tmp');
-//const generationPath = '/home/llafuente/angular-stack/app/entities'
+const angularPath = path.join(__dirname, 'tmp', 'angular');
+const expressPath = path.join(__dirname, 'tmp', 'express');
+
+rmrf(path.join(__dirname, 'tmp'));
+
 let g;
 test('instance theGenerator', function(t) {
-  //require("fs").mkdirSync(generationPath);
   g = theGenerator({
     auth: {
       secret: 'xxx'
     },
     apiBasePath: '/api',
-    generationPath: generationPath,
-    mongoose: mongoose
+    mongoose: mongoose,
+    angularPath: angularPath,
+    expressPath: expressPath,
   });
 
   t.ok(!!g.schemas.permission);
@@ -395,13 +399,13 @@ test('check role.create.tpl.html', function(t) {
   g.generateForm(g.schemas.role, 'create', function(err) {
     t.error(err);
 
-    const filename = path.join(generationPath, 'role.create.tpl.html');
+    const filename = path.join(angularPath, 'role.create.tpl.html');
     const html = testUtils.checkHTML(t, filename);
 
     const $ = cheerio.load(html);
 
     t.equal($('.form-vertical').toArray().length, 1);
-    t.equal($('.control-container').toArray().length, 2);
+    t.equal($('.form-group').toArray().length, 2);
     t.equal($('input').toArray().length, 2);
     t.equal($('button').toArray().length, 1);
 
@@ -414,13 +418,13 @@ test('check role.update.tpl.html', function(t) {
   g.generateForm(g.schemas.role, 'update', function(err) {
     t.error(err);
 
-    const filename = path.join(generationPath, 'role.update.tpl.html');
+    const filename = path.join(angularPath, 'role.update.tpl.html');
     const html = testUtils.checkHTML(t, filename);
 
     const $ = cheerio.load(html);
 
     t.equal($('.form-vertical').toArray().length, 1);
-    t.equal($('.control-container').toArray().length, 3);
+    t.equal($('.form-group').toArray().length, 3);
     t.equal($('input').toArray().length, 2);
     t.equal($('button').toArray().length, 1);
 
@@ -438,7 +442,7 @@ test('check front fields for create role', function(t) {
 });
 // this are just smoke tests
 test('check role.list.tpl.html', function(t) {
-  const filename = path.join(generationPath, 'role.list.tpl.html');
+  const filename = path.join(angularPath, 'role.list.tpl.html');
   const html = testUtils.checkHTML(t, filename);
 
   const $ = cheerio.load(html);
@@ -449,11 +453,11 @@ test('check role.list.tpl.html', function(t) {
 });
 
 test('check all js files', function(t) {
-  testUtils.checkJS(t, path.join(generationPath, 'role.create.controller.js'));
-  testUtils.checkJS(t, path.join(generationPath, 'role.list.controller.js'));
-  testUtils.checkJS(t, path.join(generationPath, 'role.module.js'));
-  testUtils.checkJS(t, path.join(generationPath, 'role.routes.config.js'));
-  testUtils.checkJS(t, path.join(generationPath, 'role.update.controller.js'));
+  testUtils.checkJS(t, path.join(angularPath, 'role.create.controller.js'));
+  testUtils.checkJS(t, path.join(angularPath, 'role.list.controller.js'));
+  testUtils.checkJS(t, path.join(angularPath, 'role.module.js'));
+  testUtils.checkJS(t, path.join(angularPath, 'role.routes.config.js'));
+  testUtils.checkJS(t, path.join(angularPath, 'role.update.controller.js'));
 
   t.end();
 });
@@ -468,27 +472,27 @@ test('g.generateAll', function(t) {
 test('smoke test for everything generated', function(t) {
   ['role', 'permission', 'user'].forEach(function(entity) {
     // angular
-    testUtils.checkJS(t, path.join(generationPath, `${entity}.create.controller.js`));
-    testUtils.checkJS(t, path.join(generationPath, `${entity}.list.controller.js`));
-    testUtils.checkJS(t, path.join(generationPath, `${entity}.module.js`));
-    testUtils.checkJS(t, path.join(generationPath, `${entity}.routes.config.js`));
-    testUtils.checkJS(t, path.join(generationPath, `${entity}.update.controller.js`));
+    testUtils.checkJS(t, path.join(angularPath, `${entity}.create.controller.js`));
+    testUtils.checkJS(t, path.join(angularPath, `${entity}.list.controller.js`));
+    testUtils.checkJS(t, path.join(angularPath, `${entity}.module.js`));
+    testUtils.checkJS(t, path.join(angularPath, `${entity}.routes.config.js`));
+    testUtils.checkJS(t, path.join(angularPath, `${entity}.update.controller.js`));
 
     // templates
-    testUtils.checkHTML(t, path.join(generationPath, `${entity}.list.tpl.html`));
-    testUtils.checkHTML(t, path.join(generationPath, `${entity}.create.tpl.html`));
-    testUtils.checkHTML(t, path.join(generationPath, `${entity}.update.tpl.html`));
+    testUtils.checkHTML(t, path.join(angularPath, `${entity}.list.tpl.html`));
+    testUtils.checkHTML(t, path.join(angularPath, `${entity}.create.tpl.html`));
+    testUtils.checkHTML(t, path.join(angularPath, `${entity}.update.tpl.html`));
 
     // express
-    testUtils.checkJS(t, path.join(generationPath, `${entity}.express.create.js`));
-    testUtils.checkJS(t, path.join(generationPath, `${entity}.express.destroy.js`));
-    testUtils.checkJS(t, path.join(generationPath, `${entity}.express.list.js`));
-    testUtils.checkJS(t, path.join(generationPath, `${entity}.express.read.js`));
-    testUtils.checkJS(t, path.join(generationPath, `${entity}.express.router.js`));
-    testUtils.checkJS(t, path.join(generationPath, `${entity}.express.update.js`));
+    testUtils.checkJS(t, path.join(expressPath, `${entity}.express.create.js`));
+    testUtils.checkJS(t, path.join(expressPath, `${entity}.express.destroy.js`));
+    testUtils.checkJS(t, path.join(expressPath, `${entity}.express.list.js`));
+    testUtils.checkJS(t, path.join(expressPath, `${entity}.express.read.js`));
+    testUtils.checkJS(t, path.join(expressPath, `${entity}.express.router.js`));
+    testUtils.checkJS(t, path.join(expressPath, `${entity}.express.update.js`));
   });
 
-  testUtils.checkJS(t, path.join(generationPath, 'user.express.authentication.js'));
+  testUtils.checkJS(t, path.join(expressPath, 'user.express.authentication.js'));
 
   t.end();
 });
@@ -503,16 +507,16 @@ test('configure a server to include all routers', function(t) {
   app.use(require('body-parser').json());
   app.use(require('body-parser').urlencoded());
   app.use(
-    require(path.join(generationPath, 'user.express.authentication.js'))(g, g.schemas.role)
+    require(path.join(expressPath, 'user.express.authentication.js'))(g, g.schemas.role)
   );
   app.use(
-    require(path.join(generationPath, 'role.express.router.js'))(g, g.schemas.role)
+    require(path.join(expressPath, 'role.express.router.js'))(g, g.schemas.role)
   );
   app.use(
-    require(path.join(generationPath, 'permission.express.router.js'))(g, g.schemas.permission)
+    require(path.join(expressPath, 'permission.express.router.js'))(g, g.schemas.permission)
   );
   app.use(
-    require(path.join(generationPath, 'user.express.router.js'))(g, g.schemas.user)
+    require(path.join(expressPath, 'user.express.router.js'))(g, g.schemas.user)
   );
 
   t.end();

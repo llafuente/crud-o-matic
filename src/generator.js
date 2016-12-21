@@ -11,6 +11,7 @@ const angularGenerator = require('./angular.generator.js');
 const expressGenerator = require('./express.generator.js');
 const eachSeries = require('async/eachSeries');
 const eachOfSeries = require('async/eachOfSeries');
+const mkdirp = require('mkdirp').sync;
 
 module.exports = class Generator extends EventEmitter {
   constructor(config) {
@@ -21,9 +22,15 @@ module.exports = class Generator extends EventEmitter {
     this.mongoose = config.mongoose;
     //this.models = this.mongoose.models;
 
-    if (!this.config.generationPath) {
-      throw new Error('generationPath is required in config');
+    if (!this.config.angularPath) {
+      throw new Error('config.angularPath is required in config');
     }
+    if (!this.config.expressPath) {
+      throw new Error('config.expressPath is required in config');
+    }
+
+    mkdirp(this.config.angularPath);
+    mkdirp(this.config.expressPath);
 
     this.mongoose.model('autoincrements', new this.mongoose.Schema({
       _id: {
@@ -118,18 +125,27 @@ module.exports = class Generator extends EventEmitter {
     this.generateDependencies(next);
   }
 
-  generateDependencies(next) {
+  generateDependencies(cb) {
+    const next = _.after(2, cb);
+
     eachSeries([
       path.join(__dirname, '..', 'angular', 'st-date-range.js'),
       path.join(__dirname, '..', 'angular', 'st-date-range.tpl.html'),
       path.join(__dirname, '..', 'angular', 'st-select.js'),
+    ], function(file, next2) {
+      const content = fs.readFileSync(file, 'utf-8');
+      fs.writeFileSync(path.join(this.config.angularPath, path.basename(file)), content, 'utf-8');
+      next2();
+    }.bind(this), next);
+
+    eachSeries([
       path.join(__dirname, '..', 'server', 'authorization.js'),
       path.join(__dirname, '..', 'server', 'clean-body.js'),
       path.join(__dirname, '..', 'server', 'error-handler.js'),
       path.join(__dirname, '..', 'server', 'http-error.js'),
     ], function(file, next2) {
       const content = fs.readFileSync(file, 'utf-8');
-      fs.writeFileSync(path.join(this.config.generationPath, path.basename(file)), content, 'utf-8');
+      fs.writeFileSync(path.join(this.config.expressPath, path.basename(file)), content, 'utf-8');
       next2();
     }.bind(this), next);
   }

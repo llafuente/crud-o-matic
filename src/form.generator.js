@@ -170,7 +170,7 @@ module.exports = function(generator, schema, generatorOptions, cb) {
     }
 
     const targetFilename = join(
-      generator.config.generationPath,
+      generator.config.angularPath,
       `${schema.getName()}.${generatorOptions.action}.tpl.html`
     );
 

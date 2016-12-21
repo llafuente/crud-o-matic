@@ -51,7 +51,7 @@ function routesConfig(generator, schema, generatorOptions, cb) {
     generatorOptions: generatorOptions,
   });
   const routeFile = join(
-    generator.config.generationPath,
+    generator.config.angularPath,
     `${schema.getName()}.routes.config.js`
   );
 
@@ -68,7 +68,7 @@ function listController(generator, schema, generatorOptions, cb) {
   });
 
   const routeFile = join(
-    generator.config.generationPath,
+    generator.config.angularPath,
     `${schema.getName()}.list.controller.js`
   );
 
@@ -91,7 +91,7 @@ function listHTML(generator, schema, generatorOptions, cb) {
     listableFields: listableFields,
   });
   const routeFile = join(
-    generator.config.generationPath,
+    generator.config.angularPath,
     `${schema.getName()}.list.tpl.html`
   );
 
@@ -115,7 +115,7 @@ function createController(generator, schema, generatorOptions, cb) {
       controlsJS: controlsJS,
     });
     const createFile = join(
-      generator.config.generationPath,
+      generator.config.angularPath,
       `${schema.getName()}.create.controller.js`
     );
 
@@ -141,7 +141,7 @@ function updateController(generator, schema, generatorOptions, cb) {
       controlsJS: controlsJS,
     });
     const updateFile = join(
-      generator.config.generationPath,
+      generator.config.angularPath,
       `${schema.getName()}.update.controller.js`
     );
 
@@ -158,7 +158,7 @@ function moduleInit(generator, schema, generatorOptions, cb) {
     generatorOptions: generatorOptions,
   });
   const moduleFile = join(
-    generator.config.generationPath,
+    generator.config.angularPath,
     `${schema.getName()}.module.js`
   );
 
