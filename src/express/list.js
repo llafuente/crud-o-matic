@@ -6,12 +6,18 @@
 /* eslint-disable no-unreachable*/
 
 // sent for consistency
-let generator; // eslint-disable-line no-unused-vars
+let model;
 let schema;
 
-module.exports = function(_gen, _sch) {
-  generator = _gen;
-  schema = _sch;
+module.exports = function(mongoose) {
+  model = mongoose.models.<%= schema.getPlural(); %>;
+  schema = mongoose.modelSchemas.<%= schema.getPlural(); %>;
+
+  //TODO remove this!
+  schema.isPathRestricted = function() {
+    return false;
+  }
+
 };
 
 
@@ -42,7 +48,7 @@ function typeCanBePopulated(type) {
 }
 
 function listQuery(user, where, sort, limit, offset, populate, next) {
-  let query = mongoose.models.<%= schema.getName() %>.find({});
+  let query = model.find({});
   let qcount = (query.toConstructor())().count();
   let path;
 
@@ -118,7 +124,7 @@ function listQuery(user, where, sort, limit, offset, populate, next) {
   const ss = sort.split(' ');
   for (let i = 0; i < ss.length; ++i) {
     path = ss[i][0] === '-' ? ss[i].substring(1) : ss[i];
-    const options = schema.mongooseSchema.path(path);
+    const options = schema.path(path);
     if (!options) {
       err = new ValidationError(null);
       err.errors.sort = {
@@ -160,7 +166,7 @@ function listQuery(user, where, sort, limit, offset, populate, next) {
 
   for (let i = 0; i < populate.length; ++i) {
     path = populate[i];
-    const options = schema.mongooseSchema.path(path);
+    const options = schema.path(path);
     if (!options) {
       err = new ValidationError(null);
       err.errors.populate = {
@@ -199,7 +205,7 @@ function listQuery(user, where, sort, limit, offset, populate, next) {
 
   // where
   for (path in where) { // eslint-disable-line guard-for-in
-    const options = schema.mongooseSchema.path(path);
+    const options = schema.path(path);
     if (!options) {
       err = new ValidationError(null);
       err.errors.populate = {
@@ -332,7 +338,7 @@ function xmlListQuery(req, res, next) {
     }
     req.list.query.lean(true);
 
-    res.write(`<${schema.getPlural()}>`);
+    res.write(`<<%= schema.getPlural() %>>`);
     return req.list.query
     .stream()
     .on('data', function(d) {
@@ -355,11 +361,11 @@ function xmlListQuery(req, res, next) {
       });
     })
     .on('error', function() {
-      res.write(`</${schema.getPlural()}>`);
+      res.write(`</<%= schema.getPlural() %>}>`);
       res.end();
     })
     .on('close', function() {
-      res.write(`</${schema.getPlural()}>`);
+      res.write(`</<%= schema.getPlural() %>>`);
       res.end();
     });
   }

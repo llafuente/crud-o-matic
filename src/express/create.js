@@ -1,9 +1,15 @@
-module.exports = create;
-module.exports.middleware = createMiddleware;
+const cleanBody = require('./clean-body.js');
+const HttpError = require('./http-error.js');
+let model;
+//let schema;
 
-const mongoose = require('mongoose');
-const cleanBody = require('<%= generatorOptions.componentsPath %>/clean-body.js');
-const HttpError = require('<%= generatorOptions.componentsPath %>/http-error.js');
+module.exports = function(mongoose) {
+  model = mongoose.models.<%= schema.getPlural(); %>;
+  //schema = mongoose.modelSchemas.<%= schema.getPlural(); %>;
+};
+
+module.exports.create = create;
+module.exports.middleware = createMiddleware;
 
 function create(data, next) {
   cleanBody(data);
@@ -14,7 +20,7 @@ function create(data, next) {
   // TODO remove restricted
   //data = meta.$express.restricted_filter(req.log, req.user, 'create', data);
 
-  return mongoose.models.<%= schema.getName() %>.create(data, function(err, savedRow) {
+  return model.create(data, function(err, savedRow) {
     if (err) {
       return next(err);
     }

@@ -1,16 +1,22 @@
-module.exports = read;
+const HttpError = require('./http-error.js');
+let model;
+//let schema;
+
+module.exports = function(mongoose) {
+  model = mongoose.models.<%= schema.getPlural(); %>;
+  //schema = mongoose.modelSchemas.<%= schema.getPlural(); %>;
+};
+
+module.exports.read = read;
 module.exports.middleware = middleware;
 module.exports.readNullable = readNullable;
-
-const mongoose = require('mongoose');
-const HttpError = require('<%= generatorOptions.componentsPath %>/http-error.js');
 
 //
 // read model by id
 // Return the data or throws (to next)
 //
 function read(id, req, res, next) {
-  mongoose.models['<%= schema.getName() %>'].findById(id, function(err, entity) {
+  model.findById(id, function(err, entity) {
     /* istanbul ignore next */ if (err) {
       return next(err);
     }
@@ -33,7 +39,7 @@ function middleware(storeAt) {
       }
 
       req[storeAt] = output;
-      next();
+      return next();
     });
   };
 }
@@ -41,7 +47,7 @@ function middleware(storeAt) {
 
 /* istanbul ignore next */
 function readNullable(meta, id, req, res, next) {
-  meta.$model.findById(id, function(err, entity) {
+  model.findById(id, function(err, entity) {
     if (err) {
       return next(err);
     }

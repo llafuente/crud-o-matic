@@ -13,13 +13,12 @@ function encryptPassword(password, salt) {
   return crypto.pbkdf2Sync(password, saltBuff, 10000, 64).toString('base64');
 }
 
-module.exports = function(generator, schema) {
-  const secret = generator.config.auth.secret;
+module.exports = function(secret, schema) {
   if (!secret) {
     throw new Error('Generator config missing auth.secret');
   }
 
-  schema.mongooseSchema.pre('save', function savePasswordHash(next) {
+  schema.pre('save', function savePasswordHash(next) {
     if (this.isModified('password')) {
       this.salt = makeSalt();
       this.password = encryptPassword(this.password, this.salt);
@@ -28,7 +27,7 @@ module.exports = function(generator, schema) {
     next();
   });
 
-  schema.mongooseSchema.pre('update', function updatePasswordHash(next) {
+  schema.pre('update', function updatePasswordHash(next) {
     const pwd = this._update.$set.password;
     if (pwd) {
       const salt = makeSalt();
@@ -43,11 +42,11 @@ module.exports = function(generator, schema) {
   /**
    * Authenticate - check if the passwords are the same
    */
-  schema.mongooseSchema.methods.authenticate = function authenticate(plainText) {
+  schema.methods.authenticate = function authenticate(plainText) {
     return encryptPassword(plainText, this.salt) === this.password;
   };
 
-  schema.mongooseSchema.methods.hasPermission = function hasPermission(perm) {
+  schema.methods.hasPermission = function hasPermission(perm) {
     if (this.permissions.indexOf(perm) === -1) {
       // look at roles
       let found = false;
@@ -66,7 +65,7 @@ module.exports = function(generator, schema) {
 
   // TODO do it!
   /* istanbul ignore next */
-  schema.mongooseSchema.methods.filterQuery = function filterQuery(query, cb) {
+  schema.methods.filterQuery = function filterQuery(query, cb) {
     if (!this.populated('roles')) {
       this.populate('roles', function(err, user) {
         if (err) {

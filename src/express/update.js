@@ -1,9 +1,11 @@
+// NOTE update don't need mongoose instance
+
 module.exports = update;
 module.exports.middleware = middleware;
 
 //const mongoose = require('mongoose');
-const cleanBody = require('<%= generatorOptions.componentsPath %>/clean-body.js');
-const HttpError = require('<%= generatorOptions.componentsPath %>/http-error.js');
+const cleanBody = require('./clean-body.js');
+const HttpError = require('./http-error.js');
 
 function update(user, row, data, next) {
   cleanBody(data);

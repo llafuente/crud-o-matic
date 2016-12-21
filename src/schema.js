@@ -1,7 +1,7 @@
-const timestamps = require('mongoose-timestamp');
 const join = require('path').join;
 const _ = require('lodash');
 const pluralize = require('pluralize');
+const fs = require('fs');
 
 const ajv = require('ajv')({
   allErrors: true
@@ -24,70 +24,13 @@ module.exports = class Schema {
     this.schema = schemaObj;
 
     // duplicate the Schema
-    const mongooseSchema = _.cloneDeep(schemaObj.backend.schema);
-    simplifySchema(mongooseSchema);
-    $log.silly('simplified mongoose schema', mongooseSchema);
+    this.mongooseSchema = _.cloneDeep(schemaObj.backend.schema);
+    simplifySchema(this.mongooseSchema);
+    $log.silly('simplified mongoose schema', this.mongooseSchema);
 
     // cleanup
-    delete mongooseSchema.created_at;
-    delete mongooseSchema.updated_at;
-
-    this.mongooseSchema = new generator.mongoose.Schema(mongooseSchema, schemaObj.backend.options);
-    this.mongooseSchema.plugin(timestamps, {
-      createdAt: 'created_at',
-      updatedAt: 'updated_at'
-    });
-
-    // TODO is this really necessary?
-    /*
-    this.mongooseSchema.methods.setRequest = function(req) {
-      this.$req = req;
-    };
-    */
-
-    // autoincrements id
-    this.mongooseSchema.set('autoIndex', true);
-    this.mongooseSchema.pre('save', function(next) {
-      $log.debug('fetch a readble id');
-      const self = this;
-      if (this.isNew) {
-        return generator.mongoose.models.autoincrements.findOneAndUpdate({
-          _id: schemaObj.plural
-        }, {
-          $inc: {
-            autoinc: 1
-          },
-          $setOnInsert: {
-            _id: schemaObj.plural,
-            //autoinc: 1
-          }
-        }, {
-          'new': true,
-          upsert: true,
-        }, function (err, res) {
-          if (!err) {
-            self.id = res.autoinc;
-            //self.update('id', res.autoinc);
-          }
-
-          next(err);
-        });
-      }
-
-      return next(null);
-    });
-    /*
-    this.mongooseSchema.pre('save', function(next) {
-      // search for a user!
-      // request must be set!
-      if (!this.$req) {
-        $log.warn('setRequest should be called');
-        //throw new Error('setRequest must be called before save');
-      }
-
-      next();
-    });
-    */
+    delete this.mongooseSchema.created_at;
+    delete this.mongooseSchema.updated_at;
 
     this.schema.plural = this.schema.plural || pluralize(this.getName());
     $log.silly('plural ${this.schema.plural}');
@@ -125,16 +68,17 @@ module.exports = class Schema {
   getPlural() {
     return this.schema.singular;
   }
-  getModel() {
-    if (!this.mongooseModel) {
-      throw new Error(`${this.getName()} need to be finalized first`);
-    }
-    return this.mongooseModel; // TODO
-  }
-  finalize() {
-    if (!this.mongooseModel) {
-      this.mongooseModel = this.generator.mongoose.model(this.getPlural(), this.mongooseSchema);
-    }
+
+  saveToJSON(cb) {
+    // save
+    const JSONFile = join(this.generator.config.expressPath, `${this.getName()}.schema.json`);
+    fs.writeFileSync(JSONFile, JSON.stringify({
+      plural: this.getPlural(),
+      schema: this.mongooseSchema,
+      options: this.schema.backend.options, // TODO maybe cloneDeep at start...
+    }, null, 2), 'utf-8');
+
+    cb();
   }
 
   // TODO
@@ -210,7 +154,7 @@ module.exports = class Schema {
     this.eachFrontForm(action, function(control, entering) {
       $log.silly(`field: ${control.backField.name} entering? ${entering} lists ${listControls.length}`);
 
-      if (control.frontField.type == 'list') {
+      if (control.frontField.type === 'list') {
         if (entering) { // entering in a list. push!
           listControls.push([]);
         } else { // leaving a list. pop!

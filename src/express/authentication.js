@@ -1,20 +1,20 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const expressJwt = require('express-jwt');
-const HttpError = require('<%= generatorOptions.componentsPath %>/http-error.js');
-const errorHandler = require('<%= generatorOptions.componentsPath %>/error-handler.js');
+const HttpError = require('./http-error.js');
+const errorHandler = require('./error-handler.js');
 // prio:
 // * /users/auth, first so we can always login, even with
 // and invalid session
 // * jwt token validation
 // * get user from database
 // * the rest
-module.exports = function(generator, schema) {
+module.exports = function(mongoose) {
   const secret = '<%= config.auth.secret %>';
-  const r = express.Router();
+  const r = express.Router(); // eslint-disable-line new-cap
 
   r.post('<%= schema.apiUrls.list %>/auth', function(req, res, next) {
-    generator.mongoose.models.user.findOne({
+    mongoose.models.user.findOne({
       username: req.body.username
     }, function(err, user) {
       /* istanbul ignore next */ if (err) {
@@ -65,7 +65,7 @@ module.exports = function(generator, schema) {
 
     $log.silly('regenerate session: ' + req.user.id.toString());
 
-    return generator.mongoose.models.user
+    return mongoose.models.user
     .findOne({
       _id: req.user.id
     })
@@ -98,7 +98,7 @@ module.exports = function(generator, schema) {
     //  res.status(200).json(output);
     //});
 
-    res.status(200).json(u);
+    return res.status(200).json(u);
   });
 
   r.use(errorHandler);

@@ -5,7 +5,6 @@ const _ = require('lodash');
 const test = require('tap').test;
 const testUtils = require('../test.utils.js');
 const theGenerator = require('../../index.js');
-const sinon = require('sinon');
 const cheerio = require('cheerio');
 const supertest = require('supertest');
 const rmrf = require('rimraf').sync;
@@ -34,70 +33,7 @@ test('instance theGenerator', function(t) {
   t.ok(!!g.schemas.role.mongooseSchema);
   t.ok(!!g.schemas.user);
   t.ok(!!g.schemas.user.mongooseSchema);
-  t.ok(!!mongoose.models.autoincrements);
 
-
-  t.end();
-});
-
-test('check role paths', function(t) {
-  const paths = [];
-  g.schemas.role.mongooseSchema.eachPath(function(name) {
-    paths.push(name);
-  });
-
-  t.deepEqual(paths, [
-    '_id',
-    'label',
-    'permissions',
-    'id',
-    '__v',
-    'updated_at',
-    'created_at',
-  ]);
-
-  t.end();
-});
-
-test('check permission paths', function(t) {
-  const paths = [];
-  g.schemas.permission.mongooseSchema.eachPath(function(name) {
-    paths.push(name);
-  });
-
-  t.deepEqual(paths, [
-    '_id',
-    'label',
-    'id',
-    '__v',
-    'updated_at',
-    'created_at',
-  ]);
-
-  t.end();
-});
-
-test('check user paths', function(t) {
-  const paths = [];
-  g.schemas.user.mongooseSchema.eachPath(function(name) {
-    paths.push(name);
-  });
-
-  t.deepEqual(paths, [
-    'id',
-    'username',
-    'password',
-    'salt',
-    'roles',
-    'permissions',
-    'state',
-    'data.first_name',
-    'data.last_name',
-    '_id',
-    '__v',
-    'updated_at',
-    'created_at',
-  ]);
 
   t.end();
 });
@@ -117,37 +53,6 @@ test('check user apiUrls/permissions', function(t) {
     'read': 'permission-users-read',
     'update': 'permission-users-update',
   });
-
-  t.end();
-});
-
-test('check invalid model', function(t) {
-  t.throws(function() {
-    g.schemas.permission.getModel();
-  }, new Error('permission need to be finalized first'));
-
-  t.end();
-});
-
-test('finalize generator', function(t) {
-  const callbackStart = sinon.spy();
-  const callbackEnd = sinon.spy();
-  g.on('finalize:start', callbackStart);
-  g.on('finalize:end', callbackEnd);
-  g.finalize();
-
-  setTimeout(function() {
-    t.ok(callbackStart.calledOnce, 'finalize:start called once');
-    t.ok(callbackEnd.calledOnce, 'finalize:end called once');
-    t.end();
-  }, 2000);
-});
-
-
-test('check models', function(t) {
-  t.ok(!!g.mongoose.models.role);
-  t.ok(!!g.mongoose.models.permission);
-  t.ok(!!g.mongoose.models.user);
 
   t.end();
 });
@@ -493,6 +398,8 @@ test('smoke test for everything generated', function(t) {
   });
 
   testUtils.checkJS(t, path.join(expressPath, 'user.express.authentication.js'));
+  testUtils.checkJS(t, path.join(expressPath, 'user.model.override.js'));
+  testUtils.checkJS(t, path.join(expressPath, 'app.js'));
 
   t.end();
 });
@@ -506,22 +413,75 @@ test('configure a server to include all routers', function(t) {
 
   app.use(require('body-parser').json());
   app.use(require('body-parser').urlencoded());
-  app.use(
-    require(path.join(expressPath, 'user.express.authentication.js'))(g, g.schemas.role)
-  );
-  app.use(
-    require(path.join(expressPath, 'role.express.router.js'))(g, g.schemas.role)
-  );
-  app.use(
-    require(path.join(expressPath, 'permission.express.router.js'))(g, g.schemas.permission)
-  );
-  app.use(
-    require(path.join(expressPath, 'user.express.router.js'))(g, g.schemas.user)
-  );
+
+  require(path.join(expressPath, 'app.js'))(mongoose, function(err, router) {
+    app.use(router);
+    t.end();
+  });
+});
+
+
+test('check role paths', function(t) {
+  const paths = [];
+  mongoose.modelSchemas.role.eachPath(function(name) {
+    paths.push(name);
+  });
+
+  t.deepEqual(paths, [
+    '_id',
+    'label',
+    'permissions',
+    'id',
+    '__v',
+    'updated_at',
+    'created_at',
+  ]);
 
   t.end();
 });
 
+test('check permission paths', function(t) {
+  const paths = [];
+  mongoose.modelSchemas.permission.eachPath(function(name) {
+    paths.push(name);
+  });
+
+  t.deepEqual(paths, [
+    '_id',
+    'label',
+    'id',
+    '__v',
+    'updated_at',
+    'created_at',
+  ]);
+
+  t.end();
+});
+
+test('check user paths', function(t) {
+  const paths = [];
+  mongoose.modelSchemas.user.eachPath(function(name) {
+    paths.push(name);
+  });
+
+  t.deepEqual(paths, [
+    'id',
+    'username',
+    'password',
+    'salt',
+    'roles',
+    'permissions',
+    'state',
+    'data.first_name',
+    'data.last_name',
+    '_id',
+    '__v',
+    'updated_at',
+    'created_at',
+  ]);
+
+  t.end();
+});
 
 test('create admin role', function(t) {
   mongoose.models.permission.find({}, function(err, list) {

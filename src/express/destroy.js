@@ -1,10 +1,16 @@
-const mongoose = require("mongoose");
+let model;
+//let schema;
 
-module.exports = destroy;
+module.exports = function(mongoose) {
+  model = mongoose.models.<%= schema.getPlural(); %>;
+  //schema = mongoose.modelSchemas.<%= schema.getPlural(); %>;
+};
+
+module.exports.destroy = destroy;
 module.exports.middleware = destroyMiddleware;
 
 function destroy(id, next) {
-  mongoose.models['<%= schema.getName() %>'].findByIdAndRemove(id, function(err) {
+  model.findByIdAndRemove(id, function(err) {
     /* istanbul ignore next */ if (err) {
       return next(err);
     }

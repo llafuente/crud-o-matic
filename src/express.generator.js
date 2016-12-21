@@ -20,8 +20,8 @@ const templates = {
   read: load(join(__dirname, 'express', 'read.js')),
   update: load(join(__dirname, 'express', 'update.js')),
   authentication: load(join(__dirname, 'express', 'authentication.js')),
+  app: load(join(__dirname, 'express', 'app.js')),
 };
-
 
 module.exports = function(generator, schema, generatorOptions, cb) {
   const todo = [
@@ -45,7 +45,7 @@ module.exports = function(generator, schema, generatorOptions, cb) {
 
 function useDefault(key) {
   return function(generator, schema, generatorOptions, cb) {
-    $log.silly(`generating ${key}`);
+    $log.silly(`generating express ${key}`);
     const routesJS = templates[key]({
       _: _,
       config: generator.config,
@@ -62,3 +62,27 @@ function useDefault(key) {
     cb();
   };
 }
+
+module.exports.app = function(generator, generatorOptions, cb) {
+  $log.silly('generating express app');
+
+  const permissions = {};
+  _.each(generator.schemas, function(schema) {
+    _.each(schema.permissions, function(idPermission, key) {
+      permissions[idPermission] = schema.schema.backend.permissions[key];
+    });
+  });
+
+  const routesJS = templates.app({
+    _: _,
+    schemas: generator.schemas,
+    config: generator.config,
+    generatorOptions: generatorOptions,
+    permissions: permissions,
+  });
+  const routeFile = join(generator.config.expressPath, 'app.js');
+
+  fs.writeFileSync(routeFile, routesJS, {encoding: 'utf-8'});
+
+  cb();
+};

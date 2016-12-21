@@ -5,12 +5,10 @@ const jsYAMl = require('js-yaml');
 const readFileSync = require('fs').readFileSync;
 const _ = require('lodash');
 const Schema = require('./schema.js');
-const userSchemaOverride = require('./models/user.model.js');
 const formGenerator = require('./form.generator.js');
 const angularGenerator = require('./angular.generator.js');
 const expressGenerator = require('./express.generator.js');
 const eachSeries = require('async/eachSeries');
-const eachOfSeries = require('async/eachOfSeries');
 const mkdirp = require('mkdirp').sync;
 
 module.exports = class Generator extends EventEmitter {
@@ -32,22 +30,9 @@ module.exports = class Generator extends EventEmitter {
     mkdirp(this.config.angularPath);
     mkdirp(this.config.expressPath);
 
-    this.mongoose.model('autoincrements', new this.mongoose.Schema({
-      _id: {
-        type: 'String'
-      },
-      autoinc: {
-        type: 'Number'
-      }
-    }, {
-      collection: 'autoincrements'
-    }));
-
-
     this.schemaFile(path.join(__dirname, 'models', 'permissions.model.yml'));
     this.schemaFile(path.join(__dirname, 'models', 'roles.model.yml'));
     this.schemaFile(path.join(__dirname, 'models', 'user.model.yml'));
-    userSchemaOverride(this, this.schemas.user);
   }
 
   schemaFile(pathToModel) {
@@ -71,44 +56,6 @@ module.exports = class Generator extends EventEmitter {
     this.schemas[schema.getName()] = schema;
     return schema;
   }
-  /**
-   * this is the process to convert mongoose schema into models
-   */
-  finalize() {
-    this.emit('finalize:start');
-    // permissions need to be finalized first!
-    this.schemas.permission.finalize();
-
-    eachSeries(this.schemas, function(schema, next) {
-      schema.finalize();
-
-      // now add permissions
-      const perm = this.schemas.permission.getModel();
-
-      eachOfSeries(schema.permissions, function(value, key, next2) {
-        $log.info('permission', value, key);
-
-        return perm.update({
-          _id: value
-        }, {
-          _id: value,
-          label: schema.schema.backend.permissions[key]
-        }, {
-          upsert: true,
-          setDefaultsOnInsert: true
-        }, function(err, data) {
-          $log.info(err, data);
-          next2(err);
-        });
-      }, next);
-    }.bind(this), function(err) {
-      if (err) {
-        throw err;
-      }
-
-      this.emit('finalize:end');
-    }.bind(this));
-  }
 
   forEachSchema(cb) {
     for (const schemaName in this.schemas) { // eslint-disable-line guard-for-in
@@ -117,16 +64,26 @@ module.exports = class Generator extends EventEmitter {
   }
 
   generateAll(cb) {
-    const next = _.after(4, cb);
+    const next = _.after(5, cb);
 
+    this.generateSchemas(next);
     this.generateFormAll(next);
     this.generateAngularAll(next);
     this.generateServerAll(next);
     this.generateDependencies(next);
   }
 
+  generateSchemas(cb) {
+    eachSeries(this.schemas, function(schema, next) {
+      schema.saveToJSON(next);
+    }, function(err) {
+      cb(err);
+    });
+  }
   generateDependencies(cb) {
-    const next = _.after(2, cb);
+    const next = _.after(3, cb);
+
+    expressGenerator.app(this, {}, next);
 
     eachSeries([
       path.join(__dirname, '..', 'angular', 'st-date-range.js'),
@@ -143,6 +100,7 @@ module.exports = class Generator extends EventEmitter {
       path.join(__dirname, '..', 'server', 'clean-body.js'),
       path.join(__dirname, '..', 'server', 'error-handler.js'),
       path.join(__dirname, '..', 'server', 'http-error.js'),
+      path.join(__dirname, '..', 'server', 'user.model.override.js'),
     ], function(file, next2) {
       const content = fs.readFileSync(file, 'utf-8');
       fs.writeFileSync(path.join(this.config.expressPath, path.basename(file)), content, 'utf-8');
@@ -198,7 +156,6 @@ module.exports = class Generator extends EventEmitter {
   }
   generateServer(schema, cb) {
     const generatorOptions = {
-      componentsPath: path.join(__dirname, '..', 'server')
     };
 
     expressGenerator(this, schema, generatorOptions, cb);

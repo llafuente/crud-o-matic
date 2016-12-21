@@ -1,8 +1,10 @@
 export default 'stSelect';
 
+import angular from 'angular';
+
 angular
 .module('stSelect', ['smart-table'])
-.directive('stSelect', [function() {
+.directive('stSelect', ['$log', function($log) {
   return {
     restrict: 'E',
     require: '^stTable',
@@ -29,7 +31,7 @@ angular
 
       $scope.selectedOption = $scope.collection[0]._id;
 
-      console.log($scope.collection);
+      $log.log($scope.collection);
 
       $scope.optionChanged = function(selectedOption) {
         table.search(selectedOption, getPredicate());

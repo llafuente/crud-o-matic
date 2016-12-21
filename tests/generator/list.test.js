@@ -1,13 +1,9 @@
-const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
 const _ = require('lodash');
 const test = require('tap').test;
 const testUtils = require('../test.utils.js');
 const theGenerator = require('../../index.js');
-const sinon = require('sinon');
-const cheerio = require('cheerio');
-const supertest = require('supertest');
 const rmrf = require('rimraf').sync;
 
 testUtils.start(test);
@@ -35,15 +31,9 @@ test('instance theGenerator', function(t) {
   t.end();
 });
 
-test('finalize generator', function(t) {
-  g.on('finalize:end', t.end);
-  g.finalize();
-});
-
 test('check list mongoose:schema/model', function(t) {
   t.ok(!!g.schemas.list);
   t.ok(!!g.schemas.list.mongooseSchema);
-  t.ok(!!g.schemas.list.mongooseModel);
 
   t.end();
 });

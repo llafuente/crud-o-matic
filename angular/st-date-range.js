@@ -1,10 +1,11 @@
 export default 'stDateRange';
 
+import angular from 'angular';
 import template from './st-date-range.tpl.html';
 
 angular
 .module('stDateRange', ['smart-table'])
-.directive('stDateRange', ['$timeout', function($timeout) {
+.directive('stDateRange', [function() {
   return {
     restrict: 'E',
       require: '^stTable',
@@ -18,7 +19,7 @@ angular
         $scope.filter = {};
         var predicateName = attr.predicate;
 
-        $scope.$watch("filter", function(a, b) {
+        $scope.$watch("filter", function(a/*, b*/) {
           if (a.before || a.after) {
             var f = {};
 

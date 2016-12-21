@@ -6,14 +6,14 @@ const list = require('./<%= schema.getName() %>.express.list.js');
 const read = require('./<%= schema.getName() %>.express.read.js');
 const update = require('./<%= schema.getName() %>.express.update.js');
 
-const errorHandler = require('<%= generatorOptions.componentsPath %>/error-handler.js');
-const auth = require('<%= generatorOptions.componentsPath %>/authorization.js');
+const errorHandler = require('./error-handler.js');
+const auth = require('./authorization.js');
 
-module.exports = function(generator, schema) {
+module.exports = function(mongoose) {
   const r = express.Router(); // eslint-disable-line new-cap
   r.use(function(req, res, next) {
     // used by error-handler.js
-    req.schema = schema;
+    req.model = mongoose.model.<%= schema.getName() %>;
 
     next();
   });
@@ -32,7 +32,8 @@ module.exports = function(generator, schema) {
 
 
   <% if (schema.permissions.list) { %>
-    list(generator, schema);
+    list(mongoose);
+
     r.get('<%= schema.apiUrls.list %>', [
       auth.authorization(),
       auth.hasPermission('<%= schema.permissions.list %>'),
@@ -46,6 +47,8 @@ module.exports = function(generator, schema) {
   <% } %>
 
   <% if (schema.permissions.read) { %>
+    read(mongoose);
+
     r.get('<%= schema.apiUrls.read %>', [
       auth.authorization(),
       auth.hasPermission('<%= schema.permissions.read %>'),
@@ -56,6 +59,8 @@ module.exports = function(generator, schema) {
   <% } %>
 
   <% if (schema.permissions.create) { %>
+    create(mongoose);
+
     r.post('<%= schema.apiUrls.create %>', [
       auth.authorization(),
       auth.hasPermission('<%= schema.permissions.create %>'),
@@ -77,6 +82,8 @@ module.exports = function(generator, schema) {
   <% } %>
 
   <% if (schema.permissions.delete) { %>
+    destroy(mongoose);
+
     r.delete('<%= schema.apiUrls.delete %>', [
       auth.authorization(),
       auth.hasPermission('<%= schema.permissions.delete %>'),
