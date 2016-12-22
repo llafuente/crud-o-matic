@@ -224,6 +224,11 @@ module.exports = class Schema {
         control.errors['ng-pattern'] = `${name} no cumple el patrón: ${control.frontField.attributes['ng-pattern']}`;
       }
     }
+
+    // perf: remove some unused watchers
+    if (!Object.keys(control.errors).length) {
+      control.errors = false;
+    }
   }
 
   getButton(name) {
