@@ -95,10 +95,10 @@ function listController(generator, schema, generatorOptions, cb) {
 }
 
 function listHTML(generator, schema, generatorOptions, cb) {
-  const listableFields = [];
-  schema.eachFrontList(function(control) {
+  const listableFields = schema.getFrontList();
+
+  listableFields.forEach(function(control) {
     schema.applyGeneratorOptions(control, generatorOptions);
-    listableFields.push(control);
   });
 
   const routesJS = templates.listHTML({

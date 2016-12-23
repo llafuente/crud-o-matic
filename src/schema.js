@@ -122,6 +122,20 @@ module.exports = class Schema {
     });
   }
 
+  getFrontList() {
+    const controls = [];
+    const order = Object.keys(this.schema.frontend.list);
+
+    this.eachFrontList(function(control, entering) {
+      controls.push(control);
+    });
+
+    // return shorted controls
+    return controls.sort(function(control, control2) {
+      return order.indexOf(control.realpath) - order.indexOf(control2.realpath);
+    });
+  }
+
   eachFrontForm(action, cb) {
     const list = this.schema.frontend.forms;
 
@@ -150,6 +164,7 @@ module.exports = class Schema {
   getFrontForm(action) {
     const controls = [];
     const listControls = [];
+    const order = Object.keys(this.schema.frontend.forms);
 
     this.eachFrontForm(action, function(control, entering) {
       $log.silly(`field: ${control.backField.name} entering? ${entering} lists ${listControls.length}`);
@@ -171,7 +186,10 @@ module.exports = class Schema {
       }
     });
 
-    return controls;
+    // return shorted controls
+    return controls.sort(function(control, control2) {
+      return order.indexOf(control.realpath) - order.indexOf(control2.realpath);
+    });
   }
 
   applyGeneratorOptions(control, generatorOptions) {
