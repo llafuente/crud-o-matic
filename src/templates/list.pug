@@ -16,7 +16,7 @@ section#list
     thead
       tr.headers
         each control in listableFields
-          th(st-sort=control.name translate="")
+          th(st-sort=control.realpath translate="")
             span= control.frontField.label || control.backField.label
         th.actions(translate="") Actions
       tr.filters

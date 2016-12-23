@@ -35,7 +35,6 @@ export default class <%= schema.getName() %>ListController {
     $scope.getList = function(tablestate) {
       lastTablestate = tablestate;
       const qs = buildQuerystring(tablestate);
-      const pagination = tablestate.pagination;
 
       return $http({
         method: 'GET',
@@ -43,12 +42,12 @@ export default class <%= schema.getName() %>ListController {
         params: qs
       }).then(function(res) {
         $scope.list = res.data;
-        pagination.totalItemCount = res.data.count;
+        tablestate.pagination.totalItemCount = res.data.count;
 
-        pagination.start = res.data.offset;
-        pagination.number = res.data.limit;
+        tablestate.pagination.start = res.data.offset;
+        tablestate.pagination.number = res.data.limit;
 
-        pagination.numberOfPages = res.data.count / res.data.limit;
+        tablestate.pagination.numberOfPages = Math.ceil(res.data.count / res.data.limit);
       });
     };
 
