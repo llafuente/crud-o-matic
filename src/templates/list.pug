@@ -22,7 +22,6 @@ section#list
       tr.filters
         each control in listableFields
           th
-            span= control.frontField.type
             if (control.frontField.type)
               if (control.frontField.type == "text" || control.frontField.type == "static" || control.frontField.type == "email")
                 input.input-sm.form-control(
@@ -78,12 +77,12 @@ section#list
         //td.text-center(st-pagination='', st-items-by-page='list.limit', colspan=columns)
         td(colspan=listableFields.length + 1)
           span(st-pagination="", st-items-by-page="list.limit")
-          span.btn.btn-secondary(ng-click="download('text/csv')")
+          button.btn.btn-secondary(ng-click="download('text/csv')")
             i.fa.fa-download
             span Descargar SCV
-          span.btn.btn-secondary(ng-click="download('text/xml')")
+          button.btn.btn-secondary(ng-click="download('text/xml')")
             i.fa.fa-download
             span Descargar XML
-          span.btn.btn-secondary
+          button.btn.btn-secondary
             i.fa.fa-download
             span Descargar EXCEL-XML

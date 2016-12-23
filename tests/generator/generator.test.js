@@ -345,6 +345,7 @@ test('check front fields for create role', function(t) {
     t.end();
   });
 });
+
 // this are just smoke tests
 test('check role.list.tpl.html', function(t) {
   const filename = path.join(angularPath, 'role.list.tpl.html');
@@ -353,6 +354,9 @@ test('check role.list.tpl.html', function(t) {
   const $ = cheerio.load(html);
 
   t.equal($('.headers th').toArray().length, 4);
+  t.equal($('input').toArray().length, 2);
+  t.equal($('st-select').toArray().length, 1);
+  t.equal($('button').toArray().length, 4);
 
   t.end();
 });
@@ -403,6 +407,25 @@ test('smoke test for everything generated', function(t) {
 
   t.end();
 });
+
+test('user.create.tpl.html', function(t) {
+  const filename = path.join(angularPath, 'user.create.tpl.html');
+  const html = testUtils.checkHTML(t, filename);
+
+  const $ = cheerio.load(html);
+
+  var input = $('#username-container .form-control')
+
+  t.equal($(input).attr("ng-required"), "true", "check ng-required attribute");
+  t.equal($(input).attr("ng-maxlength"), "254", "check ng-maxlength attribute");
+  t.equal($(input).attr("type"), "email", "check type attribute");
+
+  t.equal($('#username-container .error-list .error-block').toArray().length, 3,
+    'three posible errors for username: required, maxlength email');
+
+  t.end();
+});
+
 
 //
 // server test

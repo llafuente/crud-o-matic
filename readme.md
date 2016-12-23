@@ -20,3 +20,5 @@ and server side will be 100% self-contained after generation.
 
 * pupolate query list
 * add JS con list.controller.js based on filters
+* fulltext search
+* search $in array-of-strings

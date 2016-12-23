@@ -137,6 +137,9 @@
         },
         "auto": {
           "type": "boolean"
+        },
+        "unique": {
+          "type": "boolean"
         }
       }
     }

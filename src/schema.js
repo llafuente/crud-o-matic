@@ -227,10 +227,10 @@ module.exports = class Schema {
         control.errors.required = `${name} es obligatorio`;
       }
       if (control.frontField.attributes['ng-minlength'] !== undefined) {
-        control.errors.minlength = `${name} demasiado corto, debe tener al menos ${control.frontField.attributes.minlength} caracteres`;
+        control.errors.minlength = `${name} demasiado corto, debe tener al menos ${control.frontField.attributes['ng-minlength']} caracteres`;
       }
       if (control.frontField.attributes['ng-maxlength'] !== undefined) {
-        control.errors.maxlength = `${name} demasiado largo, debe tener cómo máximo ${control.frontField.attributes.maxlength} caracteres`;
+        control.errors.maxlength = `${name} demasiado largo, debe tener cómo máximo ${control.frontField.attributes['ng-maxlength']} caracteres`;
       }
       if (control.frontField.attributes['ng-min'] !== undefined) {
         control.errors.min = `${name} demasiado pequeño, el mínimo es: ${control.frontField.attributes['ng-min']}`;
@@ -371,25 +371,25 @@ function applyDefaults(schemaObj) {
   // backend
   //
 
-  traverse(schemaObj.backend.schema, function(data, entering) {
+  traverse(schemaObj.backend.schema, function(control, entering) {
     if (!entering) {return;}
 
-    data.backField.name = data.realpath.replace(/(\.|\[|\])/g, '_');
+    control.backField.name = control.realpath.replace(/(\.|\[|\])/g, '_');
 
-    switch (data.backField.type) {
+    switch (control.backField.type) {
     case 'String':
     case 'Number':
     case 'ObjectId':
     case 'Mixed':
-      _.defaults(data.backField, defaultBackField);
+      _.defaults(control.backField, defaultBackField);
       break;
     default:
       return;
     }
 
     // shortcut: can update/create cant read
-    if (data.backField.restricted === true) {
-      data.backField.restricted = {
+    if (control.backField.restricted === true) {
+      control.backField.restricted = {
         create: false,
         update: false,
         read: true
@@ -397,12 +397,32 @@ function applyDefaults(schemaObj) {
     }
 
     // shortcut: can update/create/read
-    if (data.backField.restricted === false) {
-      data.backField.restricted = {
+    if (control.backField.restricted === false) {
+      control.backField.restricted = {
         create: false,
         update: false,
         read: false
       };
+    }
+
+    const front = schemaObj.frontend.forms[control.realpath];
+
+    // copy required -> ng-required
+    if (front && control.backField.required === true) {
+      front.attributes = front.attributes || {};
+      front.attributes['ng-required'] = front.attributes['ng-required'] || 'true';
+    }
+
+    // copy maxlength -> ng-maxlength
+    if (front && control.backField.maxlength) {
+      front.attributes = front.attributes || {};
+      front.attributes['ng-maxlength'] = front.attributes['ng-maxlength'] || control.backField.maxlength;
+    }
+
+    // copy minlength -> ng-minlength
+    if (front && control.backField.minlength) {
+      front.attributes = front.attributes || {};
+      front.attributes['ng-minlength'] = front.attributes['ng-minlength'] || control.backField.minlength;
     }
   });
 

@@ -19,6 +19,7 @@ backend:
       required: true
       maxlength: 254
       restricted: false
+      unique: true
     password:
       label: "Password"
       type: "String"
