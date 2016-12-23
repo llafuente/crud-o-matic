@@ -206,7 +206,7 @@ module.exports = class Schema {
 
     if (control.frontField.attributes) {
       if (control.frontField.attributes['ng-required'] !== undefined) {
-        control.errors['required'] = `${name} es obligatorio`;
+        control.errors.required = `${name} es obligatorio`;
       }
       if (control.frontField.attributes['ng-minlength'] !== undefined) {
         control.errors.minlength = `${name} demasiado corto, debe tener al menos ${control.frontField.attributes.minlength} caracteres`;
@@ -215,10 +215,10 @@ module.exports = class Schema {
         control.errors.maxlength = `${name} demasiado largo, debe tener cómo máximo ${control.frontField.attributes.maxlength} caracteres`;
       }
       if (control.frontField.attributes['ng-min'] !== undefined) {
-        control.errors['min'] = `${name} demasiado pequeño, el mínimo es: ${control.frontField.attributes['ng-min']}`;
+        control.errors.min = `${name} demasiado pequeño, el mínimo es: ${control.frontField.attributes['ng-min']}`;
       }
       if (control.frontField.attributes['ng-max'] !== undefined) {
-        control.errors['max'] = `${name} demasiado grande, el máximo es: ${control.frontField.attributes['ng-max']}`;
+        control.errors.max = `${name} demasiado grande, el máximo es: ${control.frontField.attributes['ng-max']}`;
       }
       if (control.frontField.attributes['ng-pattern'] !== undefined) {
         control.errors['ng-pattern'] = `${name} no cumple el patrón: ${control.frontField.attributes['ng-pattern']}`;
@@ -349,6 +349,10 @@ const defaultBackField = {
 };
 
 function applyDefaults(schemaObj) {
+  //
+  // backend
+  //
+
   traverse(schemaObj.backend.schema, function(data, entering) {
     if (!entering) {return;}
 
@@ -423,4 +427,17 @@ function applyDefaults(schemaObj) {
     //select: false,
     restricted: {read: true, create: true, update: true}
   };
+
+  //
+  // frontend
+  //
+
+
+  _.each(schemaObj.frontend.list, function(frontField) {
+    frontField.type = frontField.type || 'text';
+  });
+
+  _.each(schemaObj.frontend.forms, function(frontField) {
+    frontField.type = frontField.type || 'text';
+  });
 }

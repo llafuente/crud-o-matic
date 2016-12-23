@@ -8,34 +8,34 @@ angular
 .directive('stDateRange', [function() {
   return {
     restrict: 'E',
-      require: '^stTable',
-      scope: {
-        before: '=',
-          after: '='
-        },
-      templateUrl: template,
+    require: '^stTable',
+    scope: {
+      before: '=',
+      after: '='
+    },
+    templateUrl: template,
 
-      link: function($scope, element, attr, table) {
-        $scope.filter = {};
-        var predicateName = attr.predicate;
+    link: function($scope, element, attr, table) {
+      $scope.filter = {};
+      const predicateName = attr.predicate;
 
-        $scope.$watch("filter", function(a/*, b*/) {
-          if (a.before || a.after) {
-            var f = {};
+      $scope.$watch('filter', function(a/*, b*/) {
+        if (a.before || a.after) {
+          const f = {};
 
-            if (a.before) {
-              f.$gt = a.before;
-            }
-
-            if (a.after) {
-              f.$lt = a.after;
-            }
-
-            table.search(f, predicateName);
-          } else {
-            table.search(null, predicateName);
+          if (a.before) {
+            f.$gt = a.before;
           }
-        }, true);
+
+          if (a.after) {
+            f.$lt = a.after;
+          }
+
+          table.search(f, predicateName);
+        } else {
+          table.search(null, predicateName);
+        }
+      }, true);
 
         /*
         [inputBefore, inputAfter].forEach(function(input) {
@@ -59,6 +59,6 @@ angular
           });
         });
         */
-      }
-    };
+    }
+  };
 }]);

@@ -15,3 +15,8 @@ It's better to bootstrap the angular side with it.
 Server side is self-contained in the generated files, but it requires the
 generator to create mongoose schema/models. This will be solved soon
 and server side will be 100% self-contained after generation.
+
+# TODO
+
+* pupolate query list
+* add JS con list.controller.js based on filters

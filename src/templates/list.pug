@@ -21,34 +21,39 @@ section#list
         th.actions(translate="") Actions
       tr.filters
         each control in listableFields
-          if (control.frontField.type)
-            th
+          th
+            span= control.frontField.type
+            if (control.frontField.type)
               if (control.frontField.type == "text" || control.frontField.type == "static" || control.frontField.type == "email")
                 input.input-sm.form-control(
                   st-search=control.searchModel
                   type="text"
                   id=control.id
                 )
-              if (control.frontField.type == "number")
+              else if (control.frontField.type == "number")
                 input.input-sm.form-control(
                   st-search=control.searchModel
                   type="number"
                   id=control.id
                 )
-              if (control.frontField.type == "date-range")
+              else if (control.frontField.type == "date-range")
                 st-date-range(
                 predicate=control.searchModel
                 id=control.backField.name
               )
-              if (control.backField.labels)
+              else if (control.frontField.type == "select" && control.frontField.source_url)
+                st-select(
+                  source-url=JSON.stringify(control.frontField.source_url)
+                  predicate=control.searchModel
+                  id=control.backField.name
+                )
+              else if (control.backField.labels)
                 st-select(
                   enum=JSON.stringify(control.backField.enum)
                   labels=JSON.stringify(control.backField.labels)
                   predicate=control.searchModel
                   id=control.backField.name
                 )
-          else
-            th
         th
     tbody
       tr(ng-repeat='row in list.list')
