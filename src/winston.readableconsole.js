@@ -1,18 +1,19 @@
-
-
 const util = require('util');
 const winston = require('winston');
+const path = require('path');
+
 const ReadableConsole = winston.transports.ReadableConsole = function(options) {
   //
   // Name this logger
   //
-  this.name = 'ReadableConsole';
+  this.name = options.name || 'ReadableConsole';
 
   //
   // Set the level from your options
   //
   this.level = options.level || 'info';
   this.trace = options.trace || false;
+  this.basePath = options.basePath || path.join(__dirname, '..');
   this.std = options.std || process.stdout;
   this.styles = options.styles || {
     error: [41, 49],
@@ -64,21 +65,25 @@ ReadableConsole.prototype.log = function(level, msg, meta, callback) {
   } else {
     text = util.inspect(msg, {depth: depth, colors: true});
   }
-
-  this.std.write([
-    level,
-    text,
-    util.inspect(meta, {depth: depth, colors: true}),
-    '\n'
-  ].join(' '));
+  const output = [];
 
   if (this.trace) {
     const stack = new Error().stack.split('\n').slice(8, 9).join('\n').trim();
+    let file = stack.substring(stack.indexOf('(') + 1, stack.indexOf(')'));
+    if (file.indexOf(this.basePath) == 0) {
+      file = file.substring(this.basePath.length);
+    }
 
-    this.std.write('trace');
-    this.std.write(stack);
-    this.std.write('\n');
+    output.push(file);
+    //output.push(stack);
   }
+
+  output.push(level);
+  output.push(text);
+  output.push(util.inspect(meta, {depth: depth, colors: true}));
+  output.push('\n');
+
+  this.std.write(output.join(' '));
 
   callback(null, true);
 };
