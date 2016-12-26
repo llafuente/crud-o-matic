@@ -72,6 +72,7 @@
           "enum": [
             "Date",
             "String",
+            "Boolean",
             "Number",
             "ObjectId",
             "Mixed"
@@ -233,12 +234,15 @@
               "additionalProperties": false,
               "properties": {
                 "update": {
+                  "description": "Display on update form",
                   "type": "boolean"
                 },
                 "create": {
+                  "description": "Display on create form",
                   "type": "boolean"
                 },
                 "source_url": {
+                  "description": "Set source of the field to an URL. Should return: {list: [{_id, _label}]}",
                   "type": "object",
                   "additionalProperties": false,
                   "properties": {
@@ -249,21 +253,29 @@
                       "type": "string"
                     },
                     "as_label": {
+                      "description": "Use this as label property",
                       "type": "string"
                     },
                     "as_id": {
+                      "description": "Use this as _id property",
                       "type": "string"
                     }
                   }
                 },
                 "attributes": {
+                  "description": "Attributes assigned to the control itself (input/select/textarea). Add angular directives here like: ng-pattern",
                   "type": "object"
                 },
                 "label": {
+                  "description": "control label",
                   "type": "string"
                 },
                 "type": {
-                  "enum": ["text", "number", "email", "password", "date", "select", "checklist", "static", "textarea", "list", "richtext"]
+                  "enum": ["text", "number", "email", "password", "date", "select", "checklist", "static", "textarea", "list", "richtext", "checkbox"]
+                },
+                "help": {
+                  "description": "Help string, displayed below the control, becareful when layout is: inline, should be removed...",
+                  "type": "string"
                 }
               }
             }

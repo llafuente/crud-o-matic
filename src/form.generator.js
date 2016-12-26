@@ -11,6 +11,7 @@ const handlers = {
   email: generateDefaultControl,
   password: generateDefaultControl,
   //date: generateDefaultControl,
+  checkbox: generateDefaultControl,
   select: generateDefaultControl,
   checklist: generateDefaultControl,
   static: generateDefaultControl,
