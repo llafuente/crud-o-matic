@@ -14,6 +14,7 @@ module.exports = function(mongoose) {
   r.use(function(req, res, next) {
     // used by error-handler.js
     req.model = mongoose.model.<%= schema.getName() %>;
+    req.schema = mongoose.modelSchemas.<%= schema.getName() %>;
 
     next();
   });

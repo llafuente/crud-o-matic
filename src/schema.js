@@ -203,7 +203,7 @@ module.exports = class Schema {
       //.replace(/\]/g, '}}');
     control.cfgModel = `control_${safeName}`;
     control.formModel = `${generatorOptions.formPath}.${safeName}`;
-    control.searchModel = `query.${safeName}`;
+    control.searchModel = control.frontField.searchModel || `query.${safeName}`;
     const safeUniqueName = control.realpath
       .replace(/\./g, '_')
       .replace(/\[/g, '{{')

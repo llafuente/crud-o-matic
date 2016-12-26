@@ -571,6 +571,32 @@ test('api user get list', function(t) {
   });
 });
 
+test('api user get list (err)', function(t) {
+  supertest(app)
+  .get(g.schemas.user.apiUrls.list + '?where[invalid_field]=123')
+  .set('Authorization', `Bearer ${token}`)
+  .expect(400)
+  .end(function(err, res) {
+    t.error(err);
+
+    t.deepEqual(res.body, {
+      "error": [
+        {
+          "message": "not found in schema",
+          "path": "query:where",
+          "type": "invalid-where",
+          "value": "invalid_field",
+          "value_type": null
+        }
+      ]
+    });
+
+    $log.info(res.body);
+
+    t.end();
+  });
+});
+
 test('api user read', function(t) {
   supertest(app)
   .get(g.schemas.user.apiUrls.read.replace(`:${g.schemas.user.apiIdParam}`, userId))
