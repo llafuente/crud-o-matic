@@ -4,6 +4,13 @@ export default class <%= schema.getName() %>ListController {
     $log.debug('(<%= schema.getName() %>ListController) start');
 
     let lastTablestate;
+    const operators = <%- JSON.stringify(_.fromPairs(
+      _.filter(controls, function(control) {
+        return !!control.frontField.operator;
+      }).map(function(control) {
+        return [control.realpath, control.frontField.operator];
+      })
+    ), null, 2); %>
 
     function buildQuerystring(tablestate) {
       const pagination = tablestate.pagination;
@@ -23,9 +30,15 @@ export default class <%= schema.getName() %>ListController {
 
       if (tablestate.search && tablestate.search.predicateObject
         && tablestate.search.predicateObject.query) {
-        for (const i in tablestate.search.predicateObject.query) { // eslint-disable-line guard-for-in
-          $log.debug(i, tablestate.search.predicateObject.query[i]);
-          qs.where[i] = tablestate.search.predicateObject.query[i];
+        const q = tablestate.search.predicateObject.query;
+        for (const i in q) { // eslint-disable-line guard-for-in
+          $log.debug(i, q[i]);
+          if (q[i].value !== undefined) {
+            qs.where[i] = q[i];
+            if (operators[i]) {
+              qs.where[i].operator = operators[i];
+            }
+          }
         }
       }
 

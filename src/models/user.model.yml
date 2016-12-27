@@ -92,6 +92,7 @@ frontend:
       type: "number"
     username:
       type: "text"
+      operator: "like"
     roles:
       type: "select"
       source_url:
@@ -102,8 +103,10 @@ frontend:
       type: "select"
     data.first_name:
       type: "text"
+      operator: "like"
     data.last_name:
       type: "text"
+      operator: "like"
     created_at:
       label: "Created at"
       type: "date-range"

@@ -72,14 +72,17 @@ function listQuery(user, where, sort, limit, offset, populate, next) {
     where = {};
   }
 
-  // TODO HACK review this '$' -> '.'
   Object.keys(where).forEach(function(k) {
-    if (k.indexOf('$') !== -1) {
+    if (where[k].value === undefined) {
+      delete where[k];
+      // TODO HACK review this '$' -> '.'
+    } else if (k.indexOf('$') !== -1) {
       where[k.replace(/\$/g, '.')] = where[k];
       delete where[k];
     }
   });
-  $log.debug(where);
+
+  $log.debug('where', where);
 
   sort = sort || '_id';
   limit = limit ? parseInt(limit, 10) : 0;
@@ -216,8 +219,17 @@ function listQuery(user, where, sort, limit, offset, populate, next) {
       };
       return next(err);
     }
-    query = query.where(path).equals(where[path]);
-    qcount = qcount.where(path).equals(where[path]);
+
+    switch(where[path].operator) {
+    case 'like':
+      query = query.where(path).regex(where[path].value);
+      qcount = qcount.where(path).regex(where[path].value);
+      break;
+    default:
+      query = query.where(path).equals(where[path].value);
+      qcount = qcount.where(path).equals(where[path].value);
+      break;
+    }
   }
 
   return next(null, query, qcount, limit, offset);

@@ -214,12 +214,16 @@
         "list": {
           "id": "frontend/list",
           "type": "object",
+          "additionalProperties": false,
           "patternProperties": {
             "[a-z0-9_]": {
               "type": "object",
               "properties": {
                 "type": {
                   "enum": ["number", "select", "text", "date-range"]
+                },
+                "operator": {
+                  "enum": ["like"]
                 }
               }
             }

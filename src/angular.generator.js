@@ -82,6 +82,7 @@ function listController(generator, schema, generatorOptions, cb) {
     _: _,
     schema: schema,
     generatorOptions: generatorOptions,
+    controls: schema.getFrontList()
   });
 
   const routeFile = join(
