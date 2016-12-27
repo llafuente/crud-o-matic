@@ -1,18 +1,15 @@
 //pre= JSON.stringify(listableFields, null, 2)
-section#list
-  div.pull-right
-    button.btn.btn-primary.btn-create.ng-hide(
-      ui-sref=schema.states.create
-      ng-show=`$root.Auth.hasPermissions('${schema.permissions.create}')`
-      )
-      i.fa.fa-plus.fa-lg
-      span(translate="")= schema.getButton('list_create').text
-
-  div.clearfix
+section#section-list
+  button.btn.btn-primary.btn-list-create.ng-hide(
+    ui-sref=schema.states.create
+    ng-show=`$root.Auth.hasPermissions('${schema.permissions.create}')`
+    )
+    i.fa.fa-plus.fa-lg
+    span(translate="")= schema.getButton('list_create').text
 
   //pre {{list | json}}
 
-  table.table.table-striped(st-table='' id=name st-pipe="getList")
+  table.table.table-striped.table-list(st-table='' id=name st-pipe="getList")
     thead
       tr.headers
         each control in listableFields
