@@ -2,15 +2,17 @@ block labelBlock
   span
 
 block contentBlock
-  div(class=generatorOptions.layout === "horizontal" ? "col-xs-offset-4 col-xs-8" : undefined)
-    div.control-wapper.checkbox
-      label
-        input(
+  div(class=generatorOptions.layout === "horizontal" ? "offset-xs-4 col-xs-8" : undefined)
+    div.control-wapper.form-check
+      label.form-check-label.form-control-label
+        input.form-check-input(
           type="checkbox"
           ng-model=control.model
           name=control.formName
           id=control.backField.name
           ng-true-value="true"
           ng-false-value="false"
-        )
-        span(translate="")= control.label
+        )&attributes(control.frontField.attributes)
+        span= control.frontField.label || control.backField.label
+        if (control.frontField.attributes && control.frontField.attributes['ng-required'])
+          span.required-text(ng-show=control.frontField.attributes['ng-required']) *

@@ -381,6 +381,7 @@ function applyDefaults(schemaObj) {
     case 'Number':
     case 'ObjectId':
     case 'Mixed':
+    case 'Boolean':
       _.defaults(control.backField, defaultBackField);
       break;
     default:
