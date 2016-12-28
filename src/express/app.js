@@ -17,6 +17,16 @@ module.exports = function(mongoose, cb/*(router)*/) {
     collection: 'autoincrements'
   }));
 
+  const addtionalSchemas = <%- JSON.stringify(
+    _.fromPairs(
+      _.filter(schemas, function(schema) {
+        return !!schema.schema.backend.additionalSchema;
+      })
+      .map(function(schema) {
+        return [schema.getName(), schema.schema.backend.additionalSchema];
+      })
+    )); %>
+
 
   // declare schema/models
   _.each(<%- JSON.stringify(_.keys(schemas)) %>, function(schemaName) {
@@ -64,6 +74,11 @@ module.exports = function(mongoose, cb/*(router)*/) {
     // TODO the user should be able to do something like this...
     if (schemaName === 'user') {
       userSchemaOverride('<%= config.auth.secret %>', schema);
+    }
+
+    if (addtionalSchemas[schemaName]) {
+      // TODO fix circula config
+     require(addtionalSchemas[schemaName])({}, schema, mongoose);
     }
 
     mongoose.model(schemaJSON.plural, schema);

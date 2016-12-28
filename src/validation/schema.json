@@ -161,9 +161,9 @@
       "required": ["schema", "permissions"],
       "additionalProperties": false,
       "properties": {
-        "ignore_perm_err": {
-          "id": "backend/ignore_perm_err",
-          "type": "boolean"
+        "additionalSchema": {
+          "type": "string",
+          "description": "schema file to add custom logic: `module.exports = function(generatorConfig, schema, mongoose) {};`"
         },
         "options": {
           "type": "object",
