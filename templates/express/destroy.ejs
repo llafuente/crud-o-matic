@@ -1,0 +1,30 @@
+import * as express from "express";
+import { HttpError } from './HttpError';
+import { cleanBody } from './cleanBody';
+import { <%= schema.entitySingularUc %> } from './<%= schema.entitySingularUc %>';
+import { Schema } from 'mongoose';
+
+
+export function destroy(_id: Schema.Types.ObjectId|string, next) {
+  <%= schema.entitySingularUc %>.findByIdAndRemove(_id, function(err) {
+    /* istanbul ignore next */ if (err) {
+      return next(err);
+    }
+
+    return next(null);
+  });
+}
+
+export function <%= schema.backend.deleteFunction %>(req: express.Request, res: express.Response, next: express.NextFunction) {
+  const id = req.params['<%= schema.entityId %>'];
+
+  console.info(`destroy`, id);
+
+  return destroy(id, function(err) {
+    /* istanbul ignore next */ if (err) {
+      return next(err);
+    }
+
+    return next();
+  });
+}

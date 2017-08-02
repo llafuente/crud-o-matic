@@ -22,3 +22,30 @@ and server side will be 100% self-contained after generation.
 * add JS con list.controller.js based on filters
 * fulltext search
 * search $in array-of-strings
+
+
+# dev (windows)
+
+```
+md C:\data\db
+& 'C:\Program Files\MongoDB\Server\3.4\bin\mongod.exe' --dbpath C:\data\db
+
+& 'C:\Program Files\MongoDB\Server\3.4\bin\mongo.exe'
+use test
+db.createCollection("test")
+```
+
+
+
+TODO
+
+$ npm install body-parser --save
+$ npm install cookie-parser --save
+$ npm install morgan --save
+$ npm install errorhandler --save
+$ npm install method-override --save
+$ npm install @types/body-parser --save-dev
+$ npm install @types/cookie-parser --save-dev
+$ npm install @types/morgan --save-dev
+$ npm install @types/errorhandler --save-dev
+$ npm install @types/method-override --save-dev

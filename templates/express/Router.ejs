@@ -1,0 +1,49 @@
+import * as express from "express";
+import { <%= schema.backend.createFunction %> } from "./<%= schema.backend.createFunction %>";
+import { <%= schema.backend.readFunction %> } from "./<%= schema.backend.readFunction %>";
+import { <%= schema.backend.updateFunction %> } from "./<%= schema.backend.updateFunction %>";
+import { <%= schema.backend.listFunction %> } from "./<%= schema.backend.listFunction %>";
+import { <%= schema.backend.deleteFunction %> } from "./<%= schema.backend.deleteFunction %>";
+
+const <%= schema.backend.routerName %> = express.Router();
+<%= schema.backend.routerName %>.post(
+  '/<%= schema.entitySingular %>',
+  <%= schema.backend.createFunction %>,
+  function (req: express.Request, res: express.Response, next: express.NextFunction) {
+    res.status(201).json(req[<%= JSON.stringify(schema.entitySingular) %>]);
+  }
+);
+<%= schema.backend.routerName %>.get(
+  '/<%= schema.entitySingular %>',
+  <%= schema.backend.listFunction %>,
+  function (req: express.Request, res: express.Response, next: express.NextFunction) {
+    res.status(200).json(req[<%= JSON.stringify(schema.entityPlural) %>]);
+  }
+);
+<%= schema.backend.routerName %>.get(
+  '/<%= schema.entitySingular %>/:<%= schema.entityId %>',
+  <%= schema.backend.readFunction %>,
+  function (req: express.Request, res: express.Response, next: express.NextFunction) {
+    res.status(200).json(req[<%= JSON.stringify(schema.entitySingular) %>]);
+  }
+);
+<%= schema.backend.routerName %>.patch(
+  '/<%= schema.entitySingular %>/:<%= schema.entityId %>',
+  <%= schema.backend.readFunction %>,
+  <%= schema.backend.updateFunction %>,
+  function (req: express.Request, res: express.Response, next: express.NextFunction) {
+    res.status(200).json(req[<%= JSON.stringify(schema.entitySingular) %>]);
+  }
+);
+<%= schema.backend.routerName %>.delete(
+  '/<%= schema.entitySingular %>/:<%= schema.entityId %>',
+  <%= schema.backend.deleteFunction %>,
+  function (req: express.Request, res: express.Response, next: express.NextFunction) {
+    res.status(204).send();
+  }
+);
+
+console.log("express create router <%= schema.backend.routerName %>");
+
+export default <%= schema.backend.routerName %>;
+

@@ -1,4 +1,0 @@
-block errorsBlock
-  div.alert.alert-danger(ng-show=`(${control.formModelExpr}.$touched || ${control.formModelExpr}.$dirty) && ${control.formModelExpr}.$invalid`)
-    each errString, errorKey in control.errors
-      block errorBlock
