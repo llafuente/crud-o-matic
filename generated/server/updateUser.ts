@@ -38,7 +38,7 @@ export function updateUser(req: express.Request, res: express.Response, next: ex
   }
 
   if (!req["user"]) {
-   return next(new HttpError(500, 'Cannot fetch '));
+   return next(new HttpError(500, 'Cannot fetch user'));
   }
 
   return update(/*req.user, */req["user"], req.body, function(err, savedRow: IUserModel) {

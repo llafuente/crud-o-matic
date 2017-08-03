@@ -136,24 +136,6 @@ export class BackEndSchema {
 
   schema: { [s: string]: PrimiteType; }  = null;
 
-  createFilename: string;
-  createFunction: string;
-
-  readFunction: string;
-  readFilename: string;
-
-  listFunction: string;
-  listFilename: string;
-
-  updateFunction: string;
-  updateFilename: string;
-
-  deleteFunction: string;
-  deleteFilename: string;
-
-  routerFilename: string;
-  routerName: string;
-
   constructor(json, parentSchema: Schema) {
     this.parentSchema = parentSchema;
 
@@ -173,24 +155,6 @@ export class BackEndSchema {
     for (let i in this.schema) {
       this.schema[i] = new PrimiteType(this.schema[i]);
     }
-
-    this.createFunction = `create${this.parentSchema.entitySingularUc}`;
-    this.createFilename = `${this.createFunction}.ts`;
-
-    this.readFunction = `read${this.parentSchema.entitySingularUc}`;
-    this.readFilename = `${this.readFunction}.ts`;
-
-    this.listFunction = `list${this.parentSchema.entitySingularUc}`;
-    this.listFilename = `${this.listFunction}.ts`;
-
-    this.deleteFunction = `destroy${this.parentSchema.entitySingularUc}`;
-    this.deleteFilename = `${this.deleteFunction}.ts`;
-
-    this.updateFunction = `update${this.parentSchema.entitySingularUc}`;
-    this.updateFilename = `${this.updateFunction}.ts`;
-
-    this.routerFilename = `router${this.parentSchema.entitySingularUc}.ts`;
-    this.routerName = `router${this.parentSchema.entitySingularUc}`;
   }
 };
 
@@ -217,6 +181,24 @@ export class Schema {
   backend: BackEndSchema;
   frontend: FrontEndSchema;
 
+  createFilename: string;
+  createFunction: string;
+
+  readFunction: string;
+  readFilename: string;
+
+  listFunction: string;
+  listFilename: string;
+
+  updateFunction: string;
+  updateFilename: string;
+
+  deleteFunction: string;
+  deleteFilename: string;
+
+  routerFilename: string;
+  routerName: string;
+
   constructor(json) {
     if (json.entitySingular === undefined) {
       throw new Error("Schema: entitySingular is required");
@@ -234,6 +216,24 @@ export class Schema {
     this.interfaceModel = "I" + this.entitySingularUc + "Model";
     this.entityId = this.entitySingular + "Id";
     this.schemaName = this.entitySingularUc + "Schema";
+
+    this.createFunction = `create${this.entitySingularUc}`;
+    this.createFilename = `${this.createFunction}.ts`;
+
+    this.readFunction = `read${this.entitySingularUc}`;
+    this.readFilename = `${this.readFunction}.ts`;
+
+    this.listFunction = `list${this.entitySingularUc}`;
+    this.listFilename = `${this.listFunction}.ts`;
+
+    this.deleteFunction = `destroy${this.entitySingularUc}`;
+    this.deleteFilename = `${this.deleteFunction}.ts`;
+
+    this.updateFunction = `update${this.entitySingularUc}`;
+    this.updateFilename = `${this.updateFunction}.ts`;
+
+    this.routerName = `router${this.entitySingularUc}`;
+    this.routerFilename = `${this.routerName}.ts`;
 
     this.backend = new BackEndSchema(json.backend, this);
   }

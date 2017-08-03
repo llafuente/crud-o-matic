@@ -1,13 +1,13 @@
 import * as express from "express";
 import { HttpError } from './HttpError';
 import { cleanBody } from './cleanBody';
-import { <%= schema.entitySingularUc %>, <%= schema.interfaceModel %> } from './<%= schema.entitySingularUc %>';
+import { <%= entitySingularUc %>, <%= interfaceModel %> } from './<%= entitySingularUc %>';
 
 interface IUpdateCB {
-  (err: Error|HttpError, savedRow?: <%= schema.interfaceModel %>)
+  (err: Error|HttpError, savedRow?: <%= interfaceModel %>)
 };
 
-export function update(/*user,*/ row: <%= schema.interfaceModel %>, data, next: IUpdateCB) {
+export function update(/*user,*/ row: <%= interfaceModel %>, data, next: IUpdateCB) {
   cleanBody(data);
 
   // TODO
@@ -30,25 +30,25 @@ export function update(/*user,*/ row: <%= schema.interfaceModel %>, data, next: 
   });
 }
 
-export function <%= schema.backend.updateFunction %>(req: express.Request, res: express.Response, next: express.NextFunction) {
+export function <%= updateFunction %>(req: express.Request, res: express.Response, next: express.NextFunction) {
   console.info('update body', req.body);
 
   if (Array.isArray(req.body)) {
     return next(new HttpError(422, 'body is an array'));
   }
 
-  if (!req[<%= JSON.stringify(schema.entitySingular) %>]) {
-   return next(new HttpError(500, 'Cannot fetch <%= schema.singular %>'));
+  if (!req[<%= JSON.stringify(entitySingular) %>]) {
+   return next(new HttpError(500, 'Cannot fetch <%= entitySingular %>'));
   }
 
-  return update(/*req.user, */req[<%= JSON.stringify(schema.entitySingular) %>], req.body, function(err, savedRow: <%= schema.interfaceModel %>) {
+  return update(/*req.user, */req[<%= JSON.stringify(entitySingular) %>], req.body, function(err, savedRow: <%= interfaceModel %>) {
     /* istanbul ignore next */ if (err) {
       return next(err);
     }
 
     console.info('created@database', savedRow);
 
-    req[<%= JSON.stringify(schema.entitySingular) %>] = savedRow;
+    req[<%= JSON.stringify(entitySingular) %>] = savedRow;
     return next();
   });
 }

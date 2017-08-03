@@ -5,7 +5,7 @@ import { cleanBody } from './cleanBody';
 import * as mongoose from 'mongoose';
 import { WhereQuery, Order, Operators, Pagination } from '../common';
 
-import { <%= schema.modelName %>, <%= schema.schemaName %>, <%= schema.interfaceName %> } from './<%= schema.modelName %>';
+import { <%= modelName %>, <%= schemaName %>, <%= interfaceName %> } from './<%= modelName %>';
 
 const _ = require("lodash");
 const ValidationError = mongoose.ValidationError;
@@ -19,7 +19,7 @@ export function createListQuery(
   limit: number,
   offset: number,
   populate: string[]
-// TODO ): mongoose.DocumentQuery<<%= schema.interfaceName %>, mongoose.Document>[] {
+// TODO ): mongoose.DocumentQuery<<%= interfaceName %>, mongoose.Document>[] {
 ): any[] {
   if (isNaN(offset)) {
     throw new Error('offset must be a number');
@@ -29,11 +29,11 @@ export function createListQuery(
     throw new Error('limit must be a number');
   }
 
-  let query = <%= schema.modelName %>.find({});
-  let qCount = <%= schema.modelName %>.find({}).count();
+  let query = <%= modelName %>.find({});
+  let qCount = <%= modelName %>.find({}).count();
 
 /* TODO add restricted to where & sort
-    if (schema.isPathRestricted(path, 'read', user)) {
+    if (isPathRestricted(path, 'read', user)) {
       err = new ValidationError(null);
       err.errors.sort = {
         path: 'query:sort',
@@ -56,7 +56,7 @@ export function createListQuery(
   });
 
   sort = _.map(sort, (s: Order, key: string) => {
-    const options = <%= schema.schemaName %>.path(key);
+    const options = <%= schemaName %>.path(key);
     if (!options) {
       throw new Error("sort[" + key + "] not found");
     }
@@ -65,7 +65,7 @@ export function createListQuery(
   });
 
   _.each(populate, (path: string) => {
-    const options = <%= schema.schemaName %>.path(path);
+    const options = <%= schemaName %>.path(path);
     if (!options) {
       throw new Error("populate[" + path + "] not found");
     }
@@ -98,7 +98,7 @@ export function createListQuery(
 
 
 
-export function <%= schema.backend.listFunction %>(req, res, next) {
+export function <%= listFunction %>(req, res, next) {
   console.log('usersList', JSON.stringify(req.query));
 
   req.query.limit = req.query.limit ? parseInt(req.query.limit) : 0
@@ -113,7 +113,7 @@ export function <%= schema.backend.listFunction %>(req, res, next) {
       req.query.populate
     );
 
-    querys[0].exec(function(err, mlist: <%= schema.interfaceName %>[]) {
+    querys[0].exec(function(err, mlist: <%= interfaceName %>[]) {
       /* istanbul ignore next */ if (err) {
         return next(err);
       }
@@ -123,7 +123,7 @@ export function <%= schema.backend.listFunction %>(req, res, next) {
           return next(err2);
         }
 
-        req[<%= JSON.stringify(schema.entityPlural) %>] = new Pagination<<%= schema.interfaceName %>>(mlist, count, req.query.offset, req.query.limit);
+        req[<%= JSON.stringify(entityPlural) %>] = new Pagination<<%= interfaceName %>>(mlist, count, req.query.offset, req.query.limit);
 
         return next();
       });

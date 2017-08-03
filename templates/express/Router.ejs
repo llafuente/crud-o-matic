@@ -1,49 +1,49 @@
 import * as express from "express";
-import { <%= schema.backend.createFunction %> } from "./<%= schema.backend.createFunction %>";
-import { <%= schema.backend.readFunction %> } from "./<%= schema.backend.readFunction %>";
-import { <%= schema.backend.updateFunction %> } from "./<%= schema.backend.updateFunction %>";
-import { <%= schema.backend.listFunction %> } from "./<%= schema.backend.listFunction %>";
-import { <%= schema.backend.deleteFunction %> } from "./<%= schema.backend.deleteFunction %>";
+import { <%= createFunction %> } from "./<%= createFunction %>";
+import { <%= readFunction %> } from "./<%= readFunction %>";
+import { <%= updateFunction %> } from "./<%= updateFunction %>";
+import { <%= listFunction %> } from "./<%= listFunction %>";
+import { <%= deleteFunction %> } from "./<%= deleteFunction %>";
 
-const <%= schema.backend.routerName %> = express.Router();
-<%= schema.backend.routerName %>.post(
-  '/<%= schema.entitySingular %>',
-  <%= schema.backend.createFunction %>,
+const <%= routerName %> = express.Router();
+<%= routerName %>.post(
+  '/<%= entitySingular %>',
+  <%= createFunction %>,
   function (req: express.Request, res: express.Response, next: express.NextFunction) {
-    res.status(201).json(req[<%= JSON.stringify(schema.entitySingular) %>]);
+    res.status(201).json(req[<%= JSON.stringify(entitySingular) %>]);
   }
 );
-<%= schema.backend.routerName %>.get(
-  '/<%= schema.entitySingular %>',
-  <%= schema.backend.listFunction %>,
+<%= routerName %>.get(
+  '/<%= entitySingular %>',
+  <%= listFunction %>,
   function (req: express.Request, res: express.Response, next: express.NextFunction) {
-    res.status(200).json(req[<%= JSON.stringify(schema.entityPlural) %>]);
+    res.status(200).json(req[<%= JSON.stringify(entityPlural) %>]);
   }
 );
-<%= schema.backend.routerName %>.get(
-  '/<%= schema.entitySingular %>/:<%= schema.entityId %>',
-  <%= schema.backend.readFunction %>,
+<%= routerName %>.get(
+  '/<%= entitySingular %>/:<%= entityId %>',
+  <%= readFunction %>,
   function (req: express.Request, res: express.Response, next: express.NextFunction) {
-    res.status(200).json(req[<%= JSON.stringify(schema.entitySingular) %>]);
+    res.status(200).json(req[<%= JSON.stringify(entitySingular) %>]);
   }
 );
-<%= schema.backend.routerName %>.patch(
-  '/<%= schema.entitySingular %>/:<%= schema.entityId %>',
-  <%= schema.backend.readFunction %>,
-  <%= schema.backend.updateFunction %>,
+<%= routerName %>.patch(
+  '/<%= entitySingular %>/:<%= entityId %>',
+  <%= readFunction %>,
+  <%= updateFunction %>,
   function (req: express.Request, res: express.Response, next: express.NextFunction) {
-    res.status(200).json(req[<%= JSON.stringify(schema.entitySingular) %>]);
+    res.status(200).json(req[<%= JSON.stringify(entitySingular) %>]);
   }
 );
-<%= schema.backend.routerName %>.delete(
-  '/<%= schema.entitySingular %>/:<%= schema.entityId %>',
-  <%= schema.backend.deleteFunction %>,
+<%= routerName %>.delete(
+  '/<%= entitySingular %>/:<%= entityId %>',
+  <%= deleteFunction %>,
   function (req: express.Request, res: express.Response, next: express.NextFunction) {
     res.status(204).send();
   }
 );
 
-console.log("express create router <%= schema.backend.routerName %>");
+console.log("express create router <%= routerName %>");
 
-export default <%= schema.backend.routerName %>;
+export default <%= routerName %>;
 

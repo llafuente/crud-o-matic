@@ -1,19 +1,18 @@
 import * as express from "express";
 import { HttpError } from './HttpError';
-import { cleanBody } from './cleanBody';
-import { <%= schema.entitySingularUc %> } from './<%= schema.entitySingularUc %>';
+import { cleanBody } from '../common';
+import { <%= entitySingularUc %>, <%= interfaceName %> } from './<%= entitySingularUc %>';
 
 
-export function create(data, next) {
+export function create(data: <%= interfaceName %>, next) {
   cleanBody(data);
-  delete data.__v;
 
-  console.info('create <%= schema.entitySingular %> data', data);
+  console.info('create <%= entitySingular %> data', data);
 
   // TODO remove restricted
   //data = meta.$express.restricted_filter(req.log, req.user, 'create', data);
 
-  return <%= schema.entitySingularUc %>.create(data, function(err, savedRow) {
+  return <%= entitySingularUc %>.create(data, function(err, savedRow) {
     if (err) {
       return next(err);
     }
@@ -27,7 +26,7 @@ export function create(data, next) {
   });
 }
 
-export function <%= schema.backend.createFunction %>(req: express.Request, res: express.Response, next: express.NextFunction) {
+export function <%= createFunction %>(req: express.Request, res: express.Response, next: express.NextFunction) {
   console.info('create body', req.body);
 
   if (Array.isArray(req.body)) {
@@ -41,7 +40,7 @@ export function <%= schema.backend.createFunction %>(req: express.Request, res: 
 
     console.info('created@database', savedRow);
 
-    req[<%= JSON.stringify(schema.entitySingular) %>] = savedRow;
+    req[<%= JSON.stringify(entitySingular) %>] = savedRow;
     return next();
   });
 }

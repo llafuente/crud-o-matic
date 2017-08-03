@@ -1,12 +1,11 @@
 import * as express from "express";
 import { HttpError } from './HttpError';
 import { cleanBody } from './cleanBody';
-import { User } from './User';
+import { User, IUser } from './User';
 
 
-export function create(data, next) {
+export function create(data: IUser, next) {
   cleanBody(data);
-  delete data.__v;
 
   console.info('create user data', data);
 

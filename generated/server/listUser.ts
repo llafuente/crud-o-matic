@@ -33,7 +33,7 @@ export function createListQuery(
   let qCount = User.find({}).count();
 
 /* TODO add restricted to where & sort
-    if (schema.isPathRestricted(path, 'read', user)) {
+    if (isPathRestricted(path, 'read', user)) {
       err = new ValidationError(null);
       err.errors.sort = {
         path: 'query:sort',
