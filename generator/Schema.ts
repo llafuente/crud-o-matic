@@ -15,18 +15,22 @@ enum PrimiteTypes {
 };
 
 export class PrimiteType {
-  label: string;
-  type: PrimiteTypes;
+  constructor(
+    public label: string,
+    public type: PrimiteTypes,
 
-  items: PrimiteType[];
-  properties: { [s: string]: PrimiteType; };
+    public items: PrimiteType[],
+    public properties: { [s: string]: PrimiteType; },
 
-  enum: string[];
-  labels: string[];
+    public enums: string[],
+    public labels: string[],
 
-  default: any;
+    public defaults: any,
+  ) {
 
-  constructor(json: any) {
+  }
+
+  static fromJSON(json: PrimiteType): PrimiteType {
 
     if (json.type === undefined) {
       console.error(json);
@@ -38,40 +42,38 @@ export class PrimiteType {
       throw new Error(`PrimiteType[${json.type}]: type is invalid`);
     }
 
-    this.type = json.type;
-
-    if (this.type != PrimiteTypes.Object && json.label === undefined) {
+    if (json.type != PrimiteTypes.Object && json.label === undefined) {
       console.error(json);
       throw new Error("PrimiteType: label is required");
     }
 
 
-    this.label = json.label;
-
-    if (this.type == PrimiteTypes.Array) {
-      this.items = json.items;
-
-      for (let i = 0; i < this.items.length; ++i) {
-        this.items[i] = new PrimiteType(this.items[i]);
+    if (json.type == PrimiteTypes.Array) {
+      for (let i = 0; i < json.items.length; ++i) {
+        json.items[i] = PrimiteType.fromJSON(json.items[i]);
       }
     } else {
-      this.items = null;
+      json.items = null;
     }
 
-    if (this.type == PrimiteTypes.Object) {
-      this.properties = json.properties;
-
+    if (json.type == PrimiteTypes.Object) {
       // now cast every property
-      for (let i in this.properties) {
-        this.properties[i] = new PrimiteType(this.properties[i]);
+      for (let i in json.properties) {
+        json.properties[i] = PrimiteType.fromJSON(json.properties[i]);
       }
     } else {
-      this.properties = null;
+      json.properties = null;
     }
 
-    this.enum = json.enum || null;
-    this.labels = json.labels || null;
-    this.default = json.default || null;
+    return new PrimiteType(
+      json.label,
+      json.type,
+      json.items,
+      json.properties,
+      json.enums || null,
+      json.labels || null,
+      json.defaults || null,
+    );
   }
 
   getTypeScriptType() {
@@ -98,14 +100,21 @@ export class PrimiteType {
 };
 
 export class PermissionsAllowed {
-  label: string = null;
-  allowed: boolean = false;
+  constructor(
+    public label: string = null,
+    public allowed: boolean = false,
+  ) {
 
-  constructor(json: any = null) {
+  }
+
+  static fromJSON(json: any = null): PermissionsAllowed {
     if (json) {
-      this.label = json.label || null;
-      this.allowed = json.allowed === true;
+      return new PermissionsAllowed(
+        json.label || null,
+        json.allowed === true,
+      );
     }
+    return new PermissionsAllowed(); // defaults
   }
 }
 
@@ -116,12 +125,28 @@ export class Permissions {
   update: PermissionsAllowed = new PermissionsAllowed();
   delete: PermissionsAllowed = new PermissionsAllowed();
 
-  constructor(json) {
-    this.read = new PermissionsAllowed(json.read);
-    this.list = new PermissionsAllowed(json.list);
-    this.create = new PermissionsAllowed(json.create);
-    this.update = new PermissionsAllowed(json.update);
-    this.delete = new PermissionsAllowed(json.delete);
+  constructor(
+    read: PermissionsAllowed,
+    list: PermissionsAllowed,
+    create: PermissionsAllowed,
+    update: PermissionsAllowed,
+    _delete: PermissionsAllowed,
+  ) {
+    this.read = read;
+    this.list = list;
+    this.create = create;
+    this.update = update;
+    this.delete = _delete;
+  }
+
+  static fromJSON(json): Permissions {
+    return new Permissions(
+      PermissionsAllowed.fromJSON(json.read),
+      PermissionsAllowed.fromJSON(json.list),
+      PermissionsAllowed.fromJSON(json.create),
+      PermissionsAllowed.fromJSON(json.update),
+      PermissionsAllowed.fromJSON(json.delete),
+    );
   }
 };
 
@@ -149,11 +174,11 @@ export class BackEndSchema {
 
     this.options = json.options || {};
     this.options.collection = this.parentSchema.entityPlural;
-    this.permissions = new Permissions(json.permissions);
+    this.permissions = Permissions.fromJSON(json.permissions);
     this.schema = json.schema;
     // now cast every property
     for (let i in this.schema) {
-      this.schema[i] = new PrimiteType(this.schema[i]);
+      this.schema[i] = PrimiteType.fromJSON(this.schema[i]);
     }
   }
 };

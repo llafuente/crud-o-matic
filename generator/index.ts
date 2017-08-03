@@ -42,10 +42,6 @@ export class Generator {
       join(path, `HttpError.ts`),
     );
     this.copy(
-      join(__dirname, "../templates/express/cleanBody.ts"),
-      join(path, `cleanBody.ts`),
-    );
-    this.copy(
       join(__dirname, "../templates/common.ts"),
       join(path, `../common.ts`),
     );

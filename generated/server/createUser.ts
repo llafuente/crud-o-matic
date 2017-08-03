@@ -1,6 +1,6 @@
 import * as express from "express";
 import { HttpError } from './HttpError';
-import { cleanBody } from './cleanBody';
+import { cleanBody } from '../common';
 import { User, IUser } from './User';
 
 

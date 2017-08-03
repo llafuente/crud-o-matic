@@ -1,6 +1,5 @@
 import * as express from "express";
 import { HttpError } from './HttpError';
-import { cleanBody } from './cleanBody';
 import { User } from './User';
 import { Schema } from 'mongoose';
 
