@@ -2,8 +2,8 @@ import test from "ava";
 import { join } from "path";
 import { mkdirSync } from "fs";
 
-import { User, IUser } from "../generated/server/User";
-import routerUser from "../generated/server/routerUser";
+import { User, IUser } from "../generated/server/users/User";
+import routerUser from "../generated/server/users/routerUser";
 import { Pagination } from "../generated/common";
 import * as express from "express";
 import * as bodyParser from "body-parser";

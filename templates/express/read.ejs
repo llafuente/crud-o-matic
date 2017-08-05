@@ -1,11 +1,11 @@
 import * as express from "express";
-import { HttpError } from './HttpError';
-import { cleanBody } from './cleanBody';
-import { <%= entitySingularUc %> } from './<%= entitySingularUc %>';
+import { HttpError } from '../HttpError';
+import { <%= interfaceName %> } from '../../models/<%= interfaceName %>';
+import { <%= singularUc %> } from './<%= singularUc %>';
 import { Schema } from 'mongoose';
 
 export function read(_id: Schema.Types.ObjectId|string, next) {
-  return <%= entitySingularUc %>.findById(_id, function(err, entity) {
+  return <%= singularUc %>.findById(_id, function(err, entity) {
     /* istanbul ignore next */ if (err) {
       return next(err);
     }
@@ -19,7 +19,7 @@ export function read(_id: Schema.Types.ObjectId|string, next) {
 }
 
 export function readNullable(_id: Schema.Types.ObjectId|string, next) {
-  return <%= entitySingularUc %>.findById(_id, function(err, entity) {
+  return <%= singularUc %>.findById(_id, function(err, entity) {
     /* istanbul ignore next */ if (err) {
       return next(err);
     }
@@ -33,7 +33,7 @@ export function readNullable(_id: Schema.Types.ObjectId|string, next) {
 }
 
 
-export function <%= readFunction %>(req: express.Request, res: express.Response, next: express.NextFunction) {
+export function <%= backend.readFunction %>(req: express.Request, res: express.Response, next: express.NextFunction) {
   const id = req.params['<%= entityId %>'];
   console.info('read', id);
 
@@ -49,7 +49,7 @@ export function <%= readFunction %>(req: express.Request, res: express.Response,
     console.info('read@database', savedRow);
 
     // TODO review, use custom type...
-    req[<%= JSON.stringify(entitySingular) %>] = savedRow;
+    req[<%= JSON.stringify(singular) %>] = savedRow;
     return next();
   });
 }

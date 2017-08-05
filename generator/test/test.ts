@@ -1,16 +1,10 @@
 import test from 'ava';
 import { join } from 'path';
-import { mkdirSync } from 'fs';
+
 import { Generator } from '../';
 import { Schema, BackEndSchema } from '../Schema';
 
-var mkdirp = require('mkdirp');
-
 const generatedPath = join(__dirname, "..", "..", "generated");
-try {
-  mkdirSync(join(generatedPath, "server"));
-  mkdirSync(join(generatedPath, "client"));
-} catch(e) {};
 
 /*
 const fn = async () => Promise.resolve('foo');
@@ -25,7 +19,7 @@ test((t) => {
   t.is(gen.schema, null);
 
   gen.fromObject({
-    entitySingular: "user",
+    singular: "user",
     backend: {
       permissions: {
         read: {allowed: true}
@@ -126,9 +120,9 @@ test((t) => {
   t.not(gen.schema, null);
   t.true(gen.schema instanceof Schema, null);
 
-  t.is(gen.schema.entitySingular, "user");
-  t.is(gen.schema.entityPlural, "users");
-  t.is(gen.schema.entitySingularUc, "User");
+  t.is(gen.schema.singular, "user");
+  t.is(gen.schema.plural, "users");
+  t.is(gen.schema.singularUc, "User");
   t.is(gen.schema.interfaceName, "IUser");
   t.true(gen.schema.backend instanceof BackEndSchema);
   t.not(gen.schema.backend.permissions, null);
@@ -147,6 +141,13 @@ test((t) => {
 
   //console.dir(gen.schema.backend);
 
+  gen.generateCommonAt(generatedPath);
   gen.generateServerAt(join(generatedPath, "server"));
+  gen.generateClientAt(join(generatedPath, "client"));
+
+
+  // generate inside Angular 2 project
+  gen.generateCommonAt(join(__dirname, "..", "..", "angular", "src", "generated"));
+  gen.generateClientAt(join(__dirname, "..", "..", "angular", "src", "generated", "client"));
 
 });

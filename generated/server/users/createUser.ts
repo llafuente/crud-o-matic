@@ -1,7 +1,8 @@
 import * as express from "express";
-import { HttpError } from './HttpError';
+import { HttpError } from '../HttpError';
 import { cleanBody } from '../common';
-import { User, IUser } from './User';
+import { IUser } from '../../models/IUser';
+import { User } from './User';
 
 
 export function create(data: IUser, next) {

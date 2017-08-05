@@ -1,11 +1,11 @@
 import * as express from "express";
-import { HttpError } from './HttpError';
-import { cleanBody } from './cleanBody';
+import { HttpError } from '../HttpError';
 //import { User } from './User';
 import * as mongoose from 'mongoose';
-import { WhereQuery, Order, Operators, Pagination } from '../common';
+import { WhereQuery, Order, Operators, Pagination } from '../../common';
 
-import { User, UserSchema, IUser } from './User';
+import { IUser } from '../../models/IUser';
+import { User, UserSchema } from './User';
 
 const _ = require("lodash");
 const ValidationError = mongoose.ValidationError;

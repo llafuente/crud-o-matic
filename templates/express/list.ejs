@@ -1,11 +1,11 @@
 import * as express from "express";
-import { HttpError } from './HttpError';
-import { cleanBody } from './cleanBody';
+import { HttpError } from '../HttpError';
 //import { User } from './User';
 import * as mongoose from 'mongoose';
-import { WhereQuery, Order, Operators, Pagination } from '../common';
+import { WhereQuery, Order, Operators, Pagination } from '../../common';
 
-import { <%= modelName %>, <%= schemaName %>, <%= interfaceName %> } from './<%= modelName %>';
+import { <%= interfaceName %> } from '../../models/<%= interfaceName %>';
+import { <%= singularUc %>, <%= schemaName %> } from './<%= singularUc %>';
 
 const _ = require("lodash");
 const ValidationError = mongoose.ValidationError;
@@ -98,7 +98,7 @@ export function createListQuery(
 
 
 
-export function <%= listFunction %>(req, res, next) {
+export function <%= backend.listFunction %>(req, res, next) {
   console.log('usersList', JSON.stringify(req.query));
 
   req.query.limit = req.query.limit ? parseInt(req.query.limit) : 0
@@ -123,7 +123,7 @@ export function <%= listFunction %>(req, res, next) {
           return next(err2);
         }
 
-        req[<%= JSON.stringify(entityPlural) %>] = new Pagination<<%= interfaceName %>>(mlist, count, req.query.offset, req.query.limit);
+        req[<%= JSON.stringify(plural) %>] = new Pagination<<%= interfaceName %>>(mlist, count, req.query.offset, req.query.limit);
 
         return next();
       });

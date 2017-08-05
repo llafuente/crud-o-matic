@@ -1,7 +1,8 @@
 import * as express from "express";
-import { HttpError } from './HttpError';
-import { cleanBody } from './cleanBody';
-import { User, IUserModel } from './User';
+import { HttpError } from '../HttpError';
+import { cleanBody } from '../common';
+import { IUser } from '../../models/IUser';
+import { IUserModel } from './User';
 
 interface IUpdateCB {
   (err: Error|HttpError, savedRow?: IUserModel)

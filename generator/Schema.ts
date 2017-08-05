@@ -161,6 +161,13 @@ export class BackEndSchema {
 
   schema: { [s: string]: PrimiteType; }  = null;
 
+  createFunction: string;
+  readFunction: string;
+  listFunction: string;
+  updateFunction: string;
+  deleteFunction: string;
+  routerName: string;
+
   constructor(json, parentSchema: Schema) {
     this.parentSchema = parentSchema;
 
@@ -173,93 +180,82 @@ export class BackEndSchema {
     }
 
     this.options = json.options || {};
-    this.options.collection = this.parentSchema.entityPlural;
+    this.options.collection = this.parentSchema.plural;
     this.permissions = Permissions.fromJSON(json.permissions);
     this.schema = json.schema;
     // now cast every property
     for (let i in this.schema) {
       this.schema[i] = PrimiteType.fromJSON(this.schema[i]);
     }
+
+    this.createFunction = `create${this.parentSchema.singularUc}`;
+    this.readFunction = `read${this.parentSchema.singularUc}`;
+    this.listFunction = `list${this.parentSchema.singularUc}`;
+    this.deleteFunction = `destroy${this.parentSchema.singularUc}`;
+    this.updateFunction = `update${this.parentSchema.singularUc}`;
+    this.routerName = `router${this.parentSchema.singularUc}`;
+
+
   }
 };
 
 export class FrontEndSchema {
-  singular: string;
+  parentSchema: Schema;
 
-  constructor(json) {
+  createComponent: string;
+  listComponent: string;
+  updateComponent: string;
+
+  constructor(json, parentSchema: Schema) {
+    this.parentSchema = parentSchema;
+
+    this.createComponent = `Create${this.parentSchema.singularUc}Component`;
+    this.listComponent = `List${this.parentSchema.singularUc}Component`;
+    this.updateComponent = `Update${this.parentSchema.singularUc}Component`;
 
   }
 }
 
 
 export class Schema {
-  entitySingular: string;
-  entitySingularUc: string;
-  entityPlural: string;
+  singular: string;
+  singularUc: string;
+  plural: string;
   entityId: string;
 
   interfaceName: string;
   interfaceModel: string;
+  typeName: string;
   schemaName: string;
   modelName: string;
 
   backend: BackEndSchema;
   frontend: FrontEndSchema;
 
-  createFilename: string;
-  createFunction: string;
-
-  readFunction: string;
-  readFilename: string;
-
-  listFunction: string;
-  listFilename: string;
-
-  updateFunction: string;
-  updateFilename: string;
-
-  deleteFunction: string;
-  deleteFilename: string;
-
-  routerFilename: string;
-  routerName: string;
+  module: string;
 
   constructor(json) {
-    if (json.entitySingular === undefined) {
-      throw new Error("Schema: entitySingular is required");
+    if (json.singular === undefined) {
+      throw new Error("Schema: singular is required");
     }
 
     if (json.backend === undefined) {
       throw new Error("Schema: backend is required");
     }
 
-    this.entitySingular = json.entitySingular;
-    this.entityPlural = json.entityPlural || pluralize(this.entitySingular);
-    this.modelName = this.entitySingularUc = this.entitySingular[0].toLocaleUpperCase() + this.entitySingular.substring(1);
+    this.singular = json.singular;
+    this.plural = json.plural || pluralize(this.singular);
 
-    this.interfaceName = "I" + this.entitySingularUc;
-    this.interfaceModel = "I" + this.entitySingularUc + "Model";
-    this.entityId = this.entitySingular + "Id";
-    this.schemaName = this.entitySingularUc + "Schema";
+    this.modelName = this.singularUc = this.singular[0].toLocaleUpperCase() + this.singular.substring(1);
+    this.interfaceName = "I" + this.singularUc;
+    this.interfaceModel = "I" + this.singularUc + "Model";
+    this.typeName = this.singularUc + "Type";
+    this.entityId = this.singular + "Id";
+    this.schemaName = this.singularUc + "Schema";
 
-    this.createFunction = `create${this.entitySingularUc}`;
-    this.createFilename = `${this.createFunction}.ts`;
-
-    this.readFunction = `read${this.entitySingularUc}`;
-    this.readFilename = `${this.readFunction}.ts`;
-
-    this.listFunction = `list${this.entitySingularUc}`;
-    this.listFilename = `${this.listFunction}.ts`;
-
-    this.deleteFunction = `destroy${this.entitySingularUc}`;
-    this.deleteFilename = `${this.deleteFunction}.ts`;
-
-    this.updateFunction = `update${this.entitySingularUc}`;
-    this.updateFilename = `${this.updateFunction}.ts`;
-
-    this.routerName = `router${this.entitySingularUc}`;
-    this.routerFilename = `${this.routerName}.ts`;
+    this.module = this.plural[0].toLocaleUpperCase() + this.plural.substring(1) + "Module";
 
     this.backend = new BackEndSchema(json.backend, this);
+    this.frontend = new FrontEndSchema(json.frontend || {}, this);
   }
 }

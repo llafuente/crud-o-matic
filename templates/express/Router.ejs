@@ -1,49 +1,49 @@
 import * as express from "express";
-import { <%= createFunction %> } from "./<%= createFunction %>";
-import { <%= readFunction %> } from "./<%= readFunction %>";
-import { <%= updateFunction %> } from "./<%= updateFunction %>";
-import { <%= listFunction %> } from "./<%= listFunction %>";
-import { <%= deleteFunction %> } from "./<%= deleteFunction %>";
+import { <%= backend.createFunction %> } from "./<%= backend.createFunction %>";
+import { <%= backend.readFunction %> } from "./<%= backend.readFunction %>";
+import { <%= backend.updateFunction %> } from "./<%= backend.updateFunction %>";
+import { <%= backend.listFunction %> } from "./<%= backend.listFunction %>";
+import { <%= backend.deleteFunction %> } from "./<%= backend.deleteFunction %>";
 
-const <%= routerName %> = express.Router();
-<%= routerName %>.post(
-  '/<%= entitySingular %>',
-  <%= createFunction %>,
+const <%= backend.routerName %> = express.Router();
+<%= backend.routerName %>.post(
+  '/<%= singular %>',
+  <%= backend.createFunction %>,
   function (req: express.Request, res: express.Response, next: express.NextFunction) {
-    res.status(201).json(req[<%= JSON.stringify(entitySingular) %>]);
+    res.status(201).json(req[<%= JSON.stringify(singular) %>]);
   }
 );
-<%= routerName %>.get(
-  '/<%= entitySingular %>',
-  <%= listFunction %>,
+<%= backend.routerName %>.get(
+  '/<%= singular %>',
+  <%= backend.listFunction %>,
   function (req: express.Request, res: express.Response, next: express.NextFunction) {
-    res.status(200).json(req[<%= JSON.stringify(entityPlural) %>]);
+    res.status(200).json(req[<%= JSON.stringify(plural) %>]);
   }
 );
-<%= routerName %>.get(
-  '/<%= entitySingular %>/:<%= entityId %>',
-  <%= readFunction %>,
+<%= backend.routerName %>.get(
+  '/<%= singular %>/:<%= entityId %>',
+  <%= backend.readFunction %>,
   function (req: express.Request, res: express.Response, next: express.NextFunction) {
-    res.status(200).json(req[<%= JSON.stringify(entitySingular) %>]);
+    res.status(200).json(req[<%= JSON.stringify(singular) %>]);
   }
 );
-<%= routerName %>.patch(
-  '/<%= entitySingular %>/:<%= entityId %>',
-  <%= readFunction %>,
-  <%= updateFunction %>,
+<%= backend.routerName %>.patch(
+  '/<%= singular %>/:<%= entityId %>',
+  <%= backend.readFunction %>,
+  <%= backend.updateFunction %>,
   function (req: express.Request, res: express.Response, next: express.NextFunction) {
-    res.status(200).json(req[<%= JSON.stringify(entitySingular) %>]);
+    res.status(200).json(req[<%= JSON.stringify(singular) %>]);
   }
 );
-<%= routerName %>.delete(
-  '/<%= entitySingular %>/:<%= entityId %>',
-  <%= deleteFunction %>,
+<%= backend.routerName %>.delete(
+  '/<%= singular %>/:<%= entityId %>',
+  <%= backend.deleteFunction %>,
   function (req: express.Request, res: express.Response, next: express.NextFunction) {
     res.status(204).send();
   }
 );
 
-console.log("express create router <%= routerName %>");
+console.log("express create router <%= backend.routerName %>");
 
-export default <%= routerName %>;
+export default <%= backend.routerName %>;
 

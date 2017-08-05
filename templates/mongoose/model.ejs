@@ -1,11 +1,7 @@
 import mongoose = require("mongoose");
 
-export interface <%= interfaceName %> {
-  <% _.each(backend.schema, (PrimiteType, key) => { %>
-    <%= key %>: <%= PrimiteType.getTypeScriptType() %>;
-  <% }) %>
-};
-
+import { <%= interfaceName %> } from '../../models/<%= interfaceName %>';
+export * from '../../models/<%= interfaceName %>';
 
 export interface <%= interfaceName %>Model extends <%= interfaceName %>, mongoose.Document { }
 
@@ -15,4 +11,4 @@ export const <%= schemaName %> = new mongoose.Schema({
   <% }) %>
 }, <%= JSON.stringify(backend.options, null, 2) %>);
 
-export const <%= entitySingularUc %> = mongoose.model<<%= interfaceName %>Model>("User", <%= schemaName %>);
+export const <%= singularUc %> = mongoose.model<<%= interfaceName %>Model>("User", <%= schemaName %>);
