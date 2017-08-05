@@ -7,26 +7,21 @@ var mkdirp = require('mkdirp');
 
 
 export class Generator {
-  schema: Schema = null;
+  schemas: Schema[] = [];
 
   constructor() {
   }
 
-  fromJSON(JSONFile: string) {
-    const obj = require(JSONFile);
-    this.fromObject(obj);
+  addSchema(schema: Schema) {
+    this.schemas.push(schema);
   }
 
-  fromObject(obj: any) {
-    this.schema = new Schema(obj);
-  }
-
-  template(srcFile:string, dstFile: string) {
+  template(schema: Schema, srcFile:string, dstFile: string) {
     console.log(srcFile, dstFile);
 
     const model = readFileSync(srcFile, {encoding: "utf8"});
     const modelTpl = _.template(model);
-    const str = modelTpl(this.schema);
+    const str = modelTpl(schema);
     writeFileSync(dstFile, str);
   }
 
@@ -35,8 +30,16 @@ export class Generator {
     writeFileSync(dst, model);
   }
 
+  generateAll(commonPath: string, serverPath: string, clientPath: string) {
+    this.schemas.forEach((schema) => {
+      this.generateCommonAt(schema, commonPath);
+      this.generateServerAt(schema, serverPath);
+      this.generateClientAt(schema, clientPath);
+    });
+  }
 
-  generateCommonAt(path: string) {
+
+  generateCommonAt(schema: Schema, path: string) {
     try {
       mkdirp.sync(path);
       mkdirp.sync(join(path, "models"));
@@ -50,14 +53,15 @@ export class Generator {
     );
 
     this.template(
+      schema,
       join(__dirname, "../templates/Type.ts"),
-      join(path, "models", `${this.schema.interfaceName}.ts`)
+      join(path, "models", `${schema.interfaceName}.ts`)
     );
   }
-  generateServerAt(path: string) {
+  generateServerAt(schema: Schema, path: string) {
     try {
       mkdirp.sync(path);
-      mkdirp.sync(join(path, this.schema.plural));
+      mkdirp.sync(join(path, schema.plural));
     } catch(e) {
 
     }
@@ -73,51 +77,52 @@ export class Generator {
     );
 
 
-    // put _ into templates
-    (this.schema as any)._ = _;
-    (this.schema as any).ucFirst = function(str): string {
-      return str[0].toLocaleUpperCase() + str.substring(1);
-    };
-
     this.template(
+      schema,
       join(__dirname, "../templates/mongoose/model.ejs"),
-      join(path, this.schema.plural, `${this.schema.singularUc}.ts`)
+      join(path, schema.plural, `${schema.singularUc}.ts`)
     );
 
     this.template(
+      schema,
       join(__dirname, "../templates/express/create.ejs"),
-      join(path, this.schema.plural, `${this.schema.backend.createFunction}.ts`)
+      join(path, schema.plural, `${schema.backend.createFunction}.ts`)
     );
 
     this.template(
+      schema,
       join(__dirname, "../templates/express/destroy.ejs"),
-      join(path, this.schema.plural, `${this.schema.backend.deleteFunction}.ts`)
+      join(path, schema.plural, `${schema.backend.deleteFunction}.ts`)
     );
 
     this.template(
+      schema,
       join(__dirname, "../templates/express/read.ejs"),
-      join(path, this.schema.plural, `${this.schema.backend.readFunction}.ts`)
+      join(path, schema.plural, `${schema.backend.readFunction}.ts`)
     );
 
     this.template(
+      schema,
       join(__dirname, "../templates/express/list.ejs"),
-      join(path, this.schema.plural, `${this.schema.backend.listFunction}.ts`)
+      join(path, schema.plural, `${schema.backend.listFunction}.ts`)
     );
 
     this.template(
+      schema,
       join(__dirname, "../templates/express/update.ejs"),
-      join(path, this.schema.plural, `${this.schema.backend.updateFunction}.ts`)
+      join(path, schema.plural, `${schema.backend.updateFunction}.ts`)
     );
 
     this.template(
+      schema,
       join(__dirname, "../templates/express/Router.ejs"),
-      join(path, this.schema.plural, `${this.schema.backend.routerName}.ts`)
+      join(path, schema.plural, `${schema.backend.routerName}.ts`)
     );
   }
 
-  generateClientAt(path: string) {
+  generateClientAt(schema: Schema, path: string) {
     try {
-      mkdirp.sync(join(path, this.schema.plural));
+      mkdirp.sync(join(path, schema.plural));
     } catch(e) {
 
     }
@@ -132,26 +137,31 @@ export class Generator {
     );
 
     this.template(
+      schema,
       join(__dirname, "../templates/angular/index.ts"),
-      join(path, this.schema.plural, "index.ts")
+      join(path, schema.plural, "index.ts")
     );
 
     this.template(
+      schema,
       join(__dirname, "../templates/angular/routes.ts"),
-      join(path, this.schema.plural, "routes.ts")
+      join(path, schema.plural, "routes.ts")
     );
 
     this.template(
+      schema,
       join(__dirname, "../templates/angular/createComponent.ts"),
-      join(path, this.schema.plural, `${this.schema.frontend.createComponent}.ts`)
+      join(path, schema.plural, `${schema.frontend.createComponent}.ts`)
     );
     this.template(
+      schema,
       join(__dirname, "../templates/angular/updateComponent.ts"),
-      join(path, this.schema.plural, `${this.schema.frontend.updateComponent}.ts`)
+      join(path, schema.plural, `${schema.frontend.updateComponent}.ts`)
     );
     this.template(
+      schema,
       join(__dirname, "../templates/angular/listComponent.ts"),
-      join(path, this.schema.plural, `${this.schema.frontend.listComponent}.ts`)
+      join(path, schema.plural, `${schema.frontend.listComponent}.ts`)
     );
 
 

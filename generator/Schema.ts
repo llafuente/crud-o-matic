@@ -1,5 +1,6 @@
 import mongoose = require("mongoose");
 
+const _ = require('lodash');
 const pluralize = require("pluralize");
 
 enum PrimiteTypes {
@@ -234,7 +235,12 @@ export class Schema {
 
   module: string;
 
-  constructor(json) {
+  constructor() {
+    this._ = _;
+  }
+
+  static fromJSON(json: any): Schema {
+    const schema = new Schema();
     if (json.singular === undefined) {
       throw new Error("Schema: singular is required");
     }
@@ -243,19 +249,27 @@ export class Schema {
       throw new Error("Schema: backend is required");
     }
 
-    this.singular = json.singular;
-    this.plural = json.plural || pluralize(this.singular);
+    schema.singular = json.singular;
+    schema.plural = json.plural || pluralize(schema.singular);
 
-    this.modelName = this.singularUc = this.singular[0].toLocaleUpperCase() + this.singular.substring(1);
-    this.interfaceName = "I" + this.singularUc;
-    this.interfaceModel = "I" + this.singularUc + "Model";
-    this.typeName = this.singularUc + "Type";
-    this.entityId = this.singular + "Id";
-    this.schemaName = this.singularUc + "Schema";
+    schema.modelName = schema.singularUc = schema.singular[0].toLocaleUpperCase() + schema.singular.substring(1);
+    schema.interfaceName = "I" + schema.singularUc;
+    schema.interfaceModel = "I" + schema.singularUc + "Model";
+    schema.typeName = schema.singularUc + "Type";
+    schema.entityId = schema.singular + "Id";
+    schema.schemaName = schema.singularUc + "Schema";
 
-    this.module = this.plural[0].toLocaleUpperCase() + this.plural.substring(1) + "Module";
+    schema.module = schema.plural[0].toLocaleUpperCase() + schema.plural.substring(1) + "Module";
 
-    this.backend = new BackEndSchema(json.backend, this);
-    this.frontend = new FrontEndSchema(json.frontend || {}, this);
+    schema.backend = new BackEndSchema(json.backend, schema);
+    schema.frontend = new FrontEndSchema(json.frontend || {}, schema);
+
+    return schema;
+  }
+
+  // helper for templates
+  _:any; // lodash
+  ucFirst = function(str): string {
+    return str[0].toLocaleUpperCase() + str.substring(1);
   }
 }

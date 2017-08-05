@@ -15,10 +15,7 @@ test(async (t) => {
 */
 
 test((t) => {
-  const gen = new Generator();
-  t.is(gen.schema, null);
-
-  gen.fromObject({
+  const schema: Schema = Schema.fromJSON({
     singular: "user",
     backend: {
       permissions: {
@@ -117,37 +114,44 @@ test((t) => {
     }
   });
 
-  t.not(gen.schema, null);
-  t.true(gen.schema instanceof Schema, null);
+  const gen = new Generator();
+  t.is(gen.schemas.length, 0);
+  gen.addSchema(schema);
+  t.is(gen.schemas.length, 1);
 
-  t.is(gen.schema.singular, "user");
-  t.is(gen.schema.plural, "users");
-  t.is(gen.schema.singularUc, "User");
-  t.is(gen.schema.interfaceName, "IUser");
-  t.true(gen.schema.backend instanceof BackEndSchema);
-  t.not(gen.schema.backend.permissions, null);
-  t.not(gen.schema.backend.schema, null);
+  t.not(gen.schemas[0], null);
+  t.true(gen.schemas[0] instanceof Schema, null);
 
-  t.not(gen.schema.backend.schema.userlogin, null);
-  t.not(gen.schema.backend.schema.password, null);
-  t.not(gen.schema.backend.schema.salt, null);
-  t.not(gen.schema.backend.schema.roles, null);
-  t.not(gen.schema.backend.schema.permissions, null);
-  t.not(gen.schema.backend.schema.state, null);
-  t.not(gen.schema.backend.schema.data, null);
+  t.is(gen.schemas[0].singular, "user");
+  t.is(gen.schemas[0].plural, "users");
+  t.is(gen.schemas[0].singularUc, "User");
+  t.is(gen.schemas[0].interfaceName, "IUser");
+  t.true(gen.schemas[0].backend instanceof BackEndSchema);
+  t.not(gen.schemas[0].backend.permissions, null);
+  t.not(gen.schemas[0].backend.schema, null);
 
-  t.is(gen.schema.backend.permissions.read.allowed, true);
-  t.is(gen.schema.backend.permissions.create.allowed, false);
+  t.not(gen.schemas[0].backend.schema.userlogin, null);
+  t.not(gen.schemas[0].backend.schema.password, null);
+  t.not(gen.schemas[0].backend.schema.salt, null);
+  t.not(gen.schemas[0].backend.schema.roles, null);
+  t.not(gen.schemas[0].backend.schema.permissions, null);
+  t.not(gen.schemas[0].backend.schema.state, null);
+  t.not(gen.schemas[0].backend.schema.data, null);
 
-  //console.dir(gen.schema.backend);
+  t.is(gen.schemas[0].backend.permissions.read.allowed, true);
+  t.is(gen.schemas[0].backend.permissions.create.allowed, false);
 
-  gen.generateCommonAt(generatedPath);
-  gen.generateServerAt(join(generatedPath, "server"));
-  gen.generateClientAt(join(generatedPath, "client"));
+  //console.dir(gen.schemas[0].backend);
+
+  gen.generateAll(
+    generatedPath,
+    join(generatedPath, "server"),
+    join(generatedPath, "client"),
+  );
 
 
   // generate inside Angular 2 project
-  gen.generateCommonAt(join(__dirname, "..", "..", "angular", "src", "generated"));
-  gen.generateClientAt(join(__dirname, "..", "..", "angular", "src", "generated", "client"));
+  gen.generateCommonAt(gen.schemas[0], join(__dirname, "..", "..", "angular", "src", "generated"));
+  gen.generateClientAt(gen.schemas[0], join(__dirname, "..", "..", "angular", "src", "generated", "client"));
 
 });
