@@ -12,7 +12,7 @@ import { ListUserComponent } from './ListUserComponent';
 export * from './ListUserComponent';
 import { UpdateUserComponent } from './UpdateUserComponent';
 export * from './UpdateUserComponent';
-
+import { BB4UIModule } from "../../../bb4ui";
 
 import { routes } from './routes';
 export * from './routes';
@@ -25,6 +25,7 @@ export const declarations = [
 ];
 
 export const imports = [
+  BB4UIModule,
   RouterModule.forRoot(routes, { useHash: true })
 ];
 
