@@ -4,7 +4,7 @@ import { Generator } from './Generator';
 const _ = require('lodash');
 const pluralize = require("pluralize");
 
-enum PrimiteTypes {
+export enum PrimiteTypes {
   Object = "Object",
   Array = "Array",
   Date = "Date",
@@ -16,18 +16,27 @@ enum PrimiteTypes {
   AutoPrimaryKey = "AutoPrimaryKey",
 };
 
+export enum FrontControls {
+  TEXT = "TEXT",
+  DROPDOWN = "DROPDOWN",
+  TEXTAREA = "TEXTAREA",
+  CHECKBOX = "CHECKBOX",
+};
+
 export class PrimiteType {
+
+  defaults: any = null;
+  enums: string[] = null;
+  labels: string[] = null;
+  unique: boolean = false;
+
   constructor(
     public label: string,
     public type: PrimiteTypes,
+    public frontControl: FrontControls,
 
-    public items: PrimiteType[],
-    public properties: { [s: string]: PrimiteType; },
-
-    public enums: string[],
-    public labels: string[],
-
-    public defaults: any,
+    public items: PrimiteType[] = null,
+    public properties: { [s: string]: PrimiteType; } = null,
   ) {
 
   }
@@ -67,15 +76,20 @@ export class PrimiteType {
       json.properties = null;
     }
 
-    return new PrimiteType(
+    const primitive = new PrimiteType(
       json.label,
       json.type,
+      json.frontControl || FrontControls.TEXT,
       json.items,
       json.properties,
-      json.enums || null,
-      json.labels || null,
-      json.defaults || null,
     );
+
+    primitive.enums = json.enums || null;
+    primitive.labels = json.labels || null;
+    primitive.defaults = json.defaults || null;
+    primitive.unique = json.unique === true;
+
+    return primitive;
   }
 
   getTypeScriptType() {
@@ -92,11 +106,17 @@ export class PrimiteType {
   getMongooseType() {
     switch (this.type) {
       case PrimiteTypes.AutoPrimaryKey:
-        return PrimiteTypes.Number;
+        return `{
+          type: ${PrimiteTypes.Number},
+          unique: ${this.unique}
+        }`;
       case PrimiteTypes.Array:
-        return "[]";
+        return `[]`;
       default:
-        return this.type;
+        return `{
+          type: ${this.type},
+          unique: ${this.unique}
+        }`;
     }
   }
 };

@@ -37,7 +37,7 @@ test.serial("configure express", (t) => {
 
   app.use((err, req, res, next) => {
     console.error(err);
-    res.status(404).json({error: true});
+    res.status(500).json({message: err.message});
   });
 
   t.pass("express configured");
@@ -67,6 +67,7 @@ test.serial("remove previous users", async (t) => {
 
 test.serial("create user with mongoose", async (t) => {
   var user = new User({
+    userlogin: "user@appsilon.pl",
     email: "user@appsilon.pl"
   });
 
@@ -90,6 +91,7 @@ test.cb.serial("create user using API", (t) => {
   supertest(app)
   .post('/users')
   .send({
+    userlogin: "user@appsilon.pl2",
     email: "user@appsilon.pl2"
   })
   .set('Accept', 'application/json')
@@ -109,6 +111,7 @@ test.cb.serial("create user using API (2)", (t) => {
   supertest(app)
   .post('/users')
   .send({
+    userlogin: "user@appsilon.pl3",
     email: "user@appsilon.pl3"
   })
   .set('Accept', 'application/json')
@@ -146,6 +149,30 @@ test.cb.serial("check created user using API", (t) => {
     t.end();
   });
 });
+
+
+test.cb.serial("create user error using API", (t) => {
+  supertest(app)
+  .post('/users')
+  .send({
+    userlogin: "user@appsilon.pl3",
+    email: "xxx@yyy.com"
+  })
+  .set('Accept', 'application/json')
+  .expect(500)
+  .expect('Content-Type', /json/)
+  .end(function(err, response) {
+    if (err) {
+      t.fail(err);
+    }
+
+    const msg = "E11000 duplicate key error collection: test.users index: userlogin";
+    t.is(msg, response.body.message.substring(0, msg.length));
+
+    t.end();
+  });
+});
+
 
 test.cb.serial("get users using API", (t) => {
   supertest(app)

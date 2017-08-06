@@ -2,7 +2,7 @@ import test from 'ava';
 import { join } from 'path';
 
 import { Generator } from '../';
-import { Schema, BackEndSchema } from '../Schema';
+import { Schema, BackEndSchema, PrimiteType, PrimiteTypes, FrontControls } from '../Schema';
 
 const generatedPath = join(__dirname, "..", "..", "generated");
 
@@ -16,6 +16,16 @@ test(async (t) => {
 
 test((t) => {
   const gen = new Generator();
+
+  //*"required": true,
+  //*"maxlength": 254,
+  //*"restricted": false,
+  const userlogin = new PrimiteType(
+    "Userlogin",
+    PrimiteTypes.String,
+    FrontControls.TEXT
+  );
+  userlogin.unique = true;
 
   const schema: Schema = Schema.fromJSON({
     singular: "user",
@@ -31,14 +41,7 @@ test((t) => {
           //*"restricted": false
         },
         */
-        "userlogin": {
-          "label": "userlogin",
-          "type": "String",
-          //*"required": true,
-          //*"maxlength": 254,
-          //*"restricted": false,
-          //*"unique": true
-        },
+        "userlogin": userlogin,
         "password": {
           "label": "Password",
           "type": "String",
