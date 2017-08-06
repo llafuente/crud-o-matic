@@ -155,7 +155,6 @@ test((t) => {
 
 
   // generate inside Angular 2 project
-  gen.generateCommonAt(gen.schemas[0], join(__dirname, "..", "..", "angular", "src", "generated"));
-  gen.generateClientAt(gen.schemas[0], join(__dirname, "..", "..", "angular", "src", "generated", "client"));
+  gen.generateClientAt(gen.schemas[0], join(__dirname, "..", "..", "angular", "src", "generated"));
 
 });

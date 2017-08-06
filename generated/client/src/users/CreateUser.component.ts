@@ -2,22 +2,22 @@ import { Component, Input, OnInit, Injector } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Http, Response, RequestOptions, Headers } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
-import { BaseComponent } from '../BaseComponent';
-import { <%= typeName %> } from '../../models/<%= interfaceName %>';
+import { BaseComponent } from '../Base.component';
+import { UserType } from '../models/IUser';
 
 /**
  */
 @Component({
-  selector: '<%= singular %>-create-component',
+  selector: 'user-create-component',
   template: `
 <div>
 </div>
   `,
 })
-export class <%= frontend.createComponent %> extends BaseComponent {
+export class CreateUserComponent extends BaseComponent {
   loading: false;
   id: number;
-  entity: <%= typeName %> = new <%= typeName %>();
+  entity: UserType = new UserType();
 
   constructor(
     injector: Injector,
@@ -36,8 +36,11 @@ export class <%= frontend.createComponent %> extends BaseComponent {
   }
 
   save() {
-    this.http.post("<%= url('CREATE', true) %>", this.entity)
+    console.log("--> POST: http://localhost:3004/users", this.entity);
+    this.http.post("http://localhost:3004/users", this.entity)
     .subscribe((response: Response) => {
+      console.log("<-- POST: http://localhost:3004/users", response);
+
       this.router.navigate(['..', 'list']);
     });
   }

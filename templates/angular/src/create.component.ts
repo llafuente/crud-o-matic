@@ -2,21 +2,21 @@ import { Component, Input, OnInit, Injector } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Http, Response, RequestOptions, Headers } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
-import { BaseComponent } from '../BaseComponent';
-import { <%= typeName %> } from '../../models/<%= interfaceName %>';
+import { BaseComponent } from '../Base.component';
+import { <%= typeName %> } from '../models/<%= interfaceName %>';
 
 /**
  */
 @Component({
-  selector: '<%= singular %>-update-component',
+  selector: '<%= singular %>-create-component',
   template: `
 <div>
 </div>
   `,
 })
-export class <%= frontend.updateComponent %> extends BaseComponent {
+export class <%= frontend.createComponent %> extends BaseComponent {
   loading: false;
-  id: string;
+  id: number;
   entity: <%= typeName %> = new <%= typeName %>();
 
   constructor(
@@ -27,15 +27,6 @@ export class <%= frontend.updateComponent %> extends BaseComponent {
     public router: Router,
   ) {
     super(injector, activatedRoute);
-
-
-    //this.id = parseInt(this.getRouteParameter('<%= entityId %>'), 10);
-    this.id = this.getRouteParameter('<%= entityId %>');
-
-    this.http.get("<%= url('READ', true) %>".replace(":<%= entityId %>", this.id))
-    .subscribe((response: Response) => {
-      this.entity = response.json();
-    });
   }
   /*
    * refresh unless starStopped
@@ -45,8 +36,11 @@ export class <%= frontend.updateComponent %> extends BaseComponent {
   }
 
   save() {
-    this.http.patch("<%= url('UPDATE', true) %>".replace(":<%= entityId %>", this.id), this.entity)
+    console.log("--> POST: <%= url('CREATE', true) %>", this.entity);
+    this.http.post("<%= url('CREATE', true) %>", this.entity)
     .subscribe((response: Response) => {
+      console.log("<-- POST: <%= url('CREATE', true) %>", response);
+
       this.router.navigate(['..', 'list']);
     });
   }

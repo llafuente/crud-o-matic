@@ -32,15 +32,9 @@ export class Generator {
 
   generateAll(commonPath: string, serverPath: string, clientPath: string) {
     this.schemas.forEach((schema) => {
-      this.generateCommonAt(schema, commonPath);
       this.generateServerAt(schema, serverPath);
       this.generateClientAt(schema, clientPath);
     });
-  }
-
-
-  generateCommonAt(schema: Schema, path: string) {
-
   }
 
   generateServerAt(schema: Schema, path: string) {
@@ -135,46 +129,68 @@ export class Generator {
 
   generateClientAt(schema: Schema, path: string) {
     try {
-      mkdirp.sync(join(path, schema.plural));
+      mkdirp.sync(join(path, "src", schema.plural));
+      mkdirp.sync(join(path, "src", "models"));
     } catch(e) {
 
     }
-
+    // src
     this.copy(
-      join(__dirname, "../templates/angular/Root.component.ts"),
-      join(path, "Root.component.ts")
+      join(__dirname, "../templates/common.ts"),
+      join(path, "src", "common.ts"),
     );
-    this.copy(
-      join(__dirname, "../templates/angular/BaseComponent.ts"),
-      join(path, "BaseComponent.ts")
+
+    this.template(
+      schema,
+      join(__dirname, "../templates/angular/module.ts"),
+      join(path, "src", `${schema.moduleFile}.ts`)
     );
 
     this.template(
       schema,
       join(__dirname, "../templates/angular/index.ts"),
-      join(path, schema.plural, "index.ts")
+      join(path, "src", `index.ts`)
+    );
+
+    this.copy(
+      join(__dirname, "../templates/angular/Root.component.ts"),
+      join(path, "src", "Root.component.ts")
+    );
+
+    this.copy(
+      join(__dirname, "../templates/angular/BaseComponent.ts"),
+      join(path, "src", "Base.component.ts")
+    );
+
+    // src/models
+    this.template(
+      schema,
+      join(__dirname, "../templates/Type.ts"),
+      join(path, "src", "models", `${schema.interfaceName}.ts`)
+    );
+
+    // src/<plural>
+
+    this.template(
+      schema,
+      join(__dirname, "../templates/angular/src/routes.ts"),
+      join(path, "src", schema.plural, "routes.ts")
     );
 
     this.template(
       schema,
-      join(__dirname, "../templates/angular/routes.ts"),
-      join(path, schema.plural, "routes.ts")
-    );
-
-    this.template(
-      schema,
-      join(__dirname, "../templates/angular/createComponent.ts"),
-      join(path, schema.plural, `${schema.frontend.createComponent}.ts`)
+      join(__dirname, "../templates/angular/src/create.component.ts"),
+      join(path, "src", schema.plural, `${schema.frontend.createComponentFile}.ts`)
     );
     this.template(
       schema,
-      join(__dirname, "../templates/angular/updateComponent.ts"),
-      join(path, schema.plural, `${schema.frontend.updateComponent}.ts`)
+      join(__dirname, "../templates/angular/src/update.component.ts"),
+      join(path, "src", schema.plural, `${schema.frontend.updateComponentFile}.ts`)
     );
     this.template(
       schema,
-      join(__dirname, "../templates/angular/listComponent.ts"),
-      join(path, schema.plural, `${schema.frontend.listComponent}.ts`)
+      join(__dirname, "../templates/angular/src/list.component.ts"),
+      join(path, "src", schema.plural, `${schema.frontend.listComponentFile}.ts`)
     );
 
 

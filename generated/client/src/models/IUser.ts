@@ -1,6 +1,9 @@
+import * as mongoose from 'mongoose';
+
+
 export interface IUser {
   _id: string|any;
-  id: string|any;
+  id?: string;
   createdAt: Date;
   updatedAt: Date;
 
@@ -26,7 +29,7 @@ export interface IUser {
 
 export class UserType implements IUser {
   _id: string|any;
-  id: string|any;
+  id?: string;
   createdAt: Date;
   updatedAt: Date;
 

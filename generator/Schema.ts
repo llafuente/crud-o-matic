@@ -203,15 +203,21 @@ export class FrontEndSchema {
   parentSchema: Schema;
 
   createComponent: string;
+  createComponentFile: string;
   listComponent: string;
+  listComponentFile: string;
   updateComponent: string;
+  updateComponentFile: string;
 
   constructor(json, parentSchema: Schema) {
     this.parentSchema = parentSchema;
 
     this.createComponent = `Create${this.parentSchema.singularUc}Component`;
+    this.createComponentFile = `Create${this.parentSchema.singularUc}.component`;
     this.listComponent = `List${this.parentSchema.singularUc}Component`;
+    this.listComponentFile = `List${this.parentSchema.singularUc}.component`;
     this.updateComponent = `Update${this.parentSchema.singularUc}Component`;
+    this.updateComponentFile = `Update${this.parentSchema.singularUc}.component`;
 
   }
 }
@@ -233,6 +239,7 @@ export class Schema {
   frontend: FrontEndSchema;
 
   module: string;
+  moduleFile: string;
 
   baseApiUrl: string = "";
   domain: string = "";
@@ -264,6 +271,7 @@ export class Schema {
     schema.schemaName = schema.singularUc + "Schema";
 
     schema.module = schema.plural[0].toLocaleUpperCase() + schema.plural.substring(1) + "Module";
+    schema.moduleFile = schema.plural[0].toLocaleUpperCase() + schema.plural.substring(1) + ".module";
 
     schema.backend = new BackEndSchema(json.backend, schema);
     schema.frontend = new FrontEndSchema(json.frontend || {}, schema);

@@ -7,23 +7,23 @@ import { RootComponent } from './Root.component';
 export * from './Root.component';
 
 // All modules
-<% _.each(generator.schemas, (schema) => { %>
-import { <%= schema.module %> } from './<%= schema.moduleFile %>';
-export * from './<%= schema.moduleFile %>';
-<% }) %>
+
+import { UsersModule } from './Users.module';
+export * from './Users.module';
+
 
 export const imports = [
-<% _.each(generator.schemas, (schema) => { %>
-  <%= schema.module %>,
-<% }) %>
+
+  UsersModule,
+
 ];
 
 export const _exports = [
   BrowserModule,
   RouterModule,
-<% _.each(generator.schemas, (schema) => { %>
-  <%= schema.module %>,
-<% }) %>
+
+  UsersModule,
+
 ];
 
 
