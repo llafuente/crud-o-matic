@@ -46,7 +46,7 @@ export class <%= frontend.listComponent %> extends BaseComponent {
   ) {
     super(injector, activatedRoute);
 
-    this.http.get("/<%= singular %>")
+    this.http.get("<%= url('LIST', true) %>")
     .subscribe((response: Response) => {
       const json: Pagination<<%= typeName %>> = response.json();
       this.entities = Pagination.fromJSON<<%= typeName %>>(<%= typeName %>, json);
@@ -63,7 +63,7 @@ export class <%= frontend.listComponent %> extends BaseComponent {
     if (this.loading) return;
 
     this.loading = true;
-    this.http.delete("/<%= singular %>")
+    this.http.delete("<%= url('DELETE', true) %>".replace(":<%= entityId %>", "" + row.id))
     .subscribe((response: Response) => {
       this.entities.list.splice(idx, 1);
       this.loading = false;

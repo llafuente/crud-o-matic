@@ -36,7 +36,7 @@ export class <%= frontend.createComponent %> extends BaseComponent {
   }
 
   save() {
-    this.http.post("/<%= singular %>", this.entity)
+    this.http.post("<%= url('CREATE', true) %>", this.entity)
     .subscribe((response: Response) => {
       this.router.navigate(['..', 'list']);
     });

@@ -1,7 +1,7 @@
 import * as express from "express";
 import { HttpError } from '../HttpError';
-import { <%= interfaceName %> } from '../../models/<%= interfaceName %>';
-import { <%= singularUc %> } from './<%= singularUc %>';
+import { <%= interfaceName %> } from '../models/<%= interfaceName %>';
+import { <%= singularUc %> } from '../models/<%= singularUc %>';
 import { Schema } from 'mongoose';
 
 export function read(_id: Schema.Types.ObjectId|string, next) {

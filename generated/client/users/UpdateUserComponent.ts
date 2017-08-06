@@ -16,7 +16,7 @@ import { UserType } from '../../models/IUser';
 })
 export class UpdateUserComponent extends BaseComponent {
   loading: false;
-  id: number;
+  id: string;
   entity: UserType = new UserType();
 
   constructor(
@@ -29,9 +29,10 @@ export class UpdateUserComponent extends BaseComponent {
     super(injector, activatedRoute);
 
 
-    this.id = parseInt(this.getRouteParameter('userId'), 10);
+    //this.id = parseInt(this.getRouteParameter('userId'), 10);
+    this.id = this.getRouteParameter('userId');
 
-    this.http.get("/user/" + this.id)
+    this.http.get("http://localhost:3004/users/:userId".replace(":userId", this.id))
     .subscribe((response: Response) => {
       this.entity = response.json();
     });
@@ -44,7 +45,7 @@ export class UpdateUserComponent extends BaseComponent {
   }
 
   save() {
-    this.http.patch("/user/" + this.id, this.entity)
+    this.http.patch("http://localhost:3004/users/:userId".replace(":userId", this.id), this.entity)
     .subscribe((response: Response) => {
       this.router.navigate(['..', 'list']);
     });

@@ -16,7 +16,7 @@ import { <%= typeName %> } from '../../models/<%= interfaceName %>';
 })
 export class <%= frontend.updateComponent %> extends BaseComponent {
   loading: false;
-  id: number;
+  id: string;
   entity: <%= typeName %> = new <%= typeName %>();
 
   constructor(
@@ -29,9 +29,10 @@ export class <%= frontend.updateComponent %> extends BaseComponent {
     super(injector, activatedRoute);
 
 
-    this.id = parseInt(this.getRouteParameter('<%= entityId %>'), 10);
+    //this.id = parseInt(this.getRouteParameter('<%= entityId %>'), 10);
+    this.id = this.getRouteParameter('<%= entityId %>');
 
-    this.http.get("/<%= singular %>/" + this.id)
+    this.http.get("<%= url('READ', true) %>".replace(":<%= entityId %>", this.id))
     .subscribe((response: Response) => {
       this.entity = response.json();
     });
@@ -44,7 +45,7 @@ export class <%= frontend.updateComponent %> extends BaseComponent {
   }
 
   save() {
-    this.http.patch("/<%= singular %>/" + this.id, this.entity)
+    this.http.patch("<%= url('UPDATE', true) %>".replace(":<%= entityId %>", this.id), this.entity)
     .subscribe((response: Response) => {
       this.router.navigate(['..', 'list']);
     });

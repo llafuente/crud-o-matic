@@ -1,12 +1,12 @@
 import * as express from "express";
 import { HttpError } from '../HttpError';
-import { <%= interfaceName %> } from '../../models/<%= interfaceName %>';
-import { <%= singularUc %> } from './<%= singularUc %>';
+import { IUser } from '../models/IUser';
+import { User } from '../models/User';
 import { Schema } from 'mongoose';
 
 
 export function destroy(_id: Schema.Types.ObjectId|string, next) {
-  <%= singularUc %>.findByIdAndRemove(_id, function(err) {
+  User.findByIdAndRemove(_id, function(err) {
     /* istanbul ignore next */ if (err) {
       return next(err);
     }
@@ -15,8 +15,8 @@ export function destroy(_id: Schema.Types.ObjectId|string, next) {
   });
 }
 
-export function <%= backend.deleteFunction %>(req: express.Request, res: express.Response, next: express.NextFunction) {
-  const id = req.params['<%= entityId %>'];
+export function destroyUser(req: express.Request, res: express.Response, next: express.NextFunction) {
+  const id = req.params['userId'];
 
   console.info(`destroy`, id);
 

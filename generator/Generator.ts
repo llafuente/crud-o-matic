@@ -40,83 +40,96 @@ export class Generator {
 
 
   generateCommonAt(schema: Schema, path: string) {
+
+  }
+
+  generateServerAt(schema: Schema, path: string) {
     try {
       mkdirp.sync(path);
-      mkdirp.sync(join(path, "models"));
+      mkdirp.sync(join(path, "src", schema.plural));
+      mkdirp.sync(join(path, "src", "models"));
     } catch(e) {
 
     }
 
+    // at server root
     this.copy(
-      join(__dirname, "../templates/common.ts"),
-      join(path, `common.ts`),
+      join(__dirname, "../templates/express/.gitignore"),
+      join(path, ".gitignore"),
+    );
+    this.copy(
+      join(__dirname, "../templates/express/package.json"),
+      join(path, "package.json"),
+    );
+    this.copy(
+      join(__dirname, "../templates/express/tsconfig.json"),
+      join(path, "tsconfig.json"),
+    );
+
+    // src/models
+    this.template(
+      schema,
+      join(__dirname, "../templates/mongoose/model.ts"),
+      join(path, "src", "models", `${schema.singularUc}.ts`)
     );
 
     this.template(
       schema,
       join(__dirname, "../templates/Type.ts"),
-      join(path, "models", `${schema.interfaceName}.ts`)
+      join(path, "src", "models", `${schema.interfaceName}.ts`)
     );
-  }
-  generateServerAt(schema: Schema, path: string) {
-    try {
-      mkdirp.sync(path);
-      mkdirp.sync(join(path, schema.plural));
-    } catch(e) {
 
-    }
-
-    this.copy(
-      join(__dirname, "../templates/express/common.ts"),
-      join(path, `common.ts`),
+    // src
+    this.template(
+      schema,
+      join(__dirname, "../templates/express/src/app.ts"),
+      join(path, "src", "app.ts"),
     );
 
     this.copy(
-      join(__dirname, "../templates/express/HttpError.ts"),
-      join(path, `HttpError.ts`),
+      join(__dirname, "../templates/common.ts"),
+      join(path, "src", "common.ts"),
     );
 
-
-    this.template(
-      schema,
-      join(__dirname, "../templates/mongoose/model.ejs"),
-      join(path, schema.plural, `${schema.singularUc}.ts`)
-    );
-
-    this.template(
-      schema,
-      join(__dirname, "../templates/express/create.ejs"),
-      join(path, schema.plural, `${schema.backend.createFunction}.ts`)
+    this.copy(
+      join(__dirname, "../templates/express/src/HttpError.ts"),
+      join(path, "src", "HttpError.ts"),
     );
 
     this.template(
       schema,
-      join(__dirname, "../templates/express/destroy.ejs"),
-      join(path, schema.plural, `${schema.backend.deleteFunction}.ts`)
+      join(__dirname, "../templates/express/src/create.ts"),
+      join(path, "src", schema.plural, `${schema.backend.createFunction}.ts`)
     );
 
     this.template(
       schema,
-      join(__dirname, "../templates/express/read.ejs"),
-      join(path, schema.plural, `${schema.backend.readFunction}.ts`)
+      join(__dirname, "../templates/express/src/destroy.ts"),
+      join(path, "src", schema.plural, `${schema.backend.deleteFunction}.ts`)
     );
 
     this.template(
       schema,
-      join(__dirname, "../templates/express/list.ejs"),
-      join(path, schema.plural, `${schema.backend.listFunction}.ts`)
+      join(__dirname, "../templates/express/src/read.ts"),
+      join(path, "src", schema.plural, `${schema.backend.readFunction}.ts`)
     );
 
     this.template(
       schema,
-      join(__dirname, "../templates/express/update.ejs"),
-      join(path, schema.plural, `${schema.backend.updateFunction}.ts`)
+      join(__dirname, "../templates/express/src/list.ts"),
+      join(path, "src", schema.plural, `${schema.backend.listFunction}.ts`)
     );
 
     this.template(
       schema,
-      join(__dirname, "../templates/express/Router.ejs"),
-      join(path, schema.plural, `${schema.backend.routerName}.ts`)
+      join(__dirname, "../templates/express/src/update.ts"),
+      join(path, "src", schema.plural, `${schema.backend.updateFunction}.ts`)
+    );
+
+    this.template(
+      schema,
+      join(__dirname, "../templates/express/src/router.ts"),
+      join(path, "src", schema.plural, `${schema.backend.routerName}.ts`)
     );
   }
 

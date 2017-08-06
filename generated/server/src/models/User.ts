@@ -1,7 +1,7 @@
 import mongoose = require("mongoose");
 
-import { IUser } from '../../models/IUser';
-export * from '../../models/IUser';
+import { IUser } from './IUser';
+export * from './IUser';
 
 export interface IUserModel extends IUser, mongoose.Document { }
 

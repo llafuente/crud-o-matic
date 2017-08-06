@@ -15,6 +15,8 @@ test(async (t) => {
 */
 
 test((t) => {
+  const gen = new Generator();
+
   const schema: Schema = Schema.fromJSON({
     singular: "user",
     backend: {
@@ -112,9 +114,11 @@ test((t) => {
         }
       }
     }
-  });
+  }, gen);
 
-  const gen = new Generator();
+  schema.domain = "http://localhost:3004";
+  schema.baseApiUrl = "";
+
   t.is(gen.schemas.length, 0);
   gen.addSchema(schema);
   t.is(gen.schemas.length, 1);

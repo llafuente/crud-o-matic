@@ -1,16 +1,13 @@
 import * as express from "express";
 import { HttpError } from '../HttpError';
-import { cleanBody } from '../common';
-import { <%= interfaceName %> } from '../../models/<%= interfaceName %>';
-import { <%= interfaceModel %> } from './<%= singularUc %>';
+import { <%= interfaceName %> } from '../models/<%= interfaceName %>';
+import { <%= interfaceModel %> } from '../models/<%= singularUc %>';
 
 interface IUpdateCB {
   (err: Error|HttpError, savedRow?: <%= interfaceModel %>)
 };
 
 export function update(/*user,*/ row: <%= interfaceModel %>, data, next: IUpdateCB) {
-  cleanBody(data);
-
   // TODO
   //data = meta.$express.restricted_filter(log, user, 'update', data);
 

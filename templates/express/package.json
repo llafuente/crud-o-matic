@@ -1,0 +1,48 @@
+{
+  "name": "crud-o-matic",
+  "version": "0.0.1",
+  "description": "",
+  "main": "./src/app.ts",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "npm run build && npm ava --verbose ./compiled-js/test/*.js",
+    "testcv": "npm run build && npm ava --verbose ./compiled-js/test/*.js",
+    "pretty": "prettier --write --parser typescript --print-width 120 \"src/**/*.ts\"",
+    "lint": "npm run pretty && tslint --fix -c ./tslint.json --type-check -p ./tsconfig.json",
+    "build": "tsc -p ./tsconfig.json",
+    "start": "npm run build && node ./src-js/app.js"
+  },
+  "author": "llafuente@noboxout.com",
+  "license": "MIT",
+  "dependencies": {
+    "bluebird": "3.5.0",
+    "body-parser": "1.17.2",
+    "cors": "2.8.4",
+    "csv-write-stream": "2.0.0",
+    "express": "4.15.3",
+    "express-jwt": "5.3.0",
+    "jsontoxml": "0.0.11",
+    "jsonwebtoken": "7.4.1",
+    "lodash": "4.17.4",
+    "mongoose": "4.11.5",
+    "tslint": "5.5.0",
+    "typescript": "2.4.2"
+  },
+  "devDependencies": {
+    "@types/express": "4.0.36",
+    "@types/mongoose": "4.7.19",
+    "@types/supertest": "2.0.2",
+    "ava": "0.21.0",
+    "eslint": "4.3.0",
+    "rimraf": "2.6.1",
+    "sinon": "2.4.1",
+    "supertest": "3.0.0"
+  },
+  "nyc": {
+    "exclude": [
+      "tests"
+    ]
+  }
+}

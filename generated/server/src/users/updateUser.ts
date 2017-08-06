@@ -1,16 +1,13 @@
 import * as express from "express";
 import { HttpError } from '../HttpError';
-import { cleanBody } from '../common';
-import { IUser } from '../../models/IUser';
-import { IUserModel } from './User';
+import { IUser } from '../models/IUser';
+import { IUserModel } from '../models/User';
 
 interface IUpdateCB {
   (err: Error|HttpError, savedRow?: IUserModel)
 };
 
 export function update(/*user,*/ row: IUserModel, data, next: IUpdateCB) {
-  cleanBody(data);
-
   // TODO
   //data = meta.$express.restricted_filter(log, user, 'update', data);
 

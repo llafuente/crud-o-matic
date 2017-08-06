@@ -1,13 +1,10 @@
 import * as express from "express";
 import { HttpError } from '../HttpError';
-import { cleanBody } from '../common';
-import { IUser } from '../../models/IUser';
-import { User } from './User';
+import { IUser } from '../models/IUser';
+import { User } from '../models/User';
 
 
 export function create(data: IUser, next) {
-  cleanBody(data);
-
   console.info('create user data', data);
 
   // TODO remove restricted

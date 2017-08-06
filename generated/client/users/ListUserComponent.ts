@@ -74,7 +74,7 @@ export class ListUserComponent extends BaseComponent {
   ) {
     super(injector, activatedRoute);
 
-    this.http.get("/user")
+    this.http.get("http://localhost:3004/users")
     .subscribe((response: Response) => {
       const json: Pagination<UserType> = response.json();
       this.entities = Pagination.fromJSON<UserType>(UserType, json);
@@ -91,7 +91,7 @@ export class ListUserComponent extends BaseComponent {
     if (this.loading) return;
 
     this.loading = true;
-    this.http.delete("/user")
+    this.http.delete("http://localhost:3004/users/:userId".replace(":userId", "" + row.id))
     .subscribe((response: Response) => {
       this.entities.list.splice(idx, 1);
       this.loading = false;

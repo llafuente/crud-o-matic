@@ -1,4 +1,5 @@
 import mongoose = require("mongoose");
+import { Generator } from './Generator';
 
 const _ = require('lodash');
 const pluralize = require("pluralize");
@@ -153,10 +154,8 @@ export class Permissions {
 
 export class BackEndSchema {
   parentSchema: Schema;
-  //TODO mongoose.xxx ?
-  options: {
-    collection: string
-  } = null;
+
+  options?: mongoose.SchemaOptions = null;
 
   permissions: Permissions = null;
 
@@ -235,12 +234,17 @@ export class Schema {
 
   module: string;
 
-  constructor() {
+  baseApiUrl: string = "";
+  domain: string = "";
+
+  constructor(
+    public generator: Generator
+  ) {
     this._ = _;
   }
 
-  static fromJSON(json: any): Schema {
-    const schema = new Schema();
+  static fromJSON(json: any, generator: Generator): Schema {
+    const schema = new Schema(generator);
     if (json.singular === undefined) {
       throw new Error("Schema: singular is required");
     }
@@ -271,5 +275,24 @@ export class Schema {
   _:any; // lodash
   ucFirst = function(str): string {
     return str[0].toLocaleUpperCase() + str.substring(1);
+  }
+
+  url(action:string, fullUrl: boolean = false) {
+    let domain = "";
+    if (fullUrl) {
+      domain = this.domain;
+    }
+
+    switch (action) {
+      case "LIST":
+      case "CREATE":
+        return `${domain}${this.baseApiUrl}/${this.plural}`;
+      case "READ":
+      case "DELETE":
+      case "UPDATE":
+        return `${domain}${this.baseApiUrl}/${this.plural}/:${this.entityId}`;
+    }
+
+    throw new Error(`invalid action: ${action}`);
   }
 }

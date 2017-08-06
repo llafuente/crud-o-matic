@@ -36,7 +36,7 @@ export class CreateUserComponent extends BaseComponent {
   }
 
   save() {
-    this.http.post("/user", this.entity)
+    this.http.post("http://localhost:3004/users", this.entity)
     .subscribe((response: Response) => {
       this.router.navigate(['..', 'list']);
     });

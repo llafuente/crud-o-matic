@@ -2,9 +2,9 @@ import test from "ava";
 import { join } from "path";
 import { mkdirSync } from "fs";
 
-import { User, IUser } from "../generated/server/users/User";
-import routerUser from "../generated/server/users/routerUser";
-import { Pagination } from "../generated/common";
+import { User, IUser } from "../generated/server/src/models/User";
+import routerUser from "../generated/server/src/users/routerUser";
+import { Pagination } from "../generated/server/src/common";
 import * as express from "express";
 import * as bodyParser from "body-parser";
 //import * as supertest from "supertest";
@@ -88,7 +88,7 @@ let userCreatedByApi2;
 
 test.cb.serial("create user using API", (t) => {
   supertest(app)
-  .post('/user')
+  .post('/users')
   .send({
     email: "user@appsilon.pl2"
   })
@@ -107,7 +107,7 @@ test.cb.serial("create user using API", (t) => {
 
 test.cb.serial("create user using API (2)", (t) => {
   supertest(app)
-  .post('/user')
+  .post('/users')
   .send({
     email: "user@appsilon.pl3"
   })
@@ -134,7 +134,7 @@ test.serial("check created user using mongoose", async (t) => {
 
 test.cb.serial("check created user using API", (t) => {
   supertest(app)
-  .get(`/user/${userCreatedByApi._id}`)
+  .get(`/users/${userCreatedByApi._id}`)
   .set('Accept', 'application/json')
   .expect(200)
   .expect('Content-Type', /json/)
@@ -149,7 +149,7 @@ test.cb.serial("check created user using API", (t) => {
 
 test.cb.serial("get users using API", (t) => {
   supertest(app)
-  .get('/user')
+  .get('/users')
   .set('Accept', 'application/json')
   .expect(200)
   .expect('Content-Type', /json/)
@@ -170,7 +170,7 @@ test.cb.serial("get users using API", (t) => {
 
 test.cb.serial("get users using API where", (t) => {
   supertest(app)
-  .get('/user?where[email][operator]=EQUALS&where[email][value]=user@appsilon.pl3')
+  .get('/users?where[email][operator]=EQUALS&where[email][value]=user@appsilon.pl3')
   .set('Accept', 'application/json')
   .expect(200)
   .expect('Content-Type', /json/)
@@ -192,7 +192,7 @@ test.cb.serial("get users using API where", (t) => {
 
 test.cb.serial("update user using API", (t) => {
   supertest(app)
-  .patch(`/user/${userCreatedByApi._id}`)
+  .patch(`/users/${userCreatedByApi._id}`)
   .send({
     email: "newuser@pl.com"
   })
@@ -213,7 +213,7 @@ test.cb.serial("update user using API", (t) => {
 
 test.cb.serial("check changes using API where", (t) => {
   supertest(app)
-  .get('/user?where[email][operator]=EQUALS&where[email][value]=newuser@pl.com')
+  .get('/users?where[email][operator]=EQUALS&where[email][value]=newuser@pl.com')
   .set('Accept', 'application/json')
   .expect(200)
   .expect('Content-Type', /json/)
@@ -233,7 +233,7 @@ test.cb.serial("check changes using API where", (t) => {
 
 test.cb.serial("delete user using API", (t) => {
   supertest(app)
-  .delete(`/user/${userCreatedByApi._id}`)
+  .delete(`/users/${userCreatedByApi._id}`)
   .set('Accept', 'application/json')
   .expect(204)
   .end(function(err, response) {

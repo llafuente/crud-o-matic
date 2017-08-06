@@ -1,7 +1,7 @@
 import mongoose = require("mongoose");
 
-import { <%= interfaceName %> } from '../../models/<%= interfaceName %>';
-export * from '../../models/<%= interfaceName %>';
+import { <%= interfaceName %> } from './<%= interfaceName %>';
+export * from './<%= interfaceName %>';
 
 export interface <%= interfaceName %>Model extends <%= interfaceName %>, mongoose.Document { }
 

@@ -1,7 +1,7 @@
 import * as express from "express";
 import { HttpError } from '../HttpError';
-import { IUser } from '../../models/IUser';
-import { User } from './User';
+import { IUser } from '../models/IUser';
+import { User } from '../models/User';
 import { Schema } from 'mongoose';
 
 export function read(_id: Schema.Types.ObjectId|string, next) {

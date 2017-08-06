@@ -1,13 +1,10 @@
 import * as express from "express";
 import { HttpError } from '../HttpError';
-import { cleanBody } from '../common';
-import { <%= interfaceName %> } from '../../models/<%= interfaceName %>';
-import { <%= singularUc %> } from './<%= singularUc %>';
+import { <%= interfaceName %> } from '../models/<%= interfaceName %>';
+import { <%= singularUc %> } from '../models/<%= singularUc %>';
 
 
 export function create(data: <%= interfaceName %>, next) {
-  cleanBody(data);
-
   console.info('create <%= singular %> data', data);
 
   // TODO remove restricted

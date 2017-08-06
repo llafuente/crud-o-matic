@@ -1,4 +1,12 @@
+import * as mongoose from 'mongoose';
+
+
 export interface <%= interfaceName %> {
+  _id: string|any;
+  id?: string;
+  createdAt: Date;
+  updatedAt: Date;
+
   <% _.each(backend.schema, (PrimiteType, key) => { %>
     <%= key %>: <%= PrimiteType.getTypeScriptType() %>;
   <% }) %>
@@ -6,8 +14,13 @@ export interface <%= interfaceName %> {
 
 
 export class <%= typeName %> implements <%= interfaceName %> {
+  _id: string|any;
+  id?: string;
+  createdAt: Date;
+  updatedAt: Date;
+
   <% _.each(backend.schema, (PrimiteType, key) => { %>
-  public <%= key %>: <%= PrimiteType.getTypeScriptType() %>;
+  <%= key %>: <%= PrimiteType.getTypeScriptType() %>;
   <% }) %>
   constructor() {}
 
