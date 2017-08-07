@@ -9,22 +9,26 @@ export const UserSchema = new mongoose.Schema({
   
     userlogin: {
           type: String,
-          unique: true
+          unique: true,
+          default: null
         },
   
     password: {
           type: String,
-          unique: false
+          unique: false,
+          default: null
         },
   
     email: {
           type: String,
-          unique: false
+          unique: false,
+          default: null
         },
   
     salt: {
           type: String,
-          unique: false
+          unique: false,
+          default: null
         },
   
     roles: [],
@@ -33,12 +37,14 @@ export const UserSchema = new mongoose.Schema({
   
     state: {
           type: String,
-          unique: false
+          unique: false,
+          default: null
         },
   
     data: {
           type: Object,
-          unique: false
+          unique: false,
+          default: null
         },
   
 }, {

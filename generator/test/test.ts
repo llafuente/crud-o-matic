@@ -2,7 +2,7 @@ import test from 'ava';
 import { join } from 'path';
 
 import { Generator } from '../';
-import { Schema, BackEndSchema, PrimiteType, PrimiteTypes, FrontControls } from '../Schema';
+import { Schema, BackEndSchema, PrimiteType, PrimiteTypes, FrontControls, FieldPermissions } from '../Schema';
 
 const generatedPath = join(__dirname, "..", "..", "generated");
 
@@ -17,21 +17,11 @@ test(async (t) => {
 test((t) => {
   const gen = new Generator();
 
-  //*"required": true,
-  //*"maxlength": 254,
-  //*"restricted": false,
-  const userlogin = new PrimiteType(
-    "Userlogin",
-    PrimiteTypes.String,
-    FrontControls.TEXT
-  );
-  userlogin.unique = true;
-
   const schema: Schema = Schema.fromJSON({
     singular: "user",
     backend: {
-      permissions: {
-        read: {allowed: true}
+      apiAccess: {
+        read: { allowed: true }
       },
       "schema": {
         /*
@@ -41,27 +31,46 @@ test((t) => {
           //*"restricted": false
         },
         */
-        "userlogin": userlogin,
-        "password": {
-          "label": "Password",
-          "type": "String",
+        "userlogin": new PrimiteType(
+          "Userlogin",
+          PrimiteTypes.String,
+          FrontControls.TEXT
+        ).setUnique(true),
+        //*"required": true,
+        //*"maxlength": 254,
+        //*"restricted": false,
+        "password": new PrimiteType(
+            "Password",
+            PrimiteTypes.String,
+            FrontControls.PASSWORD,
+          ),
           //*"required": true,
           //*"restricted": true
-        },
-        "email": {
-          "label": "email",
-          "type": "String",
-          //*"restricted": false
-        },
-        "salt": {
-          "label": "",
-          "type": "String",
-          //*"restricted": {
-          //*  "create": true,
-          //*  "update": true,
-          //*  "read": true
-          //*}
-        },
+        "email": new PrimiteType(
+          "Email",
+          PrimiteTypes.String,
+          FrontControls.TEXT
+        ).setPermissions(
+          new FieldPermissions(
+            true, //read
+            true, //list
+            true, //create
+            false, //update
+          )
+        ),
+        //*"restricted": false
+        "salt": new PrimiteType(
+          "",
+          PrimiteTypes.String,
+          FrontControls.Hidden
+        ).setPermissions(
+          new FieldPermissions(
+            false, //read
+            false, //list
+            false, //create
+            false, //update
+          )
+        ),
         "roles": {
           "type": "Array",
           "label": "Roles",
@@ -134,7 +143,7 @@ test((t) => {
   t.is(gen.schemas[0].singularUc, "User");
   t.is(gen.schemas[0].interfaceName, "IUser");
   t.true(gen.schemas[0].backend instanceof BackEndSchema);
-  t.not(gen.schemas[0].backend.permissions, null);
+  t.not(gen.schemas[0].backend.apiAccess, null);
   t.not(gen.schemas[0].backend.schema, null);
 
   t.not(gen.schemas[0].backend.schema.userlogin, null);
@@ -145,8 +154,8 @@ test((t) => {
   t.not(gen.schemas[0].backend.schema.state, null);
   t.not(gen.schemas[0].backend.schema.data, null);
 
-  t.is(gen.schemas[0].backend.permissions.read.allowed, true);
-  t.is(gen.schemas[0].backend.permissions.create.allowed, false);
+  t.is(gen.schemas[0].backend.apiAccess.read.allowed, true);
+  t.is(gen.schemas[0].backend.apiAccess.create.allowed, false);
 
   //console.dir(gen.schemas[0].backend);
 
