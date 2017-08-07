@@ -7,7 +7,7 @@ export interface <%= interfaceName %> {
   createdAt: Date;
   updatedAt: Date;
 
-  <% _.each(backend.schema, (PrimiteType, key) => { %>
+  <% forEachBackEndField((key, PrimiteType) => { %>
     <%= key %>: <%= PrimiteType.getTypeScriptType() %>;
   <% }) %>
 };
@@ -19,14 +19,14 @@ export class <%= typeName %> implements <%= interfaceName %> {
   createdAt: Date;
   updatedAt: Date;
 
-  <% _.each(backend.schema, (PrimiteType, key) => { %>
+  <% forEachBackEndField((key, PrimiteType) => { %>
   <%= key %>: <%= PrimiteType.getTypeScriptType() %>;
   <% }) %>
   constructor() {}
 
   static fromJSON(obj: <%= interfaceName %>|any): <%= typeName %> {
     const r = new <%= typeName %>();
-  <% _.each(backend.schema, (PrimiteType, key) => { %>
+  <% forEachBackEndField((key, PrimiteType) => { %>
     r.<%= key %> = obj.<%= key %>;
   <% }) %>
     return r;

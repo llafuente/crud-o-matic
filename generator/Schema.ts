@@ -15,16 +15,18 @@ export enum PrimiteTypes {
   Mixed = "Mixed",
   ObjectId = "ObjectId",
   AutoPrimaryKey = "AutoPrimaryKey",
-};
+}
 
 export enum FrontControls {
   Hidden = "Hidden",
   TEXT = "TEXT",
   PASSWORD = "PASSWORD",
   DROPDOWN = "DROPDOWN",
+  ENUM_DROPDOWN = "ENUM_DROPDOWN",
+  HTTP_DROPDOWN = "HTTP_DROPDOWN",
   TEXTAREA = "TEXTAREA",
   CHECKBOX = "CHECKBOX",
-};
+}
 
 export class FieldPermissions {
   constructor(
@@ -44,14 +46,14 @@ export class FieldPermissions {
       json.update === true,
     );
   }
-};
+}
 
 export class PrimiteType {
   label: string;
   type: PrimiteTypes;
   frontControl: FrontControls;
 
-  items: PrimiteType[] = null;
+  items: PrimiteType = null;
   properties: { [s: string]: PrimiteType; } = null;
 
   defaults: any = null;
@@ -61,6 +63,7 @@ export class PrimiteType {
   editable: boolean = false;
 
   permissions: FieldPermissions = new FieldPermissions();
+  refTo: string;
 
   constructor(
     label: string,
@@ -94,19 +97,16 @@ export class PrimiteType {
       json.type,
       json.frontControl || FrontControls.TEXT,
     )
-    .additems(json.items || null)
+    .setItems(json.items || null)
     .addProperties(json.properties || null)
-    .addConstraintEnum(json.enums || null, json.labels || null)
+    .setEnumConstraint(json.enums || null, json.labels || null)
     .setDefault(json.defaults || null)
     .setUnique(json.unique === true);
   }
 
-  additems(items: PrimiteType[]): PrimiteType {
+  setItems(items: PrimiteType): PrimiteType {
     if (this.type == PrimiteTypes.Array && items) {
-      this.items = [];
-      for (let i = 0; i < items.length; ++i) {
-        this.items[i] = PrimiteType.fromJSON(items[i]);
-      }
+      this.items = PrimiteType.fromJSON(items);
     } else {
       this.items = null;
     }
@@ -128,7 +128,7 @@ export class PrimiteType {
     return this;
   }
 
-  addConstraintEnum(enums: string[], labels: string[]): PrimiteType {
+  setEnumConstraint(enums: string[], labels: string[]): PrimiteType {
     this.enums = enums;
     this.labels = labels;
 
@@ -159,6 +159,13 @@ export class PrimiteType {
     return this;
   }
 
+  setRefTo(refTo: string): PrimiteType  {
+    this.refTo = refTo;
+
+    return this;
+  }
+
+
   getTypeScriptType() {
     switch (this.type) {
       case PrimiteTypes.AutoPrimaryKey:
@@ -171,24 +178,40 @@ export class PrimiteType {
   }
 
   getMongooseType() {
+    const d = [];
+
     switch (this.type) {
       case PrimiteTypes.AutoPrimaryKey:
-        return `{
-          type: ${PrimiteTypes.Number},
-          unique: ${this.unique},
-          default: ${this.defaults}
-        }`;
+        d.push(`type: ${PrimiteTypes.Number}`);
+        break;
       case PrimiteTypes.Array:
-        return `[]`;
+        d.push(`type: Array`);
+        d.push(`items: ${this.items.getMongooseType()}`);
+        break;
       default:
-        return `{
-          type: ${this.type},
-          unique: ${this.unique},
-          default: ${this.defaults}
-        }`;
+        d.push(`type: ${this.type}`);
     }
+
+    // common
+    if (this.unique) {
+      d.push(`unique: ${this.unique}`);
+    }
+
+    if (this.defaults) {
+      d.push(`default: ${JSON.stringify(this.defaults)}`);
+    }
+
+    if (this.refTo) {
+      d.push(`ref: ${this.refTo}`);
+    }
+
+    if (this.enums) {
+      d.push(`enum: ${JSON.stringify(this.enums)}`);
+    }
+
+    return '{\n' + d.join(",\n") + '\n}';
   }
-};
+}
 
 export class PermissionsAllowed {
   constructor(
@@ -248,8 +271,6 @@ export class BackEndSchema {
 
   apiAccess: ApiAccessPermissions = null;
 
-  schema: { [s: string]: PrimiteType; }  = null;
-
   createFunction: string;
   readFunction: string;
   listFunction: string;
@@ -260,23 +281,14 @@ export class BackEndSchema {
   constructor(json, parentSchema: Schema) {
     this.parentSchema = parentSchema;
 
+    // TODO use default, allow all
     if (json.apiAccess === undefined) {
-      throw new Error("BackEndSchema: permissions is required");
-    }
-
-    if (json.schema === undefined) {
-      throw new Error("BackEndSchema: schema is required");
+      throw new Error("BackEndSchema: apiAccess is required");
     }
 
     this.options = json.options || {};
     this.options.collection = this.parentSchema.plural;
     this.apiAccess = ApiAccessPermissions.fromJSON(json.apiAccess);
-    this.schema = json.schema;
-    // now cast every property
-    for (let i in this.schema) {
-      console.log(this.schema[i]);
-      this.schema[i] = PrimiteType.fromJSON(this.schema[i]);
-    }
 
     this.createFunction = `create${this.parentSchema.singularUc}`;
     this.readFunction = `read${this.parentSchema.singularUc}`;
@@ -284,22 +296,6 @@ export class BackEndSchema {
     this.deleteFunction = `destroy${this.parentSchema.singularUc}`;
     this.updateFunction = `update${this.parentSchema.singularUc}`;
     this.routerName = `router${this.parentSchema.singularUc}`;
-  }
-
-  forEachBackField(cb) {
-    for (let key in this.schema) {
-      if (this.schema[key].type !== PrimiteTypes.Hidden) {
-        cb(key, this.schema[key]);
-      }
-    }
-  }
-
-  forEachFrontField(cb) {
-    for (let key in this.schema) {
-      if (this.schema[key].frontControl !== FrontControls.Hidden) {
-        cb(key, this.schema[key]);
-      }
-    }
   }
 };
 
@@ -322,7 +318,6 @@ export class FrontEndSchema {
     this.listComponentFile = `List${this.parentSchema.singularUc}.component`;
     this.updateComponent = `Update${this.parentSchema.singularUc}Component`;
     this.updateComponentFile = `Update${this.parentSchema.singularUc}.component`;
-
   }
 }
 
@@ -347,6 +342,8 @@ export class Schema {
 
   baseApiUrl: string = "";
   domain: string = "";
+
+  fields: { [s: string]: PrimiteType; }  = null;
 
   constructor(
     public generator: Generator
@@ -380,7 +377,34 @@ export class Schema {
     schema.backend = new BackEndSchema(json.backend, schema);
     schema.frontend = new FrontEndSchema(json.frontend || {}, schema);
 
+    // now cast every property
+    for (let i in json.fields) {
+      schema.addField(i, schema.fields[i]);
+    }
+
     return schema;
+  }
+
+  addField(key: string, field: PrimiteType) {
+    console.log(key, field);
+    this.fields = this.fields || {};
+    this.fields[key] = PrimiteType.fromJSON(field);
+  }
+
+  forEachBackEndField(cb) {
+    for (let key in this.fields) {
+      if (this.fields[key].type !== PrimiteTypes.Hidden) {
+        cb(key, this.fields[key]);
+      }
+    }
+  }
+
+  forEachFrontEndField(cb) {
+    for (let key in this.fields) {
+      if (this.fields[key].frontControl !== FrontControls.Hidden) {
+        cb(key, this.fields[key]);
+      }
+    }
   }
 
   // helper for templates

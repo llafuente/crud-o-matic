@@ -24,15 +24,9 @@ import { Pagination } from '../common';
           
             <th>email</th>
           
-            <th>salt</th>
-          
             <th>roles</th>
           
-            <th>permissions</th>
-          
             <th>state</th>
-          
-            <th>data</th>
           
           <th>Actions</th>
         <tr>
@@ -46,15 +40,9 @@ import { Pagination } from '../common';
           
             <td>{{entity.email}}</td>
           
-            <td>{{entity.salt}}</td>
-          
             <td>{{entity.roles}}</td>
           
-            <td>{{entity.permissions}}</td>
-          
             <td>{{entity.state}}</td>
-          
-            <td>{{entity.data}}</td>
           
           <td class="actions">
             <a [routerLink]="['..', 'update', entity._id]"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>

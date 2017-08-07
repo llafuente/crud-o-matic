@@ -6,7 +6,7 @@ export * from './<%= interfaceName %>';
 export interface <%= interfaceName %>Model extends <%= interfaceName %>, mongoose.Document { }
 
 export const <%= schemaName %> = new mongoose.Schema({
-  <% _.each(backend.schema, function(PrimiteType, key) { %>
+  <% forEachBackEndField((key, PrimiteType) => { %>
     <%= key %>: <%= PrimiteType.getMongooseType() %>,
   <% }) %>
 }, <%= JSON.stringify(backend.options, null, 2) %>);

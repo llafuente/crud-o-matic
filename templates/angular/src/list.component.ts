@@ -17,7 +17,7 @@ import { Pagination } from '../common';
     <bb-table>
       <thead>
         <tr>
-          <% _.each(backend.schema, (PrimiteType, key) => { %>
+          <% forEachFrontEndField((key, PrimiteType) => { %>
             <th><%= key %></th>
           <% }) %>
           <th>Actions</th>
@@ -25,7 +25,7 @@ import { Pagination } from '../common';
       </thead>
       <tbody>
         <tr *ngFor="let entity of entities?.list; let i = index">
-          <% _.each(backend.schema, (PrimiteType, key) => { %>
+          <% forEachFrontEndField((key, PrimiteType) => { %>
             <td>{{entity.<%= key %>}}</td>
           <% }) %>
           <td class="actions">

@@ -18,11 +18,7 @@ export interface IUser {
   
     roles: any[];
   
-    permissions: any[];
-  
     state: String;
-  
-    data: Object;
   
 };
 
@@ -44,11 +40,7 @@ export class UserType implements IUser {
   
   roles: any[];
   
-  permissions: any[];
-  
   state: String;
-  
-  data: Object;
   
   constructor() {}
 
@@ -65,11 +57,7 @@ export class UserType implements IUser {
   
     r.roles = obj.roles;
   
-    r.permissions = obj.permissions;
-  
     r.state = obj.state;
-  
-    r.data = obj.data;
   
     return r;
   }

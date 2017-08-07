@@ -22,65 +22,81 @@ test((t) => {
     backend: {
       apiAccess: {
         read: { allowed: true }
-      },
-      "schema": {
-        /*
-        "id": {
-          "label": "ID",
-          "type": "AutoPrimaryKey",
-          //*"restricted": false
-        },
-        */
-        "userlogin": new PrimiteType(
-          "Userlogin",
-          PrimiteTypes.String,
-          FrontControls.TEXT
-        ).setUnique(true),
-        //*"required": true,
-        //*"maxlength": 254,
-        //*"restricted": false,
-        "password": new PrimiteType(
-            "Password",
-            PrimiteTypes.String,
-            FrontControls.PASSWORD,
-          ),
-          //*"required": true,
-          //*"restricted": true
-        "email": new PrimiteType(
-          "Email",
-          PrimiteTypes.String,
-          FrontControls.TEXT
-        ).setPermissions(
-          new FieldPermissions(
-            true, //read
-            true, //list
-            true, //create
-            false, //update
-          )
-        ),
-        //*"restricted": false
-        "salt": new PrimiteType(
-          "",
-          PrimiteTypes.String,
-          FrontControls.Hidden
-        ).setPermissions(
-          new FieldPermissions(
-            false, //read
-            false, //list
-            false, //create
-            false, //update
-          )
-        ),
-        "roles": {
-          "type": "Array",
-          "label": "Roles",
-          "items": {
-            "type": "String",
-            "label": "Roles",
-            //*"ref": "role",
-            //*"restricted": false
-          }
-        },
+      }
+    }
+  }, gen);
+
+  schema.addField("userlogin", new PrimiteType(
+    "Userlogin",
+    PrimiteTypes.String,
+    FrontControls.TEXT
+  ).setUnique(true));
+
+  /*
+  schema.addField("id", new PrimiteType(
+    "label": "ID",
+    "type": "AutoPrimaryKey",
+    //*"restricted": false
+  ).setUnique(true));
+  */
+
+  schema.addField("password", new PrimiteType(
+    "Password",
+    PrimiteTypes.String,
+    FrontControls.PASSWORD,
+  ).setPermissions(
+    new FieldPermissions(
+      true, //read
+      true, //list
+      true, //create
+      false, //update
+    )
+  ));
+
+  schema.addField("email", new PrimiteType(
+    "Email",
+    PrimiteTypes.String,
+    FrontControls.TEXT
+  ));
+
+  schema.addField("salt", new PrimiteType(
+    "Password",
+    PrimiteTypes.String,
+    FrontControls.Hidden,
+  ).setPermissions(
+    new FieldPermissions(
+      false, //read
+      false, //list
+      false, //create
+      false, //update
+    )
+  ));
+
+  schema.addField("roles", new PrimiteType(
+    "Roles",
+    PrimiteTypes.Array,
+    FrontControls.HTTP_DROPDOWN, // url: roles
+  )
+  .setItems(
+    new PrimiteType(
+      "Role",
+      PrimiteTypes.String,
+      FrontControls.Hidden, // TOOD this should not be required...
+    ).setRefTo("Role")
+  ));
+
+  schema.addField("state", new PrimiteType(
+    "Roles",
+    PrimiteTypes.String,
+    FrontControls.ENUM_DROPDOWN,
+  )
+  .setEnumConstraint(
+    [ "active", "banned" ], ["Active", "Banned"]
+  )
+  .setDefault("active"));
+
+
+/*
         "permissions": {
           "type": "Array",
           "label": "Permissions",
@@ -89,24 +105,6 @@ test((t) => {
             "label": "Permissions",
             //*"ref": "permissions",
             //*"restricted": false
-          }
-        },
-        "state": {
-          "label": "Estado",
-          "type": "String",
-          "enum": [
-            "active",
-            "banned"
-          ],
-          "labels": [
-            "Active",
-            "Banned"
-          ],
-          "default": "active",
-          "restricted": {
-            "create": true,
-            "update": false,
-            "read": false
           }
         },
         "data": {
@@ -125,8 +123,7 @@ test((t) => {
           }
         }
       }
-    }
-  }, gen);
+*/
 
   schema.domain = "http://localhost:3004";
   schema.baseApiUrl = "";
@@ -144,15 +141,15 @@ test((t) => {
   t.is(gen.schemas[0].interfaceName, "IUser");
   t.true(gen.schemas[0].backend instanceof BackEndSchema);
   t.not(gen.schemas[0].backend.apiAccess, null);
-  t.not(gen.schemas[0].backend.schema, null);
+  t.not(gen.schemas[0].fields, null);
 
-  t.not(gen.schemas[0].backend.schema.userlogin, null);
-  t.not(gen.schemas[0].backend.schema.password, null);
-  t.not(gen.schemas[0].backend.schema.salt, null);
-  t.not(gen.schemas[0].backend.schema.roles, null);
-  t.not(gen.schemas[0].backend.schema.permissions, null);
-  t.not(gen.schemas[0].backend.schema.state, null);
-  t.not(gen.schemas[0].backend.schema.data, null);
+  t.not(gen.schemas[0].fields.userlogin, null);
+  t.not(gen.schemas[0].fields.password, null);
+  t.not(gen.schemas[0].fields.salt, null);
+  t.not(gen.schemas[0].fields.roles, null);
+  t.not(gen.schemas[0].fields.permissions, null);
+  t.not(gen.schemas[0].fields.state, null);
+  t.not(gen.schemas[0].fields.data, null);
 
   t.is(gen.schemas[0].backend.apiAccess.read.allowed, true);
   t.is(gen.schemas[0].backend.apiAccess.create.allowed, false);

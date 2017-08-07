@@ -8,44 +8,34 @@ export interface IUserModel extends IUser, mongoose.Document { }
 export const UserSchema = new mongoose.Schema({
   
     userlogin: {
-          type: String,
-          unique: true,
-          default: null
-        },
+type: String,
+unique: true
+},
   
     password: {
-          type: String,
-          unique: false,
-          default: null
-        },
+type: String
+},
   
     email: {
-          type: String,
-          unique: false,
-          default: null
-        },
+type: String
+},
   
     salt: {
-          type: String,
-          unique: false,
-          default: null
-        },
+type: String
+},
   
-    roles: [],
-  
-    permissions: [],
+    roles: {
+type: Array,
+items: {
+type: String
+}
+},
   
     state: {
-          type: String,
-          unique: false,
-          default: null
-        },
-  
-    data: {
-          type: Object,
-          unique: false,
-          default: null
-        },
+type: String,
+default: "active",
+enum: ["active","banned"]
+},
   
 }, {
   "collection": "users"
