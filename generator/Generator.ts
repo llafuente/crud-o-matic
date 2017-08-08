@@ -17,7 +17,7 @@ export class Generator {
   }
 
   template(schema: Schema, srcFile:string, dstFile: string) {
-    console.log(srcFile, dstFile);
+    console.log('#', srcFile, dstFile);
 
     const model = readFileSync(srcFile, {encoding: "utf8"});
     const modelTpl = _.template(model);

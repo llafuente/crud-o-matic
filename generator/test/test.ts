@@ -26,74 +26,86 @@ test((t) => {
     }
   }, gen);
 
-  schema.addField("userlogin", new PrimiteType(
-    "Userlogin",
-    PrimiteTypes.String,
-    FrontControls.TEXT
-  ).setUnique(true));
-
-  /*
-  schema.addField("id", new PrimiteType(
-    "label": "ID",
-    "type": "AutoPrimaryKey",
-    //*"restricted": false
-  ).setUnique(true));
-  */
-
-  schema.addField("password", new PrimiteType(
-    "Password",
-    PrimiteTypes.String,
-    FrontControls.PASSWORD,
-  ).setPermissions(
-    new FieldPermissions(
-      true, //read
-      true, //list
-      true, //create
-      false, //update
-    )
-  ));
-
-  schema.addField("email", new PrimiteType(
-    "Email",
-    PrimiteTypes.String,
-    FrontControls.TEXT
-  ));
-
-  schema.addField("salt", new PrimiteType(
-    "Password",
-    PrimiteTypes.String,
-    FrontControls.Hidden,
-  ).setPermissions(
-    new FieldPermissions(
-      false, //read
-      false, //list
-      false, //create
-      false, //update
-    )
-  ));
-
-  schema.addField("roles", new PrimiteType(
-    "Roles",
-    PrimiteTypes.Array,
-    FrontControls.HTTP_DROPDOWN, // url: roles
-  )
-  .setItems(
+  schema.addField("userlogin",
     new PrimiteType(
-      "Role",
+      "Userlogin",
       PrimiteTypes.String,
-      FrontControls.Hidden, // TOOD this should not be required...
-    ).setRefTo("Role")
-  ));
+      FrontControls.TEXT
+    )
+    .setUnique(true)
+    .setMaxlength(32)
+    .setRequired(true)
+  );
 
-  schema.addField("state", new PrimiteType(
-    "Roles",
-    PrimiteTypes.String,
-    FrontControls.ENUM_DROPDOWN,
-  )
-  .setEnumConstraint(
-    [ "active", "banned" ], ["Active", "Banned"]
-  )
-  .setDefault("active"));
+  schema.addField("password",
+    new PrimiteType(
+      "Password",
+      PrimiteTypes.String,
+      FrontControls.PASSWORD,
+    )
+    .setPermissions(
+      new FieldPermissions(
+        true, //read
+        true, //list
+        true, //create
+        false, //update
+      )
+    )
+    .setRequired(true)
+   );
+
+  schema.addField("email",
+    new PrimiteType(
+      "Email",
+      PrimiteTypes.String,
+      FrontControls.TEXT
+    )
+    .setMaxlength(255)
+    .setRequired(true)
+  );
+
+  schema.addField("salt",
+    new PrimiteType(
+      "Password",
+      PrimiteTypes.String,
+      FrontControls.Hidden,
+    )
+    .setPermissions(
+      new FieldPermissions(
+        false, //read
+        false, //list
+        false, //create
+        false, //update
+      )
+    )
+  );
+
+  schema.addField("roles",
+    new PrimiteType(
+      "Roles",
+      PrimiteTypes.Array,
+      FrontControls.HTTP_DROPDOWN, // url: roles
+    )
+    .setItems(
+      new PrimiteType(
+        "Role",
+        PrimiteTypes.String,
+        FrontControls.Hidden, // TOOD this should not be required...
+      ).setRefTo("Role")
+    )
+  );
+
+  schema.addField("state",
+    new PrimiteType(
+      "Roles",
+      PrimiteTypes.String,
+      FrontControls.ENUM_DROPDOWN,
+    )
+    .setEnumConstraint(
+      [ "active", "banned" ], ["Active", "Banned"]
+    )
+    .setDefault("active")
+  );
 
 
 /*

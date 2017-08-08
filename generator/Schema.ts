@@ -62,6 +62,17 @@ export class PrimiteType {
   unique: boolean = false;
   editable: boolean = false;
 
+  // constrains
+  required: boolean = false;
+  maxlength: number = null; // for strings
+  minlength: number = null; // for strings
+  min: number = null; // for numbers
+  max: number = null; // for numbers
+
+  // transforms
+  lowercase: boolean = false;
+  uppercase: boolean = false;
+
   permissions: FieldPermissions = new FieldPermissions();
   refTo: string;
 
@@ -101,7 +112,14 @@ export class PrimiteType {
     .addProperties(json.properties || null)
     .setEnumConstraint(json.enums || null, json.labels || null)
     .setDefault(json.defaults || null)
-    .setUnique(json.unique === true);
+    .setUnique(json.unique === true)
+    .setRequired(json.required || false)
+    .setMaxlength(json.maxlength || null)
+    .setMinlength(json.minlength || null)
+    .setMin(json.min || null)
+    .setMax(json.max || null)
+    .setLowercase(json.lowercase || false)
+    .setUppercase(json.uppercase || false);
   }
 
   setItems(items: PrimiteType): PrimiteType {
@@ -165,6 +183,48 @@ export class PrimiteType {
     return this;
   }
 
+  setRequired(required: boolean): PrimiteType  {
+    this.required = required;
+
+    return this;
+  }
+
+  setMaxlength(maxlength: number): PrimiteType  {
+    this.maxlength = maxlength;
+
+    return this;
+  }
+
+  setMinlength(minlength: number): PrimiteType  {
+    this.minlength = minlength;
+
+    return this;
+  }
+
+  setMin(min: number): PrimiteType  {
+    this.min = min;
+
+    return this;
+  }
+
+  setMax(max: number): PrimiteType  {
+    this.max = max;
+
+    return this;
+  }
+
+  setLowercase(lowercase: boolean): PrimiteType  {
+    this.lowercase = lowercase;
+
+    return this;
+  }
+
+  setUppercase(uppercase: boolean): PrimiteType  {
+    this.uppercase = uppercase;
+
+    return this;
+  }
+
 
   getTypeScriptType() {
     switch (this.type) {
@@ -207,6 +267,28 @@ export class PrimiteType {
 
     if (this.enums) {
       d.push(`enum: ${JSON.stringify(this.enums)}`);
+    }
+
+    if (this.required !== false) {
+      d.push(`required: ${this.required}`);
+    }
+    if (this.maxlength !== null) {
+      d.push(`maxlength: ${this.maxlength}`);
+    }
+    if (this.minlength !== null) {
+      d.push(`minlength: ${this.minlength}`);
+    }
+    if (this.min !== null) {
+      d.push(`min: ${this.min}`);
+    }
+    if (this.max !== null) {
+      d.push(`max: ${this.max}`);
+    }
+    if (this.lowercase !== false) {
+      d.push(`lowercase: ${this.lowercase}`);
+    }
+    if (this.uppercase !== false) {
+      d.push(`uppercase: ${this.uppercase}`);
     }
 
     return '{\n' + d.join(",\n") + '\n}';
@@ -386,7 +468,6 @@ export class Schema {
   }
 
   addField(key: string, field: PrimiteType) {
-    console.log(key, field);
     this.fields = this.fields || {};
     this.fields[key] = PrimiteType.fromJSON(field);
   }
