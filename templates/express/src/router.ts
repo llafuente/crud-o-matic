@@ -4,6 +4,9 @@ import { <%= backend.readFunction %> } from "./<%= backend.readFunction %>";
 import { <%= backend.updateFunction %> } from "./<%= backend.updateFunction %>";
 import { <%= backend.listFunction %> } from "./<%= backend.listFunction %>";
 import { <%= backend.deleteFunction %> } from "./<%= backend.deleteFunction %>";
+import { <%= interfaceModel %> } from '../models/<%= singularUc %>';
+import { Pagination } from '../common';
+const mongoosemask = require("mongoosemask");
 
 /**
  * clean req.body from data that never must be created/updated
@@ -18,27 +21,42 @@ export function cleanBody(req: express.Request, res: express.Response, next: exp
   next();
 }
 
+function toJSONList(result: Pagination<<%= interfaceModel %>>) {
+  result.list = result.list.map(toJSON);
+
+  return result;
+}
+
+function toJSON(entity: <%= interfaceModel %>) {
+  let json = mongoosemask.mask(entity, <%= JSON.stringify(getBackEndBlacklist('read')) %>);
+
+  json.id = json._id;
+  delete json._id;
+
+  return json;
+}
+
 const <%= backend.routerName %> = express.Router();
 <%= backend.routerName %>.post(
   '<%= url("CREATE") %>',
   cleanBody,
   <%= backend.createFunction %>,
   function (req: express.Request, res: express.Response, next: express.NextFunction) {
-    res.status(201).json(req[<%= JSON.stringify(singular) %>]);
+    res.status(201).json(toJSON(req[<%= JSON.stringify(singular) %>]));
   }
 );
 <%= backend.routerName %>.get(
   '<%= url("LIST") %>',
   <%= backend.listFunction %>,
   function (req: express.Request, res: express.Response, next: express.NextFunction) {
-    res.status(200).json(req[<%= JSON.stringify(plural) %>]);
+    res.status(200).json(toJSONList(req[<%= JSON.stringify(plural) %>]));
   }
 );
 <%= backend.routerName %>.get(
   '<%= url("READ") %>',
   <%= backend.readFunction %>,
   function (req: express.Request, res: express.Response, next: express.NextFunction) {
-    res.status(200).json(req[<%= JSON.stringify(singular) %>]);
+    res.status(200).json(toJSON(req[<%= JSON.stringify(singular) %>]));
   }
 );
 <%= backend.routerName %>.patch(

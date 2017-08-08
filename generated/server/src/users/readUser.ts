@@ -1,11 +1,11 @@
 import * as express from "express";
 import { HttpError } from '../HttpError';
 import { IUser } from '../models/IUser';
-import { User } from '../models/User';
+import { User, IUserModel } from '../models/User';
 import { Schema } from 'mongoose';
 
 export function read(_id: Schema.Types.ObjectId|string, next) {
-  return User.findById(_id, function(err, entity) {
+  return User.findById(_id, function(err, entity: IUserModel) {
     /* istanbul ignore next */ if (err) {
       return next(err);
     }
@@ -41,7 +41,7 @@ export function readUser(req: express.Request, res: express.Response, next: expr
     return next(new HttpError(422, 'body is an array'));
   }
 
-  return read(id, function(err, savedRow) {
+  return read(id, function(err, savedRow: IUserModel) {
     /* istanbul ignore next */ if (err) {
       return next(err);
     }

@@ -74,7 +74,7 @@ test.serial("create user with mongoose", async (t) => {
 
   t.true(user instanceof User);
   t.not(user.email, null);
-  t.not(user._id.toString(), null);
+  t.not(user.id.toString(), null);
 
   user = await user.save();
 
@@ -132,7 +132,7 @@ test.cb.serial("create user using API (2)", (t) => {
 
 test.serial("check created user using mongoose", async (t) => {
   let newUser = await User.findOne({
-    _id: userCreatedByApi._id
+    _id: userCreatedByApi.id
   }).exec();
 
   t.not(newUser, null);
@@ -140,7 +140,7 @@ test.serial("check created user using mongoose", async (t) => {
 
 test.cb.serial("check created user using API", (t) => {
   supertest(app)
-  .get(`/users/${userCreatedByApi._id}`)
+  .get(`/users/${userCreatedByApi.id}`)
   .set('Accept', 'application/json')
   .expect(200)
   .expect('Content-Type', /json/)
@@ -148,6 +148,11 @@ test.cb.serial("check created user using API", (t) => {
     if (err) {
       t.fail(err);
     }
+
+    t.is(response.body._id, undefined);
+    t.not(response.body.id, null);
+    t.is(response.body.password, undefined);
+    t.is(response.body.salt, undefined);
 
     t.end();
   });
@@ -195,6 +200,11 @@ test.cb.serial("get users using API", (t) => {
     t.is(body.offset, 0);
     t.is(body.list.length, 3);
 
+    t.is(body.list[0]._id, undefined);
+    t.not(body.list[0].id, null);
+    t.is(body.list[0].password, undefined);
+    t.is(body.list[0].salt, undefined);
+
     t.end();
   });
 });
@@ -223,7 +233,7 @@ test.cb.serial("get users using API where", (t) => {
 
 test.cb.serial("update user using API", (t) => {
   supertest(app)
-  .patch(`/users/${userCreatedByApi._id}`)
+  .patch(`/users/${userCreatedByApi.id}`)
   .send({
     email: "newuser@pl.com"
   })
@@ -254,6 +264,8 @@ test.cb.serial("check changes using API where", (t) => {
     }
     const body: Pagination<IUser> = response.body;
 
+    console.log("body.list", body.list);
+
     t.is(body.count, 1);
     t.is(body.list[0].email, "newuser@pl.com");
 
@@ -264,7 +276,7 @@ test.cb.serial("check changes using API where", (t) => {
 
 test.cb.serial("delete user using API", (t) => {
   supertest(app)
-  .delete(`/users/${userCreatedByApi._id}`)
+  .delete(`/users/${userCreatedByApi.id}`)
   .set('Accept', 'application/json')
   .expect(204)
   .end(function(err, response) {
@@ -279,7 +291,7 @@ test.cb.serial("delete user using API", (t) => {
 
 test.serial("check deleted user using mongoose", async (t) => {
   let newUser = await User.findOne({
-    _id: userCreatedByApi._id
+    _id: userCreatedByApi.id
   }).exec();
 
   t.is(newUser, null);

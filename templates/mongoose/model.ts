@@ -1,9 +1,10 @@
 import mongoose = require("mongoose");
-
 import { <%= interfaceName %> } from './<%= interfaceName %>';
 export * from './<%= interfaceName %>';
+import { pbkdf2Sync, randomBytes} from 'crypto';
 
-export interface <%= interfaceName %>Model extends <%= interfaceName %>, mongoose.Document { }
+
+export interface <%= interfaceModel %> extends <%= interfaceName %>, mongoose.Document { }
 
 export const <%= schemaName %> = new mongoose.Schema({
   <% forEachBackEndField((key, PrimiteType) => { %>
@@ -12,10 +13,10 @@ export const <%= schemaName %> = new mongoose.Schema({
 }, <%= JSON.stringify(backend.options, null, 2) %>);
 
 <% if (schemaName == "UserSchema") { %>
-const crypto = require('crypto');
+
 
 function makeSalt() {
-  return crypto.randomBytes(16).toString('base64');
+  return randomBytes(16).toString('base64');
 }
 
 function encryptPassword(password, salt) {
@@ -24,12 +25,13 @@ function encryptPassword(password, salt) {
   }
 
   const saltBuff = new Buffer(salt, 'base64');
-  return crypto.pbkdf2Sync(password, saltBuff, 10000, 64).toString('base64');
+  return pbkdf2Sync(password, saltBuff, 10000, 64, 'sha512').toString('base64');
 }
 
 UserSchema.pre('save', function savePasswordHash(next) {
   if (this.isModified('password')) {
     this.salt = makeSalt();
+    console.log("savePasswordHash", this.password, this.salt);
     this.password = encryptPassword(this.password, this.salt);
   }
 
@@ -40,6 +42,7 @@ UserSchema.pre('update', function updatePasswordHash(next) {
   const pwd = this._update.$set.password;
   if (pwd) {
     const salt = makeSalt();
+    console.log("updatePasswordHash", pwd, salt);
     this.update({}, { $set: {
       salt: salt,
       password: encryptPassword(pwd, salt) } });

@@ -45,10 +45,10 @@ test((t) => {
     )
     .setPermissions(
       new FieldPermissions(
-        true, //read
-        true, //list
+        false, //read
+        false, //list
         true, //create
-        false, //update
+        true, //update
       )
     )
     .setRequired(true)

@@ -1,7 +1,8 @@
 import mongoose = require("mongoose");
-
 import { IUser } from './IUser';
 export * from './IUser';
+import { pbkdf2Sync, randomBytes} from 'crypto';
+
 
 export interface IUserModel extends IUser, mongoose.Document { }
 
@@ -47,10 +48,10 @@ enum: ["active","banned"]
 });
 
 
-const crypto = require('crypto');
+
 
 function makeSalt() {
-  return crypto.randomBytes(16).toString('base64');
+  return randomBytes(16).toString('base64');
 }
 
 function encryptPassword(password, salt) {
@@ -59,12 +60,13 @@ function encryptPassword(password, salt) {
   }
 
   const saltBuff = new Buffer(salt, 'base64');
-  return crypto.pbkdf2Sync(password, saltBuff, 10000, 64).toString('base64');
+  return pbkdf2Sync(password, saltBuff, 10000, 64, 'sha512').toString('base64');
 }
 
 UserSchema.pre('save', function savePasswordHash(next) {
   if (this.isModified('password')) {
     this.salt = makeSalt();
+    console.log("savePasswordHash", this.password, this.salt);
     this.password = encryptPassword(this.password, this.salt);
   }
 
@@ -75,6 +77,7 @@ UserSchema.pre('update', function updatePasswordHash(next) {
   const pwd = this._update.$set.password;
   if (pwd) {
     const salt = makeSalt();
+    console.log("updatePasswordHash", pwd, salt);
     this.update({}, { $set: {
       salt: salt,
       password: encryptPassword(pwd, salt) } });

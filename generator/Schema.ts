@@ -39,12 +39,16 @@ export class FieldPermissions {
   }
 
   static fromJSON(json): FieldPermissions {
-    return new FieldPermissions(
-      json.read === true,
-      json.list === true,
-      json.create === true,
-      json.update === true,
-    );
+    if (json) {
+      return new FieldPermissions(
+        json.read === true,
+        json.list === true,
+        json.create === true,
+        json.update === true,
+      );
+    }
+
+    return new FieldPermissions();
   }
 }
 
@@ -108,6 +112,7 @@ export class PrimiteType {
       json.type,
       json.frontControl || FrontControls.TEXT,
     )
+    .setPermissions(json.permissions || null)
     .setItems(json.items || null)
     .addProperties(json.properties || null)
     .setEnumConstraint(json.enums || null, json.labels || null)
@@ -479,6 +484,20 @@ export class Schema {
       }
     }
   }
+
+  // TODO sublevel blacklist
+  getBackEndBlacklist(action: string /*TODO PermissionKeys*/): string[] {
+    const ret = [];
+    for (let key in this.fields) {
+      console.log(key, this.fields[key].permissions);
+      if (!this.fields[key].permissions[action]) {
+        ret.push(key);
+      }
+    }
+
+    return ret;
+  }
+
 
   forEachFrontEndField(cb) {
     for (let key in this.fields) {

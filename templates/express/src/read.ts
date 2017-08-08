@@ -1,11 +1,11 @@
 import * as express from "express";
 import { HttpError } from '../HttpError';
 import { <%= interfaceName %> } from '../models/<%= interfaceName %>';
-import { <%= singularUc %> } from '../models/<%= singularUc %>';
+import { <%= singularUc %>, <%= interfaceModel %> } from '../models/<%= singularUc %>';
 import { Schema } from 'mongoose';
 
 export function read(_id: Schema.Types.ObjectId|string, next) {
-  return <%= singularUc %>.findById(_id, function(err, entity) {
+  return <%= singularUc %>.findById(_id, function(err, entity: <%= interfaceModel %>) {
     /* istanbul ignore next */ if (err) {
       return next(err);
     }
@@ -41,7 +41,7 @@ export function <%= backend.readFunction %>(req: express.Request, res: express.R
     return next(new HttpError(422, 'body is an array'));
   }
 
-  return read(id, function(err, savedRow) {
+  return read(id, function(err, savedRow: <%= interfaceModel %>) {
     /* istanbul ignore next */ if (err) {
       return next(err);
     }
