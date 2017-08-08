@@ -68,6 +68,7 @@ test.serial("remove previous users", async (t) => {
 test.serial("create user with mongoose", async (t) => {
   var user = new User({
     userlogin: "user@appsilon.pl",
+    password: "password",
     email: "user@appsilon.pl"
   });
 
@@ -92,6 +93,7 @@ test.cb.serial("create user using API", (t) => {
   .post('/users')
   .send({
     userlogin: "user@appsilon.pl2",
+    password: "password",
     email: "user@appsilon.pl2"
   })
   .set('Accept', 'application/json')
@@ -112,6 +114,7 @@ test.cb.serial("create user using API (2)", (t) => {
   .post('/users')
   .send({
     userlogin: "user@appsilon.pl3",
+    password: "password",
     email: "user@appsilon.pl3"
   })
   .set('Accept', 'application/json')
@@ -156,6 +159,7 @@ test.cb.serial("create user error using API", (t) => {
   .post('/users')
   .send({
     userlogin: "user@appsilon.pl3",
+    password: "password",
     email: "xxx@yyy.com"
   })
   .set('Accept', 'application/json')
