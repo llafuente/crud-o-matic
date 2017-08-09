@@ -5,8 +5,10 @@ import { HttpError } from "./HttpError";
 const jwt = require("jsonwebtoken");
 const expressJwt = require("express-jwt");
 const cors = require("cors");
+const morgan = require("morgan");
 
 import { User } from "./models/User";
+import { toJSON as UserToJSON } from "./users/routerUser";
 
 import routerUser from "./users/routerUser";
 import { IUserModel } from "./models/User";
@@ -39,8 +41,9 @@ mongoose.connect(
   },
 );
 
-const app = express();
+export const app = express();
 
+app.use(morgan("tiny"));
 app.use(cors());
 
 //use json form parser middlware
@@ -56,7 +59,8 @@ app.use(
 // authentication layer
 const secret = "sdkjksf8j2nsk87";
 app
-  .post("/users/auth", function(req: Request, res: express.Response, next: express.NextFunction) {
+  .post("/auth", function(req: Request, res: express.Response, next: express.NextFunction) {
+    console.log(req.body);
     User.findOne(
       {
         userlogin: req.body.userlogin,
@@ -65,7 +69,7 @@ app
         /* istanbul ignore next */ if (err) {
           return next(err);
         }
-
+        console.log(user);
         if (!user || !user.authenticate(req.body.password)) {
           return next(new HttpError(422, "user not found or invalid pasword"));
         }
@@ -131,7 +135,7 @@ app
         return next();
       });
   })
-  .post("/users/me", function(req: Request, res: express.Response, next: express.NextFunction) {
+  .post("/me", function(req: Request, res: express.Response, next: express.NextFunction) {
     // TODO check token
     if (!req.headers.authorization) {
       return next(new HttpError(401, "no session"));
@@ -141,27 +145,27 @@ app
       return next(new HttpError(401, "invalid session"));
     }
 
-    const u = req.loggedUser.toJSON();
-    console.log(u);
-    // TODO
-    //user.$express.formatter(req, u, function(err, output) {
-    //  res.status(200).json(output);
-    //});
-
-    return res.status(200).json(u);
+    return res.status(200).json(UserToJSON(req.loggedUser));
   });
 
 // generated schemas routes
 
 app.use(routerUser);
 
-app.use((req, res, next) => {
-  res.status(404).json({ error: true });
+// end: generated schemas routes
+
+app.use((req: Request, res: express.Response, next: express.NextFunction) => {
+  res.status(404).json({ message: "Not found" });
 });
 
-app.use((err, req, res, next) => {
-  console.error(err);
-  res.status(404).json({ error: true });
+app.use((err: Error, req: Request, res: express.Response, next: express.NextFunction) => {
+  console.error("Error handler: ", err);
+
+  if (err instanceof HttpError) {
+    return res.status(err.status).json({ message: err.message });
+  }
+
+  res.status(404).json({ message: err.message });
 });
 
 if (process.env.NODE_ENV !== "test") {

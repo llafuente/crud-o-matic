@@ -1,0 +1,46 @@
+.transition-all {
+  transition: 0.5s all ease-out;
+}
+.pointer {
+  cursor: pointer;
+}
+
+// progress bar
+
+@keyframes progress-bar-loop0 {
+  0%   { left: -25%; }
+  100% { left: 275%; }
+}
+
+@keyframes progress-bar-loop1 {
+  0%   { left: -75%; }
+  100% { left: 200%; }
+}
+
+@keyframes progress-bar-loop2 {
+  0%   { left: -150%; }
+  100% { left: 150%; }
+}
+
+.progress-loop {
+  height: 5px;
+  position: relative;
+  .progress-bar {
+    position: absolute;
+  }
+  & > .progress-bar:nth-child(3n+0) {
+    width: 25%;
+    animation: progress-bar-loop0 4s infinite;
+    animation-timing-function: linear;
+  }
+  & > .progress-bar:nth-child(3n+1) {
+    width: 25%;
+    animation: progress-bar-loop1 4s infinite;
+    animation-timing-function: linear;
+  }
+  & > .progress-bar:nth-child(3n+2) {
+    width: 25%;
+    animation: progress-bar-loop2 4s infinite;
+    animation-timing-function: linear;
+  }
+}

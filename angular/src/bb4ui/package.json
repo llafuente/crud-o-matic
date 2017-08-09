@@ -1,0 +1,16 @@
+{
+  "name": "bb4-ui",
+  "version": "0.0.2",
+  "description": "Bootstrap 4 UI",
+  "scripts": {},
+  "author": "Luis Lafuente Morales",
+  "dependencies": {
+    "ng2-toasty": "4.0.3",
+    "ngx-bootstrap": "^1.7.1"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">= 4.2.1",
+    "npm": ">= 3"
+  }
+}

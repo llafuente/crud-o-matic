@@ -1,0 +1,46 @@
+<div
+  class="form-group"
+  [class.form-group-required]="required"
+  [class.has-danger]="model?.errors">
+  <label
+    *ngIf="label?.length"
+    [class.form-label-lg]="size == 'lg'"
+    [class.form-label-sm]="size == 'sm'"
+    >{{label}}</label>
+
+  <div class="form-control-container" [class.input-group]="preAddon || postAddon">
+    <div class="input-group-addon" *ngIf="preAddon">{{preAddon}}</div>
+    <input *ngIf="type == 'number'"
+      type="number"
+      [name]="name"
+      class="form-control"
+      [class.form-control-lg]="size == 'lg'"
+      [class.form-control-sm]="size == 'sm'"
+      id="{{name}}-id"
+      [disabled]="disabled"
+      [placeholder]="placeholder"
+      [(ngModel)]="modelValue"
+      (ngModelChange)="writeValue(modelValue)"
+      [required]="required"
+      #input
+      />
+    <input *ngIf="type != 'number'"
+      type="text"
+      [name]="name"
+      class="form-control"
+      [class.form-control-lg]="size == 'lg'"
+      [class.form-control-sm]="size == 'sm'"
+      id="{{name}}-id"
+      [disabled]="disabled"
+      [placeholder]="placeholder"
+      [(ngModel)]="modelValue"
+      (ngModelChange)="writeValue(modelValue)"
+      [required]="required"
+      #input
+      />
+    <div class="input-group-addon" *ngIf="postAddon">{{postAddon}}</div>
+  </div>
+
+  <small *ngIf="help" id="{{name}}-help" class="form-text text-muted">{{help}}</small>
+
+</div>

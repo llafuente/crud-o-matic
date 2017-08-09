@@ -1,0 +1,106 @@
+// CheckBoxes__PublicWebStyleGuide.pdf
+//  _____ _____ _____ _____ _____ _____ _____ __ __ _____ _____
+// |     |  |  |   __|     |  |  | __  |     |  |  |   __|   __|
+// |   --|     |   __|   --|    -| __ -|  |  |-   -|   __|__   |
+// |_____|__|__|_____|_____|__|__|_____|_____|__|__|_____|_____|
+
+bb-check {
+  .form-check-label > span {
+    padding-left: 4px;
+  }
+}
+
+
+.ui-checkbox {
+  .custom-control-indicator {
+    width: 25px;
+    height: 25px;
+    background: none;
+    border: 1px solid #D3D3D3;
+  }
+
+  .custom-control-input:disabled ~ .custom-control-indicator {
+    background-color: $grey200;
+  }
+
+  .custom-control-description {
+    padding-left: 10px;
+    padding-top: 4px;
+  }
+
+  /*
+  .custom-control-input:checked ~ .custom-control-indicator {
+    background-image: $custom-checkbox-checked-icon;
+  }
+
+  .custom-control-input:indeterminate ~ .custom-control-indicator {
+    background-color: $custom-checkbox-indeterminate-bg;
+    background-image: $custom-checkbox-indeterminate-icon;
+    @include box-shadow($custom-checkbox-indeterminate-box-shadow);
+  }
+  */
+
+  .custom-control-input:checked {
+    & ~ .custom-control-indicator {
+      background-color: transparent !important;
+      background-image: none;
+    }
+
+    &:disabled ~ .custom-control-indicator {
+      background-color: $grey200 !important;
+    }
+
+    & ~ .custom-control-indicator:after {
+      @include fa-icon();
+      content: "\f00c";
+      color: $blue-core;
+      padding: 4px;
+    }
+  }
+}
+
+
+
+.ui-radio {
+  .custom-control-indicator {
+    border-radius: 50%;
+    background-color: $white;
+    width: 25px;
+    height: 25px;
+    border: 1.25px solid #d3d3d3;
+  }
+
+  .custom-control-description {
+    padding-top: 5px;
+    padding-left: 10px;
+  }
+
+  .custom-control-input {
+    &:focus ~ .custom-control-indicator {
+      // the mixin is not used here to make sure there is feedback
+      // $custom-control-focus-indicator-box-shadow
+      box-shadow: 0 0 0 1px $blue-core, 0 0 0 1.5px;
+
+    }
+  }
+
+
+  .custom-control-input:checked {
+    & ~ .custom-control-indicator {
+      color: $blue-core !important;
+      background-color: $white !important;
+      background-image: none;
+    }
+
+    & ~ .custom-control-indicator:after {
+      content: " ";
+      display: block;
+      background-color: $blue-core;
+      width: 13px;
+      height: 13px;
+      padding: 4px;
+      border-radius: 50%;
+      margin: 5px;
+    }
+  }
+}

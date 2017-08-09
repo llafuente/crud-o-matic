@@ -1,0 +1,300 @@
+<h1>Inputs</h1>
+
+<h3>Inputs variations</h3>
+
+<bb-source example="example1" [source]="example1">
+<pre>Model: {{inputs.example1 | json}}</pre>
+
+<bb-input-container label="label text!">
+  <input bb-child [(ngModel)]="inputs.example1" />
+</bb-input-container>
+
+<bb-input-container preAddon="$" label="Dollar value">
+  <input bb-child [(ngModel)]="inputs.example1" />
+</bb-input-container>
+
+<bb-input-container postAddon="$" label="Value dollar">
+  <input bb-child [(ngModel)]="inputs.example1" />
+</bb-input-container>
+
+<bb-input-container label="Complex control that need help!" help="Some useful information about your control">
+  <input bb-child [(ngModel)]="inputs.example1" />
+</bb-input-container>
+
+<bb-input-container label="Dropdown!">
+  <select bb-child [(ngModel)]="inputs.dropdown">
+    <option value="v1">v1</option>
+    <option value="v2">v2</option>
+    <option value="v3">v3</option>
+    <option value="v4">v4</option>
+  </select>
+</bb-input-container>
+
+</bb-source>
+
+<!-- TODO sizes
+<bb-input-container label="I'm big!" size="lg">
+  <input bb-child [(ngModel)]="inputs.linput" />
+</bb-input-container>
+
+<bb-input-container label="I'm small!" size="sm">
+  <input bb-child [(ngModel)]="inputs.linput" />
+</bb-input-container>
+-->
+
+<h3>Disabled inputs</h3>
+
+<bb-source example="example2" [source]="example2">
+<pre>Model: {{inputs.example2 | json}}
+isDisabled?: {{inputs.isDisabled | json}}</pre>
+
+<bb-check
+  name="check01"
+  [(ngModel)]="inputs.isDisabled">Disabled?</bb-check>
+
+<bb-input-container label="label text!">
+  <input bb-child [(ngModel)]="inputs.example2" [disabled]="inputs.isDisabled" />
+</bb-input-container>
+
+<bb-input-container preAddon="$" label="Dollar value">
+  <input bb-child [(ngModel)]="inputs.example2" [disabled]="inputs.isDisabled" />
+</bb-input-container>
+
+<bb-input-container postAddon="$" label="Value dollar">
+  <input bb-child [(ngModel)]="inputs.example2" [disabled]="inputs.isDisabled" />
+</bb-input-container>
+
+<bb-input-container label="Complex control that need help!" help="Some useful information about your control">
+  <input bb-child [(ngModel)]="inputs.example2" [disabled]="inputs.isDisabled" />
+</bb-input-container>
+
+<bb-input-container label="Dropdown!">
+  <select bb-child [(ngModel)]="inputs.dropdown" [disabled]="inputs.isDisabled">
+    <option value="v1">v1</option>
+    <option value="v2">v2</option>
+    <option value="v3">v3</option>
+    <option value="v4">v4</option>
+  </select>
+</bb-input-container>
+
+</bb-source>
+
+
+<h3>Required inputs</h3>
+
+<bb-source example="example3" [source]="example3">
+<pre>Model: {{inputs.example2 | json}}
+isRequired?: {{inputs.isRequired | json}}</pre>
+
+<bb-check
+  name="check01"
+  [(ngModel)]="inputs.isRequired">Required?</bb-check>
+
+<bb-input-container label="label text!">
+  <input bb-child [(ngModel)]="inputs.example3" [required]="inputs.isRequired" />
+</bb-input-container>
+
+<bb-input-container preAddon="$" label="Dollar value">
+  <input bb-child [(ngModel)]="inputs.example3" [required]="inputs.isRequired" />
+</bb-input-container>
+
+<bb-input-container postAddon="$" label="Value dollar">
+  <input bb-child [(ngModel)]="inputs.example3" [required]="inputs.isRequired" />
+</bb-input-container>
+
+<bb-alert type="info">
+Note: This field display an error, but remember only when dirty, so type here! and remove!
+</bb-alert>
+
+<bb-input-container label="Complex control that need help!" help="Some useful information about your control">
+  <input bb-child [(ngModel)]="inputs.example3" [required]="inputs.isRequired" #example3ReqModel="ngModel" />
+</bb-input-container>
+<pre>errors: {{example3ReqModel.errors | json}}</pre>
+<bb-errors [model]="example3ReqModel"></bb-errors>
+
+<bb-input-container label="Dropdown!">
+  <select bb-child [(ngModel)]="inputs.dropdown" [required]="inputs.isRequired">
+    <option value="v1">v1</option>
+    <option value="v2">v2</option>
+    <option value="v3">v3</option>
+    <option value="v4">v4</option>
+  </select>
+</bb-input-container>
+
+</bb-source>
+
+<bb-alert type="info">
+  NOTE: readonly inputs not supported
+</bb-alert>
+
+<h1>Complete Form + Errors</h1>
+<bb-source example="example4" [source]="example4">
+<pre>
+model: {{entity | json}}
+</pre>
+
+<form #entityForm="ngForm">
+
+  <bb-input-container label="number">
+    <input name="number" type="number" bb-child [(ngModel)]="entity.number" #numberModel="ngModel"/>
+  </bb-input-container>
+
+  <bb-errors [model]="numberModel"></bb-errors>
+
+  <bb-input-container label="date">
+    <input name="date" type="date" bb-child [(ngModel)]="entity.date" #dateModel="ngModel"/>
+  </bb-input-container>
+
+  <bb-errors [model]="dateModel"></bb-errors>
+
+  <bb-input-container label="search">
+    <input name="search" type="search" bb-child [(ngModel)]="entity.search" #searchModel="ngModel"/>
+  </bb-input-container>
+
+  <bb-errors [model]="searchModel"></bb-errors>
+
+  <bb-input-container label="email">
+    <input name="email" type="email" email bb-child [(ngModel)]="entity.email" #emailModel="ngModel"/>
+  </bb-input-container>
+
+  <bb-errors [model]="emailModel"></bb-errors>
+
+  <bb-input-container label="url">
+    <input name="url" type="url" url bb-child [(ngModel)]="entity.url" #urlModel="ngModel"/>
+  </bb-input-container>
+
+  <bb-errors [model]="urlModel"></bb-errors>
+
+  <bb-input-container label="tel">
+    <input name="tel" type="tel" bb-child [(ngModel)]="entity.tel" #telModel="ngModel"/>
+  </bb-input-container>
+
+  <bb-errors [model]="telModel"></bb-errors>
+
+  <bb-input-container label="password">
+    <input name="password" type="password" bb-child [(ngModel)]="entity.password" #passwordModel="ngModel"/>
+  </bb-input-container>
+
+  <bb-errors [model]="passwordModel"></bb-errors>
+
+  <bb-input-container label="datetimeLocal">
+    <input name="datetimeLocal" type="datetime-local" bb-child [(ngModel)]="entity.datetimeLocal" #datetimeLocalModel="ngModel"/>
+  </bb-input-container>
+
+  <bb-errors [model]="datetimeLocalModel"></bb-errors>
+
+  <bb-input-container label="month">
+    <input name="month" type="month" bb-child [(ngModel)]="entity.month" #monthModel="ngModel"/>
+  </bb-input-container>
+
+  <bb-errors [model]="monthModel"></bb-errors>
+
+  <bb-input-container label="week">
+    <input name="week" type="week" bb-child [(ngModel)]="entity.week" #weekModel="ngModel"/>
+  </bb-input-container>
+
+  <bb-errors [model]="weekModel"></bb-errors>
+
+  <bb-input-container label="time">
+    <input name="time" type="time" bb-child [(ngModel)]="entity.time" #timeModel="ngModel"/>
+  </bb-input-container>
+
+  <bb-errors [model]="timeModel"></bb-errors>
+
+  <bb-input-container label="color">
+    <input name="color" type="color" bb-child [(ngModel)]="entity.color" #colorModel="ngModel"/>
+  </bb-input-container>
+
+  <bb-errors [model]="colorModel"></bb-errors>
+
+
+  <bb-input-container label="Required input">
+    <input name="req" bb-child [(ngModel)]="entity.req" required="required" #reqModel="ngModel"/>
+  </bb-input-container>
+
+  <bb-errors [model]="reqModel"></bb-errors>
+
+  <bb-input-container label="Textarea">
+    <textarea rows="6" name="ta" bb-child [(ngModel)]="entity.textarea" required="required" #reqModel="ngModel"></textarea>
+  </bb-input-container>
+
+  <hr />
+
+  <bb-input-container label="Pattern test (alphanum)">
+    <input name="domain" type="domain" pattern="^[a-zA-Z0-9]*" bb-child [(ngModel)]="entity.domain" #domainModel="ngModel"/>
+  </bb-input-container>
+
+
+  <bb-errors [model]="domainModel"></bb-errors>
+  <bb-errors [model]="domainModel" pattern="El campo sólo puede contener letras y números, ñ no incluida."></bb-errors>
+
+
+<bb-button
+  [disabled]="!entityForm.valid">Save</bb-button>
+
+</form>
+</bb-source>
+
+
+<h1>Input styles</h1>
+<bb-source example="example5" [source]="example5">
+
+  <bb-input-container label="Bordered input" class="bordered">
+    <input name="number" type="number" bb-child [(ngModel)]="entity.number" #numberModel="ngModel"/>
+  </bb-input-container>
+
+  <bb-input-container label="Bordered input (required)" class="bordered">
+    <input name="number" type="number" bb-child [(ngModel)]="entity.number" #numberModel="ngModel" required="required"/>
+  </bb-input-container>
+
+  <bb-input-container label="Dropdown!" class="bordered">
+    <select bb-child [(ngModel)]="inputs.dropdown">
+      <option value="v1">v1</option>
+      <option value="v2">v2</option>
+      <option value="v3">v3</option>
+      <option value="v4">v4</option>
+    </select>
+  </bb-input-container>
+
+  <bb-input-container label="Textarea" class="bordered">
+    <textarea rows="6" name="ta" bb-child [(ngModel)]="entity.textarea" required="required" #reqModel="ngModel"></textarea>
+  </bb-input-container>
+
+</bb-source>
+
+<h1>Static input</h1>
+<bb-source example="example5" [source]="example5">
+  <bb-static label="This is the label of static input">This is content of static input, can be selected :)</bb-static>
+  <bb-static>It Can also contains images!! <img src="http://www.vandalimg.com/smilies/jaja.gif" /></bb-static>
+
+  <bb-static label="can be empty!"></bb-static>
+</bb-source>
+
+
+<h1>Static input</h1>
+<bb-source example="example6" [source]="example6">
+  <pre>switches: {{switches | json}}</pre>
+
+  <bb-switch
+    name="switch01"
+    checkedMessage="check message"
+    uncheckedkMessage="uncheck message"
+    [(ngModel)]="switches.p1"></bb-switch>
+  <bb-switch
+    name="switch02"
+    checkedMessage="check message"
+    uncheckedkMessage="uncheck message"
+    [(ngModel)]="switches.p1" color="red" switchColor="blue"></bb-switch>
+  <bb-switch
+    name="switch03"
+    checkedMessage="check message"
+    uncheckedkMessage="uncheck message"
+    [(ngModel)]="switches.p1" color="red"></bb-switch>
+  <bb-switch
+    name="switch04"
+    checkedMessage="check message"
+    uncheckedkMessage="uncheck message"
+    [(ngModel)]="switches.p1" switchColor="blue"></bb-switch>
+</bb-source>
+
+

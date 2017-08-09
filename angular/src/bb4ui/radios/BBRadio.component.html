@@ -1,0 +1,12 @@
+<label class="custom-control ui-radio" (click)="clicked()">
+  <input
+    type="radio"
+    class="custom-control-input"
+    [name]="name"
+    [value]="value"
+    [disabled]="disabled"
+    [checked]="modelValue == value"
+    />
+  <span class="custom-control-indicator"></span>
+  <span class="custom-control-description"><ng-content></ng-content></span>
+</label>

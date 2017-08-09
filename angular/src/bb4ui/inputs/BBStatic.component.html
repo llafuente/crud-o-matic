@@ -1,0 +1,15 @@
+<div class="form-group">
+  <label
+    *ngIf="label?.length"
+    [class.form-label-lg]="size == 'lg'"
+    [class.form-label-sm]="size == 'sm'"
+    >{{label}}</label>
+
+  <div class="form-control-container">
+    <p class="form-control-static">
+      <ng-content></ng-content>
+    </p>
+  </div>
+
+  <small *ngIf="help" class="form-text text-muted">{{help}}</small>
+</div>

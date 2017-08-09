@@ -1,0 +1,19 @@
+<section class="container">
+  <h1 (click)="toogle()" class="pointer">
+    <div class="float-right">
+      <i class="fa fa-angle-up disabled" *ngIf="!collapsed"></i>
+      <i class="fa fa-angle-down" *ngIf="collapsed"></i>
+    </div>
+
+    <ng-content select="bb-section-header">
+    </ng-content>
+  </h1>
+
+  <div [ngStyle]="{'display': collapsed ? 'none' : 'block'}">
+    <ng-content select="bb-section-content">
+    </ng-content>
+  </div>
+
+  <ng-content select="bb-section-footer">
+  </ng-content>
+</section>

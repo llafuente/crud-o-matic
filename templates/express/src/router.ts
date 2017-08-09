@@ -7,6 +7,7 @@ import { <%= backend.listFunction %> } from "./<%= backend.listFunction %>";
 import { <%= backend.deleteFunction %> } from "./<%= backend.deleteFunction %>";
 import { <%= interfaceModel %> } from '../models/<%= singularUc %>';
 import { Pagination } from '../common';
+import { authorization } from '../auth';
 const mongoosemask = require("mongoosemask");
 
 /**
@@ -22,13 +23,13 @@ export function cleanBody(req: Request, res: express.Response, next: express.Nex
   next();
 }
 
-function toJSONList(result: Pagination<<%= interfaceModel %>>) {
+export function toJSONList(result: Pagination<<%= interfaceModel %>>) {
   result.list = result.list.map(toJSON);
 
   return result;
 }
 
-function toJSON(entity: <%= interfaceModel %>) {
+export function toJSON(entity: <%= interfaceModel %>) {
   let json = mongoosemask.mask(entity, <%= JSON.stringify(getBackEndBlacklist('read')) %>);
 
   json.id = json._id;
@@ -37,30 +38,31 @@ function toJSON(entity: <%= interfaceModel %>) {
   return json;
 }
 
-const <%= backend.routerName %> = express.Router();
-<%= backend.routerName %>.post(
+const <%= backend.routerName %> = express.Router()
+.use(authorization(null))
+.post(
   '<%= url("CREATE") %>',
   cleanBody,
   <%= backend.createFunction %>,
   function (req: Request, res: express.Response, next: express.NextFunction) {
     res.status(201).json(toJSON(req[<%= JSON.stringify(singular) %>]));
   }
-);
-<%= backend.routerName %>.get(
+)
+.get(
   '<%= url("LIST") %>',
   <%= backend.listFunction %>,
   function (req: Request, res: express.Response, next: express.NextFunction) {
     res.status(200).json(toJSONList(req[<%= JSON.stringify(plural) %>]));
   }
-);
-<%= backend.routerName %>.get(
+)
+.get(
   '<%= url("READ") %>',
   <%= backend.readFunction %>,
   function (req: Request, res: express.Response, next: express.NextFunction) {
     res.status(200).json(toJSON(req[<%= JSON.stringify(singular) %>]));
   }
-);
-<%= backend.routerName %>.patch(
+)
+.patch(
   '<%= url("UPDATE") %>',
   cleanBody,
   <%= backend.readFunction %>,
@@ -68,8 +70,8 @@ const <%= backend.routerName %> = express.Router();
   function (req: Request, res: express.Response, next: express.NextFunction) {
     res.status(200).json(req[<%= JSON.stringify(singular) %>]);
   }
-);
-<%= backend.routerName %>.delete(
+)
+.delete(
   '<%= url("DELETE") %>',
   <%= backend.deleteFunction %>,
   function (req: Request, res: express.Response, next: express.NextFunction) {

@@ -1,0 +1,21 @@
+$nav-tabs-link-hover-border-color: 0;
+$nav-tabs-border-width: 0;
+
+$nav-tabs-border-color: $grey500;
+$nav-disabled-link-color: $grey300;
+$nav-tabs-active-link-hover-color: $grey600;
+
+.nav-tabs {
+  .nav-link {
+    // CHANGE should be 1px but it's almost invisible then
+    border-bottom-width: 2px !important;
+    border-bottom-color: $grey300 !important;
+    color: $grey500; // override anchor color
+  }
+  .nav-link.active {
+    border-bottom-color: $grey600 !important;
+  }
+  .nav-link:hover {
+    color: $grey600;
+  }
+}

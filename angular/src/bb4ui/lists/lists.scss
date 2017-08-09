@@ -1,0 +1,89 @@
+// Lists__PublicWebStyleGuide.pdf
+//  __    _____ _____ _____ _____
+// |  |  |     |   __|_   _|   __|
+// |  |__|-   -|__   | | | |__   |
+// |_____|_____|_____| |_| |_____|
+//
+
+li {
+  // CHANGE from 30px
+  margin-bottom: 1rem;
+}
+
+ul.list-ui {
+  @include list-unstyled;
+  padding: 1rem; // CHANGE not included in the docs, but necessary
+  li {
+    color: $grey500;
+    // CHANGE from 30px
+    margin-bottom: 1rem;
+  }
+
+  li:last-child {
+    margin-bottom: 0px;
+  }
+
+  li:before {
+    margin-right: 20px;
+    @include fa-icon();
+    content: '\f0c9';
+    color: $grey300;
+  }
+}
+
+ul.list-ui-inverse {
+  background-color: $blue-medium;
+  li {
+    color: $white;
+  }
+
+  li:before {
+    color: $blue-light;
+  }
+}
+
+ul.list-checks {
+  @include list-unstyled;
+  padding: 1rem; // CHANGE not included in the docs, but necessary
+
+  li:last-child {
+    margin-bottom: 0px;
+  }
+
+  li:before {
+    margin-right: 20px;
+    @include fa-icon();
+    // TODO handle FontAwesome as SCSS pure
+    content: "\f00c";
+    color: $grey500;
+    font-size: 1rem;
+  }
+}
+
+// TODO triangle
+ol.list-ui {
+  @include list-unstyled;
+  padding: 1rem; // CHANGE not included in the docs, but necessary
+  counter-reset: ol-counter;
+
+  li {
+    color: $grey500;
+    // CHANGE from 30px
+    margin-bottom: 1rem;
+  }
+
+  li:before {
+    margin-right: 20px;
+    color: $grey500;
+    display: inline-block;
+    width: 36px;
+    height: 36px;
+    padding-top: 8px;
+    padding-left: 14px;
+
+    content: counter(ol-counter);
+    counter-increment: ol-counter;
+
+    background: linear-gradient(to top left, #fff 0%, #fff 50%, $grey100 50%, $grey100 100%);
+  }
+}

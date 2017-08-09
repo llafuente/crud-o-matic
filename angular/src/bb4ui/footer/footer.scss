@@ -1,0 +1,15 @@
+div.fixed-bottom-footer {
+  height: 100px;
+  margin-top: 16px;
+  footer {
+    position: fixed !important;
+    bottom: 0;
+    right: 0;
+    left: 0;
+  }
+}
+
+footer {
+  margin-top: 1.5rem;
+  padding: 1rem;
+}

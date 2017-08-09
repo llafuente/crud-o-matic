@@ -14,12 +14,18 @@ export class Generator {
   }
 
   template(schema: Schema, srcFile: string, dstFile: string) {
-    console.log("#", srcFile, dstFile);
-
+    //
+    try {
     const model = readFileSync(srcFile, { encoding: "utf8" });
     const modelTpl = _.template(model);
     const str = modelTpl(schema);
     writeFileSync(dstFile, str);
+    } catch (err) {
+      console.log(`Error on template: ${srcFile}`);
+      console.log(`Destination: ${dstFile}`);
+
+      console.error(err);
+    }
   }
 
   copy(src: string, dst: string) {

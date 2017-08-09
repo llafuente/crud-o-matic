@@ -12,7 +12,9 @@ export function create(data: IUser, next) {
 
   return User.create(data, function(err, savedRow) {
     if (err) {
-      return next(err);
+      //return next(err);
+      console.error(err);
+      return next(new HttpError(400, err.message));
     }
 
     /* istanbul ignore next */

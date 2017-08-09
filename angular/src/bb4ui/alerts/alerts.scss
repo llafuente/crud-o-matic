@@ -1,0 +1,73 @@
+// Alerts__PublicWebStyleGuide.pdf
+//  _____ __    _____ _____ _____ _____
+// |  _  |  |  |   __| __  |_   _|   __|
+// |     |  |__|   __|    -| | | |__   |
+// |__|__|_____|_____|__|__| |_| |_____|
+
+@mixin bb-alert($icon-color, $link-color) {
+  & .icon {
+    color: $icon-color;
+  }
+  & .alert-link {
+    color: $link-color;
+  }
+}
+// CHANGE from 30px
+$alert-padding-x:             15px;
+// CHANGE from 30px
+$alert-padding-y:             15px;
+
+$alert-border-radius: 1px;
+$alert-border-width: 0;
+
+
+.alert-default {
+  @include alert-variant($grey100, $grey100, $grey600);
+  @include bb-alert($grey400, $blue-medium);
+}
+
+$state-info-bg: $blue-white-light;
+.alert-info {
+  @include bb-alert($blue-light, $blue-medium);
+}
+
+$state-danger-bg: $coral-white;
+.alert-danger {
+  @include bb-alert($coral, $blue-medium);
+}
+
+$state-warning-bg: $gold-white;
+.alert-warning {
+  @include bb-alert($gold, $blue-medium);
+}
+
+$state-success-bg: $green-white;
+.alert-success {
+  @include bb-alert($green, $blue-medium);
+}
+
+.alert-promo {
+  @include alert-variant($aqua-white, $aqua-white, $grey600);
+  @include bb-alert($aqua, $blue-medium);
+}
+
+.alert {
+  // CHANGE font-size: 15pt
+  h1 {
+    // CHANGE should be 22pt
+    font-size: 1.5rem;
+    margin-top: 0;
+    margin-bottom: 20px;
+  }
+}
+
+.alert-with-icon {
+  display: flex !important;
+  .icon, .content {
+    float: left;
+  }
+  .icon {
+    margin-right: 25px;
+  }
+
+}

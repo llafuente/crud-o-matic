@@ -1,0 +1,77 @@
+<nav class="navbar navbar-toggleable-md navbar-light bg-core">
+  <div class="container">
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <a class="navbar-brand p-0" href="#">
+      App
+    </a>
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav mr-auto">
+<!--
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" [routerLink]="['/typography']">Typography</a>
+        </li>
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" [routerLink]="['/lists']">Lists</a>
+        </li>
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" [routerLink]="['/buttons']">Buttons</a>
+        </li>
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" [routerLink]="['/forms']">Forms</a>
+        </li>
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" [routerLink]="['/alerts']">Alerts</a>
+        </li>
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" [routerLink]="['/cards']">Cards</a>
+        </li>
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" [routerLink]="['/tabs']">Tabs</a>
+        </li>
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" [routerLink]="['/tables']">Tables</a>
+        </li>
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" [routerLink]="['/badges']">Badges</a>
+        </li>
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" [routerLink]="['/modals']">Modals</a>
+        </li>
+-->
+
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" [routerLink]="['/users', 'list']">Usuarios</a>
+        </li>
+
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" [routerLink]="['/login']">Login</a>
+        </li>
+
+        <!--
+          <a class="nav-link disabled" href="#">Disabled</a>
+        -->
+      </ul>
+      <ul class="navbar-nav">
+        <li class="nav-item active">
+          <a class="nav-link" href="#">User!</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<section class="container">
+  <router-outlet></router-outlet>
+</section>
+
+<div class="fixed-bottom-footer">
+  <footer class="container-fluid bg-core">
+    <section class="container">
+      <div class="row">
+        App
+      </div>
+    </section>
+  </footer>
+</div>

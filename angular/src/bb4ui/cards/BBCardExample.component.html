@@ -1,0 +1,192 @@
+<h1>Cards</h1>
+
+<h3>Default card</h3>
+
+<bb-source example="exampleDC" [source]="exampleDC">
+<bb-card header="Header!!!">
+  <bb-section-header>Header!</bb-section-header>
+  <bb-section-content>Content!!!</bb-section-content>
+  <bb-section-footer>Footer!!!</bb-section-footer>
+</bb-card>
+</bb-source>
+
+<h3>Loading card</h3>
+
+<bb-source example="exampleLC" [source]="exampleLC">
+
+<pre>bb-section-content events: {{sectionEvents | json}}</pre>
+<pre>loading: {{loading | json}}</pre>
+
+<bb-check
+  name="loadingCheck"
+  [(ngModel)]="loading">Loading?</bb-check>
+
+
+<bb-card header="Header!!!">
+  <bb-section-header>Header!</bb-section-header>
+  <bb-section-content
+    [loading]="loading"
+    loadingMessage="Loading..."
+    (onLoad)="onLoadExample1();">Content!!!</bb-section-content>
+  <bb-section-footer>Footer!!!</bb-section-footer>
+</bb-card>
+</bb-source>
+
+
+<h3>Errored card</h3>
+
+<bb-source example="exampleEC" [source]="exampleEC">
+
+<pre>bb-section-content events: {{sectionEvents | json}}</pre>
+<pre>loading: {{loading | json}}</pre>
+
+<bb-check
+  name="loadingCheck"
+  [(ngModel)]="loading2">Loading?</bb-check>
+
+<bb-check
+  name="loadingCheck"
+  [(ngModel)]="error2">Error?</bb-check>
+
+<bb-card header="Header!!!">
+  <bb-section-header>Header!</bb-section-header>
+  <bb-section-content
+    [loading]="loading2"
+    [error]="error2"
+    loadingMessage="Loading..."
+    (onLoad)="onLoadExample1();">Content!!!</bb-section-content>
+  <bb-section-footer>Footer!!!</bb-section-footer>
+</bb-card>
+</bb-source>
+
+
+<h3>Custom error card</h3>
+
+<bb-source example="exampleCEC" [source]="exampleCEC">
+
+<pre>loading: {{loading3|json}}
+error: {{error3 | json}}</pre>
+
+<bb-check
+  name="loadingCheck"
+  [(ngModel)]="loading3">Loading?</bb-check>
+
+<bb-check
+  name="loadingCheck"
+  [(ngModel)]="error3" true-value="This is a custom error">Error?</bb-check>
+
+
+<bb-card header="Header!!!">
+  <bb-section-header>Header!</bb-section-header>
+  <bb-section-content
+    [loading]="loading3"
+    [error]="error3"
+    loadingMessage="Loading..."
+    (onLoad)="onLoadExample1();">Content!!!</bb-section-content>
+  <bb-section-footer>Footer!!!</bb-section-footer>
+</bb-card>
+</bb-source>
+
+
+<h3>Card group</h3>
+
+<bb-source example="exampleCG" [source]="exampleCG">
+
+  <!-- NOTE remove row to indent left-right -->
+  <div class="d-flex row" style="height: 425px">
+
+    <bb-card header="Header!!!" class="col-4">
+      <bb-section-content>Content!!!</bb-section-content>
+      <bb-section-footer>Footer!!!</bb-section-footer>
+    </bb-card>
+
+    <bb-card header="Header!!!" class="col-4">
+      <bb-section-content>Content!!!</bb-section-content>
+      <bb-section-footer>Footer!!!</bb-section-footer>
+    </bb-card>
+
+    <bb-card header="Header!!!" class="col-4">
+      <bb-section-content>Content!!!</bb-section-content>
+      <bb-section-footer>Footer!!!</bb-section-footer>
+    </bb-card>
+
+  </div>
+</bb-source>
+
+<h3>Collapsable card</h3>
+
+<bb-source example="exampleCC" [source]="exampleCC">
+
+<pre>Toogle: {{toogles | json}}</pre>
+
+<bb-card-collapsable
+  header="There is more information inside!"
+  (onToogle)="toogle('first', $event)">
+  <bb-section-content>Content!!!</bb-section-content>
+  <bb-section-footer>
+    <div class="p-2">
+      This is the footer!
+    </div>
+  </bb-section-footer>
+</bb-card-collapsable>
+
+<bb-card-collapsable
+  header="There is more information inside!"
+  [startCollapsed]="false"
+  (onToogle)="toogle('second', $event)">
+  <bb-section-content>Content!!!</bb-section-content>
+  <bb-section-footer>
+    <div class="bg-faded p-2">
+      This is the footer with custom background!
+    </div>
+  </bb-section-footer>
+</bb-card-collapsable>
+
+</bb-source>
+
+<div class="alert alert-info" role="alert">
+  NOTE: Collapsable cards cannot be grouped.
+</div>
+
+
+<h3>Collapsable card (remember)</h3>
+
+<bb-source example="exampleCCR" [source]="exampleCCR">
+
+<bb-card-collapsable
+  header="This card remember if it was open/closed"
+  uniqueid="card-remember-me">
+  <bb-section-content>MOAR Content!!!</bb-section-content>
+  <bb-section-footer>
+  </bb-section-footer>
+</bb-card-collapsable>
+
+</bb-source>
+
+<div class="alert alert-info" role="alert">
+  NOTE: Save in localStorage it's state
+</div>
+
+<h3>Condense vs normal card</h3>
+
+<bb-source example="exampleCondense" [source]="exampleCondense">
+
+<div class="row">
+  <div class="col-6">
+    <bb-card header="condense" class="condense">
+      <bb-section-content>Content!!!</bb-section-content>
+      <bb-section-footer>
+        <p>Footer!</p>
+      </bb-section-footer>
+    </bb-card>
+  </div>
+  <div class="col-6">
+    <bb-card header="normal">
+      <bb-section-content>Content!!!</bb-section-content>
+      <bb-section-footer>
+        <p>Footer!</p>
+      </bb-section-footer>
+    </bb-card>
+  </div>
+</div>
+</bb-source>

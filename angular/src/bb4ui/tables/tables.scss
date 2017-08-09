@@ -1,0 +1,63 @@
+//  _____ _____ _____ __    _____ _____
+// |_   _|  _  | __  |  |  |   __|   __|
+//   | | |     | __ -|  |__|   __|__   |
+//   |_| |__|__|_____|_____|_____|_____|
+
+
+bb-table {
+  // need to be applied to th & td
+  & .actions {
+    text-align: center;
+    white-space: nowrap;
+    width: 1px;
+  }
+  & .actions > a {
+    margin-left: 6px;
+  }
+  & .actions > a:first-of-type {
+    margin-left: 0px;
+  }
+
+  //& .actions > a > i {
+  //  font-size:1.75rem;
+  //}
+
+  // need to be applied to th & td
+  // reduce td/th width to the minimum possible
+  & .shrink {
+    white-space: nowrap;
+    width: 1px;
+  }
+
+  & .ellipsis > div {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  & .nowrap {
+    white-space:nowrap;
+  }
+  & .break-word {
+    word-break: break-word;
+  }
+
+  th {
+    color: $grey500;
+    // CHANGE: Bold is not readable at 16px
+  }
+
+  td {
+    word-break: break-all;
+  }
+}
+
+bb-table-scroll {
+  & table.table-scroll-header {
+    margin-bottom: 0;
+  }
+  th.scroll {
+    margin: 0;
+    padding: 0;
+    width: 14px; // TODO REVIEW all browsers ?
+  }
+}

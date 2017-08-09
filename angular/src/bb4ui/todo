@@ -1,0 +1,30 @@
+* http://valor-software.com/ngx-bootstrap/#/
+
+* Alert component
+  * mode: 'default', 'success', 'info', 'warning', 'danger', 'promo'
+  * header
+  * icon: evaluar custom icon o el de la guía de estilo
+  * ng-content
+
+Badget component
+  * mode: 'default', 'success', 'info', 'warning', 'danger', 'promo'
+  * ng-content
+
+BBSectionContentComponent
+  * loading bar
+
+BBSectionCollapsableComponent, BBSection
+  * assert: allow only valid children
+
+BBInputContainer
+  * allow only valid child element, maybe even a single one
+
+List directive: to apply css/s
+
+table component
+  * tfooter: Pagination
+  * allow thead, tbody, tfooter
+  * disallow tfooter if pagination is found
+
+tabs
+  * https://material.angular.io/components/tabs/overview

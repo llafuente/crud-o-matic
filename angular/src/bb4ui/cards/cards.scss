@@ -1,0 +1,73 @@
+// Cards__PublicWebStyleGuide.pdf
+//  _____ _____ _____ ____  _____
+// |     |  _  | __  |    \|   __|
+// |   --|     |    -|  |  |__   |
+// |_____|__|__|__|__|____/|_____|
+
+
+// this allow to expand card vertically
+bb-card, bb-card-collapsable {
+  display: flex;
+}
+
+$card-cap-bg: $white;
+.card {
+  width: 100%;
+  margin-bottom: 1rem;
+  // CHANGE NOVA shadow is better
+  //box-shadow: 0px 1px 1px 0px rgba(0,0,0,0.2);
+  box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
+  // remove border bottom, so the footer can have it's own background
+  border-bottom-width: 0 !important;
+
+  .card-header {
+    border-bottom: 0;
+    h2 {
+      // CHANGE: blue it!
+      color: $blue-core;
+    }
+  }
+  .card-footer {
+    border-top: 0;
+  }
+  .card-footer:empty {
+    padding: 0;
+    margin: 0;
+  }
+}
+.card-collapsable {
+  .card-header {
+    cursor: pointer;
+    .card-indicator {
+      float: right;
+      padding-top: 12px;
+
+      .card-opened-icon:after {
+        @include fa-icon();
+        // TODO handle FontAwesome as SCSS pure
+        content: "\F106";
+        color: $grey600;
+        font-size: 2rem;
+      }
+      .card-closed-icon:after {
+        @include fa-icon();
+        content: "\F107";
+        color: $blue-core;
+        font-size: 2rem;
+      }
+    }
+  }
+}
+
+bb-card, bb-card-collapsable {
+  .card-header h2 {
+    margin: 0;
+  }
+}
+
+bb-card.condense {
+  & .card-block {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+}

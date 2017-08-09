@@ -1,0 +1,58 @@
+// Buttons__PublicWebStyleGuide.pdf
+//  _____ _____ _____ _____ _____ _____ _____
+// | __  |  |  |_   _|_   _|     |   | |   __|
+// | __ -|  |  | | |   | | |  |  | | | |__   |
+// |_____|_____| |_|   |_| |_____|_|___|_____|
+
+// CHANGE from 38px
+$btn-padding-x: 28px;
+// CHANGE from 22px
+$btn-padding-y: 12px;
+
+$btn-border-radius: 1px;
+$btn-border-radius-lg: 1px;
+$btn-border-radius-sm: 1px;
+
+$btn-primary-bg: $aqua-wcag;
+$btn-primary-border: $aqua-wcag;
+.btn-primary:hover {
+  background-color: $aqua-wcag-dark !important;
+}
+
+$btn-secondary-color: $white;
+$btn-secondary-bg: $blue-medium;
+$btn-secondary-border: $blue-medium;
+.btn-secondary:hover {
+  background-color: $blue-medium-ov !important;
+}
+
+$btn-info-color: $white;
+$btn-info-bg: $blue-core;
+$btn-info-border: $blue-core;
+.btn-info:hover {
+  background-color: $blue-core-ov !important;
+}
+
+// TODO buttons: success, warning, danger
+
+
+// disabled button should be gray
+// button style can be applied to buttons and anchors
+bb-button.disabled {
+  pointer-events:none;
+}
+
+
+.btn.disabled,
+.btn:disabled,
+.btn[disabled="disabled"] {
+  pointer-events:none;
+  background-color: $grey300 !important;
+  border-color: $grey300;
+}
+.btn.disabled,
+.btn:disabled:hover,
+.btn[disabled="disabled"]:hover {
+  background-color: $grey400 !important;
+  border-color: $grey400;
+}

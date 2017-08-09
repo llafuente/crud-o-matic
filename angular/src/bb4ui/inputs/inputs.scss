@@ -1,0 +1,134 @@
+// InputBox__PublicWebStyleGuide.pdf
+//  _____ _____ _____ _____ _____ _____
+// |     |   | |  _  |  |  |_   _|   __|
+// |-   -| | | |   __|  |  | | | |__   |
+// |_____|_|___|__|  |_____| |_| |_____|
+
+$input-color: $grey600;
+$input-border-radius: 1px;
+$input-btn-border-width: 0;
+$input-bg-disabled: transparent;
+$input-bg: transparent;
+$input-group-addon-bg: transparent;
+$input-padding-x: 1rem; // CHANGE from 20px
+$input-padding-y: 0.5rem; // CHANGE from 10px
+
+.form-control-container {
+  .form-group {
+    position: relative;
+    // change remove background, use border bottom instead
+    //background-color: $grey100;
+    border-bottom: 1px dotted $grey300;
+
+    // this gives some extra space for label to comeback
+    &:before {
+      content: " ";
+      display: block;
+      height: 1rem;
+      width: 100%;
+    }
+    label {
+      pointer-events: none;
+      position: absolute;
+      top: $input-padding-y + 1rem;
+      left: 1rem;
+      transition: 0.3s all ease-out;
+      color: $grey400;
+      z-index: 3; // put the label above input background
+    }
+    /*
+    label.form-label-lg {
+      top: $input-padding-y-lg + 1rem;
+    }
+    label.form-label-sm {
+      top: $input-padding-y-sm + 1rem;
+    }
+    */
+  }
+
+  .has-danger.form-group {
+    border-bottom: 1px dotted $red;
+  }
+
+  &.focused,
+  &.notempty {
+    label {
+      pointer-events: none;
+      position: absolute;
+      top: 0rem;
+      left: $input-padding-x;
+      font-size: 0.75rem;
+      color: $grey500;
+    }
+  }
+  select {
+    // arrow color: $blue-medium
+    option {
+      background-color: $grey100;
+      border-bottom: 1px solid $grey300;
+    }
+  }
+  $ta-line-height: 20px;
+  textarea {
+    line-height: 1rem;
+    background-image: -moz-linear-gradient(top , transparent, transparent ($ta-line-height - 1px), $grey100 0px) !important;
+    background-image: -webkit-linear-gradient(top , transparent, transparent ($ta-line-height - 1px), $grey100 0) !important;
+    background-size: 100% $ta-line-height;
+    background-position-y: 8px;
+  }
+}
+
+.form-control-container.focused {
+  .form-group {
+    border-bottom: 1px dotted $grey500;
+  }
+}
+
+.form-control-container.bordered {
+  .form-control {
+    border: 1px solid $grey200;
+  }
+  .form-control:focus {
+    border: 1px solid $blue-white-light;
+  }
+  .form-group {
+    border-bottom: 0px dotted $grey300;
+  }
+  .has-sucess {
+    .form-control {
+      box-shadow: inset 4px 0 0 $green;
+    }
+  }
+  .has-danger {
+    .form-control {
+      box-shadow: inset 4px 0 0 $red;
+    }
+  }
+}
+
+
+.input-group label {
+  display: flex;
+}
+
+.form-group-required {
+  label:after {
+    content: ' *';
+    color: $red;
+  }
+}
+
+.form-group-disabled {
+  label {
+    color: $grey300 !important;
+  }
+  input {
+    color: $grey400;
+  }
+}
+
+bb-static {
+  & .form-control-static {
+    padding-bottom: 0;
+  }
+}

@@ -1,5 +1,6 @@
 import { Component, Input, OnInit, Injector } from '@angular/core';
 import { Http, Response, RequestOptions, Headers } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { BaseComponent } from '../Base.component';
@@ -11,6 +12,7 @@ import { Pagination } from '../common';
 @Component({
   selector: '<%= singular %>-create-component',
   template: `
+<pre>entities: {{entities |json}}</pre>
 <bb-section>
   <bb-section-header>List</bb-section-header>
   <bb-section-content>
@@ -29,7 +31,7 @@ import { Pagination } from '../common';
             <td>{{entity.<%= key %>}}</td>
           <% }) %>
           <td class="actions">
-            <a [routerLink]="['..', 'update', entity._id]"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+            <a [routerLink]="['..', 'update', entity.id]"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
             <a (click)="destroy(i, entity)"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
           </td>
         <tr>
@@ -47,17 +49,18 @@ export class <%= frontend.listComponent %> extends BaseComponent {
     injector: Injector,
     activatedRoute: ActivatedRoute,
 
-    public http: Http,
+    public http: HttpClient,
   ) {
     super(injector, activatedRoute);
 
     console.log("--> GET: <%= url('LIST', true) %>");
     this.http.get("<%= url('LIST', true) %>")
-    .subscribe((response: Response) => {
+    .subscribe((response: Pagination<<%= typeName %>>) => {
       console.log("<-- GET: <%= url('LIST', true) %>", response);
 
-      const json: Pagination<<%= typeName %>> = response.json();
-      this.entities = Pagination.fromJSON<<%= typeName %>>(<%= typeName %>, json);
+      this.entities = Pagination.fromJSON<<%= typeName %>>(<%= typeName %>, response);
+    }, (errorResponse: Response) => {
+      console.log("<-- GET Error: <%= url('LIST', true) %>", errorResponse.json());
     });
   }
   /*

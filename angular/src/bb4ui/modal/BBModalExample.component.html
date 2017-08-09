@@ -1,0 +1,46 @@
+<h1>Modals</h1>
+
+<h3>Static modal (ngx-bootstrap)</h3>
+
+<bb-source example="exampleDC" [source]="exampleDC">
+<button type="button" class="btn btn-primary" (click)="staticModal.show()">Static modal</button>
+
+<div class="modal fade" bsModal #staticModal="bs-modal" [config]="{backdrop: 'static'}"
+     tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title pull-left">Static modal</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="staticModal.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        This is static modal, backdrop click will not close it.
+        Click <b>&times;</b> to close modal.
+      </div>
+    </div>
+  </div>
+</div>
+</bb-source>
+
+
+<h3>Static modal using bb-modal/bb-section-* (ngx-bootstrap)</h3>
+
+<bb-source example="exampleM2" [source]="exampleM2">
+<button type="button" class="btn btn-primary" (click)="bbModal.show()">Static modal</button>
+
+<bb-modal
+  header="Static modal"
+  #bbModal>
+  <bb-section-content>
+    <p>This is static modal, backdrop click will not close it.</p>
+    <p>Click <b>&times;</b> to close modal (top-left)</p>
+    <p>Or click <a (click)="bbModal.hide()">here!</a></p>
+  </bb-section-content>
+  <bb-section-footer>
+    <p>Just the footer!</p>
+  </bb-section-footer>
+</bb-modal>
+
+</bb-source>

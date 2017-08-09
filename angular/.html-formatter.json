@@ -1,0 +1,125 @@
+{
+  "attributes": {
+    "order": {
+      "*": [
+        "id",
+
+        "class",
+        "/\\[class.*/",
+        "style",
+        "/\\[style.*/",
+        "[ngStyle]",
+        "[hidden]",
+
+        "*ngIf",
+        "*ngFor",
+        "mdInput",
+
+        "type",
+        "name",
+        "[name]",
+        "value",
+        "[value]",
+        "multiple",
+        "[(ngModel)]",
+        "autocomplete",
+        "accept",
+
+        "size",
+
+        "preAddon",
+        "label",
+        "postAddon",
+
+        "tabindex",
+        "placeholder",
+        "[placeholder]",
+        "checked",
+        "[checked]",
+        "[(checked)]",
+        "required",
+        "[required]",
+        "disabled",
+        "[disabled]",
+        "maxlength",
+        "minlength",
+        "email",
+        "pattern",
+        "url",
+
+        "href",
+        "[href]",
+        "[routerLink]",
+        "routerLinkActive",
+
+        "src",
+        "[src]",
+        "target",
+
+        "alt",
+        "title",
+
+        "role",
+        "for",
+        "[for]",
+
+        "[inline]",
+
+        "/^\\(.*\\)$/",
+        "/aria.*/",
+        "/data.*/",
+        "/\\#.*/",
+
+        "scope",
+        "rows",
+        "rowspan",
+        "colspan",
+
+        "select",
+
+        "header",
+        "btn",
+        "loadingMessage",
+        "[loadingMessage]",
+        "true-value",
+        "[true-value]",
+        "false-value",
+        "[false-value]",
+        "uniqueid",
+        "bb-child",
+        "help",
+
+        "heading",
+        "bsModal",
+        "removable",
+
+        "example",
+        "highlightjs",
+
+        "/^\\[.*\\]$/",
+        "/^\\(.*\\)$/"
+      ]
+    },
+    "inline": {
+      "id": ["class"],
+      "alt": ["title"]
+    },
+    "ignoreCount": [
+      "mdTooltipPosition",
+      "role",
+      "aria-hidden"
+    ],
+    "forceEmpty": [
+      "mdInput"
+    ]
+  },
+  "newlineAfter": [
+    "bb-section",
+    "bb-table",
+    "md-input-container",
+    "h1",
+    "h2",
+    "h3"
+  ],
+  "newlineEOF": true
+}

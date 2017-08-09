@@ -1,0 +1,131 @@
+<h1>Checkboxes</h1>
+
+
+<h3>Unlabeled checkbox</h3>
+
+<bb-source example="example1" [source]="example1">
+
+<pre>model: {{checkboxes.check1 | json}}</pre>
+
+<div class="row">
+  <div class="col-6">
+
+    <bb-check
+      name="check01"
+      [(ngModel)]="checkboxes.check1"></bb-check>
+
+  </div>
+  <div class="col-6">
+
+    <bb-check
+      name="check01"
+      disabled="disabled"
+      [(ngModel)]="checkboxes.check1"></bb-check>
+
+  </div>
+</div>
+</bb-source>
+
+
+<h3>Labeled checkbox</h3>
+
+<bb-source example="example2" [source]="example2">
+
+<pre>model: {{checkboxes.check2 | json}}</pre>
+
+<div class="row">
+  <div class="col-6">
+
+    <bb-check
+      name="check01"
+      [(ngModel)]="checkboxes.check2">Remember me?</bb-check>
+
+  </div>
+  <div class="col-6">
+
+    <bb-check
+      name="check01"
+      disabled="disabled"
+      [(ngModel)]="checkboxes.check2">Remember me?</bb-check>
+
+  </div>
+</div>
+</bb-source>
+
+
+<h3>Checked checkbox</h3>
+
+<bb-source example="example3" [source]="example3">
+
+<pre>model: {{checkboxes.check3 | json}}</pre>
+
+<div class="row">
+  <div class="col-6">
+
+    <bb-check
+      name="check01"
+      [(ngModel)]="checkboxes.check3">Remember me?</bb-check>
+
+  </div>
+  <div class="col-6">
+
+    <bb-check
+      name="check01"
+      disabled="disabled"
+      [(ngModel)]="checkboxes.check3">Remember me?</bb-check>
+
+  </div>
+</div>
+</bb-source>
+
+<h3>Custom values</h3>
+<!-- TODO false dont' work!!
+  false-value="Not checked!"
+-->
+<bb-source example="exampleCV" [source]="exampleCV">
+
+<pre>model: {{checkboxes.checkCV | json}}</pre>
+
+<bb-check
+  name="check01"
+  true-value="Custom value!"
+  [(ngModel)]="checkboxes.checkCV">Checkme for a string value!</bb-check>
+
+<pre>model: {{checkboxes.checkCV2 | json}}</pre>
+
+<bb-check
+  name="check01"
+  false-value="Your accusation is false!"
+  true-value="You can stand the truth!"
+  [(ngModel)]="checkboxes.checkCV2">Checkme for a string value!</bb-check>
+
+</bb-source>
+
+
+<hr />
+<h3>Form + required checkbox</h3>
+
+<bb-alert type="info">
+NOTE required don't work on bb-check width booleans, because the model is always set to false-value (default: false)<br />
+You need to use: [false-value]="null"
+</bb-alert>
+
+<bb-source example="example4" [source]="example4">
+<form #checksForm="ngForm">
+<pre>
+form.valid: {{checksForm.valid | json}}
+model: {{checkboxes.required | json}}
+</pre>
+
+<bb-check
+  name="check02"
+  required="required"
+  [false-value]="null"
+  [(ngModel)]="checkboxes.required"
+  #checkboxeModel="ngModel">Disabled?</bb-check>
+<bb-errors [model]="checkboxeModel"></bb-errors>
+
+<bb-button
+  [disabled]="!checksForm.valid">Valid?</bb-button>
+</form>
+</bb-source>

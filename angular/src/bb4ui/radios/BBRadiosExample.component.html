@@ -1,0 +1,57 @@
+<h1>Radios</h1>
+
+<h5>Radios mixed values</h5>
+
+<bb-source example="example1" [source]="example1">
+<pre>model: {{radios.radio0 | json}}</pre>
+
+<div class="form-group">
+  <bb-radio
+    name="entityRadio"
+    [(ngModel)]="radios.radio0"
+    value="1">1 as string</bb-radio><br />
+  <bb-radio
+    name="entityRadio"
+    [(ngModel)]="radios.radio0"
+    [value]="1">1 as number</bb-radio><br />
+  <bb-radio
+    name="entityRadio"
+    [(ngModel)]="radios.radio0"
+    [value]="true">true as boolean</bb-radio><br />
+  <bb-radio
+    name="entityRadio"
+    [(ngModel)]="radios.radio0"
+    value="hell">hell as string</bb-radio><br />
+  <bb-radio
+    name="entityRadio"
+    [(ngModel)]="radios.radio0"
+    disabled="disabled"
+    [value]="4">Disabled</bb-radio><br />
+</div>
+</bb-source>
+
+<h5>Required Radio + forms</h5>
+
+<!-- TODO required radios in red! -->
+<bb-source example="example1" [source]="example1">
+<form #radiosForm="ngForm">
+<pre>
+radiosForm.valid: {{radiosForm.valid | json}}
+model: {{radios.radio1 | json}}
+</pre>
+  <bb-radio
+    name="entityRadio"
+    [(ngModel)]="radios.radio1"
+    required="required"
+    value="1">1 as string</bb-radio><br />
+  <bb-radio
+    name="entityRadio"
+    [(ngModel)]="radios.radio1"
+    required="required"
+    value="2">2 as string</bb-radio><br />
+
+<bb-button
+  [disabled]="!radiosForm.valid">Valid?</bb-button>
+</form>
+</bb-source>
+

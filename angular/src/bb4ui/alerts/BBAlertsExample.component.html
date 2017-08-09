@@ -1,0 +1,30 @@
+<h1>Alerts</h1>
+
+<bb-source example="example1" [source]="example1">
+<div *ngFor="let alert of alerts">
+  <h5>{{alert}}</h5>
+
+  <bb-alert [type]="alert" header="Header text">
+    <strong>Well done!</strong> You successfully read <a href="#" class="alert-link">this important alert message</a>.
+  </bb-alert>
+
+  <bb-alert-icon [type]="alert" header="Header text">
+      <strong>Heads up!</strong> This <a href="#" class="alert-link">alert needs your attention</a>, but it's not super important.
+  </bb-alert-icon>
+
+</div>
+</bb-source>
+
+
+<h3>Styling</h3>
+
+<p>To create new alert type use:</p>
+
+<pre>
+<code highlightjs>
+.alert-promo {{ '{' }}
+  @include alert-variant($aqua-white, $aqua-white, $grey600);
+  @include bb-alert($aqua, $blue-medium);
+}
+</code>
+</pre>

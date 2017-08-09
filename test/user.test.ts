@@ -1,3 +1,5 @@
+process.env.NODE_ENV = "test";
+
 import test from "ava";
 import { join } from "path";
 import { mkdirSync } from "fs";
@@ -14,34 +16,8 @@ const mongoose = require("mongoose");
 mongoose.Promise = require("bluebird");
 mongoose.set('debug', true);
 
-let app: express.Application;
+import { app } from "../generated/server/src/app";
 let db;
-
-// configure express
-test.serial("configure express", (t) => {
-  app = express();
-
-  //use json form parser middlware
-  app.use(bodyParser.json());
-
-  //use query string parser middlware
-  app.use(bodyParser.urlencoded({
-    extended: true
-  }));
-
-  app.use(routerUser);
-
-  app.use((req, res, next) => {
-    res.status(404).json({error: true});
-  });
-
-  app.use((err, req, res, next) => {
-    console.error(err);
-    res.status(500).json({message: err.message});
-  });
-
-  t.pass("express configured");
-});
 
 test.cb.serial("connect to mongo", (t) => {
   t.plan(1);
@@ -65,11 +41,11 @@ test.serial("remove previous users", async (t) => {
   t.pass("clean users");
 });
 
-test.serial("create user with mongoose", async (t) => {
+test.serial("create admin user with mongoose", async (t) => {
   var user = new User({
-    userlogin: "user@appsilon.pl",
-    password: "password",
-    email: "user@appsilon.pl"
+    userlogin: "admin",
+    password: "admin",
+    email: "admin@tecnofor.es"
   });
 
   t.true(user instanceof User);
@@ -79,10 +55,55 @@ test.serial("create user with mongoose", async (t) => {
   user = await user.save();
 
   let newUser = await User.findOne({
-    email: "user@appsilon.pl"
+    userlogin: "admin"
   }).exec();
 
-  t.is(newUser.email, "user@appsilon.pl");
+  t.is(newUser.email, "admin@tecnofor.es");
+});
+
+
+let bearer;
+test.cb.serial("logon: /auth", (t) => {
+  supertest(app)
+  .post(`/auth`)
+  .send({
+    userlogin: "admin",
+    password: "admin",
+  })
+  .set('Accept', 'application/json')
+  .expect(200)
+  .end(function(err, response) {
+    console.log("::::::::::::", err);
+    if (err) {
+      t.fail(err);
+    }
+
+    bearer = "Bearer " + response.body.token;
+
+    t.end();
+  });
+
+});
+
+test.serial("create user with mongoose", async (t) => {
+  var user = new User({
+    userlogin: "mongoose-user",
+    password: "password",
+    email: "mongoose-user@test.com"
+  });
+
+  t.true(user instanceof User);
+  t.not(user.email, null);
+  t.not(user.id.toString(), null);
+
+  user = await user.save();
+
+  let newUser = await User.findOne({
+    email: "mongoose-user@test.com"
+  }).exec();
+
+  t.is(newUser.userlogin, "mongoose-user");
+  t.is(newUser.email, "mongoose-user@test.com");
 });
 
 let userCreatedByApi;
@@ -92,10 +113,11 @@ test.cb.serial("create user using API", (t) => {
   supertest(app)
   .post('/users')
   .send({
-    userlogin: "user@appsilon.pl2",
+    userlogin: "api-user",
     password: "password",
-    email: "user@appsilon.pl2"
+    email: "api-user@test.com"
   })
+  .set('Authorization', bearer)
   .set('Accept', 'application/json')
   .expect(201)
   .expect('Content-Type', /json/)
@@ -103,6 +125,7 @@ test.cb.serial("create user using API", (t) => {
     if (err) {
       t.fail(err);
     }
+
     userCreatedByApi = response.body;
 
     t.end();
@@ -113,10 +136,11 @@ test.cb.serial("create user using API (2)", (t) => {
   supertest(app)
   .post('/users')
   .send({
-    userlogin: "user@appsilon.pl3",
+    userlogin: "api-user2",
     password: "password",
-    email: "user@appsilon.pl3"
+    email: "api-user2@test.com"
   })
+  .set('Authorization', bearer)
   .set('Accept', 'application/json')
   .expect(201)
   .expect('Content-Type', /json/)
@@ -141,6 +165,7 @@ test.serial("check created user using mongoose", async (t) => {
 test.cb.serial("check created user using API", (t) => {
   supertest(app)
   .get(`/users/${userCreatedByApi.id}`)
+  .set('Authorization', bearer)
   .set('Accept', 'application/json')
   .expect(200)
   .expect('Content-Type', /json/)
@@ -153,6 +178,7 @@ test.cb.serial("check created user using API", (t) => {
     t.not(response.body.id, null);
     t.is(response.body.password, undefined);
     t.is(response.body.salt, undefined);
+    t.is(response.body.email, "api-user@test.com");
 
     t.end();
   });
@@ -163,12 +189,13 @@ test.cb.serial("create user error using API", (t) => {
   supertest(app)
   .post('/users')
   .send({
-    userlogin: "user@appsilon.pl3",
+    userlogin: "api-user2",
     password: "password",
-    email: "xxx@yyy.com"
+    email: "api-user2@test.com"
   })
+  .set('Authorization', bearer)
   .set('Accept', 'application/json')
-  .expect(500)
+  .expect(400)
   .expect('Content-Type', /json/)
   .end(function(err, response) {
     if (err) {
@@ -186,6 +213,7 @@ test.cb.serial("create user error using API", (t) => {
 test.cb.serial("get users using API", (t) => {
   supertest(app)
   .get('/users')
+  .set('Authorization', bearer)
   .set('Accept', 'application/json')
   .expect(200)
   .expect('Content-Type', /json/)
@@ -195,10 +223,10 @@ test.cb.serial("get users using API", (t) => {
     }
     const body: Pagination<IUser> = response.body;
 
-    t.is(body.count, 3);
+    t.is(body.count, 4);
     t.is(body.limit, 0);
     t.is(body.offset, 0);
-    t.is(body.list.length, 3);
+    t.is(body.list.length, 4);
 
     t.is(body.list[0]._id, undefined);
     t.not(body.list[0].id, null);
@@ -211,7 +239,8 @@ test.cb.serial("get users using API", (t) => {
 
 test.cb.serial("get users using API where", (t) => {
   supertest(app)
-  .get('/users?where[email][operator]=EQUALS&where[email][value]=user@appsilon.pl3')
+  .get('/users?where[email][operator]=EQUALS&where[email][value]=api-user@test.com')
+  .set('Authorization', bearer)
   .set('Accept', 'application/json')
   .expect(200)
   .expect('Content-Type', /json/)
@@ -225,7 +254,7 @@ test.cb.serial("get users using API where", (t) => {
     t.is(body.limit, 0);
     t.is(body.offset, 0);
     t.is(body.list.length, 1);
-    t.is(body.list[0].email, "user@appsilon.pl3");
+    t.is(body.list[0].email, "api-user@test.com");
 
     t.end();
   });
@@ -235,8 +264,9 @@ test.cb.serial("update user using API", (t) => {
   supertest(app)
   .patch(`/users/${userCreatedByApi.id}`)
   .send({
-    email: "newuser@pl.com"
+    email: "updated-email@test.com"
   })
+  .set('Authorization', bearer)
   .set('Accept', 'application/json')
   .expect(200)
   .expect('Content-Type', /json/)
@@ -246,7 +276,7 @@ test.cb.serial("update user using API", (t) => {
     }
     const body: IUser = response.body;
 
-    t.is(body.email, "newuser@pl.com");
+    t.is(body.email, "updated-email@test.com");
 
     t.end();
   });
@@ -254,7 +284,8 @@ test.cb.serial("update user using API", (t) => {
 
 test.cb.serial("check changes using API where", (t) => {
   supertest(app)
-  .get('/users?where[email][operator]=EQUALS&where[email][value]=newuser@pl.com')
+  .get('/users?where[email][operator]=EQUALS&where[email][value]=updated-email@test.com')
+  .set('Authorization', bearer)
   .set('Accept', 'application/json')
   .expect(200)
   .expect('Content-Type', /json/)
@@ -267,7 +298,7 @@ test.cb.serial("check changes using API where", (t) => {
     console.log("body.list", body.list);
 
     t.is(body.count, 1);
-    t.is(body.list[0].email, "newuser@pl.com");
+    t.is(body.list[0].email, "updated-email@test.com");
 
     t.end();
   });
@@ -277,6 +308,7 @@ test.cb.serial("check changes using API where", (t) => {
 test.cb.serial("delete user using API", (t) => {
   supertest(app)
   .delete(`/users/${userCreatedByApi.id}`)
+  .set('Authorization', bearer)
   .set('Accept', 'application/json')
   .expect(204)
   .end(function(err, response) {

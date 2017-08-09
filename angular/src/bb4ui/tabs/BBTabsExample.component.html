@@ -1,0 +1,33 @@
+<h1>Tabs</h1>
+
+<h5>Raw markup</h5>
+
+<bb-source example="example1" [source]="example1">
+<ul class="nav nav-tabs ui-tabs">
+  <li class="nav-item">
+    <a class="nav-link active">Active</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link">Link</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link">Link2</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link disabled">Disabled</a>
+  </li>
+</ul>
+</bb-source>
+
+<h5>You can use ngx-bootstrap!</h5>
+
+<bb-source example="example2" [source]="example2">
+<div>
+  <tabset #staticTabs>
+    <tab heading="Static title">Static content</tab>
+    <tab heading="Static Title 1">Static content 1</tab>
+    <tab heading="Static Title 2">Static content 2</tab>
+    <tab heading="Static Title 3" removable="true">Static content 3</tab>
+  </tabset>
+</div>
+</bb-source>

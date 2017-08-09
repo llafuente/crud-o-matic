@@ -7,6 +7,7 @@ import { listUser } from "./listUser";
 import { destroyUser } from "./destroyUser";
 import { IUserModel } from "../models/User";
 import { Pagination } from "../common";
+import { authorization } from "../auth";
 const mongoosemask = require("mongoosemask");
 
 /**
@@ -22,13 +23,13 @@ export function cleanBody(req: Request, res: express.Response, next: express.Nex
   next();
 }
 
-function toJSONList(result: Pagination<IUserModel>) {
+export function toJSONList(result: Pagination<IUserModel>) {
   result.list = result.list.map(toJSON);
 
   return result;
 }
 
-function toJSON(entity: IUserModel) {
+export function toJSON(entity: IUserModel) {
   const json = mongoosemask.mask(entity, ["password", "salt"]);
 
   json.id = json._id;
@@ -37,34 +38,28 @@ function toJSON(entity: IUserModel) {
   return json;
 }
 
-const routerUser = express.Router();
-routerUser.post("/users", cleanBody, createUser, function(
-  req: Request,
-  res: express.Response,
-  next: express.NextFunction,
-) {
-  res.status(201).json(toJSON(req.user));
-});
-routerUser.get("/users", listUser, function(req: Request, res: express.Response, next: express.NextFunction) {
-  res.status(200).json(toJSONList(req.users));
-});
-routerUser.get("/users/:userId", readUser, function(req: Request, res: express.Response, next: express.NextFunction) {
-  res.status(200).json(toJSON(req.user));
-});
-routerUser.patch("/users/:userId", cleanBody, readUser, updateUser, function(
-  req: Request,
-  res: express.Response,
-  next: express.NextFunction,
-) {
-  res.status(200).json(req.user);
-});
-routerUser.delete("/users/:userId", destroyUser, function(
-  req: Request,
-  res: express.Response,
-  next: express.NextFunction,
-) {
-  res.status(204).send();
-});
+const routerUser = express
+  .Router()
+  .use(authorization(null))
+  .post("/users", cleanBody, createUser, function(req: Request, res: express.Response, next: express.NextFunction) {
+    res.status(201).json(toJSON(req.user));
+  })
+  .get("/users", listUser, function(req: Request, res: express.Response, next: express.NextFunction) {
+    res.status(200).json(toJSONList(req.users));
+  })
+  .get("/users/:userId", readUser, function(req: Request, res: express.Response, next: express.NextFunction) {
+    res.status(200).json(toJSON(req.user));
+  })
+  .patch("/users/:userId", cleanBody, readUser, updateUser, function(
+    req: Request,
+    res: express.Response,
+    next: express.NextFunction,
+  ) {
+    res.status(200).json(req.user);
+  })
+  .delete("/users/:userId", destroyUser, function(req: Request, res: express.Response, next: express.NextFunction) {
+    res.status(204).send();
+  });
 
 console.log("express create router routerUser");
 

@@ -1,0 +1,20 @@
+$navbar-light-active-color: $white;
+$navbar-light-color: rgba(255, 255, 255, 0.6);
+$navbar-light-hover-color: $white;
+$navbar-light-disabled-color: rgba(255, 255, 255, 0.4);
+
+.bg-navy {
+  background-color: $navy;
+}
+.bg-core {
+  background-color: $blue-core;
+}
+.nav-link {
+  text-transform: uppercase;
+}
+li.nav-item {
+  margin-bottom: 0;
+}
+.navbar-brand {
+  font-size: 24px !important;
+}
