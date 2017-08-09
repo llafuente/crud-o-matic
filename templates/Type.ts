@@ -10,6 +10,10 @@ export interface <%= interfaceName %> {
   <% forEachBackEndField((key, PrimiteType) => { %>
     <%= key %>: <%= PrimiteType.getTypeScriptType() %>;
   <% }) %>
+
+  <% if (interfaceName == "IUser") { %>
+    authenticate(password: string);
+  <% } %>
 };
 
 
@@ -31,4 +35,8 @@ export class <%= typeName %> implements <%= interfaceName %> {
   <% }) %>
     return r;
   }
+
+  <% if (interfaceName == "IUser") { %>
+    authenticate(password: string) {}
+  <% } %>
 };

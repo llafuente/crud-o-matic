@@ -20,6 +20,10 @@ export interface IUser {
   
     state: String;
   
+
+  
+    authenticate(password: string);
+  
 };
 
 
@@ -61,4 +65,8 @@ export class UserType implements IUser {
   
     return r;
   }
+
+  
+    authenticate(password: string) {}
+  
 };

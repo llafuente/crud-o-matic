@@ -1,6 +1,8 @@
 import * as express from "express";
 import * as bodyParser from "body-parser";
+import { HttpError } from "./HttpError";
 const cors = require('cors');
+const _ = require('lodash');
 
 
 import routerUser from './users/routerUser';
@@ -32,6 +34,13 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: true
 }));
+
+// authentication layer
+
+// TODO
+
+// generated schemas routes
+
 
 
 app.use(routerUser);

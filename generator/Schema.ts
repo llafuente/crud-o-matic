@@ -489,7 +489,6 @@ export class Schema {
   getBackEndBlacklist(action: string /*TODO PermissionKeys*/): string[] {
     const ret = [];
     for (let key in this.fields) {
-      console.log(key, this.fields[key].permissions);
       if (!this.fields[key].permissions[action]) {
         ret.push(key);
       }

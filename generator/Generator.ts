@@ -80,6 +80,12 @@ export class Generator {
       join(path, "src", "app.ts"),
     );
 
+    this.template(
+      schema,
+      join(__dirname, "../templates/express/src/auth.ts"),
+      join(path, "src", "auth.ts"),
+    );
+
     this.copy(
       join(__dirname, "../templates/common.ts"),
       join(path, "src", "common.ts"),
