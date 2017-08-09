@@ -1,4 +1,5 @@
 import * as express from "express";
+import { Request } from '../app';
 import { HttpError } from '../HttpError';
 import { <%= interfaceName %> } from '../models/<%= interfaceName %>';
 import { <%= interfaceModel %> } from '../models/<%= singularUc %>';
@@ -28,7 +29,7 @@ export function update(/*user,*/ row: <%= interfaceModel %>, data, next: IUpdate
   });
 }
 
-export function <%= backend.updateFunction %>(req: express.Request, res: express.Response, next: express.NextFunction) {
+export function <%= backend.updateFunction %>(req: Request, res: express.Response, next: express.NextFunction) {
   console.info('update body', req.body);
 
   if (Array.isArray(req.body)) {

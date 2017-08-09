@@ -1,7 +1,7 @@
 import mongoose = require("mongoose");
-import { Generator } from './Generator';
+import { Generator } from "./Generator";
 
-const _ = require('lodash');
+const _ = require("lodash");
 const pluralize = require("pluralize");
 
 export enum PrimiteTypes {
@@ -34,18 +34,11 @@ export class FieldPermissions {
     public list: boolean = true,
     public create: boolean = true,
     public update: boolean = true,
-  ) {
-
-  }
+  ) {}
 
   static fromJSON(json): FieldPermissions {
     if (json) {
-      return new FieldPermissions(
-        json.read === true,
-        json.list === true,
-        json.create === true,
-        json.update === true,
-      );
+      return new FieldPermissions(json.read === true, json.list === true, json.create === true, json.update === true);
     }
 
     return new FieldPermissions();
@@ -58,7 +51,7 @@ export class PrimiteType {
   frontControl: FrontControls;
 
   items: PrimiteType = null;
-  properties: { [s: string]: PrimiteType; } = null;
+  properties: { [s: string]: PrimiteType } = null;
 
   defaults: any = null;
   enums: string[] = null;
@@ -80,18 +73,13 @@ export class PrimiteType {
   permissions: FieldPermissions = new FieldPermissions();
   refTo: string;
 
-  constructor(
-    label: string,
-    type: PrimiteTypes,
-    frontControl: FrontControls,
-  ) {
+  constructor(label: string, type: PrimiteTypes, frontControl: FrontControls) {
     this.label = label;
     this.type = type;
     this.frontControl = frontControl;
   }
 
   static fromJSON(json: PrimiteType): PrimiteType {
-
     if (json.type === undefined) {
       console.error(json);
       throw new Error("PrimiteType: type is required");
@@ -107,24 +95,20 @@ export class PrimiteType {
       throw new Error("PrimiteType: label is required");
     }
 
-    return new PrimiteType(
-      json.label,
-      json.type,
-      json.frontControl || FrontControls.TEXT,
-    )
-    .setPermissions(json.permissions || null)
-    .setItems(json.items || null)
-    .addProperties(json.properties || null)
-    .setEnumConstraint(json.enums || null, json.labels || null)
-    .setDefault(json.defaults || null)
-    .setUnique(json.unique === true)
-    .setRequired(json.required || false)
-    .setMaxlength(json.maxlength || null)
-    .setMinlength(json.minlength || null)
-    .setMin(json.min || null)
-    .setMax(json.max || null)
-    .setLowercase(json.lowercase || false)
-    .setUppercase(json.uppercase || false);
+    return new PrimiteType(json.label, json.type, json.frontControl || FrontControls.TEXT)
+      .setPermissions(json.permissions || null)
+      .setItems(json.items || null)
+      .addProperties(json.properties || null)
+      .setEnumConstraint(json.enums || null, json.labels || null)
+      .setDefault(json.defaults || null)
+      .setUnique(json.unique === true)
+      .setRequired(json.required || false)
+      .setMaxlength(json.maxlength || null)
+      .setMinlength(json.minlength || null)
+      .setMin(json.min || null)
+      .setMax(json.max || null)
+      .setLowercase(json.lowercase || false)
+      .setUppercase(json.uppercase || false);
   }
 
   setItems(items: PrimiteType): PrimiteType {
@@ -137,11 +121,11 @@ export class PrimiteType {
     return this;
   }
 
-  addProperties(properties: { [s: string]: PrimiteType; }): PrimiteType {
+  addProperties(properties: { [s: string]: PrimiteType }): PrimiteType {
     if (this.type == PrimiteTypes.Object && properties) {
       // now cast every property
       this.properties = {};
-      for (let i in properties) {
+      for (const i in properties) {
         this.properties[i] = PrimiteType.fromJSON(properties[i]);
       }
     } else {
@@ -176,60 +160,59 @@ export class PrimiteType {
     return this;
   }
 
-  setPermissions(perms: FieldPermissions): PrimiteType  {
+  setPermissions(perms: FieldPermissions): PrimiteType {
     this.permissions = FieldPermissions.fromJSON(perms);
 
     return this;
   }
 
-  setRefTo(refTo: string): PrimiteType  {
+  setRefTo(refTo: string): PrimiteType {
     this.refTo = refTo;
 
     return this;
   }
 
-  setRequired(required: boolean): PrimiteType  {
+  setRequired(required: boolean): PrimiteType {
     this.required = required;
 
     return this;
   }
 
-  setMaxlength(maxlength: number): PrimiteType  {
+  setMaxlength(maxlength: number): PrimiteType {
     this.maxlength = maxlength;
 
     return this;
   }
 
-  setMinlength(minlength: number): PrimiteType  {
+  setMinlength(minlength: number): PrimiteType {
     this.minlength = minlength;
 
     return this;
   }
 
-  setMin(min: number): PrimiteType  {
+  setMin(min: number): PrimiteType {
     this.min = min;
 
     return this;
   }
 
-  setMax(max: number): PrimiteType  {
+  setMax(max: number): PrimiteType {
     this.max = max;
 
     return this;
   }
 
-  setLowercase(lowercase: boolean): PrimiteType  {
+  setLowercase(lowercase: boolean): PrimiteType {
     this.lowercase = lowercase;
 
     return this;
   }
 
-  setUppercase(uppercase: boolean): PrimiteType  {
+  setUppercase(uppercase: boolean): PrimiteType {
     this.uppercase = uppercase;
 
     return this;
   }
-
 
   getTypeScriptType() {
     switch (this.type) {
@@ -296,24 +279,16 @@ export class PrimiteType {
       d.push(`uppercase: ${this.uppercase}`);
     }
 
-    return '{\n' + d.join(",\n") + '\n}';
+    return "{\n" + d.join(",\n") + "\n}";
   }
 }
 
 export class PermissionsAllowed {
-  constructor(
-    public label: string = null,
-    public allowed: boolean = false,
-  ) {
-
-  }
+  constructor(public label: string = null, public allowed: boolean = false) {}
 
   static fromJSON(json: any = null): PermissionsAllowed {
     if (json) {
-      return new PermissionsAllowed(
-        json.label || null,
-        json.allowed === true,
-      );
+      return new PermissionsAllowed(json.label || null, json.allowed === true);
     }
     return new PermissionsAllowed(); // defaults
   }
@@ -349,7 +324,7 @@ export class ApiAccessPermissions {
       PermissionsAllowed.fromJSON(json.delete),
     );
   }
-};
+}
 
 export class BackEndSchema {
   parentSchema: Schema;
@@ -384,7 +359,7 @@ export class BackEndSchema {
     this.updateFunction = `update${this.parentSchema.singularUc}`;
     this.routerName = `router${this.parentSchema.singularUc}`;
   }
-};
+}
 
 export class FrontEndSchema {
   parentSchema: Schema;
@@ -408,7 +383,6 @@ export class FrontEndSchema {
   }
 }
 
-
 export class Schema {
   singular: string;
   singularUc: string;
@@ -430,11 +404,9 @@ export class Schema {
   baseApiUrl: string = "";
   domain: string = "";
 
-  fields: { [s: string]: PrimiteType; }  = null;
+  fields: { [s: string]: PrimiteType } = null;
 
-  constructor(
-    public generator: Generator
-  ) {
+  constructor(public generator: Generator) {
     this._ = _;
   }
 
@@ -465,7 +437,7 @@ export class Schema {
     schema.frontend = new FrontEndSchema(json.frontend || {}, schema);
 
     // now cast every property
-    for (let i in json.fields) {
+    for (const i in json.fields) {
       schema.addField(i, schema.fields[i]);
     }
 
@@ -478,7 +450,7 @@ export class Schema {
   }
 
   forEachBackEndField(cb) {
-    for (let key in this.fields) {
+    for (const key in this.fields) {
       if (this.fields[key].type !== PrimiteTypes.Hidden) {
         cb(key, this.fields[key]);
       }
@@ -488,7 +460,7 @@ export class Schema {
   // TODO sublevel blacklist
   getBackEndBlacklist(action: string /*TODO PermissionKeys*/): string[] {
     const ret = [];
-    for (let key in this.fields) {
+    for (const key in this.fields) {
       if (!this.fields[key].permissions[action]) {
         ret.push(key);
       }
@@ -497,9 +469,8 @@ export class Schema {
     return ret;
   }
 
-
   forEachFrontEndField(cb) {
-    for (let key in this.fields) {
+    for (const key in this.fields) {
       if (this.fields[key].frontControl !== FrontControls.Hidden) {
         cb(key, this.fields[key]);
       }
@@ -507,12 +478,12 @@ export class Schema {
   }
 
   // helper for templates
-  _:any; // lodash
+  _: any; // lodash
   ucFirst = function(str): string {
     return str[0].toLocaleUpperCase() + str.substring(1);
-  }
+  };
 
-  url(action:string, fullUrl: boolean = false) {
+  url(action: string, fullUrl: boolean = false) {
     let domain = "";
     if (fullUrl) {
       domain = this.domain;

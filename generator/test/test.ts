@@ -1,8 +1,8 @@
-import test from 'ava';
-import { join } from 'path';
+import test from "ava";
+import { join } from "path";
 
-import { Generator } from '../';
-import { Schema, BackEndSchema, PrimiteType, PrimiteTypes, FrontControls, FieldPermissions } from '../Schema';
+import { Generator } from "../";
+import { Schema, BackEndSchema, PrimiteType, PrimiteTypes, FrontControls, FieldPermissions } from "../Schema";
 
 const generatedPath = join(__dirname, "..", "..", "generated");
 
@@ -14,101 +14,83 @@ test(async (t) => {
 });
 */
 
-test((t) => {
+test(t => {
   const gen = new Generator();
 
-  const schema: Schema = Schema.fromJSON({
-    singular: "user",
-    backend: {
-      apiAccess: {
-        read: { allowed: true }
-      }
-    }
-  }, gen);
-
-  schema.addField("userlogin",
-    new PrimiteType(
-      "Userlogin",
-      PrimiteTypes.String,
-      FrontControls.TEXT
-    )
-    .setUnique(true)
-    .setMaxlength(32)
-    .setRequired(true)
+  const schema: Schema = Schema.fromJSON(
+    {
+      singular: "user",
+      backend: {
+        apiAccess: {
+          read: { allowed: true },
+        },
+      },
+    },
+    gen,
   );
 
-  schema.addField("password",
-    new PrimiteType(
-      "Password",
-      PrimiteTypes.String,
-      FrontControls.PASSWORD,
-    )
-    .setPermissions(
-      new FieldPermissions(
-        false, //read
-        false, //list
-        true, //create
-        true, //update
+  schema.addField(
+    "userlogin",
+    new PrimiteType("Userlogin", PrimiteTypes.String, FrontControls.TEXT)
+      .setUnique(true)
+      .setMaxlength(32)
+      .setRequired(true),
+  );
+
+  schema.addField(
+    "password",
+    new PrimiteType("Password", PrimiteTypes.String, FrontControls.PASSWORD)
+      .setPermissions(
+        new FieldPermissions(
+          false, //read
+          false, //list
+          true, //create
+          true, //update
+        ),
       )
-    )
-    .setRequired(true)
-   );
-
-  schema.addField("email",
-    new PrimiteType(
-      "Email",
-      PrimiteTypes.String,
-      FrontControls.TEXT
-    )
-    .setMaxlength(255)
-    .setRequired(true)
+      .setRequired(true),
   );
 
-  schema.addField("salt",
-    new PrimiteType(
-      "Password",
-      PrimiteTypes.String,
-      FrontControls.Hidden,
-    )
-    .setPermissions(
+  schema.addField(
+    "email",
+    new PrimiteType("Email", PrimiteTypes.String, FrontControls.TEXT).setMaxlength(255).setRequired(true),
+  );
+
+  schema.addField(
+    "salt",
+    new PrimiteType("Password", PrimiteTypes.String, FrontControls.Hidden).setPermissions(
       new FieldPermissions(
         false, //read
         false, //list
         false, //create
         false, //update
-      )
-    )
+      ),
+    ),
   );
 
-  schema.addField("roles",
+  schema.addField(
+    "roles",
     new PrimiteType(
       "Roles",
       PrimiteTypes.Array,
       FrontControls.HTTP_DROPDOWN, // url: roles
-    )
-    .setItems(
+    ).setItems(
       new PrimiteType(
         "Role",
         PrimiteTypes.String,
         FrontControls.Hidden, // TOOD this should not be required...
-      ).setRefTo("Role")
-    )
+      ).setRefTo("Role"),
+    ),
   );
 
-  schema.addField("state",
-    new PrimiteType(
-      "Roles",
-      PrimiteTypes.String,
-      FrontControls.ENUM_DROPDOWN,
-    )
-    .setEnumConstraint(
-      [ "active", "banned" ], ["Active", "Banned"]
-    )
-    .setDefault("active")
+  schema.addField(
+    "state",
+    new PrimiteType("Roles", PrimiteTypes.String, FrontControls.ENUM_DROPDOWN)
+      .setEnumConstraint(["active", "banned"], ["Active", "Banned"])
+      .setDefault("active"),
   );
 
-
-/*
+  /*
         "permissions": {
           "type": "Array",
           "label": "Permissions",
@@ -168,14 +150,8 @@ test((t) => {
 
   //console.dir(gen.schemas[0].backend);
 
-  gen.generateAll(
-    generatedPath,
-    join(generatedPath, "server"),
-    join(generatedPath, "client"),
-  );
-
+  gen.generateAll(generatedPath, join(generatedPath, "server"), join(generatedPath, "client"));
 
   // generate inside Angular 2 project
   gen.generateClientAt(gen.schemas[0], join(__dirname, "..", "..", "angular", "src", "generated"));
-
 });

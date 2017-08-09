@@ -1,2 +1,2 @@
-export * from './Generator';
-export * from './Schema';
+export * from "./Generator";
+export * from "./Schema";

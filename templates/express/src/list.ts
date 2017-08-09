@@ -1,16 +1,18 @@
 import * as express from "express";
+import { Request } from "../app";
 import { HttpError } from '../HttpError';
 //import { User } from './User';
 import * as mongoose from 'mongoose';
 import { WhereQuery, Order, Operators, Pagination } from '../common';
 
 import { <%= interfaceName %> } from '../models/<%= interfaceName %>';
-import { <%= singularUc %>, <%= schemaName %> } from '../models/<%= singularUc %>';
+import { <%= singularUc %>, <%= schemaName %>, <%= interfaceModel %> } from '../models/<%= singularUc %>';
 
 const _ = require("lodash");
-const ValidationError = mongoose.ValidationError;
-const csvWriter = require('csv-write-stream');
-const jsontoxml = require('jsontoxml');
+
+//const ValidationError = mongoose.ValidationError;
+//const csvWriter = require('csv-write-stream');
+//const jsontoxml = require('jsontoxml');
 
 export function createListQuery(
   /*user: User,*/
@@ -98,7 +100,7 @@ export function createListQuery(
 
 
 
-export function <%= backend.listFunction %>(req, res, next) {
+export function <%= backend.listFunction %>(req: Request, res: express.Response, next: express.NextFunction) {
   console.log('usersList', JSON.stringify(req.query));
 
   req.query.limit = req.query.limit ? parseInt(req.query.limit) : 0
@@ -113,7 +115,7 @@ export function <%= backend.listFunction %>(req, res, next) {
       req.query.populate
     );
 
-    querys[0].exec(function(err, mlist: <%= interfaceName %>[]) {
+    querys[0].exec(function(err, mlist: <%= interfaceModel %>[]) {
       /* istanbul ignore next */ if (err) {
         return next(err);
       }
@@ -123,7 +125,7 @@ export function <%= backend.listFunction %>(req, res, next) {
           return next(err2);
         }
 
-        req[<%= JSON.stringify(plural) %>] = new Pagination<<%= interfaceName %>>(mlist, count, req.query.offset, req.query.limit);
+        req[<%= JSON.stringify(plural) %>] = new Pagination<<%= interfaceModel %>>(mlist, count, req.query.offset, req.query.limit);
 
         return next();
       });

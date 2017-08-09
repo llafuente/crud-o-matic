@@ -1,38 +1,37 @@
 import * as express from "express";
-import { HttpError } from '../HttpError';
+import { Request } from "../app";
 //import { User } from './User';
-import * as mongoose from 'mongoose';
-import { WhereQuery, Order, Operators, Pagination } from '../common';
+import { WhereQuery, Order, Operators, Pagination } from "../common";
 
-import { IUser } from '../models/IUser';
-import { User, UserSchema } from '../models/User';
+import { User, UserSchema, IUserModel } from "../models/User";
 
 const _ = require("lodash");
-const ValidationError = mongoose.ValidationError;
-const csvWriter = require('csv-write-stream');
-const jsontoxml = require('jsontoxml');
+
+//const ValidationError = mongoose.ValidationError;
+//const csvWriter = require('csv-write-stream');
+//const jsontoxml = require('jsontoxml');
 
 export function createListQuery(
   /*user: User,*/
-  where: { [s: string]: WhereQuery; },
-  sort: { [s: string]: Order; },
+  where: { [s: string]: WhereQuery },
+  sort: { [s: string]: Order },
   limit: number,
   offset: number,
-  populate: string[]
-// TODO ): mongoose.DocumentQuery<IUser, mongoose.Document>[] {
+  populate: string[],
+  // TODO ): mongoose.DocumentQuery<IUser, mongoose.Document>[] {
 ): any[] {
   if (isNaN(offset)) {
-    throw new Error('offset must be a number');
+    throw new Error("offset must be a number");
   }
 
   if (isNaN(limit)) {
-    throw new Error('limit must be a number');
+    throw new Error("limit must be a number");
   }
 
   let query = User.find({});
   let qCount = User.find({}).count();
 
-/* TODO add restricted to where & sort
+  /* TODO add restricted to where & sort
     if (isPathRestricted(path, 'read', user)) {
       err = new ValidationError(null);
       err.errors.sort = {
@@ -43,7 +42,7 @@ export function createListQuery(
   where = _.map(where, (operator: WhereQuery, path: string) => {
     console.log(operator);
 
-    switch(operator.operator) {
+    switch (operator.operator) {
       case Operators.LIKE:
         query = query.where(path).regex(operator.value);
         qCount = qCount.where(path).regex(operator.value);
@@ -78,9 +77,9 @@ export function createListQuery(
     query.populate(path);
   });
 
-  console.log('where', where);
-  console.log('sort', sort);
-  console.log('limit', limit, 'offset', offset);
+  console.log("where", where);
+  console.log("sort", sort);
+  console.log("limit", limit, "offset", offset);
 
   if (offset) {
     query.skip(offset);
@@ -96,13 +95,11 @@ export function createListQuery(
   return [query, qCount];
 }
 
+export function listUser(req: Request, res: express.Response, next: express.NextFunction) {
+  console.log("usersList", JSON.stringify(req.query));
 
-
-export function listUser(req, res, next) {
-  console.log('usersList', JSON.stringify(req.query));
-
-  req.query.limit = req.query.limit ? parseInt(req.query.limit) : 0
-  req.query.offset = req.query.offset ? parseInt(req.query.offset) : 0
+  req.query.limit = req.query.limit ? parseInt(req.query.limit) : 0;
+  req.query.offset = req.query.offset ? parseInt(req.query.offset) : 0;
 
   try {
     const querys = createListQuery(
@@ -110,10 +107,10 @@ export function listUser(req, res, next) {
       req.query.sort,
       req.query.limit,
       req.query.offset,
-      req.query.populate
+      req.query.populate,
     );
 
-    querys[0].exec(function(err, mlist: IUser[]) {
+    querys[0].exec(function(err, mlist: IUserModel[]) {
       /* istanbul ignore next */ if (err) {
         return next(err);
       }
@@ -123,7 +120,7 @@ export function listUser(req, res, next) {
           return next(err2);
         }
 
-        req["users"] = new Pagination<IUser>(mlist, count, req.query.offset, req.query.limit);
+        req.users = new Pagination<IUserModel>(mlist, count, req.query.offset, req.query.limit);
 
         return next();
       });

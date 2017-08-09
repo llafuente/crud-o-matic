@@ -1,39 +1,51 @@
 import * as express from "express";
 import * as bodyParser from "body-parser";
-import { HttpError } from "./HttpError";
-const cors = require('cors');
-const _ = require('lodash');
+import { Pagination } from "./common";
+const cors = require("cors");
 
+import routerUser from "./users/routerUser";
+import { IUserModel } from "./models/User";
 
-import routerUser from './users/routerUser';
+export interface Request extends express.Request {
+  userLogged: IUserModel;
 
+  user: IUserModel;
+  // users: IUserModel[];
+  users: Pagination<IUserModel>;
+}
 
 const mongoose = require("mongoose");
 mongoose.Promise = require("bluebird");
-mongoose.set('debug', true);
+mongoose.set("debug", true);
 
-mongoose.connect("mongodb://127.0.0.1:27017/test", {
-  promiseLibrary: require("bluebird"),
-  useMongoClient: true,
-}, function(err) {
-  if (err) {
-    throw err;
-  }
+mongoose.connect(
+  "mongodb://127.0.0.1:27017/test",
+  {
+    promiseLibrary: require("bluebird"),
+    useMongoClient: true,
+  },
+  function(err) {
+    if (err) {
+      throw err;
+    }
 
-  console.log("connected to mongodb");
-});
+    console.log("connected to mongodb");
+  },
+);
 
 const app = express();
 
-app.use(cors())
+app.use(cors());
 
 //use json form parser middlware
 app.use(bodyParser.json());
 
 //use query string parser middlware
-app.use(bodyParser.urlencoded({
-  extended: true
-}));
+app.use(
+  bodyParser.urlencoded({
+    extended: true,
+  }),
+);
 
 // authentication layer
 
@@ -41,21 +53,16 @@ app.use(bodyParser.urlencoded({
 
 // generated schemas routes
 
-
-
 app.use(routerUser);
 
-
-
 app.use((req, res, next) => {
-  res.status(404).json({error: true});
+  res.status(404).json({ error: true });
 });
 
 app.use((err, req, res, next) => {
   console.error(err);
-  res.status(404).json({error: true});
+  res.status(404).json({ error: true });
 });
-
 
 if (process.env.NODE_ENV !== "test") {
   const port: number = process.env.PORT ? parseInt(process.env.PORT, 10) : 3004;

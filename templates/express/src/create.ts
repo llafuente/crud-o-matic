@@ -1,4 +1,5 @@
 import * as express from "express";
+import { Request } from "../app";
 import { HttpError } from '../HttpError';
 import { <%= interfaceName %> } from '../models/<%= interfaceName %>';
 import { <%= singularUc %> } from '../models/<%= singularUc %>';
@@ -24,7 +25,7 @@ export function create(data: <%= interfaceName %>, next) {
   });
 }
 
-export function <%= backend.createFunction %>(req: express.Request, res: express.Response, next: express.NextFunction) {
+export function <%= backend.createFunction %>(req: Request, res: express.Response, next: express.NextFunction) {
   console.info('create body', req.body);
 
   if (Array.isArray(req.body)) {

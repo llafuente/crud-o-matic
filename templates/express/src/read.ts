@@ -1,4 +1,5 @@
 import * as express from "express";
+import { Request } from "../app";
 import { HttpError } from '../HttpError';
 import { <%= interfaceName %> } from '../models/<%= interfaceName %>';
 import { <%= singularUc %>, <%= interfaceModel %> } from '../models/<%= singularUc %>';
@@ -33,7 +34,7 @@ export function readNullable(_id: Schema.Types.ObjectId|string, next) {
 }
 
 
-export function <%= backend.readFunction %>(req: express.Request, res: express.Response, next: express.NextFunction) {
+export function <%= backend.readFunction %>(req: Request, res: express.Response, next: express.NextFunction) {
   const id = req.params['<%= entityId %>'];
   console.info('read', id);
 

@@ -1,12 +1,25 @@
 import * as express from "express";
 import * as bodyParser from "body-parser";
+import { Pagination } from "./common";
 import { HttpError } from "./HttpError";
 const cors = require('cors');
-const _ = require('lodash');
 
 <% _.each(generator.schemas, (schema) => { %>
-import <%= schema.backend.routerName%> from './<%= schema.plural %>/<%= schema.backend.routerName %>';
+import <%= schema.backend.routerName %> from './<%= schema.plural %>/<%= schema.backend.routerName %>';
+import { <%= schema.interfaceModel %> } from './models/<%= schema.singularUc %>';
 <% }) %>
+
+// declare our own interface for request to save our variables
+export interface Request extends express.Request {
+  loggedUser: IUserModel;
+
+<% _.each(generator.schemas, (schema) => { %>
+<%= schema.singular %>: <%= schema.interfaceModel %>;
+// <%= schema.plural %>: <%= schema.interfaceModel %>[];
+<%= schema.plural %>: Pagination<<%= schema.interfaceModel %>>;
+<% }) %>
+};
+
 
 const mongoose = require("mongoose");
 mongoose.Promise = require("bluebird");
