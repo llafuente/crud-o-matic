@@ -1,13 +1,19 @@
 import * as express from "express";
 import * as bodyParser from "body-parser";
 import { Pagination } from "./common";
+import { HttpError } from "./HttpError";
+const jwt = require("jsonwebtoken");
+const expressJwt = require("express-jwt");
 const cors = require("cors");
+
+import { User } from "./models/User";
 
 import routerUser from "./users/routerUser";
 import { IUserModel } from "./models/User";
 
+// declare our own interface for request to save our variables
 export interface Request extends express.Request {
-  userLogged: IUserModel;
+  loggedUser: IUserModel;
 
   user: IUserModel;
   // users: IUserModel[];
@@ -48,8 +54,102 @@ app.use(
 );
 
 // authentication layer
+const secret = "sdkjksf8j2nsk87";
+app
+  .post("/users/auth", function(req: Request, res: express.Response, next: express.NextFunction) {
+    User.findOne(
+      {
+        userlogin: req.body.userlogin,
+      },
+      function(err, user) {
+        /* istanbul ignore next */ if (err) {
+          return next(err);
+        }
 
-// TODO
+        if (!user || !user.authenticate(req.body.password)) {
+          return next(new HttpError(422, "user not found or invalid pasword"));
+        }
+
+        return res.status(200).json({
+          token: jwt.sign(
+            {
+              id: user._id.toString(),
+              session_start: new Date().toString(),
+            },
+            secret,
+          ),
+        });
+      },
+    );
+  })
+  //
+  // jwt
+  //
+  .use(
+    expressJwt({
+      secret: secret,
+      credentialsRequired: false,
+      // header: "Authorization: Bearer XXXXXX"
+      getToken: function fromHeader(req) {
+        if (req.headers.authorization) {
+          const x = req.headers.authorization.split(" ");
+          if (x[0] === "Bearer") {
+            return x[1];
+          }
+        }
+        /*
+    else if (req.query && req.query.access_token) {
+      return req.query.access_token;
+    }
+    */
+        return null;
+      },
+    }),
+  )
+  .use(function(req: Request, res: express.Response, next: express.NextFunction) {
+    if (!req.user || !req.user.id) {
+      return next();
+    }
+
+    // move to user -> loggedUser
+    req.loggedUser = req.user;
+    delete req.user;
+
+    console.log("regenerate session: " + req.loggedUser.id.toString());
+
+    return User.findOne({
+      _id: req.loggedUser.id,
+    })
+      .populate("roles")
+      .exec(function(err, dbuser) {
+        if (err || !dbuser) {
+          return next(new HttpError(401, "regenerate session failed"));
+        }
+
+        req.loggedUser = dbuser;
+        console.log("user logged: " + JSON.stringify(dbuser.toJSON()));
+        return next();
+      });
+  })
+  .post("/users/me", function(req: Request, res: express.Response, next: express.NextFunction) {
+    // TODO check token
+    if (!req.headers.authorization) {
+      return next(new HttpError(401, "no session"));
+    }
+
+    if (!req.loggedUser) {
+      return next(new HttpError(401, "invalid session"));
+    }
+
+    const u = req.loggedUser.toJSON();
+    console.log(u);
+    // TODO
+    //user.$express.formatter(req, u, function(err, output) {
+    //  res.status(200).json(output);
+    //});
+
+    return res.status(200).json(u);
+  });
 
 // generated schemas routes
 
