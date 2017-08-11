@@ -36,18 +36,18 @@ export function <%= backend.updateFunction %>(req: Request, res: express.Respons
     return next(new HttpError(422, 'body is an array'));
   }
 
-  if (!req[<%= JSON.stringify(singular) %>]) {
+  if (!req[<%- JSON.stringify(singular) %>]) {
    return next(new HttpError(500, 'Cannot fetch <%= singular %>'));
   }
 
-  return update(/*req.user, */req[<%= JSON.stringify(singular) %>], req.body, function(err, savedRow: <%= interfaceModel %>) {
+  return update(/*req.user, */req[<%- JSON.stringify(singular) %>], req.body, function(err, savedRow: <%= interfaceModel %>) {
     /* istanbul ignore next */ if (err) {
       return next(err);
     }
 
     console.info('created@database', savedRow);
 
-    req[<%= JSON.stringify(singular) %>] = savedRow;
+    req[<%- JSON.stringify(singular) %>] = savedRow;
     return next();
   });
 }

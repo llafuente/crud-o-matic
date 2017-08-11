@@ -2,6 +2,7 @@ import { readFileSync, writeFileSync } from "fs";
 import { join } from "path";
 import { Schema } from "./Schema";
 const _ = require("lodash");
+const ejs = require('ejs');
 import * as mkdirp from "mkdirp";
 
 export class Generator {
@@ -17,7 +18,8 @@ export class Generator {
     //
     try {
     const model = readFileSync(srcFile, { encoding: "utf8" });
-    const modelTpl = _.template(model);
+    //const modelTpl = _.template(model);
+    const modelTpl = ejs.compile(model);
     const str = modelTpl(schema);
     writeFileSync(dstFile, str);
     } catch (err) {

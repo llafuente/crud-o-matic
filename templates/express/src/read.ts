@@ -50,7 +50,7 @@ export function <%= backend.readFunction %>(req: Request, res: express.Response,
     console.info('read@database', savedRow);
 
     // TODO review, use custom type...
-    req[<%= JSON.stringify(singular) %>] = savedRow;
+    req[<%- JSON.stringify(singular) %>] = savedRow;
     return next();
   });
 }

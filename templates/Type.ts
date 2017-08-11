@@ -8,7 +8,7 @@ export interface <%= interfaceName %> {
   updatedAt: Date;
 
   <% forEachBackEndField((key, PrimiteType) => { %>
-    <%= key %>: <%= PrimiteType.getTypeScriptType() %>;
+    <%= key %>: <%- PrimiteType.getTypeScriptType() %>;
   <% }) %>
 
   <% if (interfaceName == "IUser") { %>
@@ -24,7 +24,7 @@ export class <%= typeName %> implements <%= interfaceName %> {
   updatedAt: Date;
 
   <% forEachBackEndField((key, PrimiteType) => { %>
-  <%= key %>: <%= PrimiteType.getTypeScriptType() %>;
+  <%= key %>: <%- PrimiteType.getTypeScriptType() %>;
   <% }) %>
   constructor() {}
 

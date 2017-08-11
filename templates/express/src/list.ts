@@ -125,7 +125,7 @@ export function <%= backend.listFunction %>(req: Request, res: express.Response,
           return next(err2);
         }
 
-        req[<%= JSON.stringify(plural) %>] = new Pagination<<%= interfaceModel %>>(mlist, count, req.query.offset, req.query.limit);
+        req[<%- JSON.stringify(plural) %>] = new Pagination<<%= interfaceModel %>>(mlist, count, req.query.offset, req.query.limit);
 
         return next();
       });

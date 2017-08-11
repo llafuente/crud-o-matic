@@ -30,7 +30,7 @@ export function toJSONList(result: Pagination<<%= interfaceModel %>>) {
 }
 
 export function toJSON(entity: <%= interfaceModel %>) {
-  let json = mongoosemask.mask(entity, <%= JSON.stringify(getBackEndBlacklist('read')) %>);
+  let json = mongoosemask.mask(entity, <%- JSON.stringify(getBackEndBlacklist('read')) %>);
 
   json.id = json._id;
   delete json._id;
@@ -45,21 +45,21 @@ const <%= backend.routerName %> = express.Router()
   cleanBody,
   <%= backend.createFunction %>,
   function (req: Request, res: express.Response, next: express.NextFunction) {
-    res.status(201).json(toJSON(req[<%= JSON.stringify(singular) %>]));
+    res.status(201).json(toJSON(req[<%- JSON.stringify(singular) %>]));
   }
 )
 .get(
   '<%= url("LIST") %>',
   <%= backend.listFunction %>,
   function (req: Request, res: express.Response, next: express.NextFunction) {
-    res.status(200).json(toJSONList(req[<%= JSON.stringify(plural) %>]));
+    res.status(200).json(toJSONList(req[<%- JSON.stringify(plural) %>]));
   }
 )
 .get(
   '<%= url("READ") %>',
   <%= backend.readFunction %>,
   function (req: Request, res: express.Response, next: express.NextFunction) {
-    res.status(200).json(toJSON(req[<%= JSON.stringify(singular) %>]));
+    res.status(200).json(toJSON(req[<%- JSON.stringify(singular) %>]));
   }
 )
 .patch(
@@ -68,7 +68,7 @@ const <%= backend.routerName %> = express.Router()
   <%= backend.readFunction %>,
   <%= backend.updateFunction %>,
   function (req: Request, res: express.Response, next: express.NextFunction) {
-    res.status(200).json(req[<%= JSON.stringify(singular) %>]);
+    res.status(200).json(req[<%- JSON.stringify(singular) %>]);
   }
 )
 .delete(

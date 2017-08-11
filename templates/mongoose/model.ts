@@ -8,9 +8,9 @@ export interface <%= interfaceModel %> extends <%= interfaceName %>, mongoose.Do
 
 export const <%= schemaName %> = new mongoose.Schema({
   <% forEachBackEndField((key, PrimiteType) => { %>
-    <%= key %>: <%= PrimiteType.getMongooseType() %>,
+    <%= key %>: <%- PrimiteType.getMongooseType() %>,
   <% }) %>
-}, <%= JSON.stringify(backend.options, null, 2) %>);
+}, <%- JSON.stringify(backend.options, null, 2) %>);
 
 <% if (schemaName == "UserSchema") { %>
 

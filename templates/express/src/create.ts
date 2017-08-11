@@ -41,7 +41,7 @@ export function <%= backend.createFunction %>(req: Request, res: express.Respons
 
     console.info('created@database', savedRow);
 
-    req[<%= JSON.stringify(singular) %>] = savedRow;
+    req[<%- JSON.stringify(singular) %>] = savedRow;
     return next();
   });
 }
