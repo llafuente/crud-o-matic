@@ -1,0 +1,13 @@
+<bb-input-container label="<%= label %>">
+  <textarea
+    bb-child
+    type="url" url
+    id="<%= id %>"
+    name="<%= name %>"
+    [(ngModel)]="<%= ngModel %>"
+    #<%= name %>Model="ngModel">
+    </textarea>
+
+    <bb-errors [model]="<%= name %>Model"></bb-errors>
+
+</bb-input-container>

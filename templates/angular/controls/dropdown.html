@@ -1,0 +1,14 @@
+<bb-input-container label="<%= label %>">
+  <select
+    bb-child
+    type="email" email
+    id="<%= id %>"
+    name="<%= name %>"
+    [(ngModel)]="<%= ngModel %>"
+    #<%= name %>Model="ngModel">
+    <options *ngFor="let row of <%= srcModel %>" [ngValue]="<%= srcId %>">row.<%= srcLabel %></options>
+    </select>
+
+    <bb-errors [model]="<%= name %>Model"></bb-errors>
+
+</bb-input-container>

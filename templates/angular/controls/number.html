@@ -1,0 +1,13 @@
+<bb-input-container label="<%= label %>">
+  <input
+    bb-child
+    type="number"
+    id="<%= id %>"
+    name="<%= name %>"
+    [(ngModel)]="<%= ngModel %>"
+    #<%= name %>Model="ngModel"
+    />
+
+    <bb-errors [model]="<%= name %>Model"></bb-errors>
+
+</bb-input-container>

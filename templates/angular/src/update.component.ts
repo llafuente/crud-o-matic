@@ -62,4 +62,13 @@ export class <%= frontend.updateComponent %> extends BaseComponent {
       console.log("<-- PATCH Error: <%= url('UPDATE', true) %>", errorResponse);
     });
   }
+
+  // for lists
+  push(model: any[]) {
+    model.push({});
+  }
+
+  splice(model: any[], index: number) {
+    model.splice(index, 1);
+  }
 }

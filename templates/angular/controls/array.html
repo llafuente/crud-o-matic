@@ -1,0 +1,16 @@
+<h3><%= label %> ({{<%= ngModel %>.length || 0}})</h3>
+
+<bb-button (click)="push(<%= ngModel %>)">
+  <i class="fa fa-plus"></i> Añadir
+</bb-button>
+
+<ol class="control-list list-unstyled">
+  <li class="list-item" *ngFor="let item of <%= ngModel %>; let <%= indexName %> = index">
+
+    <bb-button (click)="splice(<%= ngModel %>, <%= indexName %>)">
+      <i class="fa fa-trash-o"></i> Elimnar
+    </bb-button>
+
+    <%= childControls %>
+  </li>
+</ol>

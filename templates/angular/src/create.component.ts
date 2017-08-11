@@ -48,4 +48,13 @@ export class <%= frontend.createComponent %> extends BaseComponent {
       console.log("<-- POST Error: <%= url('CREATE', true) %>", errorResponse);
     });
   }
+
+  // for lists
+  push(model: any[]) {
+    model.push({});
+  }
+
+  splice(model: any[], index: number) {
+    model.splice(index, 1);
+  }
 }

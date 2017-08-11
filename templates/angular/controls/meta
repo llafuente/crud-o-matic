@@ -1,0 +1,19 @@
+- common
+ngModel: string
+label: string
+id: string
+name: string
+
+- list
+indexName: string
+childControls
+
+- select/dropdown
+srcUrl
+srcModel
+srcId
+srcLabel
+
+- functions
+push
+splice
