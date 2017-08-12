@@ -34,6 +34,7 @@ export const imports = [
 
 export const _exports = [
   BrowserModule,
+  FormsModule,
   RouterModule,
   ...declarations
 ];

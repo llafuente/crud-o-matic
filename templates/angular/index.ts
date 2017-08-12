@@ -20,6 +20,7 @@ export const imports = [
 
 export const _exports = [
   BrowserModule,
+  FormsModule,
   RouterModule,
 <% _.each(generator.schemas, (schema) => { %>
   <%= schema.module %>,

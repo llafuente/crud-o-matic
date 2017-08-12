@@ -12,6 +12,11 @@ import { <%= typeName %> } from '../models/<%= interfaceName %>';
   selector: '<%= singular %>-update-component',
   template: `
 <div>
+<form #f="ngForm" novalidate>
+  <%- frontend.getCreateControlsHTML() %>
+  <bb-button [routerLink]="['../..', 'list']">Cancelar</bb-button>
+  <bb-button (click)="save()">Guardar</bb-button>
+</form>
 <pre>entity: {{entity | json}}</pre>
 </div>
   `,
@@ -20,6 +25,8 @@ export class <%= frontend.updateComponent %> extends BaseComponent {
   loading: false;
   id: string;
   entity: <%= typeName %> = new <%= typeName %>();
+
+  <%- frontend.getCreateDeclarations() %>
 
   constructor(
     injector: Injector,
@@ -57,7 +64,7 @@ export class <%= frontend.updateComponent %> extends BaseComponent {
     .subscribe((response: <%= typeName %>) => {
       console.log("<-- PATCH: <%= url('UPDATE', true) %>", response);
 
-      this.router.navigate(['..', 'list']);
+      this.router.navigate(['../..', 'list'], { relativeTo: this.activatedRoute });
     }, (errorResponse: Response) => {
       console.log("<-- PATCH Error: <%= url('UPDATE', true) %>", errorResponse);
     });

@@ -12,6 +12,11 @@ import { <%= typeName %> } from '../models/<%= interfaceName %>';
   selector: '<%= singular %>-create-component',
   template: `
 <div>
+<form #f="ngForm" novalidate>
+  <%- frontend.getCreateControlsHTML() %>
+  <bb-button [routerLink]="['..', 'list']">Cancelar</bb-button>
+  <bb-button (click)="save()">Guardar</bb-button>
+</form>
 <pre>entity: {{entity | json}}</pre>
 </div>
   `,
@@ -20,6 +25,8 @@ export class <%= frontend.createComponent %> extends BaseComponent {
   loading: false;
   id: number;
   entity: <%= typeName %> = new <%= typeName %>();
+
+  <%- frontend.getCreateDeclarations() %>
 
   constructor(
     injector: Injector,
@@ -43,7 +50,8 @@ export class <%= frontend.createComponent %> extends BaseComponent {
     .subscribe((response: <%= typeName %>) => {
       console.log("<-- POST: <%= url('CREATE', true) %>", response);
 
-      this.router.navigate(['..', 'list']);
+      this.router.navigate(['..', 'list'], { relativeTo: this.activatedRoute });
+
     }, (errorResponse: Response) => {
       console.log("<-- POST Error: <%= url('CREATE', true) %>", errorResponse);
     });

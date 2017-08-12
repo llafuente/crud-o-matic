@@ -12,6 +12,80 @@ import { UserType } from '../models/IUser';
   selector: 'user-create-component',
   template: `
 <div>
+<form #f="ngForm" novalidate>
+  <bb-input-container label="Userlogin">
+  <input
+    bb-child
+    type="text"
+    id="id-userlogin"
+    name="userlogin"
+    [(ngModel)]="entity.userlogin"
+    #userloginModel="ngModel"
+    />
+
+    <bb-errors [model]="userloginModel"></bb-errors>
+
+</bb-input-container>
+
+<bb-input-container label="Password">
+  <input
+    bb-child
+    type="password"
+    id="id-password"
+    name="password"
+    [(ngModel)]="entity.password"
+    #passwordModel="ngModel" />
+
+    <bb-errors [model]="passwordModel"></bb-errors>
+
+</bb-input-container>
+
+<bb-input-container label="Email">
+  <input
+    bb-child
+    type="email" email
+    id="id-email"
+    name="email"
+    [(ngModel)]="entity.email"
+    #emailModel="ngModel" />
+
+    <bb-errors [model]="emailModel"></bb-errors>
+
+</bb-input-container>
+
+<!-- hidden -->
+
+<bb-input-container label="Roles">
+  <select
+    bb-child
+    id="id-roles"
+    name="roles"
+    [(ngModel)]="entity.roles"
+    #rolesModel="ngModel">
+    <option *ngFor="let row of " [ngValue]="">row.</option>
+    </select>
+
+    <bb-errors [model]="rolesModel"></bb-errors>
+
+</bb-input-container>
+
+<bb-input-container label="State">
+  <select
+    bb-child
+    id="id-state"
+    name="state"
+    [(ngModel)]="entity.state"
+    #stateModel="ngModel">
+    <option *ngFor="let row of stateValues" [ngValue]="row.id">{{row.label}}</option>
+    </select>
+
+    <bb-errors [model]="stateModel"></bb-errors>
+
+</bb-input-container>
+
+  <bb-button [routerLink]="['..', 'list']">Cancelar</bb-button>
+  <bb-button (click)="save()">Guardar</bb-button>
+</form>
 <pre>entity: {{entity | json}}</pre>
 </div>
   `,
@@ -20,6 +94,8 @@ export class CreateUserComponent extends BaseComponent {
   loading: false;
   id: number;
   entity: UserType = new UserType();
+
+  stateValues: {id: string, label: string}[] = [{"id":"active","label":"Active"},{"id":"banned","label":"Banned"}]
 
   constructor(
     injector: Injector,
@@ -43,9 +119,19 @@ export class CreateUserComponent extends BaseComponent {
     .subscribe((response: UserType) => {
       console.log("<-- POST: http://localhost:3004/users", response);
 
-      this.router.navigate(['..', 'list']);
+      this.router.navigate(['..', 'list'], { relativeTo: this.activatedRoute });
+
     }, (errorResponse: Response) => {
       console.log("<-- POST Error: http://localhost:3004/users", errorResponse);
     });
+  }
+
+  // for lists
+  push(model: any[]) {
+    model.push({});
+  }
+
+  splice(model: any[], index: number) {
+    model.splice(index, 1);
   }
 }

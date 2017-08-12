@@ -1,7 +1,10 @@
 import mongoose = require("mongoose");
 import { Generator } from "./Generator";
+import * as fs from "fs";
+import * as path from "path";
 
 const _ = require("lodash");
+const ejs = require("ejs");
 const pluralize = require("pluralize");
 
 export enum PrimiteTypes {
@@ -19,13 +22,16 @@ export enum PrimiteTypes {
 
 export enum FrontControls {
   Hidden = "Hidden",
-  TEXT = "TEXT",
+  TEXT = "STRING",
+  EMAIL = "EMAIL",
+  BIGTEXT = "TEXT",
   PASSWORD = "PASSWORD",
   DROPDOWN = "DROPDOWN",
   ENUM_DROPDOWN = "ENUM_DROPDOWN",
   HTTP_DROPDOWN = "HTTP_DROPDOWN",
   TEXTAREA = "TEXTAREA",
   CHECKBOX = "CHECKBOX",
+  DATE = "DATE",
 }
 
 export class FieldPermissions {
@@ -381,10 +387,101 @@ export class FrontEndSchema {
     this.updateComponent = `Update${this.parentSchema.singularUc}Component`;
     this.updateComponentFile = `Update${this.parentSchema.singularUc}.component`;
   }
+
+  getCreateControlsHTML(): string {
+    const controls = [];
+    for (let fieldName in this.parentSchema.fields) {
+      controls.push(
+        this.getFieldControlHTML(fieldName, this.parentSchema.fields[fieldName])
+      );
+    }
+
+    return controls.join("\n");
+  }
+
+  getCreateDeclarations(): string {
+    const controls = [];
+    for (let fieldName in this.parentSchema.fields) {
+      const field = this.parentSchema.fields[fieldName];
+      switch(field.frontControl) {
+        case FrontControls.ENUM_DROPDOWN:
+          const values = field.enums.map((id, idx) => {
+            return {id: id, label: field.labels[idx]};
+          });
+
+          controls.push(fieldName + "Values: {id: string, label: string}[] = " + JSON.stringify(values));
+          break;
+        default:
+      }
+    }
+
+    return controls.join("\n");
+  }
+
+  getCreateControlsTS(): string {
+    const controls = [];
+    for (let fieldName in this.parentSchema.fields) {
+      controls.push(
+        this.getFieldControlTS(fieldName, this.parentSchema.fields[fieldName])
+      );
+    }
+
+    return controls.join("\n");
+  }
+
+  getFieldControlTS(fieldName:string, field: PrimiteType, ngModel: string[] = [], indexes: string[] = []): string {
+    switch(field.frontControl) {
+      case FrontControls.ENUM_DROPDOWN:
+
+        fieldName + "Values"
+        break;
+      default:
+      return '';
+    }
+  }
+  getFieldControlHTML(fieldName:string, field: PrimiteType, ngModel: string[] = ["entity"], indexes: string[] = []): string {
+    const tpl = field.frontControl.toString().toLocaleLowerCase();
+
+    const tplCompiled = ejs.compile(fs.readFileSync(path.join(__dirname, "..", "templates", "angular", "controls", `${tpl}.html`), 'utf8'));
+
+    ngModel.push(fieldName);
+    let name = fieldName;
+    let id = "id-" + fieldName;
+    indexes.forEach((index) => {
+      name += "-{{" + index + "}}"
+      fieldName += "-{{" + index + "}}"
+    });
+    let srcModel = null;
+    let srcId = null;
+    let srcLabel = null;
+
+    switch(field.frontControl) {
+      case FrontControls.ENUM_DROPDOWN:
+
+        srcModel = fieldName + "Values";
+        srcId = "id";
+        srcLabel = "label";
+        break;
+      default:
+    }
+
+    return tplCompiled({
+      label: field.label,
+      id: id,
+      name: name,
+      ngModel: ngModel.join("."),
+      indexName: null,
+      childControls: null,
+
+      srcUrl: null,
+      srcModel: srcModel,
+      srcId: srcId,
+      srcLabel: srcLabel,
+    });
+  }
 }
 
 export class Schema {
-  singular: string;
   singularUc: string;
   plural: string;
   entityId: string;
@@ -406,12 +503,14 @@ export class Schema {
 
   fields: { [s: string]: PrimiteType } = null;
 
-  constructor(public generator: Generator) {
+  constructor(
+    public singular: string,
+    public generator: Generator,
+  ) {
     this._ = _;
   }
 
   static fromJSON(json: any, generator: Generator): Schema {
-    const schema = new Schema(generator);
     if (json.singular === undefined) {
       throw new Error("Schema: singular is required");
     }
@@ -419,6 +518,8 @@ export class Schema {
     if (json.backend === undefined) {
       throw new Error("Schema: backend is required");
     }
+
+    const schema = new Schema(json.singular, generator);
 
     schema.singular = json.singular;
     schema.plural = json.plural || pluralize(schema.singular);

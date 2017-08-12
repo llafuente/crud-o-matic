@@ -26,7 +26,7 @@ export class Generator {
       console.log(`Error on template: ${srcFile}`);
       console.log(`Destination: ${dstFile}`);
 
-      console.error(err);
+      throw err;
     }
   }
 

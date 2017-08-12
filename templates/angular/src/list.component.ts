@@ -12,7 +12,6 @@ import { Pagination } from '../common';
 @Component({
   selector: '<%= singular %>-create-component',
   template: `
-<pre>entities: {{entities |json}}</pre>
 <bb-section>
   <bb-section-header>List</bb-section-header>
   <bb-section-content>
@@ -37,8 +36,10 @@ import { Pagination } from '../common';
         <tr>
       </tbody>
     </bb-table>
+    <bb-button [routerLink]="['..', 'create']">Create</bb-button>
   </bb-section-content>
 </bb-section>
+<pre>entities: {{entities |json}}</pre>
   `,
 })
 export class <%= frontend.listComponent %> extends BaseComponent {

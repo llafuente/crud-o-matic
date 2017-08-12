@@ -14,8 +14,9 @@ test(async (t) => {
 });
 */
 
-test(t => {
-  const gen = new Generator();
+const gen = new Generator();
+
+test.serial("user schema", t => {
 
   const schema: Schema = Schema.fromJSON(
     {
@@ -53,12 +54,12 @@ test(t => {
 
   schema.addField(
     "email",
-    new PrimiteType("Email", PrimiteTypes.String, FrontControls.TEXT).setMaxlength(255).setRequired(true),
+    new PrimiteType("Email", PrimiteTypes.String, FrontControls.EMAIL).setMaxlength(255).setRequired(true),
   );
 
   schema.addField(
     "salt",
-    new PrimiteType("Password", PrimiteTypes.String, FrontControls.Hidden).setPermissions(
+    new PrimiteType("Salt", PrimiteTypes.String, FrontControls.Hidden).setPermissions(
       new FieldPermissions(
         false, //read
         false, //list
@@ -85,7 +86,7 @@ test(t => {
 
   schema.addField(
     "state",
-    new PrimiteType("Roles", PrimiteTypes.String, FrontControls.ENUM_DROPDOWN)
+    new PrimiteType("State", PrimiteTypes.String, FrontControls.ENUM_DROPDOWN)
       .setEnumConstraint(["active", "banned"], ["Active", "Banned"])
       .setDefault("active"),
   );
@@ -147,9 +148,20 @@ test(t => {
 
   t.is(gen.schemas[0].backend.apiAccess.read.allowed, true);
   t.is(gen.schemas[0].backend.apiAccess.create.allowed, false);
+});
 
-  //console.dir(gen.schemas[0].backend);
 
+test.serial("voucher schema",t => {
+
+  const schema: Schema = new Schema("voucher", gen);
+  schema.addField(
+    "startAt",
+    new PrimiteType("Fecha de inicio", PrimiteTypes.Date, FrontControls.DATE),
+  );
+  gen.addSchema(schema);
+});
+
+test.serial("generation", t => {
   gen.generateAll(generatedPath, join(generatedPath, "server"), join(generatedPath, "client"));
 
   // generate inside Angular 2 project
