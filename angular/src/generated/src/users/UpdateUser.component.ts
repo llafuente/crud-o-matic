@@ -128,10 +128,10 @@ export class UpdateUserComponent extends BaseComponent {
   }
 
   save() {
-    console.log("<-- PATCH: http://localhost:3004/users/:userId", this.entity);
+    console.log("<-- PATCH: http://localhost:3004/users/:userId", JSON.stringify(this.entity, null, 2));
     this.http.patch("http://localhost:3004/users/:userId".replace(":userId", this.id), this.entity)
     .subscribe((response: UserType) => {
-      console.log("<-- PATCH: http://localhost:3004/users/:userId", response);
+      console.log("<-- PATCH: http://localhost:3004/users/:userId", JSON.stringify(response, null, 2));
 
       this.router.navigate(['../..', 'list'], { relativeTo: this.activatedRoute });
     }, (errorResponse: Response) => {

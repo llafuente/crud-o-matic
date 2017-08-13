@@ -196,3 +196,14 @@ a[disabled="disabled"] {
 @import './footer/footer.scss';
 @import './modal/modal.scss';
 @import './switch/switch.scss';
+
+
+datepicker tbody .btn {
+  border: 1px solid rgba(0,0,0,0.2);
+  background-color: $blue-medium;
+
+}
+datepicker .btn.btn-secondary {
+  background-color: transparent !important;
+  color: black;
+}

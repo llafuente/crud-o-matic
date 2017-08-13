@@ -79,4 +79,4 @@ UserSchema.methods.hasPermission = function hasPermission(perm) {
 <% } %>
 
 
-export const <%= singularUc %> = mongoose.model<<%= interfaceName %>Model>("User", <%= schemaName %>);
+export const <%= singularUc %> = mongoose.model<<%= interfaceName %>Model>("<%= singularUc %>", <%= schemaName %>);

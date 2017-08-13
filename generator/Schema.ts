@@ -29,9 +29,11 @@ export enum FrontControls {
   DROPDOWN = "DROPDOWN",
   ENUM_DROPDOWN = "ENUM_DROPDOWN",
   HTTP_DROPDOWN = "HTTP_DROPDOWN",
+  INTEGER = "INTEGER",
   TEXTAREA = "TEXTAREA",
   CHECKBOX = "CHECKBOX",
   DATE = "DATE",
+  STATIC = "STATIC",
 }
 
 export class FieldPermissions {
@@ -322,12 +324,22 @@ export class ApiAccessPermissions {
   }
 
   static fromJSON(json): ApiAccessPermissions {
+    if (json) {
+      return new ApiAccessPermissions(
+        PermissionsAllowed.fromJSON(json.read),
+        PermissionsAllowed.fromJSON(json.list),
+        PermissionsAllowed.fromJSON(json.create),
+        PermissionsAllowed.fromJSON(json.update),
+        PermissionsAllowed.fromJSON(json.delete),
+      );
+    }
+
     return new ApiAccessPermissions(
-      PermissionsAllowed.fromJSON(json.read),
-      PermissionsAllowed.fromJSON(json.list),
-      PermissionsAllowed.fromJSON(json.create),
-      PermissionsAllowed.fromJSON(json.update),
-      PermissionsAllowed.fromJSON(json.delete),
+      new PermissionsAllowed(),
+      new PermissionsAllowed(),
+      new PermissionsAllowed(),
+      new PermissionsAllowed(),
+      new PermissionsAllowed(),
     );
   }
 }
@@ -349,14 +361,9 @@ export class BackEndSchema {
   constructor(json, parentSchema: Schema) {
     this.parentSchema = parentSchema;
 
-    // TODO use default, allow all
-    if (json.apiAccess === undefined) {
-      throw new Error("BackEndSchema: apiAccess is required");
-    }
-
     this.options = json.options || {};
     this.options.collection = this.parentSchema.plural;
-    this.apiAccess = ApiAccessPermissions.fromJSON(json.apiAccess);
+    this.apiAccess = ApiAccessPermissions.fromJSON(json.apiAccess || null);
 
     this.createFunction = `create${this.parentSchema.singularUc}`;
     this.readFunction = `read${this.parentSchema.singularUc}`;
@@ -508,6 +515,23 @@ export class Schema {
     public generator: Generator,
   ) {
     this._ = _;
+    this.plural = pluralize(this.singular);
+    this.init();
+
+    this.backend = new BackEndSchema({}, this);
+    this.frontend = new FrontEndSchema({}, this);
+  }
+
+  private init () {
+    this.modelName = this.singularUc = this.singular[0].toLocaleUpperCase() + this.singular.substring(1);
+    this.interfaceName = "I" + this.singularUc;
+    this.interfaceModel = "I" + this.singularUc + "Model";
+    this.typeName = this.singularUc + "Type";
+    this.entityId = this.singular + "Id";
+    this.schemaName = this.singularUc + "Schema";
+
+    this.module = this.plural[0].toLocaleUpperCase() + this.plural.substring(1) + "Module";
+    this.moduleFile = this.plural[0].toLocaleUpperCase() + this.plural.substring(1) + ".module";
   }
 
   static fromJSON(json: any, generator: Generator): Schema {
@@ -523,16 +547,7 @@ export class Schema {
 
     schema.singular = json.singular;
     schema.plural = json.plural || pluralize(schema.singular);
-
-    schema.modelName = schema.singularUc = schema.singular[0].toLocaleUpperCase() + schema.singular.substring(1);
-    schema.interfaceName = "I" + schema.singularUc;
-    schema.interfaceModel = "I" + schema.singularUc + "Model";
-    schema.typeName = schema.singularUc + "Type";
-    schema.entityId = schema.singular + "Id";
-    schema.schemaName = schema.singularUc + "Schema";
-
-    schema.module = schema.plural[0].toLocaleUpperCase() + schema.plural.substring(1) + "Module";
-    schema.moduleFile = schema.plural[0].toLocaleUpperCase() + schema.plural.substring(1) + ".module";
+    schema.init();
 
     schema.backend = new BackEndSchema(json.backend, schema);
     schema.frontend = new FrontEndSchema(json.frontend || {}, schema);

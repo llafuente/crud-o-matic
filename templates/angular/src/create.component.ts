@@ -45,10 +45,10 @@ export class <%= frontend.createComponent %> extends BaseComponent {
   }
 
   save() {
-    console.log("--> POST: <%= url('CREATE', true) %>", this.entity);
+    console.log("--> POST: <%= url('CREATE', true) %>", JSON.stringify(this.entity, null, 2));
     this.http.post("<%= url('CREATE', true) %>", this.entity)
     .subscribe((response: <%= typeName %>) => {
-      console.log("<-- POST: <%= url('CREATE', true) %>", response);
+      console.log("<-- POST: <%= url('CREATE', true) %>", JSON.stringify(response, null, 2));
 
       this.router.navigate(['..', 'list'], { relativeTo: this.activatedRoute });
 

@@ -114,10 +114,10 @@ export class CreateUserComponent extends BaseComponent {
   }
 
   save() {
-    console.log("--> POST: http://localhost:3004/users", this.entity);
+    console.log("--> POST: http://localhost:3004/users", JSON.stringify(this.entity, null, 2));
     this.http.post("http://localhost:3004/users", this.entity)
     .subscribe((response: UserType) => {
-      console.log("<-- POST: http://localhost:3004/users", response);
+      console.log("<-- POST: http://localhost:3004/users", JSON.stringify(response, null, 2));
 
       this.router.navigate(['..', 'list'], { relativeTo: this.activatedRoute });
 

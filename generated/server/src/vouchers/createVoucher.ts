@@ -1,16 +1,16 @@
 import * as express from "express";
 import { Request } from "../app";
 import { HttpError } from "../HttpError";
-import { IUser } from "../models/IUser";
-import { User } from "../models/User";
+import { IVoucher } from "../models/IVoucher";
+import { Voucher } from "../models/Voucher";
 
-export function create(data: IUser, next) {
-  console.info("create user data", data);
+export function create(data: IVoucher, next) {
+  console.info("create voucher data", data);
 
   // TODO remove restricted
   //data = meta.$express.restricted_filter(req.log, req.user, 'create', data);
 
-  return User.create(data, function(err, savedRow) {
+  return Voucher.create(data, function(err, savedRow) {
     if (err) {
       //return next(err);
       console.error(err);
@@ -26,7 +26,7 @@ export function create(data: IUser, next) {
   });
 }
 
-export function createUser(req: Request, res: express.Response, next: express.NextFunction) {
+export function createVoucher(req: Request, res: express.Response, next: express.NextFunction) {
   console.info("create body", req.body);
 
   if (Array.isArray(req.body)) {
@@ -40,7 +40,7 @@ export function createUser(req: Request, res: express.Response, next: express.Ne
 
     console.info("created@database", savedRow);
 
-    req.user = savedRow;
+    req.voucher = savedRow;
     return next();
   });
 }

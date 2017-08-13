@@ -10,7 +10,7 @@ const _ = require("lodash");
 export function authorization(err) {
   return function requireAuthorization(req: Request, res: express.Response, next: express.NextFunction) {
     if (!req.loggedUser) {
-      return next(err || new HttpError(401, 'authorization is required'));
+      return next(err || new HttpError(401, "authorization is required"));
     }
 
     return next();
@@ -27,21 +27,21 @@ export function hasPermission(perm, err) {
 
     if (!user) {
       /* istanbul ignore next */
-      return next(err || new HttpError(401, 'authorization is required'));
+      return next(err || new HttpError(401, "authorization is required"));
     }
 
-//    if (!user.permissions) {
-//      /* istanbul ignore next */
-//      return next(err || new HttpError(403, 'invalid user'));
-//    }
-//
-//    // check @permissions and @roles.permissions
-//    let i;
-//    for (i = 0; i < perm.length; ++i) {
-//      if (!user.hasPermission(perm[i])) {
-//        return next(err || new HttpError(403, "permission required: " + perm[i]));
-//      }
-//    }
+    //    if (!user.permissions) {
+    //      /* istanbul ignore next */
+    //      return next(err || new HttpError(403, 'invalid user'));
+    //    }
+    //
+    //    // check @permissions and @roles.permissions
+    //    let i;
+    //    for (i = 0; i < perm.length; ++i) {
+    //      if (!user.hasPermission(perm[i])) {
+    //        return next(err || new HttpError(403, "permission required: " + perm[i]));
+    //      }
+    //    }
 
     return next();
   };
@@ -57,18 +57,18 @@ export function hasRole(role, err) {
 
     if (!user) {
       /* istanbul ignore next */
-      return next(err || new HttpError(401, 'authorization is required'));
+      return next(err || new HttpError(401, "authorization is required"));
     }
 
     if (!user.roles) {
       /* istanbul ignore next */
-      return next(err || new HttpError(403, 'invalid user'));
+      return next(err || new HttpError(403, "invalid user"));
     }
 
     let i;
     let roles = user.roles;
-    if (user.populated('roles')) {
-      roles = _.map(user.roles, '_id');
+    if (user.populated("roles")) {
+      roles = _.map(user.roles, "_id");
     }
 
     for (i = 0; i < role.length; ++i) {

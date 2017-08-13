@@ -1,0 +1,16 @@
+<bb-static label="<%= label %>">
+{{<%= ngModel %> | date }}
+</bb-static>
+
+<datepicker
+  id="<%= id %>"
+  name="<%= name %>"
+  [(ngModel)]="<%= ngModel %>"
+  [showWeeks]="false"
+  #<%= name %>Model="ngModel"></datepicker>
+<!--
+  [minDate]="minDate"
+  [showWeeks]="true"
+  [dateDisabled]="dateDisabled"
+-->
+<bb-errors [model]="<%= name %>Model"></bb-errors>

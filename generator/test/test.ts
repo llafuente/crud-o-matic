@@ -154,11 +154,34 @@ test.serial("user schema", t => {
 test.serial("voucher schema",t => {
 
   const schema: Schema = new Schema("voucher", gen);
+  schema.domain = "http://localhost:3004";
+  schema.baseApiUrl = "";
+
   schema.addField(
     "startAt",
     new PrimiteType("Fecha de inicio", PrimiteTypes.Date, FrontControls.DATE),
   );
+  schema.addField(
+    "endAt",
+    new PrimiteType("Fecha de fin", PrimiteTypes.Date, FrontControls.DATE),
+  );
+  schema.addField(
+    "canDownload",
+    new PrimiteType("Permitir descargar manuales", PrimiteTypes.Boolean, FrontControls.CHECKBOX),
+  );
+  schema.addField(
+    "maxUses",
+    new PrimiteType("Máximos usos", PrimiteTypes.Number, FrontControls.INTEGER),
+  );
+  schema.addField(
+    "currentUses",
+    new PrimiteType("Usos", PrimiteTypes.Number, FrontControls.STATIC),
+  );
+
+
   gen.addSchema(schema);
+
+  t.is(gen.schemas[1].singular, "voucher");
 });
 
 test.serial("generation", t => {
@@ -166,4 +189,7 @@ test.serial("generation", t => {
 
   // generate inside Angular 2 project
   gen.generateClientAt(gen.schemas[0], join(__dirname, "..", "..", "angular", "src", "generated"));
+  gen.generateClientAt(gen.schemas[1], join(__dirname, "..", "..", "angular", "src", "generated"));
+
+  t.pass();
 });

@@ -3,7 +3,7 @@ import { Request } from "../app";
 //import { User } from './User';
 import { WhereQuery, Order, Operators, Pagination } from "../common";
 
-import { User, UserSchema, IUserModel } from "../models/User";
+import { Voucher, VoucherSchema, IVoucherModel } from "../models/Voucher";
 
 const _ = require("lodash");
 
@@ -18,7 +18,7 @@ export function createListQuery(
   limit: number,
   offset: number,
   populate: string[],
-  // TODO ): mongoose.DocumentQuery<IUser, mongoose.Document>[] {
+  // TODO ): mongoose.DocumentQuery<IVoucher, mongoose.Document>[] {
 ): any[] {
   if (isNaN(offset)) {
     throw new Error("offset must be a number");
@@ -28,8 +28,8 @@ export function createListQuery(
     throw new Error("limit must be a number");
   }
 
-  let query = User.find({});
-  let qCount = User.find({}).count();
+  let query = Voucher.find({});
+  let qCount = Voucher.find({}).count();
 
   /* TODO add restricted to where & sort
     if (isPathRestricted(path, 'read', user)) {
@@ -55,7 +55,7 @@ export function createListQuery(
   });
 
   sort = _.map(sort, (s: Order, key: string) => {
-    const options = UserSchema.path(key);
+    const options = VoucherSchema.path(key);
     if (!options) {
       throw new Error("sort[" + key + "] not found");
     }
@@ -64,7 +64,7 @@ export function createListQuery(
   });
 
   _.each(populate, (path: string) => {
-    const options = UserSchema.path(path);
+    const options = VoucherSchema.path(path);
     if (!options) {
       throw new Error("populate[" + path + "] not found");
     }
@@ -95,7 +95,7 @@ export function createListQuery(
   return [query, qCount];
 }
 
-export function listUser(req: Request, res: express.Response, next: express.NextFunction) {
+export function listVoucher(req: Request, res: express.Response, next: express.NextFunction) {
   console.log("usersList", JSON.stringify(req.query));
 
   req.query.limit = req.query.limit ? parseInt(req.query.limit) : 0;
@@ -110,7 +110,7 @@ export function listUser(req: Request, res: express.Response, next: express.Next
       req.query.populate,
     );
 
-    querys[0].exec(function(err, mlist: IUserModel[]) {
+    querys[0].exec(function(err, mlist: IVoucherModel[]) {
       /* istanbul ignore next */ if (err) {
         return next(err);
       }
@@ -120,7 +120,7 @@ export function listUser(req: Request, res: express.Response, next: express.Next
           return next(err2);
         }
 
-        req.users = new Pagination<IUserModel>(mlist, count, req.query.offset, req.query.limit);
+        req.vouchers = new Pagination<IVoucherModel>(mlist, count, req.query.offset, req.query.limit);
 
         return next();
       });

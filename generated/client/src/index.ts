@@ -11,10 +11,15 @@ export * from './Root.component';
 import { UsersModule } from './Users.module';
 export * from './Users.module';
 
+import { VouchersModule } from './Vouchers.module';
+export * from './Vouchers.module';
+
 
 export const imports = [
 
   UsersModule,
+
+  VouchersModule,
 
 ];
 
@@ -24,6 +29,8 @@ export const _exports = [
   RouterModule,
 
   UsersModule,
+
+  VouchersModule,
 
 ];
 

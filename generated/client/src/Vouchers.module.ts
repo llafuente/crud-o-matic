@@ -7,23 +7,23 @@ import { CommonModule } from './Common.module';
 
 
 // CRUD components
-import { CreateUserComponent } from './users/CreateUser.component';
-export * from './users/CreateUser.component';
-import { ListUserComponent } from './users/ListUser.component';
-export * from './users/ListUser.component';
-import { UpdateUserComponent } from './users/UpdateUser.component';
-export * from './users/UpdateUser.component';
+import { CreateVoucherComponent } from './vouchers/CreateVoucher.component';
+export * from './vouchers/CreateVoucher.component';
+import { ListVoucherComponent } from './vouchers/ListVoucher.component';
+export * from './vouchers/ListVoucher.component';
+import { UpdateVoucherComponent } from './vouchers/UpdateVoucher.component';
+export * from './vouchers/UpdateVoucher.component';
 
 
 import { BB4UIModule } from "../../bb4ui";
 
-import { routes } from './users/routes';
-/*export * from './users/routes';*/
+import { routes } from './vouchers/routes';
+/*export * from './vouchers/routes';*/
 
 /*export*/ const declarations = [
-  CreateUserComponent,
-  ListUserComponent,
-  UpdateUserComponent,
+  CreateVoucherComponent,
+  ListVoucherComponent,
+  UpdateVoucherComponent,
 ];
 
 /*export*/ const imports = [
@@ -46,7 +46,7 @@ import { routes } from './users/routes';
     ],
     exports: _exports
 })
-export class UsersModule {
+export class VouchersModule {
   constructor(
   ) {
   }

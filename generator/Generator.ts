@@ -120,6 +120,8 @@ export class Generator {
     } catch (e) {}
     // src
     this.copy(join(__dirname, "../templates/common.ts"), join(path, "src", "common.ts"));
+    this.copy(join(__dirname, "../templates/angular/Common.module.ts"), join(path, "src", "Common.module.ts"));
+
 
     this.template(
       schema,
