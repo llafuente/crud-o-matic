@@ -16,7 +16,7 @@ export interface IUser {
   
     salt: String;
   
-    roles: any[];
+    roles: String[];
   
     state: String;
   
@@ -28,23 +28,39 @@ export interface IUser {
 
 
 export class UserType implements IUser {
-  _id: string|any;
-  id?: string;
-  createdAt: Date;
-  updatedAt: Date;
+  _id: string|any = null;
+  id?: string = null;
+  createdAt: Date = null;
+  updatedAt: Date = null;
 
   
-  userlogin: String;
+    userlogin: String
+      
+    ;
   
-  password: String;
+    password: String
+      
+    ;
   
-  email: String;
+    email: String
+      
+    ;
   
-  salt: String;
+    salt: String
+      
+    ;
   
-  roles: any[];
+    roles: String[]
+      
+      = []
+      
+    ;
   
-  state: String;
+    state: String
+      
+      = "active"
+      
+    ;
   
   constructor() {}
 

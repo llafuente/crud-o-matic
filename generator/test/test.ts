@@ -18,21 +18,11 @@ const gen = new Generator();
 
 test.serial("user schema", t => {
 
-  const schema: Schema = Schema.fromJSON(
-    {
-      singular: "user",
-      backend: {
-        apiAccess: {
-          read: { allowed: true },
-        },
-      },
-    },
-    gen,
-  );
+  const schema: Schema = new Schema("user", gen);
 
   schema.addField(
     "userlogin",
-    new PrimiteType("Userlogin", PrimiteTypes.String, FrontControls.TEXT)
+    new PrimiteType("Userlogin", PrimiteTypes.String).setFrontControl(FrontControls.TEXT)
       .setUnique(true)
       .setMaxlength(32)
       .setRequired(true),
@@ -40,7 +30,7 @@ test.serial("user schema", t => {
 
   schema.addField(
     "password",
-    new PrimiteType("Password", PrimiteTypes.String, FrontControls.PASSWORD)
+    new PrimiteType("Password", PrimiteTypes.String).setFrontControl(FrontControls.PASSWORD)
       .setPermissions(
         new FieldPermissions(
           false, //read
@@ -54,12 +44,12 @@ test.serial("user schema", t => {
 
   schema.addField(
     "email",
-    new PrimiteType("Email", PrimiteTypes.String, FrontControls.EMAIL).setMaxlength(255).setRequired(true),
+    new PrimiteType("Email", PrimiteTypes.String).setFrontControl(FrontControls.EMAIL).setMaxlength(255).setRequired(true),
   );
 
   schema.addField(
     "salt",
-    new PrimiteType("Salt", PrimiteTypes.String, FrontControls.Hidden).setPermissions(
+    new PrimiteType("Salt", PrimiteTypes.String).setPermissions(
       new FieldPermissions(
         false, //read
         false, //list
@@ -73,20 +63,23 @@ test.serial("user schema", t => {
     "roles",
     new PrimiteType(
       "Roles",
-      PrimiteTypes.Array,
-      FrontControls.HTTP_DROPDOWN, // url: roles
+      PrimiteTypes.Array
+    ).setHTTPDropdown(
+      "http://localhost:3004/roles",
+      "roles",
+      "id",
+      "label",
     ).setItems(
       new PrimiteType(
         "Role",
         PrimiteTypes.String,
-        FrontControls.Hidden, // TOOD this should not be required...
       ).setRefTo("Role"),
     ),
   );
 
   schema.addField(
     "state",
-    new PrimiteType("State", PrimiteTypes.String, FrontControls.ENUM_DROPDOWN)
+    new PrimiteType("State", PrimiteTypes.String).setFrontControl(FrontControls.ENUM_DROPDOWN)
       .setEnumConstraint(["active", "banned"], ["Active", "Banned"])
       .setDefault("active"),
   );
@@ -146,10 +139,27 @@ test.serial("user schema", t => {
   t.not(gen.schemas[0].fields.state, null);
   t.not(gen.schemas[0].fields.data, null);
 
-  t.is(gen.schemas[0].backend.apiAccess.read.allowed, true);
-  t.is(gen.schemas[0].backend.apiAccess.create.allowed, false);
+  //t.is(gen.schemas[0].backend.apiAccess.read.allowed, true);
+  //t.is(gen.schemas[0].backend.apiAccess.create.allowed, false);
 });
 
+test.serial("role schema",t => {
+
+  const schema: Schema = new Schema("role", gen);
+  schema.domain = "http://localhost:3004";
+  schema.baseApiUrl = "";
+
+  schema.addField(
+    "label",
+    new PrimiteType("Etiqueta", PrimiteTypes.String).setFrontControl(FrontControls.TEXT),
+  );
+
+  // TODO add permissions
+
+  gen.addSchema(schema);
+
+  t.is(gen.schemas[1].singular, "role");
+});
 
 test.serial("voucher schema",t => {
 
@@ -159,37 +169,115 @@ test.serial("voucher schema",t => {
 
   schema.addField(
     "startAt",
-    new PrimiteType("Fecha de inicio", PrimiteTypes.Date, FrontControls.DATE),
+    new PrimiteType("Fecha de inicio", PrimiteTypes.Date).setFrontControl(FrontControls.DATE),
   );
   schema.addField(
     "endAt",
-    new PrimiteType("Fecha de fin", PrimiteTypes.Date, FrontControls.DATE),
+    new PrimiteType("Fecha de fin", PrimiteTypes.Date).setFrontControl(FrontControls.DATE),
   );
   schema.addField(
     "canDownload",
-    new PrimiteType("Permitir descargar manuales", PrimiteTypes.Boolean, FrontControls.CHECKBOX),
+    new PrimiteType("Permitir descargar manuales", PrimiteTypes.Boolean).setFrontControl(FrontControls.CHECKBOX),
   );
   schema.addField(
     "maxUses",
-    new PrimiteType("Máximos usos", PrimiteTypes.Number, FrontControls.INTEGER),
+    new PrimiteType("Máximos usos", PrimiteTypes.Number).setFrontControl(FrontControls.INTEGER),
   );
   schema.addField(
     "currentUses",
-    new PrimiteType("Usos", PrimiteTypes.Number, FrontControls.STATIC),
+    new PrimiteType("Usos", PrimiteTypes.Number).setFrontControl(FrontControls.STATIC),
   );
 
 
   gen.addSchema(schema);
 
-  t.is(gen.schemas[1].singular, "voucher");
+  t.is(gen.schemas[2].singular, "voucher");
+});
+
+test.serial("test schema",t => {
+
+  const schema: Schema = new Schema("test", gen);
+  schema.domain = "http://localhost:3004";
+  schema.baseApiUrl = "";
+
+  schema.addField(
+    "label",
+    new PrimiteType("Nombre del examén", PrimiteTypes.String)
+    .setMaxlength(255)
+    .setFrontControl(FrontControls.TEXT),
+  );
+  schema.addField(
+    "instructions",
+    new PrimiteType("Instrucciones", PrimiteTypes.String).setFrontControl(FrontControls.BIGTEXT),
+  );
+  schema.addField(
+    "randomizeAnwers",
+    new PrimiteType("Aleatorizar respuestas", PrimiteTypes.Boolean).setFrontControl(FrontControls.CHECKBOX),
+  );
+  schema.addField(
+    "blocks",
+    new PrimiteType("Bloques de conocimiento", PrimiteTypes.Array)
+    .setFrontControl(FrontControls.ARRAY)
+    .setItems(
+      new PrimiteType("Bloque de conocimiento", PrimiteTypes.Object)
+      .addProperty(
+        "name",
+        new PrimiteType("Nombre del bloque", PrimiteTypes.String)
+        .setMaxlength(255)
+        .setFrontControl(FrontControls.TEXT),
+      )
+      .addProperty(
+        "questions",
+        new PrimiteType("Preguntas", PrimiteTypes.Array)
+        .setFrontControl(FrontControls.ARRAY)
+        .setItems(
+          new PrimiteType("Pregunta", PrimiteTypes.Object)
+          .addProperty(
+            "questions",
+            new PrimiteType("Preguntas", PrimiteTypes.String)
+            .setFrontControl(FrontControls.TEXT),
+          )
+          .addProperty(
+            "answers",
+            new PrimiteType("Respuestas", PrimiteTypes.Array)
+            .setFrontControl(FrontControls.ARRAY)
+            .setItems(
+              new PrimiteType("Respuesta", PrimiteTypes.String)
+              .setFrontControl(FrontControls.TEXT),
+            )
+          )
+          .addProperty(
+            "correcAnswerIndex",
+            new PrimiteType("Pregunta correcta", PrimiteTypes.Number)
+            .setFrontControl(FrontControls.INTEGER)
+          )
+        )
+      )
+    ),
+  );
+
+  schema.addField(
+    "maxTime",
+    new PrimiteType("Tiempo máximo (minutos)", PrimiteTypes.Number).setFrontControl(FrontControls.INTEGER),
+  );
+
+  schema.addField(
+    "usersSubscribed",
+    new PrimiteType("Usuarios inscritos", PrimiteTypes.Number).setFrontControl(FrontControls.STATIC),
+  );
+
+  schema.addField(
+    "usersDone",
+    new PrimiteType("Usuarios que realizaron el examen", PrimiteTypes.Number).setFrontControl(FrontControls.STATIC),
+  );
+
+  gen.addSchema(schema);
+
+  t.is(gen.schemas[2].singular, "voucher");
 });
 
 test.serial("generation", t => {
-  gen.generateAll(generatedPath, join(generatedPath, "server"), join(generatedPath, "client"));
-
-  // generate inside Angular 2 project
-  gen.generateClientAt(gen.schemas[0], join(__dirname, "..", "..", "angular", "src", "generated"));
-  gen.generateClientAt(gen.schemas[1], join(__dirname, "..", "..", "angular", "src", "generated"));
+  gen.generateAll(generatedPath, join(generatedPath, "server"), join(__dirname, "..", "..", "angular", "src", "generated"));
 
   t.pass();
 });

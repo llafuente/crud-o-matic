@@ -44,7 +44,6 @@ export class Generator {
 
   generateServerAt(schema: Schema, path: string) {
     try {
-      mkdirp.sync(path);
       mkdirp.sync(join(path, "src", schema.plural));
       mkdirp.sync(join(path, "src", "models"));
     } catch (e) {}

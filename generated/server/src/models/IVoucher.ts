@@ -17,10 +17,10 @@ export interface IVoucher {
 }
 
 export class VoucherType implements IVoucher {
-  _id: string | any;
-  id?: string;
-  createdAt: Date;
-  updatedAt: Date;
+  _id: string | any = null;
+  id?: string = null;
+  createdAt: Date = null;
+  updatedAt: Date = null;
 
   startAt: Date;
 

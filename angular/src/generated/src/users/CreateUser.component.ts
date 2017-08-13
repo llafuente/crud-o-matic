@@ -62,7 +62,7 @@ import { UserType } from '../models/IUser';
     name="roles"
     [(ngModel)]="entity.roles"
     #rolesModel="ngModel">
-    <option *ngFor="let row of " [ngValue]="">row.</option>
+    <option *ngFor="let row of roles.list" [ngValue]="id">{{row.label}}</option>
     </select>
 
     <bb-errors [model]="rolesModel"></bb-errors>
@@ -95,7 +95,8 @@ export class CreateUserComponent extends BaseComponent {
   id: number;
   entity: UserType = new UserType();
 
-  stateValues: {id: string, label: string}[] = [{"id":"active","label":"Active"},{"id":"banned","label":"Banned"}]
+  roles: any;
+stateValues: {id: string, label: string}[] = [{"id":"active","label":"Active"},{"id":"banned","label":"Banned"}]
 
   constructor(
     injector: Injector,
@@ -111,6 +112,17 @@ export class CreateUserComponent extends BaseComponent {
    */
   ngOnInit(): void {
     // this.loading
+    
+this.http.get("http://localhost:3004/roles")
+.subscribe((response: any) => {
+  console.log("<-- GET: http://localhost:3004/roles", JSON.stringify(response, null, 2));
+
+  this.roles = response;
+
+}, (errorResponse: Response) => {
+  console.log("<-- GET Error: http://localhost:3004/roles", errorResponse);
+});
+
   }
 
   save() {

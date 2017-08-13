@@ -13,8 +13,14 @@ import { toJSON as UserToJSON } from "./users/routerUser";
 import routerUser from "./users/routerUser";
 import { IUserModel } from "./models/User";
 
+import routerRole from "./roles/routerRole";
+import { IRoleModel } from "./models/Role";
+
 import routerVoucher from "./vouchers/routerVoucher";
 import { IVoucherModel } from "./models/Voucher";
+
+import routerTest from "./tests/routerTest";
+import { ITestModel } from "./models/Test";
 
 // declare our own interface for request to save our variables
 export interface Request extends express.Request {
@@ -24,9 +30,17 @@ export interface Request extends express.Request {
   // users: IUserModel[];
   users: Pagination<IUserModel>;
 
+  role: IRoleModel;
+  // roles: IRoleModel[];
+  roles: Pagination<IRoleModel>;
+
   voucher: IVoucherModel;
   // vouchers: IVoucherModel[];
   vouchers: Pagination<IVoucherModel>;
+
+  test: ITestModel;
+  // tests: ITestModel[];
+  tests: Pagination<ITestModel>;
 }
 
 const mongoose = require("mongoose");
@@ -159,7 +173,11 @@ app
 
 app.use(routerUser);
 
+app.use(routerRole);
+
 app.use(routerVoucher);
+
+app.use(routerTest);
 
 // end: generated schemas routes
 

@@ -33,6 +33,7 @@ export enum FrontControls {
   TEXTAREA = "TEXTAREA",
   CHECKBOX = "CHECKBOX",
   DATE = "DATE",
+  ARRAY = "ARRAY",
   STATIC = "STATIC",
 }
 
@@ -61,7 +62,7 @@ export class PrimiteType {
   items: PrimiteType = null;
   properties: { [s: string]: PrimiteType } = null;
 
-  defaults: any = null;
+  defaults: any = undefined;
   enums: string[] = null;
   labels: string[] = null;
   unique: boolean = false;
@@ -81,10 +82,44 @@ export class PrimiteType {
   permissions: FieldPermissions = new FieldPermissions();
   refTo: string;
 
-  constructor(label: string, type: PrimiteTypes, frontControl: FrontControls) {
+  frontData: any;
+
+  constructor(label: string, type: PrimiteTypes) {
     this.label = label;
     this.type = type;
-    this.frontControl = frontControl;
+    this.frontControl = FrontControls.Hidden;
+    this.frontData = {};
+
+    if (type == PrimiteTypes.Array) {
+      this.setDefault([]);
+    }
+  }
+
+  setFrontControl(control: FrontControls): PrimiteType {
+    if (!control) {
+      return this;
+    }
+
+    switch (control) {
+      case FrontControls.HTTP_DROPDOWN:
+        throw new Error("use setHTTPDropdown instead");
+      default:
+        this.frontControl = control;
+    }
+
+    return this;
+  }
+  // TODO maybe add filters, could be in the URL
+  setHTTPDropdown(srcUrl: string, declaration: string, srcId: string, srcLabel: string): PrimiteType {
+    this.frontControl = FrontControls.HTTP_DROPDOWN;
+
+    this.frontData.srcUrl = srcUrl;
+    this.frontData.declaration = declaration
+    this.frontData.srcModel = declaration + ".list";
+    this.frontData.srcId = srcId;
+    this.frontData.srcLabel = srcLabel;
+
+    return this;
   }
 
   static fromJSON(json: PrimiteType): PrimiteType {
@@ -103,7 +138,8 @@ export class PrimiteType {
       throw new Error("PrimiteType: label is required");
     }
 
-    return new PrimiteType(json.label, json.type, json.frontControl || FrontControls.TEXT)
+    return new PrimiteType(json.label, json.type)
+      .setFrontControl(json.frontControl)
       .setPermissions(json.permissions || null)
       .setItems(json.items || null)
       .addProperties(json.properties || null)
@@ -139,6 +175,14 @@ export class PrimiteType {
     } else {
       this.properties = null;
     }
+
+    return this;
+  }
+
+  addProperty(name: string, type: PrimiteType): PrimiteType {
+    this.properties = this.properties || {};
+
+    this.properties[name] = type;
 
     return this;
   }
@@ -224,10 +268,17 @@ export class PrimiteType {
 
   getTypeScriptType() {
     switch (this.type) {
+      case PrimiteTypes.Object:
+        const t = [];
+        for (let i in this.properties) {
+          t.push(i + ":" + this.properties[i].getTypeScriptType());
+        }
+
+        return "{" + t.join(",\n") + "}";
       case PrimiteTypes.AutoPrimaryKey:
         return PrimiteTypes.Number;
       case PrimiteTypes.Array:
-        return "any[]";
+        return `${this.items.getTypeScriptType()}[]`;
       default:
         return this.type;
     }
@@ -237,6 +288,17 @@ export class PrimiteType {
     const d = [];
 
     switch (this.type) {
+      case PrimiteTypes.Object:
+        d.push(`type: Object`);
+
+        const t = [];
+        for (let i in this.properties) {
+          t.push(i + ":" + this.properties[i].getMongooseType());
+        }
+
+        d.push(`properties: {${t.join(",\n")}}`);
+
+        break;
       case PrimiteTypes.AutoPrimaryKey:
         d.push(`type: ${PrimiteTypes.Number}`);
         break;
@@ -253,7 +315,7 @@ export class PrimiteType {
       d.push(`unique: ${this.unique}`);
     }
 
-    if (this.defaults) {
+    if (this.defaults !== undefined) {
       d.push(`default: ${JSON.stringify(this.defaults)}`);
     }
 
@@ -411,12 +473,40 @@ export class FrontEndSchema {
     for (let fieldName in this.parentSchema.fields) {
       const field = this.parentSchema.fields[fieldName];
       switch(field.frontControl) {
+        case FrontControls.HTTP_DROPDOWN:
+          controls.push(field.frontData.declaration + ": any;");
+          break;
         case FrontControls.ENUM_DROPDOWN:
           const values = field.enums.map((id, idx) => {
             return {id: id, label: field.labels[idx]};
           });
 
           controls.push(fieldName + "Values: {id: string, label: string}[] = " + JSON.stringify(values));
+          break;
+        default:
+      }
+    }
+
+    return controls.join("\n");
+  }
+
+  getCreateInitialization(): string {
+    const controls = [];
+    for (let fieldName in this.parentSchema.fields) {
+      const field = this.parentSchema.fields[fieldName];
+      switch(field.frontControl) {
+        case FrontControls.HTTP_DROPDOWN:
+          controls.push(`
+this.http.get("${field.frontData.srcUrl}")
+.subscribe((response: any) => {
+  console.log("<-- GET: ${field.frontData.srcUrl}", JSON.stringify(response, null, 2));
+
+  this.${field.frontData.declaration} = response;
+
+}, (errorResponse: Response) => {
+  console.log("<-- GET Error: ${field.frontData.srcUrl}", errorResponse);
+});
+`);
           break;
         default:
       }
@@ -447,6 +537,17 @@ export class FrontEndSchema {
     }
   }
   getFieldControlHTML(fieldName:string, field: PrimiteType, ngModel: string[] = ["entity"], indexes: string[] = []): string {
+    // if it's an object, don't need front type, just get all fields
+    if (field.type == PrimiteTypes.Object) {
+      let t = [];
+      for (let i in field.properties) {
+        t.push(this.getFieldControlHTML(i, field.properties[i], ngModel.slice(), indexes));
+      }
+
+      return t.join("\n");
+    }
+
+    // otherwise use front control
     const tpl = field.frontControl.toString().toLocaleLowerCase();
 
     const tplCompiled = ejs.compile(fs.readFileSync(path.join(__dirname, "..", "templates", "angular", "controls", `${tpl}.html`), 'utf8'));
@@ -455,14 +556,31 @@ export class FrontEndSchema {
     let name = fieldName;
     let id = "id-" + fieldName;
     indexes.forEach((index) => {
-      name += "-{{" + index + "}}"
-      fieldName += "-{{" + index + "}}"
+      name += "_{{" + index + "}}"
+      fieldName += "_{{" + index + "}}"
+      id += "_{{" + index + "}}"
     });
     let srcModel = null;
     let srcId = null;
     let srcLabel = null;
+    let indexName = null;
+    let childControls = null;
 
     switch(field.frontControl) {
+      case FrontControls.ARRAY:
+        indexName = fieldName + "Id";
+        indexes.push(indexName);
+        let ngModel2 = ngModel.slice();
+        ngModel2.pop();
+        ngModel2.push(fieldName + `[${indexName}]`);
+        childControls = this.getFieldControlHTML(null, field.items, ngModel2, indexes);
+        indexes.pop();
+        break;
+      case FrontControls.HTTP_DROPDOWN:
+        srcModel = field.frontData.srcModel;
+        srcId = field.frontData.srcId;
+        srcLabel = field.frontData.srcLabel;
+      break;
       case FrontControls.ENUM_DROPDOWN:
 
         srcModel = fieldName + "Values";
@@ -477,8 +595,9 @@ export class FrontEndSchema {
       id: id,
       name: name,
       ngModel: ngModel.join("."),
-      indexName: null,
-      childControls: null,
+      safeNgModel: ngModel.join("?."),
+      indexName: indexName,
+      childControls: childControls,
 
       srcUrl: null,
       srcModel: srcModel,
@@ -562,7 +681,7 @@ export class Schema {
 
   addField(key: string, field: PrimiteType) {
     this.fields = this.fields || {};
-    this.fields[key] = PrimiteType.fromJSON(field);
+    this.fields[key] = field;
   }
 
   forEachBackEndField(cb) {

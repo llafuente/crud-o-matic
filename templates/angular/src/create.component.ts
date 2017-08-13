@@ -42,6 +42,7 @@ export class <%= frontend.createComponent %> extends BaseComponent {
    */
   ngOnInit(): void {
     // this.loading
+    <%- frontend.getCreateInitialization() %>
   }
 
   save() {

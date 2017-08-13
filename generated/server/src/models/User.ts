@@ -33,7 +33,9 @@ export const UserSchema = new mongoose.Schema(
       type: Array,
       items: {
         type: String,
+        default: null,
       },
+      default: [],
     },
 
     state: {

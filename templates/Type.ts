@@ -18,13 +18,17 @@ export interface <%= interfaceName %> {
 
 
 export class <%= typeName %> implements <%= interfaceName %> {
-  _id: string|any;
-  id?: string;
-  createdAt: Date;
-  updatedAt: Date;
+  _id: string|any = null;
+  id?: string = null;
+  createdAt: Date = null;
+  updatedAt: Date = null;
 
   <% forEachBackEndField((key, PrimiteType) => { %>
-  <%= key %>: <%- PrimiteType.getTypeScriptType() %>;
+    <%= key %>: <%- PrimiteType.getTypeScriptType() %>
+      <% if (PrimiteType.defaults !== undefined) { %>
+      = <%- JSON.stringify(PrimiteType.defaults) %>
+      <% } %>
+    ;
   <% }) %>
   constructor() {}
 

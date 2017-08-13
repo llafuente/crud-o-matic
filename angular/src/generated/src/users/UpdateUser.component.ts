@@ -62,7 +62,7 @@ import { UserType } from '../models/IUser';
     name="roles"
     [(ngModel)]="entity.roles"
     #rolesModel="ngModel">
-    <option *ngFor="let row of " [ngValue]="">row.</option>
+    <option *ngFor="let row of roles.list" [ngValue]="id">{{row.label}}</option>
     </select>
 
     <bb-errors [model]="rolesModel"></bb-errors>
@@ -95,7 +95,8 @@ export class UpdateUserComponent extends BaseComponent {
   id: string;
   entity: UserType = new UserType();
 
-  stateValues: {id: string, label: string}[] = [{"id":"active","label":"Active"},{"id":"banned","label":"Banned"}]
+  roles: any;
+stateValues: {id: string, label: string}[] = [{"id":"active","label":"Active"},{"id":"banned","label":"Banned"}]
 
   constructor(
     injector: Injector,

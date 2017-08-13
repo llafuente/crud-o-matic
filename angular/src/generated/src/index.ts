@@ -11,15 +11,25 @@ export * from './Root.component';
 import { UsersModule } from './Users.module';
 export * from './Users.module';
 
+import { RolesModule } from './Roles.module';
+export * from './Roles.module';
+
 import { VouchersModule } from './Vouchers.module';
 export * from './Vouchers.module';
+
+import { TestsModule } from './Tests.module';
+export * from './Tests.module';
 
 
 export const imports = [
 
   UsersModule,
 
+  RolesModule,
+
   VouchersModule,
+
+  TestsModule,
 
 ];
 
@@ -30,7 +40,11 @@ export const _exports = [
 
   UsersModule,
 
+  RolesModule,
+
   VouchersModule,
+
+  TestsModule,
 
 ];
 

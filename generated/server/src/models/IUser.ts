@@ -13,7 +13,7 @@ export interface IUser {
 
   salt: String;
 
-  roles: any[];
+  roles: String[];
 
   state: String;
 
@@ -21,10 +21,10 @@ export interface IUser {
 }
 
 export class UserType implements IUser {
-  _id: string | any;
-  id?: string;
-  createdAt: Date;
-  updatedAt: Date;
+  _id: string | any = null;
+  id?: string = null;
+  createdAt: Date = null;
+  updatedAt: Date = null;
 
   userlogin: String;
 
@@ -34,9 +34,9 @@ export class UserType implements IUser {
 
   salt: String;
 
-  roles: any[];
+  roles: String[] = [];
 
-  state: String;
+  state: String = "active";
 
   constructor() {}
 
