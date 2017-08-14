@@ -2,7 +2,7 @@ import test from "ava";
 import { join } from "path";
 
 import { Generator } from "../";
-import { Schema, BackEndSchema, PrimiteType, PrimiteTypes, FrontControls, FieldPermissions } from "../Schema";
+import { Schema, SchemaBack, SchemaFront, Field, FieldType, FrontControls, FieldPermissions } from "../Schema";
 
 const generatedPath = join(__dirname, "..", "..", "generated");
 
@@ -17,71 +17,62 @@ test(async (t) => {
 const gen = new Generator();
 
 test.serial("user schema", t => {
-
   const schema: Schema = new Schema("user", gen);
 
   schema.addField(
     "userlogin",
-    new PrimiteType("Userlogin", PrimiteTypes.String).setFrontControl(FrontControls.TEXT)
+    new Field("Userlogin", FieldType.String)
+      .setFrontControl(FrontControls.TEXT)
       .setUnique(true)
       .setMaxlength(32)
-      .setRequired(true),
+      .setRequired(true)
   );
 
   schema.addField(
     "password",
-    new PrimiteType("Password", PrimiteTypes.String).setFrontControl(FrontControls.PASSWORD)
+    new Field("Password", FieldType.String)
+      .setFrontControl(FrontControls.PASSWORD)
       .setPermissions(
         new FieldPermissions(
           false, //read
           false, //list
           true, //create
-          true, //update
-        ),
+          true //update
+        )
       )
-      .setRequired(true),
+      .setRequired(true)
   );
 
   schema.addField(
     "email",
-    new PrimiteType("Email", PrimiteTypes.String).setFrontControl(FrontControls.EMAIL).setMaxlength(255).setRequired(true),
+    new Field("Email", FieldType.String).setFrontControl(FrontControls.EMAIL).setMaxlength(255).setRequired(true)
   );
 
   schema.addField(
     "salt",
-    new PrimiteType("Salt", PrimiteTypes.String).setPermissions(
+    new Field("Salt", FieldType.String).setPermissions(
       new FieldPermissions(
         false, //read
         false, //list
         false, //create
-        false, //update
-      ),
-    ),
+        false //update
+      )
+    )
   );
 
   schema.addField(
     "roles",
-    new PrimiteType(
-      "Roles",
-      PrimiteTypes.Array
-    ).setHTTPDropdown(
-      "http://localhost:3004/roles",
-      "roles",
-      "id",
-      "label",
-    ).setItems(
-      new PrimiteType(
-        "Role",
-        PrimiteTypes.String,
-      ).setRefTo("Role"),
-    ),
+    new Field("Roles", FieldType.Array)
+      .setHTTPDropdown("http://localhost:3004/roles", "roles", "id", "label")
+      .setItems(new Field("Role", FieldType.String).setRefTo("Role"))
   );
 
   schema.addField(
     "state",
-    new PrimiteType("State", PrimiteTypes.String).setFrontControl(FrontControls.ENUM_DROPDOWN)
+    new Field("State", FieldType.String)
+      .setFrontControl(FrontControls.ENUM_DROPDOWN)
       .setEnumConstraint(["active", "banned"], ["Active", "Banned"])
-      .setDefault("active"),
+      .setDefault("active")
   );
 
   /*
@@ -127,7 +118,8 @@ test.serial("user schema", t => {
   t.is(gen.schemas[0].plural, "users");
   t.is(gen.schemas[0].singularUc, "User");
   t.is(gen.schemas[0].interfaceName, "IUser");
-  t.true(gen.schemas[0].backend instanceof BackEndSchema);
+  t.true(gen.schemas[0].backend instanceof SchemaBack);
+  t.true(gen.schemas[0].frontend instanceof SchemaFront);
   t.not(gen.schemas[0].backend.apiAccess, null);
   t.not(gen.schemas[0].fields, null);
 
@@ -143,16 +135,12 @@ test.serial("user schema", t => {
   //t.is(gen.schemas[0].backend.apiAccess.create.allowed, false);
 });
 
-test.serial("role schema",t => {
-
+test.serial("role schema", t => {
   const schema: Schema = new Schema("role", gen);
   schema.domain = "http://localhost:3004";
   schema.baseApiUrl = "";
 
-  schema.addField(
-    "label",
-    new PrimiteType("Etiqueta", PrimiteTypes.String).setFrontControl(FrontControls.TEXT),
-  );
+  schema.addField("label", new Field("Etiqueta", FieldType.String).setFrontControl(FrontControls.TEXT));
 
   // TODO add permissions
 
@@ -161,114 +149,87 @@ test.serial("role schema",t => {
   t.is(gen.schemas[1].singular, "role");
 });
 
-test.serial("voucher schema",t => {
-
+test.serial("voucher schema", t => {
   const schema: Schema = new Schema("voucher", gen);
   schema.domain = "http://localhost:3004";
   schema.baseApiUrl = "";
 
-  schema.addField(
-    "startAt",
-    new PrimiteType("Fecha de inicio", PrimiteTypes.Date).setFrontControl(FrontControls.DATE),
-  );
-  schema.addField(
-    "endAt",
-    new PrimiteType("Fecha de fin", PrimiteTypes.Date).setFrontControl(FrontControls.DATE),
-  );
+  schema.addField("startAt", new Field("Fecha de inicio", FieldType.Date).setFrontControl(FrontControls.DATE));
+  schema.addField("endAt", new Field("Fecha de fin", FieldType.Date).setFrontControl(FrontControls.DATE));
   schema.addField(
     "canDownload",
-    new PrimiteType("Permitir descargar manuales", PrimiteTypes.Boolean).setFrontControl(FrontControls.CHECKBOX),
+    new Field("Permitir descargar manuales", FieldType.Boolean).setFrontControl(FrontControls.CHECKBOX)
   );
-  schema.addField(
-    "maxUses",
-    new PrimiteType("Máximos usos", PrimiteTypes.Number).setFrontControl(FrontControls.INTEGER),
-  );
-  schema.addField(
-    "currentUses",
-    new PrimiteType("Usos", PrimiteTypes.Number).setFrontControl(FrontControls.STATIC),
-  );
-
+  schema.addField("maxUses", new Field("Máximos usos", FieldType.Number).setFrontControl(FrontControls.INTEGER));
+  schema.addField("currentUses", new Field("Usos", FieldType.Number).setFrontControl(FrontControls.STATIC));
 
   gen.addSchema(schema);
 
   t.is(gen.schemas[2].singular, "voucher");
 });
 
-test.serial("test schema",t => {
-
+test.serial("test schema", t => {
   const schema: Schema = new Schema("test", gen);
   schema.domain = "http://localhost:3004";
   schema.baseApiUrl = "";
 
   schema.addField(
     "label",
-    new PrimiteType("Nombre del examén", PrimiteTypes.String)
-    .setMaxlength(255)
-    .setFrontControl(FrontControls.TEXT),
+    new Field("Nombre del examén", FieldType.String).setMaxlength(255).setFrontControl(FrontControls.TEXT)
   );
-  schema.addField(
-    "instructions",
-    new PrimiteType("Instrucciones", PrimiteTypes.String).setFrontControl(FrontControls.BIGTEXT),
-  );
+  schema.addField("instructions", new Field("Instrucciones", FieldType.String).setFrontControl(FrontControls.BIGTEXT));
   schema.addField(
     "randomizeAnwers",
-    new PrimiteType("Aleatorizar respuestas", PrimiteTypes.Boolean).setFrontControl(FrontControls.CHECKBOX),
+    new Field("Aleatorizar respuestas", FieldType.Boolean).setFrontControl(FrontControls.CHECKBOX)
   );
   schema.addField(
     "blocks",
-    new PrimiteType("Bloques de conocimiento", PrimiteTypes.Array)
-    .setFrontControl(FrontControls.ARRAY)
-    .setItems(
-      new PrimiteType("Bloque de conocimiento", PrimiteTypes.Object)
-      .addProperty(
-        "name",
-        new PrimiteType("Nombre del bloque", PrimiteTypes.String)
-        .setMaxlength(255)
-        .setFrontControl(FrontControls.TEXT),
-      )
-      .addProperty(
-        "questions",
-        new PrimiteType("Preguntas", PrimiteTypes.Array)
-        .setFrontControl(FrontControls.ARRAY)
-        .setItems(
-          new PrimiteType("Pregunta", PrimiteTypes.Object)
+    new Field("Bloques de conocimiento", FieldType.Array)
+      .setFrontControl(FrontControls.ARRAY)
+      .setItems(
+        new Field("Bloque de conocimiento", FieldType.Object)
+          .addProperty(
+            "name",
+            new Field("Nombre del bloque", FieldType.String).setMaxlength(255).setFrontControl(FrontControls.TEXT)
+          )
           .addProperty(
             "questions",
-            new PrimiteType("Preguntas", PrimiteTypes.String)
-            .setFrontControl(FrontControls.TEXT),
+            new Field("Preguntas", FieldType.Array)
+              .setFrontControl(FrontControls.ARRAY)
+              .setItems(
+                new Field("Pregunta", FieldType.Object)
+                  .addProperty(
+                    "questions",
+                    new Field("Preguntas", FieldType.String).setFrontControl(FrontControls.TEXT)
+                  )
+                  .addProperty(
+                    "answers",
+                    new Field("Respuestas", FieldType.Array)
+                      .setFrontControl(FrontControls.ARRAY)
+                      .setItems(new Field("Respuesta", FieldType.String).setFrontControl(FrontControls.TEXT))
+                  )
+                  .addProperty(
+                    "correcAnswerIndex",
+                    new Field("Pregunta correcta", FieldType.Number).setFrontControl(FrontControls.INTEGER)
+                  )
+              )
           )
-          .addProperty(
-            "answers",
-            new PrimiteType("Respuestas", PrimiteTypes.Array)
-            .setFrontControl(FrontControls.ARRAY)
-            .setItems(
-              new PrimiteType("Respuesta", PrimiteTypes.String)
-              .setFrontControl(FrontControls.TEXT),
-            )
-          )
-          .addProperty(
-            "correcAnswerIndex",
-            new PrimiteType("Pregunta correcta", PrimiteTypes.Number)
-            .setFrontControl(FrontControls.INTEGER)
-          )
-        )
       )
-    ),
   );
 
   schema.addField(
     "maxTime",
-    new PrimiteType("Tiempo máximo (minutos)", PrimiteTypes.Number).setFrontControl(FrontControls.INTEGER),
+    new Field("Tiempo máximo (minutos)", FieldType.Number).setFrontControl(FrontControls.INTEGER)
   );
 
   schema.addField(
     "usersSubscribed",
-    new PrimiteType("Usuarios inscritos", PrimiteTypes.Number).setFrontControl(FrontControls.STATIC),
+    new Field("Usuarios inscritos", FieldType.Number).setFrontControl(FrontControls.STATIC)
   );
 
   schema.addField(
     "usersDone",
-    new PrimiteType("Usuarios que realizaron el examen", PrimiteTypes.Number).setFrontControl(FrontControls.STATIC),
+    new Field("Usuarios que realizaron el examen", FieldType.Number).setFrontControl(FrontControls.STATIC)
   );
 
   gen.addSchema(schema);
@@ -277,7 +238,11 @@ test.serial("test schema",t => {
 });
 
 test.serial("generation", t => {
-  gen.generateAll(generatedPath, join(generatedPath, "server"), join(__dirname, "..", "..", "angular", "src", "generated"));
+  gen.generateAll(
+    generatedPath,
+    join(generatedPath, "server"),
+    join(__dirname, "..", "..", "angular", "src", "generated")
+  );
 
   t.pass();
 });
