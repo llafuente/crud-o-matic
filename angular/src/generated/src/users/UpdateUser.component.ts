@@ -59,7 +59,7 @@ import { UserType } from "../models/IUser";
     bb-child
     id="id-roles"
     name="roles"
-    [(ngModel)]="entity.roles[rolesId]"
+    [(ngModel)]="entity.roles"
     #roles="ngModel">
     <option *ngFor="let row of roles.list" [ngValue]="id">{{row.label}}</option>
     </select>

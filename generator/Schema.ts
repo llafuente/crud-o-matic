@@ -119,7 +119,7 @@ export class Schema {
   }
 
   eachField(cb: IFieldCallback) {
-    this.root.each(cb);
+    this.root.each(cb, true);
   }
 
   forEachFrontEndField(cb: IFieldCallback) {

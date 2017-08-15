@@ -124,9 +124,14 @@ test.serial("user schema", t => {
   t.not(gen.schemas[0].root, null);
 
   t.not(gen.schemas[0].root.properties.userlogin, null);
+  t.is(gen.schemas[0].root.properties.userlogin.name, "userlogin");
+  t.is(gen.schemas[0].root.properties.userlogin.getPath().join("."), "entity.userlogin");
   t.not(gen.schemas[0].root.properties.password, null);
+  t.is(gen.schemas[0].root.properties.password.name, "password");
   t.not(gen.schemas[0].root.properties.salt, null);
   t.not(gen.schemas[0].root.properties.roles, null);
+  t.is(gen.schemas[0].root.properties.roles.getPath().join("."), "entity.roles");
+  t.is(gen.schemas[0].root.properties.roles.items.getPath().join("."), "entity.roles[rolesId]");
   t.not(gen.schemas[0].root.properties.permissions, null);
   t.not(gen.schemas[0].root.properties.state, null);
   t.not(gen.schemas[0].root.properties.data, null);
@@ -237,10 +242,19 @@ test.serial("test schema", t => {
   t.is(gen.schemas[2].singular, "voucher");
 });
 
-test.serial("santity checks", t => {
-  gen.schemas[0].eachField((fieldName, field) => {
-    console.log(field);
-    t.not(field.name, null);
+test.serial("santity smoke checks", t => {
+
+  gen.schemas.forEach((schema) => {
+    console.log("\n\n\n\n\n");
+    schema.eachField((fieldName, field) => {
+      console.log(field.name, field.getPath());
+      if (field.parentField != null && field.parentField.type != FieldType.Array) {
+        t.not(field.name, null);
+      }
+
+      t.is(field.getPath().join(".").indexOf("undefined"), -1);
+      t.is(field.getPath().join(".").indexOf("null"), -1);
+    });
   });
 });
 

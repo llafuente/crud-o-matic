@@ -345,6 +345,7 @@ export class Field {
       parentFields.push(t);
       t = t.parentField;
     }
+    parentFields.push(t);
 
     return parentFields;
   }
@@ -397,16 +398,19 @@ export class Field {
 
 
   getPath(): string[] {
-    const model = [
-      //this.schema.singular
-      "entity"
-    ];
+    const model = [];
+
     const parents = this.getParentFields().reverse();
     for (let field of parents) {
-      if (field.type === FieldType.Array) {
-        model.push(`${this.name}[${field.getIndexName()}]`)
-      } else {
-        model.push(this.name);
+      if (field.parentField && field.parentField.type === FieldType.Array) {
+        let lastModel = model.pop();
+        lastModel += `[${field.parentField.getIndexName()}]`
+        model.push(lastModel)
+      }
+
+      // this happens for string[] for example
+      if (field.name !== null) {
+        model.push(field.name);
       }
     }
 
