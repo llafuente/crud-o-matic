@@ -7,9 +7,7 @@ export interface <%= interfaceName %> {
   createdAt: Date;
   updatedAt: Date;
 
-  <% forEachBackEndField((key, PrimiteType) => { %>
-    <%= key %>: <%- PrimiteType.getTypeScriptType() %>;
-  <% }) %>
+  <%- root.getTypeScriptType(false) %>;
 
   <% if (interfaceName == "IUser") { %>
     authenticate(password: string);
@@ -23,20 +21,20 @@ export class <%= typeName %> implements <%= interfaceName %> {
   createdAt: Date = null;
   updatedAt: Date = null;
 
-  <% forEachBackEndField((key, PrimiteType) => { %>
-    <%= key %>: <%- PrimiteType.getTypeScriptType() %>
-      <% if (PrimiteType.defaults !== undefined) { %>
-      = <%- JSON.stringify(PrimiteType.defaults) %>
-      <% } %>
-    ;
-  <% }) %>
+  <%- root.getTypeScriptType(true) %>;
   constructor() {}
 
   static fromJSON(obj: <%= interfaceName %>|any): <%= typeName %> {
     const r = new <%= typeName %>();
-  <% forEachBackEndField((key, PrimiteType) => { %>
-    r.<%= key %> = obj.<%= key %>;
-  <% }) %>
+<%
+    forEachBackEndField((fieldName, field) => {
+      if (field.parentField != null) {
+%>
+    r.<%= fieldName %> = obj.<%= fieldName %>;
+<%
+      }
+    }, false)
+%>
     return r;
   }
 

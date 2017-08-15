@@ -7,10 +7,10 @@
   name="<%= name %>"
   [(ngModel)]="<%= ngModel %>"
   [showWeeks]="false"
-  #<%= name %>Model="ngModel"></datepicker>
+  #<%= modelName %>="ngModel"></datepicker>
 <!--
   [minDate]="minDate"
   [showWeeks]="true"
   [dateDisabled]="dateDisabled"
 -->
-<bb-errors [model]="<%= name %>Model"></bb-errors>
+<bb-errors [model]="<%= modelName %>"></bb-errors>

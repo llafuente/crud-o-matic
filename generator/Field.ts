@@ -1,9 +1,16 @@
 import { FieldPermissions } from "./FieldPermissions";
 import { FieldType } from "./FieldType";
 import { FrontControls } from "./FrontControls";
+import { Schema } from "./Schema";
+
+export interface IFieldCallback {
+  (fieldName: string, field: Field): void
+};
 
 export class Field {
-  parent: Field = null;
+  parentField: Field = null;
+  schema: Schema = null;
+  name: string;
 
   label: string;
   type: FieldType;
@@ -71,7 +78,7 @@ export class Field {
 
     return this;
   }
-
+/*
   static fromJSON(json: Field): Field {
     if (json.type === undefined) {
       console.error(json);
@@ -88,10 +95,9 @@ export class Field {
       throw new Error("Field: label is required");
     }
 
-    return new Field(json.label, json.type)
+    const field:Field =  new Field(json.label, json.type)
       .setFrontControl(json.frontControl)
       .setPermissions(json.permissions || null)
-      .setItems(json.items || null)
       .addProperties(json.properties || null)
       .setEnumConstraint(json.enums || null, json.labels || null)
       .setDefault(json.defaults || null)
@@ -103,19 +109,26 @@ export class Field {
       .setMax(json.max || null)
       .setLowercase(json.lowercase || false)
       .setUppercase(json.uppercase || false);
-  }
 
+    if (json.items) {
+      field.setItems(Field.fromJSON(json.items))
+    }
+
+    return field;
+  }
+*/
   setItems(items: Field): Field {
     if (this.type == FieldType.Array && items) {
-      this.items = Field.fromJSON(items);
-      this.items.parent = this;
+      this.items = items;
+      this.items.parentField = this;
+      this.items.schema = this.schema;
     } else {
       this.items = null;
     }
 
     return this;
   }
-
+/*
   addProperties(properties: { [s: string]: Field }): Field {
     if (this.type == FieldType.Object && properties) {
       // now cast every property
@@ -129,12 +142,14 @@ export class Field {
 
     return this;
   }
-
+*/
   addProperty(name: string, type: Field): Field {
     this.properties = this.properties || {};
 
     this.properties[name] = type;
-    type.parent = this;
+    type.parentField = this;
+    type.schema = this.schema;
+    type.name = name;
 
     return this;
   }
@@ -218,27 +233,38 @@ export class Field {
     return this;
   }
 
-  getTypeScriptType() {
+  getTypeScriptType(defaults: boolean): string {
+    let type;
     switch (this.type) {
       case FieldType.Object:
         const t = [];
         for (let i in this.properties) {
-          t.push(i + ":" + this.properties[i].getTypeScriptType());
+          t.push(i + ":" + this.properties[i].getTypeScriptType(defaults));
+        }
+
+        if (this.parentField == null) {
+          return t.join(";\n");
         }
 
         return "{" + t.join(",\n") + "}";
-      /*
+/*
       case FieldType.AutoPrimaryKey:
         return FieldType.Number;
 */
       case FieldType.Array:
-        return `${this.items.getTypeScriptType()}[]`;
+        type = `${this.items.getTypeScriptType(false)}[]`;
+        break;
       default:
-        return this.type;
+        type = this.type;
     }
+    if (defaults && this.defaults !== undefined) {
+      type += ` = ${JSON.stringify(this.defaults)}`;
+    }
+
+    return type;
   }
 
-  getMongooseType() {
+  getMongooseType(): string {
     const d = [];
 
     switch (this.type) {
@@ -248,6 +274,10 @@ export class Field {
         const t = [];
         for (let i in this.properties) {
           t.push(i + ":" + this.properties[i].getMongooseType());
+        }
+
+        if (this.parentField == null) {
+          return t.join(",\n");
         }
 
         d.push(`properties: {${t.join(",\n")}}`);
@@ -276,7 +306,7 @@ export class Field {
     }
 
     if (this.refTo) {
-      d.push(`ref: ${this.refTo}`);
+      d.push(`ref: "${this.refTo}"`);
     }
 
     if (this.enums) {
@@ -308,15 +338,15 @@ export class Field {
     return "{\n" + d.join(",\n") + "\n}";
   }
 
-  getParents(): Field[] {
+  getParentFields(): Field[] {
     let t: Field = this;
-    let parents = [];
-    while (this.parent !== null) {
-      parents.push(t);
-      t = this.parent;
+    let parentFields = [];
+    while (t.parentField !== null) {
+      parentFields.push(t);
+      t = t.parentField;
     }
 
-    return parents;
+    return parentFields;
   }
 
   getCreateImports(): string[] {
@@ -333,12 +363,53 @@ export class Field {
     switch (this.frontControl) {
       case FrontControls.ARRAY:
         let x = this.items.getCreateImports();
-        console.log("array parents", this.getParents());
+        console.log("array parentFields", this.getParentFields());
 
         x.push(`import {} from "./.component";`);
         return x;
       default:
         return [];
     }
+  }
+
+  each(cb: IFieldCallback, recursive: boolean = false) {
+    cb(this.name, this);
+
+    if (recursive || this.parentField == null) {
+      switch(this.type) {
+        case FieldType.Array:
+          this.items.each(cb, recursive);
+          break;
+        case FieldType.Object:
+          for (let fieldName in this.properties) {
+            this.properties[fieldName].each(cb, recursive);
+          }
+          break;
+      }
+    }
+  }
+
+  getIndexName() {
+    if (this.type === FieldType.Array) {
+      return this.name + "Id";
+    }
+  }
+
+
+  getPath(): string[] {
+    const model = [
+      //this.schema.singular
+      "entity"
+    ];
+    const parents = this.getParentFields().reverse();
+    for (let field of parents) {
+      if (field.type === FieldType.Array) {
+        model.push(`${this.name}[${field.getIndexName()}]`)
+      } else {
+        model.push(this.name);
+      }
+    }
+
+    return model;
   }
 }

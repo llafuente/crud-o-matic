@@ -10,15 +10,12 @@ export const TestSchema = new mongoose.Schema(
       type: String,
       maxlength: 255,
     },
-
     instructions: {
       type: String,
     },
-
     randomizeAnwers: {
       type: Boolean,
     },
-
     blocks: {
       type: Array,
       items: {
@@ -26,7 +23,6 @@ export const TestSchema = new mongoose.Schema(
         properties: {
           name: {
             type: String,
-            default: null,
             maxlength: 255,
           },
           questions: {
@@ -36,39 +32,31 @@ export const TestSchema = new mongoose.Schema(
               properties: {
                 questions: {
                   type: String,
-                  default: null,
                 },
                 answers: {
                   type: Array,
                   items: {
                     type: String,
-                    default: null,
                   },
                   default: [],
                 },
                 correcAnswerIndex: {
                   type: Number,
-                  default: null,
                 },
               },
-              default: null,
             },
             default: [],
           },
         },
-        default: null,
       },
       default: [],
     },
-
     maxTime: {
       type: Number,
     },
-
     usersSubscribed: {
       type: Number,
     },
-
     usersDone: {
       type: Number,
     },

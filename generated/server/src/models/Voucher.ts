@@ -9,19 +9,15 @@ export const VoucherSchema = new mongoose.Schema(
     startAt: {
       type: Date,
     },
-
     endAt: {
       type: Date,
     },
-
     canDownload: {
       type: Boolean,
     },
-
     maxUses: {
       type: Number,
     },
-
     currentUses: {
       type: Number,
     },

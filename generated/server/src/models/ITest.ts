@@ -6,11 +6,8 @@ export interface ITest {
   updatedAt: Date;
 
   label: String;
-
   instructions: String;
-
   randomizeAnwers: Boolean;
-
   blocks: {
     name: String;
     questions: {
@@ -19,11 +16,8 @@ export interface ITest {
       correcAnswerIndex: Number;
     }[];
   }[];
-
   maxTime: Number;
-
   usersSubscribed: Number;
-
   usersDone: Number;
 }
 
@@ -34,11 +28,8 @@ export class TestType implements ITest {
   updatedAt: Date = null;
 
   label: String;
-
   instructions: String;
-
   randomizeAnwers: Boolean;
-
   blocks: {
     name: String;
     questions: {
@@ -47,13 +38,9 @@ export class TestType implements ITest {
       correcAnswerIndex: Number;
     }[];
   }[] = [];
-
   maxTime: Number;
-
   usersSubscribed: Number;
-
   usersDone: Number;
-
   constructor() {}
 
   static fromJSON(obj: ITest | any): TestType {

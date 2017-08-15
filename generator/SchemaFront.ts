@@ -2,10 +2,17 @@ import { Schema } from "./Schema";
 import { FrontControls } from "./FrontControls";
 import { Field } from "./Field";
 import { FieldType } from "./FieldType";
+import { AngularComponent } from "./AngularComponent";
 import * as fs from "fs";
 import * as path from "path";
 
 const ejs = require("ejs");
+
+const createMethodsHTML = fs.readFileSync(path.join(__dirname, "../templates/angular/src/create.methods.ts"), "utf8")
+const updateMethodsHTML = fs.readFileSync(path.join(__dirname, "../templates/angular/src/update.methods.ts"), "utf8")
+const createMethods = ejs.compile(createMethodsHTML);
+const updateMethods = ejs.compile(updateMethodsHTML);
+
 
 export class SchemaFront {
   parentSchema: Schema;
@@ -16,6 +23,7 @@ export class SchemaFront {
   listComponentFile: string;
   updateComponent: string;
   updateComponentFile: string;
+
 
   constructor(json, parentSchema: Schema) {
     this.parentSchema = parentSchema;
@@ -28,22 +36,73 @@ export class SchemaFront {
     this.updateComponentFile = `Update${this.parentSchema.singularUc}.component`;
   }
 
+  saveCreateComponent(destinationPath: string) {
+    const comp = new AngularComponent(
+      this.createComponent,
+      this.parentSchema
+    );
+
+    const decl = this.getCreateDeclarations();
+    comp.selector = `create-${this.parentSchema.plural}-component`;
+    comp.declarations = decl.join(";\n") + ";";
+    comp.template = `
+<div>
+<form #f="ngForm" novalidate>
+${this.getCreateControlsHTML()}
+  <bb-button [routerLink]="['..', 'list']">Cancelar</bb-button>
+  <bb-button (click)="save()">Guardar</bb-button>
+</form>
+<pre>entity: {{entity | json}}</pre>
+</div>
+    `;
+
+    comp.initialization = this.getCreateInitialization().join("\n");
+    comp.methods = createMethods(this.parentSchema);
+
+    comp.save(path.join(destinationPath, `${this.createComponentFile}.ts`));
+  }
+
+  saveUpdateComponent(destinationPath: string) {
+    const comp = new AngularComponent(
+      this.updateComponent,
+      this.parentSchema
+    );
+
+    const decl = this.getCreateDeclarations();
+    comp.selector = `update-${this.parentSchema.plural}-component`;
+    comp.declarations = decl.join(";\n") + ";";
+    comp.template = `
+<div>
+<form #f="ngForm" novalidate>
+${this.getCreateControlsHTML()}
+  <bb-button [routerLink]="['..', 'list']">Cancelar</bb-button>
+  <bb-button (click)="save()">Guardar</bb-button>
+</form>
+<pre>entity: {{entity | json}}</pre>
+</div>
+    `;
+
+    comp.initialization = this.getUpdateInitialization().join("\n");
+    comp.methods = updateMethods(this.parentSchema);
+
+    comp.save(path.join(destinationPath, `${this.updateComponentFile}.ts`));
+  }
+
   getCreateControlsHTML(): string {
     const controls = [];
-    for (let fieldName in this.parentSchema.fields) {
-      controls.push(this.getFieldControlHTML(fieldName, this.parentSchema.fields[fieldName]));
-    }
+    this.parentSchema.forEachFrontEndField((fieldName, field) => {
+      controls.push(this.getFieldControlHTML(fieldName, field));
+    });
 
     return controls.join("\n");
   }
 
-  getCreateDeclarations(): string {
+  getCreateDeclarations(): string[] {
     const controls = [];
-    for (let fieldName in this.parentSchema.fields) {
-      const field = this.parentSchema.fields[fieldName];
+    this.parentSchema.forEachFrontEndField((fieldName, field) => {
       switch (field.frontControl) {
         case FrontControls.HTTP_DROPDOWN:
-          controls.push(field.frontData.declaration + ": any;");
+          controls.push(field.frontData.declaration + ": any");
           break;
         case FrontControls.ENUM_DROPDOWN:
           const values = field.enums.map((id, idx) => {
@@ -54,25 +113,23 @@ export class SchemaFront {
           break;
         default:
       }
-    }
+    });
 
-    return controls.join("\n");
+    return controls;
   }
 
   getCreateImports(): string {
     let imports = [];
-    for (let fieldName in this.parentSchema.fields) {
-      console.log(fieldName, this.parentSchema.fields[fieldName].getCreateImports());
-      imports = imports.concat(this.parentSchema.fields[fieldName].getCreateImports());
-    }
+    this.parentSchema.forEachFrontEndField((fieldName, field) => {
+      imports = imports.concat(field.getCreateImports());
+    });
     console.log(imports);
     return imports.join("\n");
   }
 
-  getCreateInitialization(): string {
+  getCreateInitialization(): string[] {
     const controls = [];
-    for (let fieldName in this.parentSchema.fields) {
-      const field = this.parentSchema.fields[fieldName];
+    this.parentSchema.forEachFrontEndField((fieldName, field) => {
       switch (field.frontControl) {
         case FrontControls.HTTP_DROPDOWN:
           controls.push(`
@@ -89,16 +146,34 @@ this.http.get("${field.frontData.srcUrl}")
           break;
         default:
       }
-    }
+    });
 
-    return controls.join("\n");
+    return controls;
+  }
+
+  getUpdateInitialization(): string[] {
+
+    return [`
+    //this.id = parseInt(this.getRouteParameter(${JSON.stringify(this.parentSchema.entityId)}), 10);
+    this.id = this.getRouteParameter(${JSON.stringify(this.parentSchema.entityId)});
+
+    console.log("--> GET: ${this.parentSchema.url("READ", true)}", this.id);
+    this.http.get(${JSON.stringify(this.parentSchema.url("READ", true))}.replace(${JSON.stringify(":" + this.parentSchema.entityId)}, this.id))
+    .subscribe((response: ${this.parentSchema.typeName}) => {
+      console.log("<-- GET: ${this.parentSchema.url("READ", true)}", response);
+
+      this.entity = response;
+    }, (errorResponse: Response) => {
+      console.log("<-- POST Error: ${this.parentSchema.url("READ", true)}", errorResponse);
+    });
+    `].concat(this.getCreateInitialization());
   }
 
   getCreateControlsTS(): string {
     const controls = [];
-    for (let fieldName in this.parentSchema.fields) {
-      controls.push(this.getFieldControlTS(fieldName, this.parentSchema.fields[fieldName]));
-    }
+    this.parentSchema.forEachFrontEndField((fieldName, field) => {
+      controls.push(this.getFieldControlTS(fieldName, field));
+    });
 
     return controls.join("\n");
   }
@@ -112,12 +187,12 @@ this.http.get("${field.frontData.srcUrl}")
         return "";
     }
   }
-  getFieldControlHTML(fieldName: string, field: Field, ngModel: string[] = ["entity"], indexes: string[] = []): string {
+  getFieldControlHTML(fieldName: string, field: Field, indexes: string[] = []): string {
     // if it's an object, don't need front type, just get all fields
     if (field.type == FieldType.Object) {
       let t = [];
       for (let i in field.properties) {
-        t.push(this.getFieldControlHTML(i, field.properties[i], ngModel.slice(), indexes));
+        t.push(this.getFieldControlHTML(i, field.properties[i], indexes));
       }
 
       return t.join("\n");
@@ -130,12 +205,12 @@ this.http.get("${field.frontData.srcUrl}")
       fs.readFileSync(path.join(__dirname, "..", "templates", "angular", "controls", `${tpl}.html`), "utf8")
     );
 
-    ngModel.push(fieldName);
+    let modelName = fieldName;
     let name = fieldName;
     let id = "id-" + fieldName;
     indexes.forEach(index => {
       name += "_{{" + index + "}}";
-      fieldName += "_{{" + index + "}}";
+      //fieldName += "_{{" + index + "}}";
       id += "_{{" + index + "}}";
     });
     let srcModel = null;
@@ -146,12 +221,9 @@ this.http.get("${field.frontData.srcUrl}")
 
     switch (field.frontControl) {
       case FrontControls.ARRAY:
-        indexName = fieldName + "Id";
+        indexName = field.getIndexName();
         indexes.push(indexName);
-        let ngModel2 = ngModel.slice();
-        ngModel2.pop();
-        ngModel2.push(fieldName + `[${indexName}]`);
-        childControls = this.getFieldControlHTML(null, field.items, ngModel2, indexes);
+        childControls = this.getFieldControlHTML(null, field.items, indexes);
         indexes.pop();
         break;
       case FrontControls.HTTP_DROPDOWN:
@@ -166,12 +238,14 @@ this.http.get("${field.frontData.srcUrl}")
         break;
       default:
     }
+    const ngModel = field.getPath();
 
     return tplCompiled({
       label: field.label,
       id: id,
       name: name,
       ngModel: ngModel.join("."),
+      modelName: modelName,
       safeNgModel: ngModel.join("?."),
       indexName: indexName,
       childControls: childControls,

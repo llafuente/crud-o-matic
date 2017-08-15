@@ -9,21 +9,22 @@ import { UserType } from '../models/IUser';
 /**
  */
 @Component({
-  selector: 'user-create-component',
+  selector: "create-users-component",
   template: `
+
 <div>
 <form #f="ngForm" novalidate>
-  <bb-input-container label="Userlogin">
+<bb-input-container label="Userlogin">
   <input
     bb-child
     type="text"
     id="id-userlogin"
     name="userlogin"
     [(ngModel)]="entity.userlogin"
-    #userloginModel="ngModel"
+    #userlogin="ngModel"
     />
 
-    <bb-errors [model]="userloginModel"></bb-errors>
+    <bb-errors [model]="userlogin"></bb-errors>
 
 </bb-input-container>
 
@@ -34,9 +35,9 @@ import { UserType } from '../models/IUser';
     id="id-password"
     name="password"
     [(ngModel)]="entity.password"
-    #passwordModel="ngModel" />
+    #password="ngModel" />
 
-    <bb-errors [model]="passwordModel"></bb-errors>
+    <bb-errors [model]="password"></bb-errors>
 
 </bb-input-container>
 
@@ -47,25 +48,23 @@ import { UserType } from '../models/IUser';
     id="id-email"
     name="email"
     [(ngModel)]="entity.email"
-    #emailModel="ngModel" />
+    #email="ngModel" />
 
-    <bb-errors [model]="emailModel"></bb-errors>
+    <bb-errors [model]="email"></bb-errors>
 
 </bb-input-container>
-
-<!-- hidden -->
 
 <bb-input-container label="Roles">
   <select
     bb-child
     id="id-roles"
     name="roles"
-    [(ngModel)]="entity.roles"
-    #rolesModel="ngModel">
+    [(ngModel)]="entity.roles[rolesId]"
+    #roles="ngModel">
     <option *ngFor="let row of roles.list" [ngValue]="id">{{row.label}}</option>
     </select>
 
-    <bb-errors [model]="rolesModel"></bb-errors>
+    <bb-errors [model]="roles"></bb-errors>
 
 </bb-input-container>
 
@@ -75,11 +74,11 @@ import { UserType } from '../models/IUser';
     id="id-state"
     name="state"
     [(ngModel)]="entity.state"
-    #stateModel="ngModel">
+    #state="ngModel">
     <option *ngFor="let row of stateValues" [ngValue]="row.id">{{row.label}}</option>
     </select>
 
-    <bb-errors [model]="stateModel"></bb-errors>
+    <bb-errors [model]="state"></bb-errors>
 
 </bb-input-container>
 
@@ -88,15 +87,16 @@ import { UserType } from '../models/IUser';
 </form>
 <pre>entity: {{entity | json}}</pre>
 </div>
-  `,
+    
+`,
 })
 export class CreateUserComponent extends BaseComponent {
   loading: false;
-  id: number;
+  id: string;
   entity: UserType = new UserType();
 
   roles: any;
-stateValues: {id: string, label: string}[] = [{"id":"active","label":"Active"},{"id":"banned","label":"Banned"}]
+stateValues: {id: string, label: string}[] = [{"id":"active","label":"Active"},{"id":"banned","label":"Banned"}];
 
   constructor(
     injector: Injector,
@@ -125,7 +125,7 @@ this.http.get("http://localhost:3004/roles")
 
   }
 
-  save() {
+    save() {
     console.log("--> POST: http://localhost:3004/users", JSON.stringify(this.entity, null, 2));
     this.http.post("http://localhost:3004/users", this.entity)
     .subscribe((response: UserType) => {
@@ -146,4 +146,5 @@ this.http.get("http://localhost:3004/roles")
   splice(model: any[], index: number) {
     model.splice(index, 1);
   }
+
 }

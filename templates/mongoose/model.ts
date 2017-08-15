@@ -7,9 +7,7 @@ import { pbkdf2Sync, randomBytes} from 'crypto';
 export interface <%= interfaceModel %> extends <%= interfaceName %>, mongoose.Document { }
 
 export const <%= schemaName %> = new mongoose.Schema({
-  <% forEachBackEndField((key, PrimiteType) => { %>
-    <%= key %>: <%- PrimiteType.getMongooseType() %>,
-  <% }) %>
+  <%- root.getMongooseType() %>
 }, <%- JSON.stringify(backend.options, null, 2) %>);
 
 <% if (schemaName == "UserSchema") { %>

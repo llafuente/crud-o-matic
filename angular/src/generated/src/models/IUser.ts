@@ -7,19 +7,12 @@ export interface IUser {
   createdAt: Date;
   updatedAt: Date;
 
-  
-    userlogin: String;
-  
-    password: String;
-  
-    email: String;
-  
-    salt: String;
-  
-    roles: String[];
-  
-    state: String;
-  
+  userlogin:String;
+password:String;
+email:String;
+salt:String;
+roles:String[];
+state:String;
 
   
     authenticate(password: string);
@@ -33,52 +26,29 @@ export class UserType implements IUser {
   createdAt: Date = null;
   updatedAt: Date = null;
 
-  
-    userlogin: String
-      
-    ;
-  
-    password: String
-      
-    ;
-  
-    email: String
-      
-    ;
-  
-    salt: String
-      
-    ;
-  
-    roles: String[]
-      
-      = []
-      
-    ;
-  
-    state: String
-      
-      = "active"
-      
-    ;
-  
+  userlogin:String;
+password:String;
+email:String;
+salt:String;
+roles:String[] = [];
+state:String = "active";
   constructor() {}
 
   static fromJSON(obj: IUser|any): UserType {
     const r = new UserType();
-  
+
     r.userlogin = obj.userlogin;
-  
+
     r.password = obj.password;
-  
+
     r.email = obj.email;
-  
+
     r.salt = obj.salt;
-  
+
     r.roles = obj.roles;
-  
+
     r.state = obj.state;
-  
+
     return r;
   }
 

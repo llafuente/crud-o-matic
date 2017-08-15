@@ -9,21 +9,22 @@ import { UserType } from '../models/IUser';
 /**
  */
 @Component({
-  selector: 'user-update-component',
+  selector: "update-users-component",
   template: `
+
 <div>
 <form #f="ngForm" novalidate>
-  <bb-input-container label="Userlogin">
+<bb-input-container label="Userlogin">
   <input
     bb-child
     type="text"
     id="id-userlogin"
     name="userlogin"
     [(ngModel)]="entity.userlogin"
-    #userloginModel="ngModel"
+    #userlogin="ngModel"
     />
 
-    <bb-errors [model]="userloginModel"></bb-errors>
+    <bb-errors [model]="userlogin"></bb-errors>
 
 </bb-input-container>
 
@@ -34,9 +35,9 @@ import { UserType } from '../models/IUser';
     id="id-password"
     name="password"
     [(ngModel)]="entity.password"
-    #passwordModel="ngModel" />
+    #password="ngModel" />
 
-    <bb-errors [model]="passwordModel"></bb-errors>
+    <bb-errors [model]="password"></bb-errors>
 
 </bb-input-container>
 
@@ -47,25 +48,23 @@ import { UserType } from '../models/IUser';
     id="id-email"
     name="email"
     [(ngModel)]="entity.email"
-    #emailModel="ngModel" />
+    #email="ngModel" />
 
-    <bb-errors [model]="emailModel"></bb-errors>
+    <bb-errors [model]="email"></bb-errors>
 
 </bb-input-container>
-
-<!-- hidden -->
 
 <bb-input-container label="Roles">
   <select
     bb-child
     id="id-roles"
     name="roles"
-    [(ngModel)]="entity.roles"
-    #rolesModel="ngModel">
+    [(ngModel)]="entity.roles[rolesId]"
+    #roles="ngModel">
     <option *ngFor="let row of roles.list" [ngValue]="id">{{row.label}}</option>
     </select>
 
-    <bb-errors [model]="rolesModel"></bb-errors>
+    <bb-errors [model]="roles"></bb-errors>
 
 </bb-input-container>
 
@@ -75,20 +74,21 @@ import { UserType } from '../models/IUser';
     id="id-state"
     name="state"
     [(ngModel)]="entity.state"
-    #stateModel="ngModel">
+    #state="ngModel">
     <option *ngFor="let row of stateValues" [ngValue]="row.id">{{row.label}}</option>
     </select>
 
-    <bb-errors [model]="stateModel"></bb-errors>
+    <bb-errors [model]="state"></bb-errors>
 
 </bb-input-container>
 
-  <bb-button [routerLink]="['../..', 'list']">Cancelar</bb-button>
+  <bb-button [routerLink]="['..', 'list']">Cancelar</bb-button>
   <bb-button (click)="save()">Guardar</bb-button>
 </form>
 <pre>entity: {{entity | json}}</pre>
 </div>
-  `,
+    
+`,
 })
 export class UpdateUserComponent extends BaseComponent {
   loading: false;
@@ -96,7 +96,7 @@ export class UpdateUserComponent extends BaseComponent {
   entity: UserType = new UserType();
 
   roles: any;
-stateValues: {id: string, label: string}[] = [{"id":"active","label":"Active"},{"id":"banned","label":"Banned"}]
+stateValues: {id: string, label: string}[] = [{"id":"active","label":"Active"},{"id":"banned","label":"Banned"}];
 
   constructor(
     injector: Injector,
@@ -106,10 +106,15 @@ stateValues: {id: string, label: string}[] = [{"id":"active","label":"Active"},{
     public router: Router,
   ) {
     super(injector, activatedRoute);
-
-
-    //this.id = parseInt(this.getRouteParameter('userId'), 10);
-    this.id = this.getRouteParameter('userId');
+  }
+  /*
+   * refresh unless starStopped
+   */
+  ngOnInit(): void {
+    // this.loading
+    
+    //this.id = parseInt(this.getRouteParameter("userId"), 10);
+    this.id = this.getRouteParameter("userId");
 
     console.log("--> GET: http://localhost:3004/users/:userId", this.id);
     this.http.get("http://localhost:3004/users/:userId".replace(":userId", this.id))
@@ -118,17 +123,23 @@ stateValues: {id: string, label: string}[] = [{"id":"active","label":"Active"},{
 
       this.entity = response;
     }, (errorResponse: Response) => {
-      console.log("<-- POST Error: http://localhost:3004/users", errorResponse);
+      console.log("<-- POST Error: http://localhost:3004/users/:userId", errorResponse);
     });
-  }
-  /*
-   * refresh unless starStopped
-   */
-  ngOnInit(): void {
-    // this.loading
+    
+
+this.http.get("http://localhost:3004/roles")
+.subscribe((response: any) => {
+  console.log("<-- GET: http://localhost:3004/roles", JSON.stringify(response, null, 2));
+
+  this.roles = response;
+
+}, (errorResponse: Response) => {
+  console.log("<-- GET Error: http://localhost:3004/roles", errorResponse);
+});
+
   }
 
-  save() {
+    save() {
     console.log("<-- PATCH: http://localhost:3004/users/:userId", JSON.stringify(this.entity, null, 2));
     this.http.patch("http://localhost:3004/users/:userId".replace(":userId", this.id), this.entity)
     .subscribe((response: UserType) => {
@@ -148,4 +159,5 @@ stateValues: {id: string, label: string}[] = [{"id":"active","label":"Active"},{
   splice(model: any[], index: number) {
     model.splice(index, 1);
   }
+
 }

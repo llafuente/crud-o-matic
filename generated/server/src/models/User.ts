@@ -13,31 +13,26 @@ export const UserSchema = new mongoose.Schema(
       required: true,
       maxlength: 32,
     },
-
     password: {
       type: String,
       required: true,
     },
-
     email: {
       type: String,
       required: true,
       maxlength: 255,
     },
-
     salt: {
       type: String,
     },
-
     roles: {
       type: Array,
       items: {
         type: String,
-        default: null,
+        ref: "Role",
       },
       default: [],
     },
-
     state: {
       type: String,
       default: "active",

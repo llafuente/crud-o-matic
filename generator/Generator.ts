@@ -148,16 +148,9 @@ export class Generator {
       join(path, "src", schema.plural, "routes.ts")
     );
 
-    this.template(
-      schema,
-      join(__dirname, "../templates/angular/src/create.component.ts"),
-      join(path, "src", schema.plural, `${schema.frontend.createComponentFile}.ts`)
-    );
-    this.template(
-      schema,
-      join(__dirname, "../templates/angular/src/update.component.ts"),
-      join(path, "src", schema.plural, `${schema.frontend.updateComponentFile}.ts`)
-    );
+    schema.frontend.saveCreateComponent(join(path, "src", schema.plural));
+    schema.frontend.saveUpdateComponent(join(path, "src", schema.plural));
+
     this.template(
       schema,
       join(__dirname, "../templates/angular/src/list.component.ts"),

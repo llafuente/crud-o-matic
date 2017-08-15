@@ -28,14 +28,24 @@ and server side will be 100% self-contained after generation.
 
 ```
 md C:\data\db
-& 'C:\Program Files\MongoDB\Server\3.4\bin\mongod.exe' --dbpath C:\data\db
+& "C:\Program Files\MongoDB\Server\3.4\bin\mongod.exe" --dbpath C:\data\db
 
 & 'C:\Program Files\MongoDB\Server\3.4\bin\mongo.exe'
 use test
 db.createCollection("test")
 ```
 
+```
+cd C:\Users\llafuente-pc\Documents\GitHub\crud-o-matic
+cd generated\server
+npm start
+```
 
+```
+cd C:\Users\llafuente-pc\Documents\GitHub\crud-o-matic
+cd angular
+npm start
+```
 
 TODO
 

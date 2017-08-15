@@ -4,10 +4,10 @@
     id="<%= id %>"
     name="<%= name %>"
     [(ngModel)]="<%= ngModel %>"
-    #<%= name %>Model="ngModel">
+    #<%= modelName %>="ngModel">
     <option *ngFor="let row of <%= srcModel %>" [ngValue]="<%= srcId %>">row.<%= srcLabel %></option>
     </select>
 
-    <bb-errors [model]="<%= name %>Model"></bb-errors>
+    <bb-errors [model]="<%= modelName %>"></bb-errors>
 
 </bb-input-container>

@@ -8,7 +8,7 @@ import { FrontControls } from "./FrontControls";
 export * from "./FrontControls";
 import { FieldPermissions } from "./FieldPermissions";
 export * from "./FieldPermissions";
-import { Field } from "./Field";
+import { Field, IFieldCallback } from "./Field";
 export * from "./Field";
 import { PermissionsAllowed } from "./PermissionsAllowed";
 export * from "./PermissionsAllowed";
@@ -43,7 +43,7 @@ export class Schema {
   baseApiUrl: string = "";
   domain: string = "";
 
-  fields: { [s: string]: Field } = null;
+  root: Field;
 
   constructor(public singular: string, public generator: Generator) {
     this._ = _;
@@ -52,6 +52,7 @@ export class Schema {
 
     this.backend = new SchemaBack({}, this);
     this.frontend = new SchemaFront({}, this);
+    this.root = new Field("root", FieldType.Object);
   }
 
   private init() {
@@ -65,7 +66,7 @@ export class Schema {
     this.module = this.plural[0].toLocaleUpperCase() + this.plural.substring(1) + "Module";
     this.moduleFile = this.plural[0].toLocaleUpperCase() + this.plural.substring(1) + ".module";
   }
-
+/*
   static fromJSON(json: any, generator: Generator): Schema {
     if (json.singular === undefined) {
       throw new Error("Schema: singular is required");
@@ -86,47 +87,42 @@ export class Schema {
 
     // now cast every property
     for (const i in json.fields) {
-      schema.addField(i, schema.fields[i]);
+      schema.addField(i, json[i]);
     }
 
     return schema;
   }
-
-  addField(key: string, field: Field) {
-    this.fields = this.fields || {};
-    this.fields[key] = field;
+*/
+  addField(fieldName: string, field: Field) {
+    this.root.addProperty(fieldName, field);
   }
 
-  forEachBackEndField(cb) {
-    for (const key in this.fields) {
-      if (this.fields[key].type !== FieldType.Hidden) {
-        cb(key, this.fields[key]);
+  forEachBackEndField(cb: IFieldCallback, recursive: boolean = false) {
+    this.root.each((fieldName, field) => {
+      if (field.type !== FieldType.Hidden) {
+        cb(fieldName, field);
       }
-    }
+    }, recursive);
   }
 
   // TODO sublevel blacklist
   getBackEndBlacklist(action: string /*TODO PermissionKeys*/): string[] {
     const ret = [];
-    for (const key in this.fields) {
-      if (!this.fields[key].permissions[action]) {
-        ret.push(key);
+    this.root.each((fieldName, field) => {
+      if (!field.permissions[action]) {
+        ret.push(fieldName);
       }
-    }
+    });
 
     return ret;
   }
 
-  forEachField(cb) {
-    // TODO
-  }
-
-  forEachFrontEndField(cb) {
-    for (const key in this.fields) {
-      if (this.fields[key].frontControl !== FrontControls.Hidden) {
-        cb(key, this.fields[key]);
+  forEachFrontEndField(cb: IFieldCallback) {
+    this.root.each((fieldName, field) => {
+      if (field.frontControl !== FrontControls.Hidden) {
+        cb(fieldName, field);
       }
-    }
+    });
   }
 
   // helper for templates

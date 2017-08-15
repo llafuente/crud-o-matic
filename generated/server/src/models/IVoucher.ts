@@ -6,13 +6,9 @@ export interface IVoucher {
   updatedAt: Date;
 
   startAt: Date;
-
   endAt: Date;
-
   canDownload: Boolean;
-
   maxUses: Number;
-
   currentUses: Number;
 }
 
@@ -23,15 +19,10 @@ export class VoucherType implements IVoucher {
   updatedAt: Date = null;
 
   startAt: Date;
-
   endAt: Date;
-
   canDownload: Boolean;
-
   maxUses: Number;
-
   currentUses: Number;
-
   constructor() {}
 
   static fromJSON(obj: IVoucher | any): VoucherType {

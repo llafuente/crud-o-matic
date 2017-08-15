@@ -121,15 +121,15 @@ test.serial("user schema", t => {
   t.true(gen.schemas[0].backend instanceof SchemaBack);
   t.true(gen.schemas[0].frontend instanceof SchemaFront);
   t.not(gen.schemas[0].backend.apiAccess, null);
-  t.not(gen.schemas[0].fields, null);
+  t.not(gen.schemas[0].root, null);
 
-  t.not(gen.schemas[0].fields.userlogin, null);
-  t.not(gen.schemas[0].fields.password, null);
-  t.not(gen.schemas[0].fields.salt, null);
-  t.not(gen.schemas[0].fields.roles, null);
-  t.not(gen.schemas[0].fields.permissions, null);
-  t.not(gen.schemas[0].fields.state, null);
-  t.not(gen.schemas[0].fields.data, null);
+  t.not(gen.schemas[0].root.properties.userlogin, null);
+  t.not(gen.schemas[0].root.properties.password, null);
+  t.not(gen.schemas[0].root.properties.salt, null);
+  t.not(gen.schemas[0].root.properties.roles, null);
+  t.not(gen.schemas[0].root.properties.permissions, null);
+  t.not(gen.schemas[0].root.properties.state, null);
+  t.not(gen.schemas[0].root.properties.data, null);
 
   //t.is(gen.schemas[0].backend.apiAccess.read.allowed, true);
   //t.is(gen.schemas[0].backend.apiAccess.create.allowed, false);

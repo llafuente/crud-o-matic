@@ -15,7 +15,6 @@ export class RoleType implements IRole {
   updatedAt: Date = null;
 
   label: String;
-
   constructor() {}
 
   static fromJSON(obj: IRole | any): RoleType {
