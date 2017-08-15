@@ -2,7 +2,6 @@ import { Component, Input } from "@angular/core";
 import { NgModel } from "@angular/forms";
 import { BBErrorMessages } from "./BBErrorMessages.service";
 
-
 // <pre>valid? {{model.valid | json}} dirty? {{model.dirty | json}} touched? {{model.touched | json}}</pre>
 
 @Component({

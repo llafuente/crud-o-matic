@@ -11,21 +11,17 @@ export class LoginComponent {
     password: "admin",
   };
 
-  constructor(
-    public http: Http
-  ) {
-  }
+  constructor(public http: Http) {}
 
   login() {
-    this.http.post("http://localhost:3004/auth", this.auth)
-    .subscribe((response) => {
-      const token = response.json().token;
-      console.log("set token", token);
+    this.http.post("http://localhost:3004/auth", this.auth).subscribe(
+      response => {
+        const token = response.json().token;
+        console.log("set token", token);
 
-      localStorage.setItem('access_token', token);
-
-    }, (errorResponse) => {
-
-    });
+        localStorage.setItem("access_token", token);
+      },
+      errorResponse => {},
+    );
   }
 }

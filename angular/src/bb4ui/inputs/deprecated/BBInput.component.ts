@@ -1,11 +1,4 @@
-import {
-  Component,
-  ElementRef,
-  forwardRef,
-  HostBinding,
-  Input,
-  ViewChild,
-} from "@angular/core";
+import { Component, ElementRef, forwardRef, HostBinding, Input, ViewChild } from "@angular/core";
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
 import { NgModel } from "@angular/forms";
 
@@ -88,8 +81,7 @@ export class BBInputComponent implements ControlValueAccessor {
     this.modelValue = value;
     this._onChangeCallback(value);
 
-    this.notEmpty =
-      !!this.preAddon || (value !== undefined && !!("" + value).length);
+    this.notEmpty = !!this.preAddon || (value !== undefined && !!("" + value).length);
   }
 
   registerOnChange(fn: any) {

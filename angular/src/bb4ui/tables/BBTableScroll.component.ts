@@ -1,7 +1,15 @@
-import { Component, Input, HostBinding, ElementRef,
-  ContentChild, ContentChildren, ViewChild,
-ViewChildren, QueryList,
-OnDestroy} from '@angular/core';
+import {
+  Component,
+  Input,
+  HostBinding,
+  ElementRef,
+  ContentChild,
+  ContentChildren,
+  ViewChild,
+  ViewChildren,
+  QueryList,
+  OnDestroy,
+} from "@angular/core";
 
 declare var jQuery: any;
 /**
@@ -10,7 +18,7 @@ declare var jQuery: any;
  * Limitations: Do not support different paddings in th/td
  */
 @Component({
-  selector: 'bb-table-scroll',
+  selector: "bb-table-scroll",
   template: `
 <div style="overflow-x: hidden" #container>
   <table
@@ -55,9 +63,7 @@ export class BBTableScrollComponent implements OnDestroy {
 
   @ViewChild("container") container: ElementRef;
 
-  constructor(
-    public element: ElementRef
-  ) {
+  constructor(public element: ElementRef) {
     this.resizeBound = this.resize.bind(this);
     this.interval = setInterval(this.resizeBound, 1000);
   }
@@ -67,18 +73,23 @@ export class BBTableScrollComponent implements OnDestroy {
   }
 
   getThead() {
-    return jQuery(this.container.nativeElement).children("table").children("thead")
+    return jQuery(this.container.nativeElement).children("table").children("thead");
   }
 
   resize() {
     console.log(this.container.nativeElement);
 
     // Get the tbody columns width array
-    const bodyTDs = jQuery(this.container.nativeElement).children("div").children("table").children("tbody").children("tr:first").children("td,th");
+    const bodyTDs = jQuery(this.container.nativeElement)
+      .children("div")
+      .children("table")
+      .children("tbody")
+      .children("tr:first")
+      .children("td,th");
     const headTHs = this.getThead().children("tr").children("th");
 
     //console.log(bodyTDs);
-    let cols = [];
+    const cols = [];
 
     bodyTDs.each(function(i, v) {
       //console.log(jQuery(v).width(), v);
@@ -88,16 +99,14 @@ export class BBTableScrollComponent implements OnDestroy {
     //console.log(cols);
 
     // Set the width of thead columns
-    headTHs
-    .each(function(i, v) {
+    headTHs.each(function(i, v) {
       console.log(i, cols[i], v);
-      jQuery(v).css('width', cols[i]);
+      jQuery(v).css("width", cols[i]);
     });
   }
 
   ngAfterContentInit() {
-    jQuery(window).bind("resize", this.resizeBound)
-    .resize(); // Trigger resize handler
+    jQuery(window).bind("resize", this.resizeBound).resize(); // Trigger resize handler
     setTimeout(this.resizeBound, 200);
   }
 

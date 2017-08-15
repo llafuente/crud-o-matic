@@ -7,11 +7,13 @@
     "test": "test"
   },
   "scripts": {
-    "test-generator": "npm run build-generator && ava --verbose ./generator-js/test/test.js",
-    "test-generated": "npm run build-test && ava --verbose ./test-js/test/user.test.js",
-    "test": "npm run test-generator && npm run lint-generated-server && npm run test-generated",
+    "test-generator": "npm run build-generator && ava --bail --verbose ./generator-js/test/test.js",
+    "test-generated": "npm run build-test && ava --bail --verbose ./test-js/test/user.test.js",
+    "test": "npm run test-generator && npm run lint-generated-server && npm lint-generated-client && npm run test-generated",
     "pretty-generated-server": "prettier --write --parser typescript --print-width 120 \"generated/server/src/**/*.ts\"",
     "lint-generated-server": "npm run pretty-generated-server && tslint --fix -c ./tslint.json --type-check -p ./generated/server/tsconfig.json",
+    "pretty-generated-client": "prettier --write --parser typescript --print-width 120 \"angular/src/**/*.ts\"",
+    "lint-generated-client": "npm run pretty-generated-client &&  tslint --fix -c ./tslint.json angular/src/**/*.ts",
     "pretty": "prettier --write --parser typescript --print-width 120 \"generator/**/*.ts\"",
     "lint": "npm run pretty && tslint --fix -c ./tslint.json --type-check -p ./generator/tsconfig.json",
     "build-generator": "tsc -p ./generator/tsconfig.json",

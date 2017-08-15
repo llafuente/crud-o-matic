@@ -3,8 +3,7 @@ import { ModuleWithProviders, NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { ModalModule } from "ngx-bootstrap/modal";
 import { TabsModule } from "ngx-bootstrap/tabs";
-import { DatepickerModule } from 'ngx-bootstrap/datepicker';
-
+import { DatepickerModule } from "ngx-bootstrap/datepicker";
 
 /*
 import { BBInputComponent } from './inputs/BBInput.component';
@@ -57,11 +56,11 @@ export * from "./typography/BBTypographyExample.component";
 import { BBTableComponent } from "./tables/BBTable.component";
 export * from "./tables/BBTable.component";
 
-import { BBTableScrollComponent } from './tables/BBTableScroll.component';
-export * from './tables/BBTableScroll.component';
+import { BBTableScrollComponent } from "./tables/BBTableScroll.component";
+export * from "./tables/BBTableScroll.component";
 
-import { BBTablesExampleComponent } from './tables/BBTablesExample.component';
-export * from './tables/BBTablesExample.component';
+import { BBTablesExampleComponent } from "./tables/BBTablesExample.component";
+export * from "./tables/BBTablesExample.component";
 
 // badges
 import { BBBadgesExampleComponent } from "./badges/BBBadgesExample.component";
@@ -129,10 +128,7 @@ export * from "./modal/BBModalExample.component";
 
 // examples
 
-import {
-  BBSourceDirective,
-  BBSourceExampleComponent,
-} from "./examples/BBSourceExample.component";
+import { BBSourceDirective, BBSourceExampleComponent } from "./examples/BBSourceExample.component";
 export * from "./examples/BBSourceExample.component";
 
 import { BBFormsExampleComponent } from "./examples/BBFormsExample.component";
@@ -208,12 +204,7 @@ export const declarations = [
   declarations,
   imports,
   providers: [BBErrorMessages],
-  exports: [
-    ...declarations,
-    TabsModule,
-    ModalModule,
-    DatepickerModule,
-  ],
+  exports: [...declarations, TabsModule, ModalModule, DatepickerModule],
 })
 export class BB4UIModule {
   static forRoot(): ModuleWithProviders {

@@ -1,40 +1,36 @@
-import * as mongoose from 'mongoose';
-
+import * as mongoose from "mongoose";
 
 export interface IUser {
-  _id: string|any;
+  _id: string | any;
   id?: string;
   createdAt: Date;
   updatedAt: Date;
 
-  userlogin:String;
-password:String;
-email:String;
-salt:String;
-roles:String[];
-state:String;
+  userlogin: String;
+  password: String;
+  email: String;
+  salt: String;
+  roles: String[];
+  state: String;
 
-  
-    authenticate(password: string);
-  
-};
-
+  authenticate(password: string);
+}
 
 export class UserType implements IUser {
-  _id: string|any = null;
+  _id: string | any = null;
   id?: string = null;
   createdAt: Date = null;
   updatedAt: Date = null;
 
-  userlogin:String;
-password:String;
-email:String;
-salt:String;
-roles:String[] = [];
-state:String = "active";
+  userlogin: String;
+  password: String;
+  email: String;
+  salt: String;
+  roles: String[] = [];
+  state: String = "active";
   constructor() {}
 
-  static fromJSON(obj: IUser|any): UserType {
+  static fromJSON(obj: IUser | any): UserType {
     const r = new UserType();
 
     r.userlogin = obj.userlogin;
@@ -52,7 +48,5 @@ state:String = "active";
     return r;
   }
 
-  
-    authenticate(password: string) {}
-  
-};
+  authenticate(password: string) {}
+}

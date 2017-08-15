@@ -1,12 +1,4 @@
-import {
-  Directive,
-  ElementRef,
-  Host,
-  HostBinding,
-  Input,
-  Optional,
-  Self,
-} from "@angular/core";
+import { Directive, ElementRef, Host, HostBinding, Input, Optional, Self } from "@angular/core";
 import { NgControl } from "@angular/forms";
 import { BBInputContainerComponent } from "./BBInputContainer.component";
 
@@ -21,7 +13,7 @@ function coerceBooleanProperty(value: any): boolean {
 @Directive({
   selector: "input[bb-child], textarea[bb-child], select[bb-child]",
   host: {
-    "class": "form-control",
+    class: "form-control",
     "[required]": "required",
     "[disabled]": "disabled",
     "(input)": "onInput()",

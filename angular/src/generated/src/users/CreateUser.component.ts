@@ -1,10 +1,10 @@
-import { Component, Input, OnInit, Injector } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { Http, Response, RequestOptions, Headers } from '@angular/http';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import { BaseComponent } from '../Base.component';
-import { UserType } from '../models/IUser';
+import { Component, Input, OnInit, Injector } from "@angular/core";
+import { Router, ActivatedRoute } from "@angular/router";
+import { Http, Response, RequestOptions, Headers } from "@angular/http";
+import { HttpClient } from "@angular/common/http";
+import { Observable } from "rxjs/Observable";
+import { BaseComponent } from "../Base.component";
+import { UserType } from "../models/IUser";
 
 /**
  */
@@ -87,7 +87,7 @@ import { UserType } from '../models/IUser';
 </form>
 <pre>entity: {{entity | json}}</pre>
 </div>
-    
+
 `,
 })
 export class CreateUserComponent extends BaseComponent {
@@ -96,15 +96,9 @@ export class CreateUserComponent extends BaseComponent {
   entity: UserType = new UserType();
 
   roles: any;
-stateValues: {id: string, label: string}[] = [{"id":"active","label":"Active"},{"id":"banned","label":"Banned"}];
+  stateValues: { id: string; label: string }[] = [{ id: "active", label: "Active" }, { id: "banned", label: "Banned" }];
 
-  constructor(
-    injector: Injector,
-    activatedRoute: ActivatedRoute,
-
-    public http: HttpClient,
-    public router: Router,
-  ) {
+  constructor(injector: Injector, activatedRoute: ActivatedRoute, public http: HttpClient, public router: Router) {
     super(injector, activatedRoute);
   }
   /*
@@ -112,30 +106,31 @@ stateValues: {id: string, label: string}[] = [{"id":"active","label":"Active"},{
    */
   ngOnInit(): void {
     // this.loading
-    
-this.http.get("http://localhost:3004/roles")
-.subscribe((response: any) => {
-  console.log("<-- GET: http://localhost:3004/roles", JSON.stringify(response, null, 2));
 
-  this.roles = response;
+    this.http.get("http://localhost:3004/roles").subscribe(
+      (response: any) => {
+        console.log("<-- GET: http://localhost:3004/roles", JSON.stringify(response, null, 2));
 
-}, (errorResponse: Response) => {
-  console.log("<-- GET Error: http://localhost:3004/roles", errorResponse);
-});
-
+        this.roles = response;
+      },
+      (errorResponse: Response) => {
+        console.log("<-- GET Error: http://localhost:3004/roles", errorResponse);
+      },
+    );
   }
 
-    save() {
+  save() {
     console.log("--> POST: http://localhost:3004/users", JSON.stringify(this.entity, null, 2));
-    this.http.post("http://localhost:3004/users", this.entity)
-    .subscribe((response: UserType) => {
-      console.log("<-- POST: http://localhost:3004/users", JSON.stringify(response, null, 2));
+    this.http.post("http://localhost:3004/users", this.entity).subscribe(
+      (response: UserType) => {
+        console.log("<-- POST: http://localhost:3004/users", JSON.stringify(response, null, 2));
 
-      this.router.navigate(['..', 'list'], { relativeTo: this.activatedRoute });
-
-    }, (errorResponse: Response) => {
-      console.log("<-- POST Error: http://localhost:3004/users", errorResponse);
-    });
+        this.router.navigate(["..", "list"], { relativeTo: this.activatedRoute });
+      },
+      (errorResponse: Response) => {
+        console.log("<-- POST Error: http://localhost:3004/users", errorResponse);
+      },
+    );
   }
 
   // for lists
@@ -146,5 +141,4 @@ this.http.get("http://localhost:3004/roles")
   splice(model: any[], index: number) {
     model.splice(index, 1);
   }
-
 }

@@ -1,11 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  HostBinding,
-  Input,
-  OnInit,
-  Output,
-} from "@angular/core";
+import { Component, EventEmitter, HostBinding, Input, OnInit, Output } from "@angular/core";
 
 // NOTE all whitespace removal (no identation) it's on purpose
 // to support css :empty
@@ -43,8 +36,7 @@ export class BBCardCollapsableComponent implements OnInit {
   @HostBinding("class.collapsed") collapsed: boolean;
 
   ngOnInit() {
-    this.collapsed =
-      this.startCollapsed === undefined ? true : !!this.startCollapsed;
+    this.collapsed = this.startCollapsed === undefined ? true : !!this.startCollapsed;
 
     // check localStorage for the last state
     if (this.uniqueid !== undefined) {

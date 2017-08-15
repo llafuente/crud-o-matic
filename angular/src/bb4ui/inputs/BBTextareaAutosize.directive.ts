@@ -10,14 +10,7 @@
 // changes: renamed
 // changes: added NgControl watcher, so it's properly initialized
 
-import {
-  AfterViewInit,
-  Directive,
-  ElementRef,
-  Input,
-  Optional,
-  Self,
-} from "@angular/core";
+import { AfterViewInit, Directive, ElementRef, Input, Optional, Self } from "@angular/core";
 import { NgControl } from "@angular/forms";
 
 declare var $;
@@ -32,7 +25,7 @@ declare var $;
     "(input)": "resizeToFitContent()",
     // Textarea elements that have the directive applied should have a single row by default.
     // Browsers normally show two rows by default and therefore this limits the minRows binding.
-    "rows": "3",
+    rows: "3",
   },
 })
 export class BBTextareaAutosize implements AfterViewInit {
@@ -87,10 +80,7 @@ export class BBTextareaAutosize implements AfterViewInit {
 
   /** Sets the minimum height of the textarea as determined by minRows. */
   _setMinHeight(): void {
-    const minHeight =
-      this.minRows && this._cachedLineHeight
-        ? `${this.minRows * this._cachedLineHeight}px`
-        : null;
+    const minHeight = this.minRows && this._cachedLineHeight ? `${this.minRows * this._cachedLineHeight}px` : null;
 
     if (minHeight) {
       this._setTextareaStyle("minHeight", minHeight);
@@ -99,10 +89,7 @@ export class BBTextareaAutosize implements AfterViewInit {
 
   /** Sets the maximum height of the textarea as determined by maxRows. */
   _setMaxHeight(): void {
-    const maxHeight =
-      this.maxRows && this._cachedLineHeight
-        ? `${this.maxRows * this._cachedLineHeight}px`
-        : null;
+    const maxHeight = this.maxRows && this._cachedLineHeight ? `${this.maxRows * this._cachedLineHeight}px` : null;
 
     if (maxHeight) {
       this._setTextareaStyle("maxHeight", maxHeight);
@@ -126,8 +113,7 @@ export class BBTextareaAutosize implements AfterViewInit {
 
     // Use the scrollHeight to know how large the textarea *would* be if fit its entire value.
     const border =
-      parseInt($(textarea).css("border-top-width"), 10) +
-      parseInt($(textarea).css("border-bottom-width"), 10);
+      parseInt($(textarea).css("border-top-width"), 10) + parseInt($(textarea).css("border-bottom-width"), 10);
 
     textarea.style.height = `${textarea.scrollHeight + border}px`;
   }

@@ -52,7 +52,8 @@ export class Schema {
 
     this.backend = new SchemaBack({}, this);
     this.frontend = new SchemaFront({}, this);
-    this.root = new Field("root", FieldType.Object);
+    this.root = new Field("entity", FieldType.Object);
+    this.root.name = "entity"
   }
 
   private init() {
@@ -115,6 +116,10 @@ export class Schema {
     });
 
     return ret;
+  }
+
+  eachField(cb: IFieldCallback) {
+    this.root.each(cb);
   }
 
   forEachFrontEndField(cb: IFieldCallback) {

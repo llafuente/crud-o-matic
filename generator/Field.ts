@@ -10,7 +10,7 @@ export interface IFieldCallback {
 export class Field {
   parentField: Field = null;
   schema: Schema = null;
-  name: string;
+  name: string = null;
 
   label: string;
   type: FieldType;

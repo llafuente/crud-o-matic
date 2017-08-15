@@ -237,6 +237,13 @@ test.serial("test schema", t => {
   t.is(gen.schemas[2].singular, "voucher");
 });
 
+test.serial("santity checks", t => {
+  gen.schemas[0].eachField((fieldName, field) => {
+    console.log(field);
+    t.not(field.name, null);
+  });
+});
+
 test.serial("generation", t => {
   gen.generateAll(
     generatedPath,

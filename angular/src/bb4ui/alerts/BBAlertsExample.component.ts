@@ -7,12 +7,5 @@ import { provideTemplateFrom } from "../examples/BBSourceExample.component";
   providers: [provideTemplateFrom(BBAlertsExampleComponent)],
 })
 export class BBAlertsExampleComponent {
-  alerts: string[] = [
-    "default",
-    "success",
-    "info",
-    "warning",
-    "danger",
-    "promo",
-  ];
+  alerts: string[] = ["default", "success", "info", "warning", "danger", "promo"];
 }

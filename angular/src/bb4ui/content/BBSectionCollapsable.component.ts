@@ -1,11 +1,4 @@
-import {
-  Component,
-  ElementRef,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-} from "@angular/core";
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output } from "@angular/core";
 
 @Component({
   selector: "bb-section-collapsable",
@@ -20,8 +13,7 @@ export class BBSectionCollapsableComponent implements OnInit {
   constructor(public element: ElementRef) {}
 
   ngOnInit() {
-    this.collapsed =
-      this.startCollapsed === undefined ? true : !!this.startCollapsed;
+    this.collapsed = this.startCollapsed === undefined ? true : !!this.startCollapsed;
   }
 
   toogle() {
