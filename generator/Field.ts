@@ -390,12 +390,38 @@ export class Field {
     }
   }
 
-  getIndexName() {
+  getIndexName(): string {
     if (this.type === FieldType.Array) {
       return this.name + "Id";
     }
+
+    throw new Error("only avail for type-Array");
   }
 
+  getIndexes(): string[] {
+    const parents = this.getParentFields().reverse();
+    let r = [];
+    for (let field of parents) {
+      if (field.parentField && field.parentField.type === FieldType.Array) {
+        r.push(field.parentField.getIndexName());
+      }
+    }
+    return r;
+  }
+
+
+  getPathName(): string {
+    const parents = this.getParentFields().reverse();
+    const r = [];
+    for (let field of parents) {
+
+      if (field.name) {
+        r.push(field.name[0].toLocaleUpperCase() + field.name.substring(1));
+      }
+    }
+
+    return r.join("");
+  }
 
   getPath(): string[] {
     const model = [];

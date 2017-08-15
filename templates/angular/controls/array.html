@@ -1,17 +1,24 @@
-<h3><%= label %> ({{<%= safeNgModel %>?.length || 0}})</h3>
+<h3 class="d-flex">
+  <span><%= label %> ({{<%= safeNgModel %>?.length || 0}})</span>
+  <bb-button class="ml-auto" (click)="push<%= field.getPathName() %>({}<%= (indexes.length ? "," + indexes.join(", ") : "") %>)">
+    <i class="fa fa-plus"></i> Añadir
+  </bb-button>
+</h3>
 
-<bb-button (click)="push(<%= ngModel %>, '<%= ngModel %>')">
-  <i class="fa fa-plus"></i> Añadir
-</bb-button>
-
-<ol class="control-list list-unstyled">
-  <li class="list-item" *ngFor="let item of <%= safeNgModel %>; let <%= indexName %> = index">
-
-    <bb-button (click)="splice(<%= ngModel %>, <%= indexName %>)">
-      <i class="fa fa-trash-o"></i> Elimnar
-    </bb-button>
-    <!-- child -->
-    <%- childControls %>
-    <!-- end child -->
-  </li>
-</ol>
+<div class="ml-1">
+  <div class="d-flex mb-1"  *ngFor="let item of <%= safeNgModel %>; let <%= indexName %> = index" style="background-color: rgba(0,0,0,0.025)">
+    <div class="align-self-start text-center" style="width: 2rem">
+    {{<%= indexName %> + 1}}
+    </div>
+    <div class="pl-1" style="width: 100%; border-left: 4px solid rgba(0,0,0,0.2)">
+      <div class="d-flex">
+        <bb-button class="ml-auto" type="danger" (click)="splice(<%= ngModel %>, <%= indexName %>)">
+          <i class="fa fa-trash-o"></i>
+        </bb-button>
+      </div>
+      <!-- child -->
+      <%- childControls %>
+      <!-- end child -->
+    </div>
+  </div>
+</div>

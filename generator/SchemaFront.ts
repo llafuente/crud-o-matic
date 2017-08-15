@@ -75,7 +75,7 @@ ${this.getCreateControlsHTML()}
 <div>
 <form #f="ngForm" novalidate>
 ${this.getCreateControlsHTML()}
-  <bb-button [routerLink]="['..', 'list']">Cancelar</bb-button>
+  <bb-button [routerLink]="['../..', 'list']">Cancelar</bb-button>
   <bb-button (click)="save()">Guardar</bb-button>
 </form>
 <pre>entity: {{entity | json}}</pre>
@@ -241,6 +241,7 @@ this.http.get("${field.frontData.srcUrl}")
     const ngModel = field.getPath();
 
     return tplCompiled({
+      field: field,
       label: field.label,
       id: id,
       name: name,
@@ -249,6 +250,7 @@ this.http.get("${field.frontData.srcUrl}")
       safeNgModel: ngModel.join("?."),
       indexName: indexName,
       childControls: childControls,
+      indexes: indexes,
 
       srcUrl: null,
       srcModel: srcModel,

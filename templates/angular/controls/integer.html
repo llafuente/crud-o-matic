@@ -1,10 +1,13 @@
-<bb-input-container label="<%= label %>">
+<bb-input-container label="<%= label %>" class="bordered top-label">
   <input
     bb-child
     type="number"
     step="1"
     id="<%= id %>"
     name="<%= name %>"
+    <% if (field.required) {%>
+    required="required"
+    <% } %>
     [(ngModel)]="<%= ngModel %>"
     #<%= modelName %>="ngModel"
     />

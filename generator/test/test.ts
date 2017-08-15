@@ -61,10 +61,9 @@ test.serial("user schema", t => {
   );
 
   schema.addField(
-    "roles",
-    new Field("Roles", FieldType.Array)
+    "roleId",
+    new Field("Rol", FieldType.String).setRefTo("Role")
       .setHTTPDropdown("http://localhost:3004/roles", "roles", "id", "label")
-      .setItems(new Field("Role", FieldType.String).setRefTo("Role"))
   );
 
   schema.addField(
@@ -130,8 +129,6 @@ test.serial("user schema", t => {
   t.is(gen.schemas[0].root.properties.password.name, "password");
   t.not(gen.schemas[0].root.properties.salt, null);
   t.not(gen.schemas[0].root.properties.roles, null);
-  t.is(gen.schemas[0].root.properties.roles.getPath().join("."), "entity.roles");
-  t.is(gen.schemas[0].root.properties.roles.items.getPath().join("."), "entity.roles[rolesId]");
   t.not(gen.schemas[0].root.properties.permissions, null);
   t.not(gen.schemas[0].root.properties.state, null);
   t.not(gen.schemas[0].root.properties.data, null);
@@ -151,7 +148,7 @@ test.serial("role schema", t => {
 
   gen.addSchema(schema);
 
-  t.is(gen.schemas[1].singular, "role");
+  t.is(schema.singular, "role");
 });
 
 test.serial("voucher schema", t => {
@@ -167,10 +164,15 @@ test.serial("voucher schema", t => {
   );
   schema.addField("maxUses", new Field("Máximos usos", FieldType.Number).setFrontControl(FrontControls.INTEGER));
   schema.addField("currentUses", new Field("Usos", FieldType.Number).setFrontControl(FrontControls.STATIC));
+  schema.addField(
+    "testId",
+    new Field("Test", FieldType.String).setRefTo("Test")
+      .setHTTPDropdown("http://localhost:3004/tests", "tests", "id", "label")
+  );
 
   gen.addSchema(schema);
 
-  t.is(gen.schemas[2].singular, "voucher");
+  t.is(schema.singular, "voucher");
 });
 
 test.serial("test schema", t => {
@@ -205,17 +207,20 @@ test.serial("test schema", t => {
                 new Field("Pregunta", FieldType.Object)
                   .addProperty(
                     "questions",
-                    new Field("Preguntas", FieldType.String).setFrontControl(FrontControls.TEXT)
+                    new Field("Pregunta", FieldType.String).setFrontControl(FrontControls.TEXT)
                   )
                   .addProperty(
                     "answers",
                     new Field("Respuestas", FieldType.Array)
                       .setFrontControl(FrontControls.ARRAY)
-                      .setItems(new Field("Respuesta", FieldType.String).setFrontControl(FrontControls.TEXT))
+                      .setItems(
+                        new Field("Respuesta", FieldType.Object)
+                        .addProperty("answer", new Field("Respuesta", FieldType.String).setFrontControl(FrontControls.TEXT))
+                      )
                   )
                   .addProperty(
                     "correcAnswerIndex",
-                    new Field("Pregunta correcta", FieldType.Number).setFrontControl(FrontControls.INTEGER)
+                    new Field("Índice de la respuesta correcta", FieldType.Number).setFrontControl(FrontControls.INTEGER)
                   )
               )
           )
@@ -239,7 +244,9 @@ test.serial("test schema", t => {
 
   gen.addSchema(schema);
 
-  t.is(gen.schemas[2].singular, "voucher");
+  t.is(schema.singular, "test");
+  t.is(schema.root.properties.blocks.getPath().join("."), "entity.blocks");
+  t.is(schema.root.properties.blocks.items.getPath().join("."), "entity.blocks[blocksId]");
 });
 
 test.serial("santity smoke checks", t => {

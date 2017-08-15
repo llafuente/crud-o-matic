@@ -10,11 +10,21 @@
     });
   }
 
-  // for lists
-  push(model: any[]) {
-    model.push({});
-  }
-
   splice(model: any[], index: number) {
     model.splice(index, 1);
   }
+<%
+  eachField((fieldName, field) => {
+    if (field.type == "Array") {
+      console.log(field);
+%>
+
+push<%= field.getPathName() %>(item: any, <%= field.getIndexes().join(", ") %>) {
+  this.<%= field.getPath().join(".") %> = this.<%= field.getPath().join(".") %> || [];
+  this.<%= field.getPath().join(".") %>.push(item);
+}
+
+<%
+    }
+  });
+%>

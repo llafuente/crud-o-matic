@@ -21,6 +21,10 @@ export const VoucherSchema = new mongoose.Schema(
     currentUses: {
       type: Number,
     },
+    testId: {
+      type: String,
+      ref: "Test",
+    },
   },
   {
     collection: "vouchers",

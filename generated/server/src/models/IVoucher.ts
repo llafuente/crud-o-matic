@@ -10,6 +10,7 @@ export interface IVoucher {
   canDownload: Boolean;
   maxUses: Number;
   currentUses: Number;
+  testId: String;
 }
 
 export class VoucherType implements IVoucher {
@@ -23,6 +24,7 @@ export class VoucherType implements IVoucher {
   canDownload: Boolean;
   maxUses: Number;
   currentUses: Number;
+  testId: String;
   constructor() {}
 
   static fromJSON(obj: IVoucher | any): VoucherType {
@@ -37,6 +39,8 @@ export class VoucherType implements IVoucher {
     r.maxUses = obj.maxUses;
 
     r.currentUses = obj.currentUses;
+
+    r.testId = obj.testId;
 
     return r;
   }

@@ -25,13 +25,9 @@ export const UserSchema = new mongoose.Schema(
     salt: {
       type: String,
     },
-    roles: {
-      type: Array,
-      items: {
-        type: String,
-        ref: "Role",
-      },
-      default: [],
+    roleId: {
+      type: String,
+      ref: "Role",
     },
     state: {
       type: String,

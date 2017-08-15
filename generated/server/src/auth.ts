@@ -35,7 +35,7 @@ export function hasPermission(perm, err) {
     //      return next(err || new HttpError(403, 'invalid user'));
     //    }
     //
-    //    // check @permissions and @roles.permissions
+    //    // check @permissions and @role.permissions
     //    let i;
     //    for (i = 0; i < perm.length; ++i) {
     //      if (!user.hasPermission(perm[i])) {
@@ -48,6 +48,7 @@ export function hasPermission(perm, err) {
 }
 
 export function hasRole(role, err) {
+  /* TODO need REVIEW
   if (!Array.isArray(role)) {
     role = [role];
   }
@@ -56,27 +57,26 @@ export function hasRole(role, err) {
     const user: IUserModel = req.loggedUser;
 
     if (!user) {
-      /* istanbul ignore next */
-      return next(err || new HttpError(401, "authorization is required"));
+      return next(err || new HttpError(401, 'authorization is required'));
     }
 
-    if (!user.roles) {
-      /* istanbul ignore next */
-      return next(err || new HttpError(403, "invalid user"));
+    if (!user.role) {
+      return next(err || new HttpError(403, 'invalid user'));
     }
 
     let i;
-    let roles = user.roles;
-    if (user.populated("roles")) {
-      roles = _.map(user.roles, "_id");
+    let role = user.role;
+    if (user.populated('role')) {
+      role = _.map(user.role, '_id');
     }
 
     for (i = 0; i < role.length; ++i) {
-      if (roles.indexOf(role[i]) === -1) {
+      if (role.indexOf(role[i]) === -1) {
         return next(err || new HttpError(403, "role required: " + role[i]));
       }
     }
 
     return next();
   };
+  */
 }

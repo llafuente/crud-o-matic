@@ -5,6 +5,9 @@
 <datepicker
   id="<%= id %>"
   name="<%= name %>"
+  <% if (field.required) {%>
+  required="required"
+  <% } %>
   [(ngModel)]="<%= ngModel %>"
   [showWeeks]="false"
   #<%= modelName %>="ngModel"></datepicker>

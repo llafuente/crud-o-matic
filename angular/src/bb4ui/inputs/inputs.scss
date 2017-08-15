@@ -51,6 +51,7 @@ $input-padding-y: 0.5rem; // CHANGE from 10px
   }
 
   &.focused,
+  &.top-label, // this is the way to force no animation
   &.notempty {
     label {
       pointer-events: none;

@@ -36,7 +36,12 @@ export const TestSchema = new mongoose.Schema(
                 answers: {
                   type: Array,
                   items: {
-                    type: String,
+                    type: Object,
+                    properties: {
+                      answer: {
+                        type: String,
+                      },
+                    },
                   },
                   default: [],
                 },

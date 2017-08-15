@@ -12,7 +12,7 @@ export interface ITest {
     name: String;
     questions: {
       questions: String;
-      answers: String[];
+      answers: { answer: String }[];
       correcAnswerIndex: Number;
     }[];
   }[];
@@ -34,7 +34,7 @@ export class TestType implements ITest {
     name: String;
     questions: {
       questions: String;
-      answers: String[];
+      answers: { answer: String }[];
       correcAnswerIndex: Number;
     }[];
   }[] = [];

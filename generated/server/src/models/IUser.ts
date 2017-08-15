@@ -9,7 +9,7 @@ export interface IUser {
   password: String;
   email: String;
   salt: String;
-  roles: String[];
+  roleId: String;
   state: String;
 
   authenticate(password: string);
@@ -25,7 +25,7 @@ export class UserType implements IUser {
   password: String;
   email: String;
   salt: String;
-  roles: String[] = [];
+  roleId: String;
   state: String = "active";
   constructor() {}
 
@@ -40,7 +40,7 @@ export class UserType implements IUser {
 
     r.salt = obj.salt;
 
-    r.roles = obj.roles;
+    r.roleId = obj.roleId;
 
     r.state = obj.state;
 

@@ -1,8 +1,11 @@
-<bb-input-container label="<%= label %>">
+<bb-input-container label="<%= label %>" class="bordered top-label">
   <select
     bb-child
     id="<%= id %>"
     name="<%= name %>"
+    <% if (field.required) {%>
+    required="required"
+    <% } %>
     [(ngModel)]="<%= ngModel %>"
     #<%= modelName %>="ngModel">
     <option *ngFor="let row of <%= srcModel %>" [ngValue]="<%= srcId %>">row.<%= srcLabel %></option>

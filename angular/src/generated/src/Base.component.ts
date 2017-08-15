@@ -1,13 +1,17 @@
-import { OnInit, OnDestroy, Injector } from "@angular/core";
-import { Subscription } from "rxjs/Rx";
-import { ActivatedRoute, ActivatedRouteSnapshot } from "@angular/router";
+import { OnInit, OnDestroy, Injector } from '@angular/core';
+import { Subscription } from 'rxjs/Rx' ;
+import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 
-export class BaseComponent implements /*OnInit, */ OnDestroy {
+
+export class BaseComponent implements /*OnInit, */OnDestroy {
   timeouts: number[] = [];
   intervals: number[] = [];
   subscriptions: Subscription[] = [];
 
-  constructor(public injector: Injector, public activatedRoute: ActivatedRoute) {
+  constructor(
+    public injector: Injector,
+    public activatedRoute: ActivatedRoute
+  ) {
     // this.xxx = injector.get(XXX);
   }
 
@@ -15,12 +19,12 @@ export class BaseComponent implements /*OnInit, */ OnDestroy {
     this.subscriptions.push(s);
   }
 
-  /*
+/*
   ngOnInit() {
   }
 */
   ngOnDestroy() {
-    this.subscriptions.forEach(subs => {
+    this.subscriptions.forEach((subs) => {
       subs.unsubscribe();
     });
     for (let i = 0; i < this.timeouts.length; ++i) {
@@ -34,7 +38,7 @@ export class BaseComponent implements /*OnInit, */ OnDestroy {
   /**
    * Reverse ActivatedRoute and return the first non-undefined key in params
    */
-  getRouteParameter(key: string): string | null {
+  getRouteParameter(key: string): string|null {
     let snapshot: ActivatedRouteSnapshot = this.activatedRoute.snapshot;
 
     do {
@@ -71,6 +75,7 @@ export class BaseComponent implements /*OnInit, */ OnDestroy {
     this.timeouts.push(t);
     return t;
   }
+
 
   interval(fn: Function, miliseconds: number): number {
     const t = setInterval(fn, miliseconds);

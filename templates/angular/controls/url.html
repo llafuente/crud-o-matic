@@ -1,9 +1,12 @@
-<bb-input-container label="<%= label %>">
+<bb-input-container label="<%= label %>" class="bordered top-label">
   <textarea
     bb-child
     type="url" url
     id="<%= id %>"
     name="<%= name %>"
+    <% if (field.required) { %>
+    required="required"
+    <% } %>
     [(ngModel)]="<%= ngModel %>"
     #<%= modelName %>="ngModel">
     </textarea>
