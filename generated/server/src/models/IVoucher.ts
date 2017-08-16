@@ -7,9 +7,9 @@ export interface IVoucher {
 
   startAt: Date;
   endAt: Date;
-  canDownload: Boolean;
-  maxUses: Number;
-  currentUses: Number;
+  canDownload: boolean;
+  maxUses: number;
+  currentUses: number;
   testId: String;
 }
 
@@ -21,9 +21,9 @@ export class VoucherType implements IVoucher {
 
   startAt: Date;
   endAt: Date;
-  canDownload: Boolean;
-  maxUses: Number;
-  currentUses: Number;
+  canDownload: boolean;
+  maxUses: number;
+  currentUses: number;
   testId: String;
   constructor() {}
 

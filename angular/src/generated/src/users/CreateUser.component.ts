@@ -12,9 +12,15 @@ import { UserType } from '../models/IUser';
   selector: "create-users-component",
   template: `
 
-<div>
-<form #f="ngForm" novalidate>
-<bb-input-container label="Userlogin" class="bordered top-label">
+<bb-section>
+  <bb-section-header>Crear usuario</bb-section-header>
+  <bb-section-content>
+    <div>
+    <form #f="ngForm" novalidate>
+    <bb-input-container
+  label="Userlogin"
+  
+  class="bordered top-label">
   <input
     bb-child
     type="text"
@@ -31,7 +37,10 @@ import { UserType } from '../models/IUser';
 
 </bb-input-container>
 
-<bb-input-container label="Password" class="bordered top-label">
+<bb-input-container
+  label="Password"
+  
+  class="bordered top-label">
   <input
     bb-child
     type="password"
@@ -47,7 +56,10 @@ import { UserType } from '../models/IUser';
 
 </bb-input-container>
 
-<bb-input-container label="Email" class="bordered top-label">
+<bb-input-container
+  label="Email"
+  
+  class="bordered top-label">
   <input
     bb-child
     type="email" email
@@ -63,7 +75,10 @@ import { UserType } from '../models/IUser';
 
 </bb-input-container>
 
-<bb-input-container label="Rol" class="bordered top-label">
+<bb-input-container
+  label="Rol"
+  
+  class="bordered top-label">
   <select
     bb-child
     id="id-roleId"
@@ -78,7 +93,10 @@ import { UserType } from '../models/IUser';
 
 </bb-input-container>
 
-<bb-input-container label="State" class="bordered top-label">
+<bb-input-container
+  label="State"
+  
+  class="bordered top-label">
   <select
     bb-child
     id="id-state"
@@ -93,11 +111,13 @@ import { UserType } from '../models/IUser';
 
 </bb-input-container>
 
-  <bb-button [routerLink]="['..', 'list']">Cancelar</bb-button>
-  <bb-button (click)="save()">Guardar</bb-button>
-</form>
-<pre>entity: {{entity | json}}</pre>
-</div>
+      <bb-button [routerLink]="['..', 'list']">Cancelar</bb-button>
+      <bb-button (click)="save()">Guardar</bb-button>
+    </form>
+    <!-- <pre>entity: {{entity | json}}</pre> -->
+    </div>
+  </bb-section-content>
+</bb-section>
     
 `,
 })

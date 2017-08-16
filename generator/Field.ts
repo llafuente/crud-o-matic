@@ -12,10 +12,13 @@ export class Field {
   schema: Schema = null;
   name: string = null;
 
+  // front
   label: string;
-  type: FieldType;
+  controlHelp: string;
   frontControl: FrontControls;
 
+  // back
+  type: FieldType;
   items: Field = null;
   properties: { [s: string]: Field } = null;
 
@@ -52,7 +55,7 @@ export class Field {
     }
   }
 
-  setFrontControl(control: FrontControls): Field {
+  setFrontControl(control: FrontControls, controlHelp: string = ""): Field {
     if (!control) {
       return this;
     }
@@ -63,6 +66,8 @@ export class Field {
       default:
         this.frontControl = control;
     }
+
+    this.controlHelp = controlHelp;
 
     return this;
   }
@@ -253,6 +258,12 @@ export class Field {
 */
       case FieldType.Array:
         type = `${this.items.getTypeScriptType(false)}[]`;
+        break;
+      case FieldType.Number:
+        type = "number";
+        break;
+      case FieldType.Boolean:
+        type = "boolean";
         break;
       default:
         type = this.type;

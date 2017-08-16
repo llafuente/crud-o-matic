@@ -13,13 +13,13 @@ import { Pagination } from '../common';
   selector: '<%= singular %>-create-component',
   template: `
 <bb-section>
-  <bb-section-header>List</bb-section-header>
+  <bb-section-header><%= frontend.listHeader %></bb-section-header>
   <bb-section-content>
     <bb-table>
       <thead>
         <tr>
           <% forEachFrontEndField((key, PrimiteType) => { %>
-            <th><%= key %></th>
+            <th><%= PrimiteType.label %></th>
           <% }) %>
           <th>Actions</th>
         <tr>
@@ -39,7 +39,7 @@ import { Pagination } from '../common';
     <bb-button [routerLink]="['..', 'create']">Create</bb-button>
   </bb-section-content>
 </bb-section>
-<pre>entities: {{entities |json}}</pre>
+<!-- <pre>entities: {{entities |json}}</pre> -->
   `,
 })
 export class <%= frontend.listComponent %> extends BaseComponent {

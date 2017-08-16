@@ -1,4 +1,7 @@
-<bb-input-container label="<%= label %>" class="bordered top-label">
+<bb-input-container
+  label="<%= field.label %>"
+  <% if (field.controlHelp) { %> help="<$= field.controlHelp %>" <% } %>
+  class="bordered top-label">
   <textarea
     bb-child
     type="url" url

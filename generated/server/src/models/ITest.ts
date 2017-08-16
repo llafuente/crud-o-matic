@@ -7,18 +7,18 @@ export interface ITest {
 
   label: String;
   instructions: String;
-  randomizeAnwers: Boolean;
+  randomizeAnwers: boolean;
   blocks: {
     name: String;
     questions: {
       questions: String;
       answers: { answer: String }[];
-      correcAnswerIndex: Number;
+      correcAnswerIndex: number;
     }[];
   }[];
-  maxTime: Number;
-  usersSubscribed: Number;
-  usersDone: Number;
+  maxTime: number;
+  usersSubscribed: number;
+  usersDone: number;
 }
 
 export class TestType implements ITest {
@@ -29,18 +29,18 @@ export class TestType implements ITest {
 
   label: String;
   instructions: String;
-  randomizeAnwers: Boolean;
+  randomizeAnwers: boolean;
   blocks: {
     name: String;
     questions: {
       questions: String;
       answers: { answer: String }[];
-      correcAnswerIndex: Number;
+      correcAnswerIndex: number;
     }[];
   }[] = [];
-  maxTime: Number;
-  usersSubscribed: Number;
-  usersDone: Number;
+  maxTime: number;
+  usersSubscribed: number;
+  usersDone: number;
   constructor() {}
 
   static fromJSON(obj: ITest | any): TestType {

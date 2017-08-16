@@ -10,6 +10,9 @@ const morgan = require("morgan");
 import { User } from "./models/User";
 import { toJSON as UserToJSON } from "./users/routerUser";
 
+// here goes your custom code will be injected after auth layer
+import { customAppRouter } from "./customApp";
+
 import routerUser from "./users/routerUser";
 import { IUserModel } from "./models/User";
 
@@ -168,6 +171,8 @@ app
 
     return res.status(200).json(UserToJSON(req.loggedUser));
   });
+
+app.use(customAppRouter);
 
 // generated schemas routes
 

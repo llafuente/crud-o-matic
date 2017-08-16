@@ -13,21 +13,21 @@ import { Pagination } from '../common';
   selector: 'user-create-component',
   template: `
 <bb-section>
-  <bb-section-header>List</bb-section-header>
+  <bb-section-header>Listado de usuarios</bb-section-header>
   <bb-section-content>
     <bb-table>
       <thead>
         <tr>
           
-            <th>userlogin</th>
+            <th>Userlogin</th>
           
-            <th>password</th>
+            <th>Password</th>
           
-            <th>email</th>
+            <th>Email</th>
           
-            <th>roleId</th>
+            <th>Rol</th>
           
-            <th>state</th>
+            <th>State</th>
           
           <th>Actions</th>
         <tr>
@@ -55,7 +55,7 @@ import { Pagination } from '../common';
     <bb-button [routerLink]="['..', 'create']">Create</bb-button>
   </bb-section-content>
 </bb-section>
-<pre>entities: {{entities |json}}</pre>
+<!-- <pre>entities: {{entities |json}}</pre> -->
   `,
 })
 export class ListUserComponent extends BaseComponent {

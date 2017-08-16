@@ -24,6 +24,10 @@ export class SchemaFront {
   updateComponent: string;
   updateComponentFile: string;
 
+  listHeader: string;
+  createHeader: string;
+  updateHeader: string;
+
 
   constructor(json, parentSchema: Schema) {
     this.parentSchema = parentSchema;
@@ -46,14 +50,19 @@ export class SchemaFront {
     comp.selector = `create-${this.parentSchema.plural}-component`;
     comp.declarations = decl.join(";\n") + ";";
     comp.template = `
-<div>
-<form #f="ngForm" novalidate>
-${this.getCreateControlsHTML()}
-  <bb-button [routerLink]="['..', 'list']">Cancelar</bb-button>
-  <bb-button (click)="save()">Guardar</bb-button>
-</form>
-<pre>entity: {{entity | json}}</pre>
-</div>
+<bb-section>
+  <bb-section-header>${this.createHeader}</bb-section-header>
+  <bb-section-content>
+    <div>
+    <form #f="ngForm" novalidate>
+    ${this.getCreateControlsHTML()}
+      <bb-button [routerLink]="['..', 'list']">Cancelar</bb-button>
+      <bb-button (click)="save()">Guardar</bb-button>
+    </form>
+    <!-- <pre>entity: {{entity | json}}</pre> -->
+    </div>
+  </bb-section-content>
+</bb-section>
     `;
 
     comp.initialization = this.getCreateInitialization().join("\n");
@@ -72,14 +81,19 @@ ${this.getCreateControlsHTML()}
     comp.selector = `update-${this.parentSchema.plural}-component`;
     comp.declarations = decl.join(";\n") + ";";
     comp.template = `
-<div>
-<form #f="ngForm" novalidate>
-${this.getCreateControlsHTML()}
-  <bb-button [routerLink]="['../..', 'list']">Cancelar</bb-button>
-  <bb-button (click)="save()">Guardar</bb-button>
-</form>
-<pre>entity: {{entity | json}}</pre>
-</div>
+<bb-section>
+  <bb-section-header>${this.updateComponent}</bb-section-header>
+  <bb-section-content>
+    <div>
+    <form #f="ngForm" novalidate>
+    ${this.getCreateControlsHTML()}
+      <bb-button [routerLink]="['../..', 'list']">Cancelar</bb-button>
+      <bb-button (click)="save()">Guardar</bb-button>
+    </form>
+    <!-- <pre>entity: {{entity | json}}</pre> -->
+    </div>
+  </bb-section-content>
+</bb-section>
     `;
 
     comp.initialization = this.getUpdateInitialization().join("\n");
@@ -242,7 +256,6 @@ this.http.get("${field.frontData.srcUrl}")
 
     return tplCompiled({
       field: field,
-      label: field.label,
       id: id,
       name: name,
       ngModel: ngModel.join("."),

@@ -10,6 +10,9 @@ const morgan = require('morgan');
 import { User } from './models/User';
 import { toJSON as UserToJSON } from './users/routerUser';
 
+// here goes your custom code will be injected after auth layer
+import { customAppRouter } from './customApp';
+
 <% _.each(generator.schemas, (schema) => { %>
 import <%= schema.backend.routerName %> from './<%= schema.plural %>/<%= schema.backend.routerName %>';
 import { <%= schema.interfaceModel %> } from './models/<%= schema.singularUc %>';
@@ -137,6 +140,8 @@ console.log(user);
 
   return res.status(200).json(UserToJSON(req.loggedUser));
 });
+
+app.use(customAppRouter);
 
 // generated schemas routes
 <% _.each(generator.schemas, (schema) => { %>

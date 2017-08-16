@@ -1,12 +1,14 @@
 <h3 class="d-flex">
-  <span><%= label %> ({{<%= safeNgModel %>?.length || 0}})</span>
+  <span><%= field.label %> ({{<%= safeNgModel %>?.length || 0}})</span>
   <bb-button class="ml-auto" (click)="push<%= field.getPathName() %>({}<%= (indexes.length ? "," + indexes.join(", ") : "") %>)">
     <i class="fa fa-plus"></i> Añadir
   </bb-button>
 </h3>
 
 <div class="ml-1">
-  <div class="d-flex mb-1"  *ngFor="let item of <%= safeNgModel %>; let <%= indexName %> = index" style="background-color: rgba(0,0,0,0.025)">
+  <div class="d-flex mb-1 p-1"
+    *ngFor="let item of <%= safeNgModel %>; let <%= indexName %> = index"
+    style="background-color: rgba(0,0,0,0.025); border: 1px solid rgba(0,0,0,0.05)">
     <div class="align-self-start text-center" style="width: 2rem">
     {{<%= indexName %> + 1}}
     </div>

@@ -18,6 +18,9 @@ const gen = new Generator();
 
 test.serial("user schema", t => {
   const schema: Schema = new Schema("user", gen);
+  schema.frontend.listHeader = "Listado de usuarios";
+  schema.frontend.createHeader = "Crear usuario";
+  schema.frontend.updateHeader = "Editar usuario";
 
   schema.addField(
     "userlogin",
@@ -139,6 +142,10 @@ test.serial("user schema", t => {
 
 test.serial("role schema", t => {
   const schema: Schema = new Schema("role", gen);
+  schema.frontend.listHeader = "Listado de roles";
+  schema.frontend.createHeader = "Crear Rol";
+  schema.frontend.updateHeader = "Editar Rol";
+
   schema.domain = "http://localhost:3004";
   schema.baseApiUrl = "";
 
@@ -153,6 +160,9 @@ test.serial("role schema", t => {
 
 test.serial("voucher schema", t => {
   const schema: Schema = new Schema("voucher", gen);
+  schema.frontend.listHeader = "Listado de vouchers";
+  schema.frontend.createHeader = "Crear voucher";
+  schema.frontend.updateHeader = "Editar voucher";
   schema.domain = "http://localhost:3004";
   schema.baseApiUrl = "";
 
@@ -177,6 +187,9 @@ test.serial("voucher schema", t => {
 
 test.serial("test schema", t => {
   const schema: Schema = new Schema("test", gen);
+  schema.frontend.listHeader = "Listado de exámenes";
+  schema.frontend.createHeader = "Crear examen";
+  schema.frontend.updateHeader = "Editar examen";
   schema.domain = "http://localhost:3004";
   schema.baseApiUrl = "";
 
