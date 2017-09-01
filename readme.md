@@ -50,12 +50,15 @@ db.createCollection("test")
 ```
 
 ```
+# requisite npm i -g nodemon
 cd C:\Users\llafuente-pc\Documents\GitHub\crud-o-matic
 cd generated\server
-npm start
+nodemon
+# or: npm start
 ```
 
 ```
+
 cd C:\Users\llafuente-pc\Documents\GitHub\crud-o-matic
 cd angular
 npm start

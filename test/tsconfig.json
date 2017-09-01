@@ -10,8 +10,12 @@
     "noImplicitAny": false,
     "outDir": "../test-js/",
     "typeRoots": [
-      "./node_modules/@types"
+      "../node_modules/@types"
     ],
+    "paths": {
+      "*" : ["../node_modules/@types/*", "*"]
+    },
+
     "types": [
       "node",
       "mongoose"
