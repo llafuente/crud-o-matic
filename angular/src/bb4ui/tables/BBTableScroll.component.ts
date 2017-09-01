@@ -8,7 +8,7 @@ import {
   ViewChild,
   ViewChildren,
   QueryList,
-  OnDestroy,
+  OnDestroy
 } from "@angular/core";
 
 declare var jQuery: any;
@@ -43,7 +43,7 @@ declare var jQuery: any;
   </div>
 </div>
 
-  `,
+  `
 })
 export class BBTableScrollComponent implements OnDestroy {
   @Input() condensed: boolean;
@@ -69,7 +69,7 @@ export class BBTableScrollComponent implements OnDestroy {
   }
 
   ngOnInit() {
-    this.getThead().children("tr").append(jQuery("<th class=\"scroll\"></th>"));
+    this.getThead().children("tr").append(jQuery('<th class="scroll"></th>'));
   }
 
   getThead() {

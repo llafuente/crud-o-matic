@@ -7,7 +7,7 @@ const noop = () => {};
 const BBCheckModelValueAccessor = {
   provide: NG_VALUE_ACCESSOR,
   useExisting: forwardRef(() => BBCheckBaseComponent),
-  multi: true,
+  multi: true
 };
 
 // abstract component
@@ -15,7 +15,7 @@ const BBCheckModelValueAccessor = {
 @Component({
   selector: "bb-check",
   template: "<div></div>",
-  providers: [BBCheckModelValueAccessor],
+  providers: [BBCheckModelValueAccessor]
 })
 export class BBCheckBaseComponent implements ControlValueAccessor {
   // validation

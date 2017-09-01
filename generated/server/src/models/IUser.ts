@@ -10,7 +10,15 @@ export interface IUser {
   email: String;
   salt: String;
   roleId: String;
+  voucherId: String;
   state: String;
+  stats: {
+    testId: String;
+    questionId: String;
+    startAt: Date;
+    endAt: Date;
+    type: String;
+  }[];
 
   authenticate(password: string);
 }
@@ -26,7 +34,15 @@ export class UserType implements IUser {
   email: String;
   salt: String;
   roleId: String;
+  voucherId: String;
   state: String = "active";
+  stats: {
+    testId: String;
+    questionId: String;
+    startAt: Date;
+    endAt: Date;
+    type: String;
+  }[] = [];
   constructor() {}
 
   static fromJSON(obj: IUser | any): UserType {
@@ -42,7 +58,11 @@ export class UserType implements IUser {
 
     r.roleId = obj.roleId;
 
+    r.voucherId = obj.voucherId;
+
     r.state = obj.state;
+
+    r.stats = obj.stats;
 
     return r;
   }

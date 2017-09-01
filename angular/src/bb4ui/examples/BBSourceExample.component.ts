@@ -8,7 +8,7 @@ import {
   OnInit,
   OpaqueToken,
   Optional,
-  Type,
+  Type
 } from "@angular/core";
 
 // original at: https://raw.githubusercontent.com/gund/ng-original-template-poc/master/src/app/directives/original-template/original-template.directive.ts
@@ -22,12 +22,12 @@ export const ORIGINAL_TEMPLATE_PROVIDER = new OpaqueToken("ORIGINAL_TEMPLATE_PRO
 export function provideTemplateFrom(component: Type<any>): ExistingProvider {
   return {
     provide: ORIGINAL_TEMPLATE_PROVIDER,
-    useExisting: forwardRef(() => component),
+    useExisting: forwardRef(() => component)
   };
 }
 
 @Directive({
-  selector: "[example]",
+  selector: "[example]"
 })
 export class BBSourceDirective implements OnInit {
   private static _templateCache = new Map<Type<any>, string>();
@@ -46,11 +46,11 @@ export class BBSourceDirective implements OnInit {
   constructor(
     @Inject(ORIGINAL_TEMPLATE_PROVIDER)
     @Optional()
-    private componentInst: any,
+    private componentInst: any
   ) {
     if (!componentInst) {
       throw Error(
-        "BBSourceDirective: You should provide component via `provideTemplateFrom()` function in your component`s providers!",
+        "BBSourceDirective: You should provide component via `provideTemplateFrom()` function in your component`s providers!"
       );
     }
 
@@ -186,7 +186,7 @@ export class BBSourceDirective implements OnInit {
     <pre><code highlightjs>{{source.trim()}}</code></pre>
   </div>
 </div>
-`,
+`
 })
 export class BBSourceExampleComponent {
   public zone = "example";

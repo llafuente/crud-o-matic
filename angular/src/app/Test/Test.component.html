@@ -1,0 +1,23 @@
+<form #form="ngForm">
+
+<bb-input-container label="Nombre de usuario" class="bordered">
+  <input bb-child name="userlogin" [(ngModel)]="auth.userlogin" />
+</bb-input-container>
+
+<bb-input-container label="Contraseña" class="bordered">
+  <input bb-child name="password" type="password" [(ngModel)]="auth.password" />
+</bb-input-container>
+
+  <div class="row">
+    <bb-button
+      (click)="next()"
+      [disabled]="!form.valid">Pregunta anterior</bb-button>
+
+    <bb-button
+      class="mr-auto"
+      (click)="next()"
+      [disabled]="!form.valid">Pregunta siguiente</bb-button>
+  </div>
+
+
+</form>

@@ -5,7 +5,7 @@ import { ModalDirective } from "ngx-bootstrap/modal";
 
 @Component({
   selector: "bb-modal",
-  templateUrl: "./BBModal.component.html",
+  templateUrl: "./BBModal.component.html"
 })
 export class BBModalComponent {
   @Input() header: string = null;

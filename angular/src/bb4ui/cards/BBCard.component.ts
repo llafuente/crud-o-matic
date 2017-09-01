@@ -13,7 +13,7 @@ import { Component, HostBinding, Input } from "@angular/core";
   <div class="card-footer mt-auto"><ng-content select="bb-section-footer"></ng-content></div>
 </div>
 
-  `,
+  `
 })
 export class BBCardComponent {
   @Input() header: string;

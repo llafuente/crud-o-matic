@@ -29,10 +29,38 @@ export const UserSchema = new mongoose.Schema(
       type: String,
       ref: "Role",
     },
+    voucherId: {
+      type: String,
+      ref: "Voucher",
+    },
     state: {
       type: String,
       default: "active",
       enum: ["active", "banned"],
+    },
+    stats: {
+      type: Array,
+      items: {
+        type: Object,
+        properties: {
+          testId: {
+            type: String,
+          },
+          questionId: {
+            type: String,
+          },
+          startAt: {
+            type: Date,
+          },
+          endAt: {
+            type: Date,
+          },
+          type: {
+            type: String,
+          },
+        },
+      },
+      default: [],
     },
   },
   {

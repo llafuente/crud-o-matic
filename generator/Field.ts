@@ -241,6 +241,9 @@ export class Field {
   getTypeScriptType(defaults: boolean): string {
     let type;
     switch (this.type) {
+      case FieldType.ObjectId:
+        type = "string";
+        break;
       case FieldType.Object:
         const t = [];
         for (let i in this.properties) {
@@ -279,6 +282,9 @@ export class Field {
     const d = [];
 
     switch (this.type) {
+      case FieldType.ObjectId:
+        d.push(`type: mongoose.Schema.Types.ObjectId`);
+        break;
       case FieldType.Object:
         d.push(`type: Object`);
 

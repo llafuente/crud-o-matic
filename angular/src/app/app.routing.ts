@@ -13,6 +13,14 @@ const routes: Routes = [
     path: "login",
     component: App.LoginComponent,
   },
+  {
+    path: "test/:testId",
+    component: App.TestComponent,
+  },
+  {
+    path: "home",
+    component: App.UserHomeComponent,
+  },
   //  {
   //    path: "",
   //    redirectTo: "typography",

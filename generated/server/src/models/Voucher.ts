@@ -6,6 +6,9 @@ export interface IVoucherModel extends IVoucher, mongoose.Document {}
 
 export const VoucherSchema = new mongoose.Schema(
   {
+    label: {
+      type: String,
+    },
     startAt: {
       type: Date,
     },
@@ -22,7 +25,7 @@ export const VoucherSchema = new mongoose.Schema(
       type: Number,
     },
     testId: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Test",
     },
   },

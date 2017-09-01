@@ -2,7 +2,7 @@ import { HttpError } from "./HttpError";
 import { Request } from "./app";
 import * as express from "express";
 import { IUserModel } from "./models/User";
-const _ = require("lodash");
+//const _ = require("lodash");
 
 // NOTE every middleware has an err parameter
 // NOTE use it to be less specific about the nature of the error

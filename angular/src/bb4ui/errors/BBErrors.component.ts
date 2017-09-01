@@ -15,7 +15,7 @@ import { BBErrorMessages } from "./BBErrorMessages.service";
   <div *ngIf="model?.errors?.url" class="form-control-feedback">{{messages.url}}</div>
   <div *ngIf="model?.errors?.pattern" class="form-control-feedback">{{pattern || messages.pattern}}</div>
 </div>
-  `,
+  `
 })
 export class BBErrorsComponent {
   // required

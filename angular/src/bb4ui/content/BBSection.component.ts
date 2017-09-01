@@ -9,6 +9,6 @@ import { Component } from "@angular/core";
  */
 @Component({
   selector: "bb-section",
-  templateUrl: "./BBSection.component.html",
+  templateUrl: "./BBSection.component.html"
 })
 export class BBSectionComponent {}

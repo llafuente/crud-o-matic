@@ -23,6 +23,20 @@ and server side will be 100% self-contained after generation.
 * fulltext search
 * search $in array-of-strings
 
+# dev (macos)
+
+
+```
+USER=
+curl -O https://fastdl.mongodb.org/osx/mongodb-osx-x86_64-3.4.7.tgz
+tar -zxvf mongodb-osx-x86_64-3.4.7.tgz
+mkdir /Users/${USER}/Desktop/mongodb
+cp -R -n mongodb-osx-x86_64-3.4.7/  /Users/${USER}/Desktop/mongodb
+mkdir /Users/${USER}/Desktop/mongodb/db
+
+/Users/rebeca/Desktop/mongodb/bin/mongod --dbpath /Users/rebeca/Desktop/mongodb/db
+```
+
 
 # dev (windows)
 

@@ -6,13 +6,13 @@ const noop = () => {};
 const BBRadioModelValueAccessor = {
   provide: NG_VALUE_ACCESSOR,
   useExisting: forwardRef(() => BBRadioComponent),
-  multi: true,
+  multi: true
 };
 
 @Component({
   selector: "bb-radio",
   templateUrl: "./BBRadio.component.html",
-  providers: [BBRadioModelValueAccessor],
+  providers: [BBRadioModelValueAccessor]
 })
 export class BBRadioComponent implements ControlValueAccessor {
   // required

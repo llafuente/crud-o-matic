@@ -3,7 +3,7 @@ import { AfterViewChecked, Directive, ElementRef, Input, NgZone, OnInit } from "
 declare var hljs: any;
 
 @Directive({
-  selector: "code[highlightjs]",
+  selector: "code[highlightjs]"
 })
 export class HighlightJSDirective implements OnInit, AfterViewChecked {
   @Input() useBr = false;

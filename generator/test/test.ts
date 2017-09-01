@@ -70,12 +70,55 @@ test.serial("user schema", t => {
   );
 
   schema.addField(
+    "voucherId",
+    new Field("Voucher", FieldType.String).setRefTo("Voucher")
+      .setHTTPDropdown("http://localhost:3004/vouchers", "vouchers", "id", "label")
+  );
+
+  
+
+  schema.addField(
     "state",
     new Field("State", FieldType.String)
       .setFrontControl(FrontControls.ENUM_DROPDOWN)
       .setEnumConstraint(["active", "banned"], ["Active", "Banned"])
       .setDefault("active")
   );
+
+  schema.addField(
+    "stats",
+    new Field("Stats", FieldType.Array)
+      .setFrontControl(FrontControls.ARRAY)
+      .setItems(
+        new Field("Estadísticas", FieldType.Object)
+          .addProperty(
+            "testId",
+            new Field("Test", FieldType.String)
+          )
+          .addProperty(
+            "questionId",
+            new Field("Pregunta", FieldType.String)
+          )
+          .addProperty(
+            "startAt",
+            new Field("Inicio", FieldType.Date).setFrontControl(FrontControls.DATETIME)
+          )
+          .addProperty(
+            "startAt",
+            new Field("Inicio", FieldType.Date).setFrontControl(FrontControls.DATETIME)
+          )
+          .addProperty(
+            "endAt",
+            new Field("Fin", FieldType.Date).setFrontControl(FrontControls.DATETIME)
+          )
+          // TODO enum
+          .addProperty(
+            "type",
+            new Field("Tipo", FieldType.String).setFrontControl(FrontControls.TEXT)
+          )
+      )
+  );
+
 
   /*
         "permissions": {
@@ -166,6 +209,7 @@ test.serial("voucher schema", t => {
   schema.domain = "http://localhost:3004";
   schema.baseApiUrl = "";
 
+  schema.addField("label", new Field("Etiqueta", FieldType.String).setFrontControl(FrontControls.TEXT));
   schema.addField("startAt", new Field("Fecha de inicio", FieldType.Date).setFrontControl(FrontControls.DATE));
   schema.addField("endAt", new Field("Fecha de fin", FieldType.Date).setFrontControl(FrontControls.DATE));
   schema.addField(
@@ -176,7 +220,7 @@ test.serial("voucher schema", t => {
   schema.addField("currentUses", new Field("Usos", FieldType.Number).setFrontControl(FrontControls.STATIC));
   schema.addField(
     "testId",
-    new Field("Test", FieldType.String).setRefTo("Test")
+    new Field("Test", FieldType.ObjectId).setRefTo("Test")
       .setHTTPDropdown("http://localhost:3004/tests", "tests", "id", "label")
   );
 

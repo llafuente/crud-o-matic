@@ -4,7 +4,7 @@ import { provideTemplateFrom } from "../examples/BBSourceExample.component";
 @Component({
   selector: "bb-card-example-component",
   templateUrl: "./BBCardExample.component.html",
-  providers: [provideTemplateFrom(BBCardExampleComponent)],
+  providers: [provideTemplateFrom(BBCardExampleComponent)]
 })
 export class BBCardExampleComponent {
   toogles: any = {};
@@ -13,7 +13,7 @@ export class BBCardExampleComponent {
   error2 = true;
   sectionEvents: any = {
     onLoad: 0,
-    onRefresh: 0,
+    onRefresh: 0
   };
 
   toogle(src, isCollapsed) {

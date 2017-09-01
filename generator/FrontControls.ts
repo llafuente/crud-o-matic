@@ -11,6 +11,7 @@ export enum FrontControls {
   TEXTAREA = "TEXTAREA",
   CHECKBOX = "CHECKBOX",
   DATE = "DATE",
+  DATETIME = "DATETIME",
   ARRAY = "ARRAY",
   STATIC = "STATIC"
 }

@@ -5,6 +5,7 @@ import { join } from "path";
 import { mkdirSync } from "fs";
 
 import { User, IUser } from "../generated/server/src/models/User";
+import { Role, IRole } from "../generated/server/src/models/Role";
 import routerUser from "../generated/server/src/users/routerUser";
 import { Pagination } from "../generated/server/src/common";
 import * as express from "express";
@@ -41,9 +42,33 @@ test.serial("remove previous users", async (t) => {
   t.pass("clean users");
 });
 
+test.serial("remove previous roles", async (t) => {
+  await Role.remove({});
+  t.pass("clean roles");
+});
+
+let adminRole;
+let userRole;
+
+test.serial("create roles with mongoose", async (t) => {
+  adminRole = new Role({
+    label: "Admin"
+  });
+
+  adminRole = await adminRole.save();
+
+  userRole = new Role({
+    label: "User"
+  });
+
+  userRole = await userRole.save();
+  t.pass("roles created");
+});
+
 test.serial("create admin user with mongoose", async (t) => {
   var user = new User({
     userlogin: "admin",
+    roleId: adminRole.id,
     password: "admin",
     email: "admin@tecnofor.es"
   });
@@ -85,9 +110,11 @@ test.cb.serial("logon: /auth", (t) => {
 
 });
 
+
 test.serial("create user with mongoose", async (t) => {
   var user = new User({
     userlogin: "mongoose-user",
+    roleId: userRole.id, 
     password: "password",
     email: "mongoose-user@test.com"
   });
@@ -95,6 +122,7 @@ test.serial("create user with mongoose", async (t) => {
   t.true(user instanceof User);
   t.not(user.email, null);
   t.not(user.id.toString(), null);
+  t.not(user.roleId, null);
 
   user = await user.save();
 
@@ -104,6 +132,7 @@ test.serial("create user with mongoose", async (t) => {
 
   t.is(newUser.userlogin, "mongoose-user");
   t.is(newUser.email, "mongoose-user@test.com");
+  t.not(newUser.roleId, null);
 });
 
 let userCreatedByApi;

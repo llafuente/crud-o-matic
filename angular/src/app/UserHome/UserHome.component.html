@@ -1,0 +1,10 @@
+<h3>Introducir Voucher</h3>
+
+<form #form="ngForm">
+  <bb-input-container label="Nombre de usuario" class="bordered">
+    <input bb-child name="userlogin" [(ngModel)]="voucherKey" />
+  </bb-input-container>
+
+  <bb-button (click)="redeem()">Comprobar voucher
+  </bb-button>
+</form>

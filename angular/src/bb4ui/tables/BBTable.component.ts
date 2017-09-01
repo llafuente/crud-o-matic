@@ -12,7 +12,7 @@ import { Component, Input } from "@angular/core";
     [class.table-bordered]="bordered === true">
     <ng-content></ng-content>
   </table>
-  `,
+  `
 })
 export class BBTableComponent {
   @Input() condensed: boolean;

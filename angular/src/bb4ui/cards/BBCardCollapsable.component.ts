@@ -21,7 +21,7 @@ import { Component, EventEmitter, HostBinding, Input, OnInit, Output } from "@an
   <div class="card-footer mt-auto" [ngStyle]="{'display': collapsed ? 'none' : 'block'}"><ng-content select="bb-section-footer"></ng-content></div>
 </div>
 
-  `,
+  `
 })
 export class BBCardCollapsableComponent implements OnInit {
   @Input() header: string;

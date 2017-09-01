@@ -8,13 +8,13 @@ const noop = () => {};
 const BBCheckModelValueAccessor = {
   provide: NG_VALUE_ACCESSOR,
   useExisting: forwardRef(() => BBCheckComponent),
-  multi: true,
+  multi: true
 };
 
 @Component({
   selector: "bb-check",
   templateUrl: "./BBCheck.component.html",
-  providers: [BBCheckModelValueAccessor],
+  providers: [BBCheckModelValueAccessor]
 })
 export class BBCheckComponent extends BBCheckBaseComponent {
   // required

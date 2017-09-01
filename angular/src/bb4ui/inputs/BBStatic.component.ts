@@ -4,8 +4,8 @@ import { Component, HostBinding, Input } from "@angular/core";
   selector: "bb-static",
   templateUrl: "./BBStatic.component.html",
   host: {
-    class: "form-control-container focused",
-  },
+    class: "form-control-container focused"
+  }
 })
 export class BBStaticComponent {
   // optional

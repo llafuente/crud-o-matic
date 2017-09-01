@@ -9,8 +9,8 @@ import { AppRoutingModule } from "./app.routing";
 import { GenerateddAppModule } from "../generated/src";
 
 import { JwtModule } from "@auth0/angular-jwt";
-import { components, AppComponent } from "./";
-
+import { components, AppComponent, services } from "./";
+console.log(services);
 // imports, declarations are exported to easy unit-testing configuration
 export const imports = [
   BrowserModule,
@@ -38,7 +38,7 @@ export const _exports = [GenerateddAppModule];
 @NgModule({
   imports,
   declarations,
-  providers: [],
+  providers: [...services],
   bootstrap: [AppComponent],
   exports: [_exports],
 })
