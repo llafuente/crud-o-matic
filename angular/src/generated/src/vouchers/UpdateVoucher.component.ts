@@ -19,14 +19,14 @@ import { VoucherType } from "../models/IVoucher";
     <form #f="ngForm" novalidate>
     <bb-input-container
   label="Etiqueta"
-  
+
   class="bordered top-label">
   <input
     bb-child
     type="text"
     id="id-label"
     name="label"
-    
+
     [(ngModel)]="entity.label"
     #label="ngModel"
     />
@@ -42,7 +42,7 @@ import { VoucherType } from "../models/IVoucher";
 <datepicker
   id="id-startAt"
   name="startAt"
-  
+
   [(ngModel)]="entity.startAt"
   [showWeeks]="false"
   #startAt="ngModel"></datepicker>
@@ -60,7 +60,7 @@ import { VoucherType } from "../models/IVoucher";
 <datepicker
   id="id-endAt"
   name="endAt"
-  
+
   [(ngModel)]="entity.endAt"
   [showWeeks]="false"
   #endAt="ngModel"></datepicker>
@@ -74,12 +74,12 @@ import { VoucherType } from "../models/IVoucher";
 <bb-check
   id="id-canDownload"
   name="canDownload"
-  
+
   [(ngModel)]="entity.canDownload">Permitir descargar manuales</bb-check>
 
 <bb-input-container
   label="Máximos usos"
-  
+
   class="bordered top-label">
   <input
     bb-child
@@ -87,7 +87,7 @@ import { VoucherType } from "../models/IVoucher";
     step="1"
     id="id-maxUses"
     name="maxUses"
-    
+
     [(ngModel)]="entity.maxUses"
     #maxUses="ngModel"
     />
@@ -102,13 +102,13 @@ import { VoucherType } from "../models/IVoucher";
 
 <bb-input-container
   label="Test"
-  
+
   class="bordered top-label">
   <select
     bb-child
     id="id-testId"
     name="testId"
-    
+
     [(ngModel)]="entity.testId"
     #testId="ngModel">
     <option *ngFor="let row of tests.list" [ngValue]="id">{{row.label}}</option>
@@ -125,8 +125,8 @@ import { VoucherType } from "../models/IVoucher";
     </div>
   </bb-section-content>
 </bb-section>
-    
-`
+
+`,
 })
 export class UpdateVoucherComponent extends BaseComponent {
   loading: false;
@@ -156,7 +156,7 @@ export class UpdateVoucherComponent extends BaseComponent {
       },
       (errorResponse: Response) => {
         console.log("<-- POST Error: http://localhost:3004/vouchers/:voucherId", errorResponse);
-      }
+      },
     );
 
     this.http.get("http://localhost:3004/tests").subscribe(
@@ -167,7 +167,7 @@ export class UpdateVoucherComponent extends BaseComponent {
       },
       (errorResponse: Response) => {
         console.log("<-- GET Error: http://localhost:3004/tests", errorResponse);
-      }
+      },
     );
   }
 
@@ -181,7 +181,7 @@ export class UpdateVoucherComponent extends BaseComponent {
       },
       (errorResponse: Response) => {
         console.log("<-- PATCH Error: http://localhost:3004/vouchers/:voucherId", errorResponse);
-      }
+      },
     );
   }
 

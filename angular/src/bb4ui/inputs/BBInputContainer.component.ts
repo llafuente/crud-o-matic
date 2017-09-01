@@ -8,8 +8,8 @@ import { BBChildComponent } from "./BBChild.component";
   selector: "bb-input-container",
   templateUrl: "./BBInputContainer.component.html",
   host: {
-    class: "form-control-container"
-  }
+    class: "form-control-container",
+  },
 })
 export class BBInputContainerComponent {
   // optional

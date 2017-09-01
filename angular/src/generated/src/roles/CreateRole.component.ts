@@ -19,14 +19,14 @@ import { RoleType } from "../models/IRole";
     <form #f="ngForm" novalidate>
     <bb-input-container
   label="Etiqueta"
-  
+
   class="bordered top-label">
   <input
     bb-child
     type="text"
     id="id-label"
     name="label"
-    
+
     [(ngModel)]="entity.label"
     #label="ngModel"
     />
@@ -42,8 +42,8 @@ import { RoleType } from "../models/IRole";
     </div>
   </bb-section-content>
 </bb-section>
-    
-`
+
+`,
 })
 export class CreateRoleComponent extends BaseComponent {
   loading: false;
@@ -70,7 +70,7 @@ export class CreateRoleComponent extends BaseComponent {
       },
       (errorResponse: Response) => {
         console.log("<-- POST Error: http://localhost:3004/roles", errorResponse);
-      }
+      },
     );
   }
 

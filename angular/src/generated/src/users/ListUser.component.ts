@@ -18,41 +18,41 @@ import { Pagination } from "../common";
     <bb-table>
       <thead>
         <tr>
-          
+
             <th>Userlogin</th>
-          
+
             <th>Password</th>
-          
+
             <th>Email</th>
-          
+
             <th>Rol</th>
-          
+
             <th>Voucher</th>
-          
+
             <th>State</th>
-          
+
             <th>Stats</th>
-          
+
           <th>Actions</th>
         <tr>
       </thead>
       <tbody>
         <tr *ngFor="let entity of entities?.list; let i = index">
-          
+
             <td>{{entity.userlogin}}</td>
-          
+
             <td>{{entity.password}}</td>
-          
+
             <td>{{entity.email}}</td>
-          
+
             <td>{{entity.roleId}}</td>
-          
+
             <td>{{entity.voucherId}}</td>
-          
+
             <td>{{entity.state}}</td>
-          
+
             <td>{{entity.stats}}</td>
-          
+
           <td class="actions">
             <a [routerLink]="['..', 'update', entity.id]"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
             <a (click)="destroy(i, entity)"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
@@ -64,7 +64,7 @@ import { Pagination } from "../common";
   </bb-section-content>
 </bb-section>
 <!-- <pre>entities: {{entities |json}}</pre> -->
-  `
+  `,
 })
 export class ListUserComponent extends BaseComponent {
   loading: boolean = false;
@@ -82,7 +82,7 @@ export class ListUserComponent extends BaseComponent {
       },
       (errorResponse: Response) => {
         console.log("<-- GET Error: http://localhost:3004/users", errorResponse.json());
-      }
+      },
     );
   }
   /*

@@ -19,16 +19,16 @@ import { UserType } from "../models/IUser";
     <form #f="ngForm" novalidate>
     <bb-input-container
   label="Userlogin"
-  
+
   class="bordered top-label">
   <input
     bb-child
     type="text"
     id="id-userlogin"
     name="userlogin"
-    
+
     required="required"
-    
+
     [(ngModel)]="entity.userlogin"
     #userlogin="ngModel"
     />
@@ -39,16 +39,16 @@ import { UserType } from "../models/IUser";
 
 <bb-input-container
   label="Password"
-  
+
   class="bordered top-label">
   <input
     bb-child
     type="password"
     id="id-password"
     name="password"
-    
+
     required="required"
-    
+
     [(ngModel)]="entity.password"
     #password="ngModel" />
 
@@ -58,16 +58,16 @@ import { UserType } from "../models/IUser";
 
 <bb-input-container
   label="Email"
-  
+
   class="bordered top-label">
   <input
     bb-child
     type="email" email
     id="id-email"
     name="email"
-    
+
     required="required"
-    
+
     [(ngModel)]="entity.email"
     #email="ngModel" />
 
@@ -77,13 +77,13 @@ import { UserType } from "../models/IUser";
 
 <bb-input-container
   label="Rol"
-  
+
   class="bordered top-label">
   <select
     bb-child
     id="id-roleId"
     name="roleId"
-    
+
     [(ngModel)]="entity.roleId"
     #roleId="ngModel">
     <option *ngFor="let row of roles.list" [ngValue]="id">{{row.label}}</option>
@@ -95,13 +95,13 @@ import { UserType } from "../models/IUser";
 
 <bb-input-container
   label="Voucher"
-  
+
   class="bordered top-label">
   <select
     bb-child
     id="id-voucherId"
     name="voucherId"
-    
+
     [(ngModel)]="entity.voucherId"
     #voucherId="ngModel">
     <option *ngFor="let row of vouchers.list" [ngValue]="id">{{row.label}}</option>
@@ -113,13 +113,13 @@ import { UserType } from "../models/IUser";
 
 <bb-input-container
   label="State"
-  
+
   class="bordered top-label">
   <select
     bb-child
     id="id-state"
     name="state"
-    
+
     [(ngModel)]="entity.state"
     #state="ngModel">
     <option *ngFor="let row of stateValues" [ngValue]="row.id">{{row.label}}</option>
@@ -161,7 +161,7 @@ import { UserType } from "../models/IUser";
 <datepicker
   id="id-startAt_{{statsId}}"
   name="startAt_{{statsId}}"
-  
+
   [(ngModel)]="entity.stats[statsId].startAt"
   [showWeeks]="false"
   #startAt="ngModel"></datepicker>
@@ -179,7 +179,7 @@ import { UserType } from "../models/IUser";
 <datepicker
   id="id-endAt_{{statsId}}"
   name="endAt_{{statsId}}"
-  
+
   [(ngModel)]="entity.stats[statsId].endAt"
   [showWeeks]="false"
   #endAt="ngModel"></datepicker>
@@ -192,14 +192,14 @@ import { UserType } from "../models/IUser";
 
 <bb-input-container
   label="Tipo"
-  
+
   class="bordered top-label">
   <input
     bb-child
     type="text"
     id="id-type_{{statsId}}"
     name="type_{{statsId}}"
-    
+
     [(ngModel)]="entity.stats[statsId].type"
     #type="ngModel"
     />
@@ -220,8 +220,8 @@ import { UserType } from "../models/IUser";
     </div>
   </bb-section-content>
 </bb-section>
-    
-`
+
+`,
 })
 export class CreateUserComponent extends BaseComponent {
   loading: false;
@@ -249,7 +249,7 @@ export class CreateUserComponent extends BaseComponent {
       },
       (errorResponse: Response) => {
         console.log("<-- GET Error: http://localhost:3004/roles", errorResponse);
-      }
+      },
     );
 
     this.http.get("http://localhost:3004/vouchers").subscribe(
@@ -260,7 +260,7 @@ export class CreateUserComponent extends BaseComponent {
       },
       (errorResponse: Response) => {
         console.log("<-- GET Error: http://localhost:3004/vouchers", errorResponse);
-      }
+      },
     );
   }
 
@@ -274,7 +274,7 @@ export class CreateUserComponent extends BaseComponent {
       },
       (errorResponse: Response) => {
         console.log("<-- POST Error: http://localhost:3004/users", errorResponse);
-      }
+      },
     );
   }
 

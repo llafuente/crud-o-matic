@@ -28,7 +28,7 @@ import { routes } from "./users/routes";
   imports: [CommonModule, ...imports],
   declarations: declarations,
   providers: [],
-  exports: _exports
+  exports: _exports,
 })
 export class UsersModule {
   constructor() {}

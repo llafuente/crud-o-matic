@@ -25,8 +25,8 @@ declare var $;
     "(input)": "resizeToFitContent()",
     // Textarea elements that have the directive applied should have a single row by default.
     // Browsers normally show two rows by default and therefore this limits the minRows binding.
-    rows: "3"
-  }
+    rows: "3",
+  },
 })
 export class BBTextareaAutosize implements AfterViewInit {
   @Input("mdAutosizeMinRows")
@@ -73,7 +73,7 @@ export class BBTextareaAutosize implements AfterViewInit {
     private _elementRef: ElementRef,
     @Optional()
     @Self()
-    public ngControl: NgControl
+    public ngControl: NgControl,
   ) {
     this.ngControl.valueChanges.subscribe(this.resizeToFitContent.bind(this));
   }

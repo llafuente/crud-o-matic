@@ -7,13 +7,13 @@ import { BBCheckBaseComponent } from "../checkbox/BBCheckBase.component";
 const UI_SWITCH_CONTROL_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
   useExisting: forwardRef(() => BBSwitchComponent),
-  multi: true
+  multi: true,
 };
 
 @Component({
   selector: "bb-switch",
   templateUrl: "./BBSwitch.component.html",
-  providers: [UI_SWITCH_CONTROL_VALUE_ACCESSOR]
+  providers: [UI_SWITCH_CONTROL_VALUE_ACCESSOR],
 })
 export class BBSwitchComponent extends BBCheckBaseComponent {
   private _disabled: boolean;

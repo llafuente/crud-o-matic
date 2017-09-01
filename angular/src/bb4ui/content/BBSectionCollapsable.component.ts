@@ -2,7 +2,7 @@ import { Component, ElementRef, EventEmitter, Input, OnInit, Output } from "@ang
 
 @Component({
   selector: "bb-section-collapsable",
-  templateUrl: "./BBSectionCollapsable.component.html"
+  templateUrl: "./BBSectionCollapsable.component.html",
 })
 export class BBSectionCollapsableComponent implements OnInit {
   @Input() startCollapsed: boolean;

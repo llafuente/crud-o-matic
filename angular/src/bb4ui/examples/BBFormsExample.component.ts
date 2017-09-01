@@ -6,6 +6,6 @@ import { Component } from "@angular/core";
 <bb-checkboxes-example-component></bb-checkboxes-example-component>
 <bb-radios-example-component></bb-radios-example-component>
 <bb-inputs-example-component></bb-inputs-example-component>
-`
+`,
 })
 export class BBFormsExampleComponent {}

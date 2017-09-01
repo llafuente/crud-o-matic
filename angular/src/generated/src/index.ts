@@ -33,14 +33,14 @@ export const _exports = [
 
   VouchersModule,
 
-  TestsModule
+  TestsModule,
 ];
 
 @NgModule({
   imports: [BrowserModule, FormsModule, ...imports],
   declarations: [],
   providers: [],
-  exports: _exports
+  exports: _exports,
 })
 export class GenerateddAppModule {
   constructor() {}

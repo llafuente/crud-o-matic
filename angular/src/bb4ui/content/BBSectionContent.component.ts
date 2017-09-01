@@ -24,7 +24,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
     (click)="doReload()"
   ><i class="fa fa-refresh "></i> Volver a interntarlo</bb-button>
 </div>
-  `
+  `,
 })
 export class BBSectionContentComponent implements OnInit {
   @Output() onReload: EventEmitter<any> = new EventEmitter<any>();

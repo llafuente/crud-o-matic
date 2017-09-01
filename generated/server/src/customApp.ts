@@ -8,37 +8,39 @@ export const customAppRouter = express
     const label = req.body.voucherKey;
 
     Voucher.findOne({
-      key: label
-    }).exec().then(voucher => {
-      if (!voucher) {
-        return res.status(404).json({ message: "No se pudo encontrar el Voucher" });
-      }
+      key: label,
+    })
+      .exec()
+      .then(voucher => {
+        if (!voucher) {
+          return res.status(404).json({ message: "No se pudo encontrar el Voucher" });
+        }
 
-      if (voucher.maxUses == voucher.currentUses) {
-        return res.status(400).json({ message: "Voucher ha llegado al número máximo de usos" });
-      }
+        if (voucher.maxUses == voucher.currentUses) {
+          return res.status(400).json({ message: "Voucher ha llegado al número máximo de usos" });
+        }
 
-      const now = Date.now();
-      if (voucher.startAt.getTime() > now) {
-        return res.status(400).json({ message: "Voucher aún no puede ser usado" });
-      }
+        const now = Date.now();
+        if (voucher.startAt.getTime() > now) {
+          return res.status(400).json({ message: "Voucher aún no puede ser usado" });
+        }
 
-      if (voucher.endAt.getTime() < now) {
-        return res.status(400).json({ message: "Voucher ha caducado" });
-      }
+        if (voucher.endAt.getTime() < now) {
+          return res.status(400).json({ message: "Voucher ha caducado" });
+        }
 
-      ++voucher.maxUses;
-      req.loggedUser.voucherId = voucher._id;
-      voucher
-        .save()
-        .then(() => {
-          return req.loggedUser.save();
-        })
-        .then(() => {
-          res.status(204).json();
-        })
-        .catch(next);
-    });
+        ++voucher.maxUses;
+        req.loggedUser.voucherId = voucher._id;
+        voucher
+          .save()
+          .then(() => {
+            return req.loggedUser.save();
+          })
+          .then(() => {
+            res.status(204).json();
+          })
+          .catch(next);
+      });
   })
   .post("/users/test/:testId/:questionId/start", (req: Request, res: express.Response, next: express.NextFunction) => {
     const testId = req.param("testId", null);

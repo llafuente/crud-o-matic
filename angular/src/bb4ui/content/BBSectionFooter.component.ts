@@ -10,6 +10,6 @@ import { Component } from "@angular/core";
   <div class="bb-section-footer-container" [hidden]="ref.childNodes.length <= 3" #ref>
     <ng-content></ng-content>
   </div>
-  `
+  `,
 })
 export class BBSectionFooterComponent {}

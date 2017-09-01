@@ -16,8 +16,8 @@ function coerceBooleanProperty(value: any): boolean {
     class: "form-control",
     "[required]": "required",
     "[disabled]": "disabled",
-    "(input)": "onInput()"
-  }
+    "(input)": "onInput()",
+  },
 })
 export class BBChildComponent {
   @HostBinding("class.form-control-lg") sizeLg: boolean; // declared at container
@@ -49,7 +49,7 @@ export class BBChildComponent {
     @Optional()
     @Self()
     public ngControl: NgControl,
-    public element: ElementRef
+    public element: ElementRef,
   ) {
     console.log("parentparentparent", parent);
 

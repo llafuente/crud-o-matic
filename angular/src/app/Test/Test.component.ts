@@ -4,12 +4,12 @@ import { LoggedUser } from "../LoggedUser.service";
 
 @Component({
   selector: "test-component",
-  templateUrl: "./Test.component.html"
+  templateUrl: "./Test.component.html",
 })
 export class TestComponent {
   auth: any = {
     userlogin: "admin",
-    password: "admin"
+    password: "admin",
   };
 
   constructor(public http: Http, public user: LoggedUser) {}
@@ -21,7 +21,7 @@ export class TestComponent {
         console.log("set token", token);
         this.user.setToken(token);
       },
-      errorResponse => {}
+      errorResponse => {},
     );
   }
 }

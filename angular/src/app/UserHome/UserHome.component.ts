@@ -4,7 +4,7 @@ import { LoggedUser } from "../LoggedUser.service";
 
 @Component({
   selector: "user-home-component",
-  templateUrl: "./UserHome.component.html"
+  templateUrl: "./UserHome.component.html",
 })
 export class UserHomeComponent {
   voucherKey = "xxx";
@@ -12,11 +12,11 @@ export class UserHomeComponent {
   constructor(public http: HttpClient, public user: LoggedUser) {}
 
   redeem() {
-    this.http.post("http://localhost:3004/users/redeem-voucher", {voucherKey: this.voucherKey}).subscribe(
+    this.http.post("http://localhost:3004/users/redeem-voucher", { voucherKey: this.voucherKey }).subscribe(
       response => {
         console.log("redeem-voucher", response);
       },
-      errorResponse => {}
+      errorResponse => {},
     );
   }
 }

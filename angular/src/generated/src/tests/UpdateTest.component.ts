@@ -19,14 +19,14 @@ import { TestType } from "../models/ITest";
     <form #f="ngForm" novalidate>
     <bb-input-container
   label="Nombre del examén"
-  
+
   class="bordered top-label">
   <input
     bb-child
     type="text"
     id="id-label"
     name="label"
-    
+
     [(ngModel)]="entity.label"
     #label="ngModel"
     />
@@ -37,7 +37,7 @@ import { TestType } from "../models/ITest";
 
 <bb-input-container
   label="Instrucciones"
-  
+
   class="bordered top-label">
   <textarea
     bb-child
@@ -45,7 +45,7 @@ import { TestType } from "../models/ITest";
     id="id-instructions"
     name="instructions"
     [(ngModel)]="entity.instructions"
-    
+
     #instructions="ngModel">
     </textarea>
 
@@ -56,7 +56,7 @@ import { TestType } from "../models/ITest";
 <bb-check
   id="id-randomizeAnwers"
   name="randomizeAnwers"
-  
+
   [(ngModel)]="entity.randomizeAnwers">Aleatorizar respuestas</bb-check>
 
 <h3 class="d-flex">
@@ -82,14 +82,14 @@ import { TestType } from "../models/ITest";
       <!-- child -->
       <bb-input-container
   label="Nombre del bloque"
-  
+
   class="bordered top-label">
   <input
     bb-child
     type="text"
     id="id-name_{{blocksId}}"
     name="name_{{blocksId}}"
-    
+
     [(ngModel)]="entity.blocks[blocksId].name"
     #name="ngModel"
     />
@@ -121,14 +121,14 @@ import { TestType } from "../models/ITest";
       <!-- child -->
       <bb-input-container
   label="Pregunta"
-  
+
   class="bordered top-label">
   <input
     bb-child
     type="text"
     id="id-questions_{{blocksId}}_{{questionsId}}"
     name="questions_{{blocksId}}_{{questionsId}}"
-    
+
     [(ngModel)]="entity.blocks[blocksId].questions[questionsId].questions"
     #questions="ngModel"
     />
@@ -160,14 +160,14 @@ import { TestType } from "../models/ITest";
       <!-- child -->
       <bb-input-container
   label="Respuesta"
-  
+
   class="bordered top-label">
   <input
     bb-child
     type="text"
     id="id-answer_{{blocksId}}_{{questionsId}}_{{answersId}}"
     name="answer_{{blocksId}}_{{questionsId}}_{{answersId}}"
-    
+
     [(ngModel)]="entity.blocks[blocksId].questions[questionsId].answers[answersId].answer"
     #answer="ngModel"
     />
@@ -183,7 +183,7 @@ import { TestType } from "../models/ITest";
 
 <bb-input-container
   label="Índice de la respuesta correcta"
-  
+
   class="bordered top-label">
   <input
     bb-child
@@ -191,7 +191,7 @@ import { TestType } from "../models/ITest";
     step="1"
     id="id-correcAnswerIndex_{{blocksId}}_{{questionsId}}"
     name="correcAnswerIndex_{{blocksId}}_{{questionsId}}"
-    
+
     [(ngModel)]="entity.blocks[blocksId].questions[questionsId].correcAnswerIndex"
     #correcAnswerIndex="ngModel"
     />
@@ -212,7 +212,7 @@ import { TestType } from "../models/ITest";
 
 <bb-input-container
   label="Tiempo máximo (minutos)"
-  
+
   class="bordered top-label">
   <input
     bb-child
@@ -220,7 +220,7 @@ import { TestType } from "../models/ITest";
     step="1"
     id="id-maxTime"
     name="maxTime"
-    
+
     [(ngModel)]="entity.maxTime"
     #maxTime="ngModel"
     />
@@ -244,8 +244,8 @@ import { TestType } from "../models/ITest";
     </div>
   </bb-section-content>
 </bb-section>
-    
-`
+
+`,
 })
 export class UpdateTestComponent extends BaseComponent {
   loading: false;
@@ -273,7 +273,7 @@ export class UpdateTestComponent extends BaseComponent {
       },
       (errorResponse: Response) => {
         console.log("<-- POST Error: http://localhost:3004/tests/:testId", errorResponse);
-      }
+      },
     );
   }
 
@@ -287,7 +287,7 @@ export class UpdateTestComponent extends BaseComponent {
       },
       (errorResponse: Response) => {
         console.log("<-- PATCH Error: http://localhost:3004/tests/:testId", errorResponse);
-      }
+      },
     );
   }
 

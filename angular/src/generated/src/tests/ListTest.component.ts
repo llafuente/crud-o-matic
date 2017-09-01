@@ -18,41 +18,41 @@ import { Pagination } from "../common";
     <bb-table>
       <thead>
         <tr>
-          
+
             <th>Nombre del examén</th>
-          
+
             <th>Instrucciones</th>
-          
+
             <th>Aleatorizar respuestas</th>
-          
+
             <th>Bloques de conocimiento</th>
-          
+
             <th>Tiempo máximo (minutos)</th>
-          
+
             <th>Usuarios inscritos</th>
-          
+
             <th>Usuarios que realizaron el examen</th>
-          
+
           <th>Actions</th>
         <tr>
       </thead>
       <tbody>
         <tr *ngFor="let entity of entities?.list; let i = index">
-          
+
             <td>{{entity.label}}</td>
-          
+
             <td>{{entity.instructions}}</td>
-          
+
             <td>{{entity.randomizeAnwers}}</td>
-          
+
             <td>{{entity.blocks}}</td>
-          
+
             <td>{{entity.maxTime}}</td>
-          
+
             <td>{{entity.usersSubscribed}}</td>
-          
+
             <td>{{entity.usersDone}}</td>
-          
+
           <td class="actions">
             <a [routerLink]="['..', 'update', entity.id]"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
             <a (click)="destroy(i, entity)"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
@@ -64,7 +64,7 @@ import { Pagination } from "../common";
   </bb-section-content>
 </bb-section>
 <!-- <pre>entities: {{entities |json}}</pre> -->
-  `
+  `,
 })
 export class ListTestComponent extends BaseComponent {
   loading: boolean = false;
@@ -82,7 +82,7 @@ export class ListTestComponent extends BaseComponent {
       },
       (errorResponse: Response) => {
         console.log("<-- GET Error: http://localhost:3004/tests", errorResponse.json());
-      }
+      },
     );
   }
   /*

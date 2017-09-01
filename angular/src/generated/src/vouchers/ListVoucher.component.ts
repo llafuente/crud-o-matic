@@ -18,41 +18,41 @@ import { Pagination } from "../common";
     <bb-table>
       <thead>
         <tr>
-          
+
             <th>Etiqueta</th>
-          
+
             <th>Fecha de inicio</th>
-          
+
             <th>Fecha de fin</th>
-          
+
             <th>Permitir descargar manuales</th>
-          
+
             <th>Máximos usos</th>
-          
+
             <th>Usos</th>
-          
+
             <th>Test</th>
-          
+
           <th>Actions</th>
         <tr>
       </thead>
       <tbody>
         <tr *ngFor="let entity of entities?.list; let i = index">
-          
+
             <td>{{entity.label}}</td>
-          
+
             <td>{{entity.startAt}}</td>
-          
+
             <td>{{entity.endAt}}</td>
-          
+
             <td>{{entity.canDownload}}</td>
-          
+
             <td>{{entity.maxUses}}</td>
-          
+
             <td>{{entity.currentUses}}</td>
-          
+
             <td>{{entity.testId}}</td>
-          
+
           <td class="actions">
             <a [routerLink]="['..', 'update', entity.id]"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
             <a (click)="destroy(i, entity)"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
@@ -64,7 +64,7 @@ import { Pagination } from "../common";
   </bb-section-content>
 </bb-section>
 <!-- <pre>entities: {{entities |json}}</pre> -->
-  `
+  `,
 })
 export class ListVoucherComponent extends BaseComponent {
   loading: boolean = false;
@@ -82,7 +82,7 @@ export class ListVoucherComponent extends BaseComponent {
       },
       (errorResponse: Response) => {
         console.log("<-- GET Error: http://localhost:3004/vouchers", errorResponse.json());
-      }
+      },
     );
   }
   /*

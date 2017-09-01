@@ -7,7 +7,7 @@ const noop = () => {};
 const BBInputmodelVALUE_ACCESSOR = {
   provide: NG_VALUE_ACCESSOR,
   useExisting: forwardRef(() => BBInputComponent),
-  multi: true
+  multi: true,
 };
 
 // NOTE name is not necessary
@@ -16,7 +16,7 @@ const BBInputmodelVALUE_ACCESSOR = {
 @Component({
   selector: "bb-input",
   templateUrl: "./BBInput.component.html",
-  providers: [BBInputmodelVALUE_ACCESSOR]
+  providers: [BBInputmodelVALUE_ACCESSOR],
 })
 export class BBInputComponent implements ControlValueAccessor {
   // required
