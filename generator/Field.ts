@@ -241,6 +241,7 @@ export class Field {
   getTypeScriptType(defaults: boolean): string {
     let type;
     switch (this.type) {
+      case FieldType.String: // lowercased
       case FieldType.ObjectId:
         type = "string";
         break;
@@ -381,7 +382,7 @@ export class Field {
     switch (this.frontControl) {
       case FrontControls.ARRAY:
         let x = this.items.getCreateImports();
-        console.log("array parentFields", this.getParentFields());
+        //console.log("array parentFields", this.getParentFields());
 
         x.push(`import {} from "./.component";`);
         return x;

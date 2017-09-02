@@ -9,6 +9,9 @@ export const VoucherSchema = new mongoose.Schema(
     label: {
       type: String,
     },
+    key: {
+      type: String,
+    },
     startAt: {
       type: Date,
     },
@@ -23,6 +26,7 @@ export const VoucherSchema = new mongoose.Schema(
     },
     currentUses: {
       type: Number,
+      default: 0,
     },
     testId: {
       type: mongoose.Schema.Types.ObjectId,

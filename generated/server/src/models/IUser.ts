@@ -5,19 +5,20 @@ export interface IUser {
   createdAt: Date;
   updatedAt: Date;
 
-  userlogin: String;
-  password: String;
-  email: String;
-  salt: String;
-  roleId: String;
-  voucherId: String;
-  state: String;
+  userlogin: string;
+  password: string;
+  email: string;
+  salt: string;
+  roleId: string;
+  voucherId: string;
+  testId: string;
+  state: string;
   stats: {
-    testId: String;
-    questionId: String;
+    testId: string;
+    questionId: string;
     startAt: Date;
     endAt: Date;
-    type: String;
+    type: string;
   }[];
 
   authenticate(password: string);
@@ -29,19 +30,20 @@ export class UserType implements IUser {
   createdAt: Date = null;
   updatedAt: Date = null;
 
-  userlogin: String;
-  password: String;
-  email: String;
-  salt: String;
-  roleId: String;
-  voucherId: String;
-  state: String = "active";
+  userlogin: string;
+  password: string;
+  email: string;
+  salt: string;
+  roleId: string;
+  voucherId: string = null;
+  testId: string = null;
+  state: string = "active";
   stats: {
-    testId: String;
-    questionId: String;
+    testId: string;
+    questionId: string;
     startAt: Date;
     endAt: Date;
-    type: String;
+    type: string;
   }[] = [];
   constructor() {}
 
@@ -59,6 +61,8 @@ export class UserType implements IUser {
     r.roleId = obj.roleId;
 
     r.voucherId = obj.voucherId;
+
+    r.testId = obj.testId;
 
     r.state = obj.state;
 

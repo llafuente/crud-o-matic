@@ -1,5 +1,5 @@
-<form #form="ngForm">
-
+<form #form="ngForm" *ngIf="test">
+<!--
 <bb-input-container label="Nombre de usuario" class="bordered">
   <input bb-child name="userlogin" [(ngModel)]="auth.userlogin" />
 </bb-input-container>
@@ -7,16 +7,43 @@
 <bb-input-container label="Contraseña" class="bordered">
   <input bb-child name="password" type="password" [(ngModel)]="auth.password" />
 </bb-input-container>
+-->
+
+  <!-- <pre>{{test |json}}</pre> -->
+  <pre>{{test.blocks[currentBlock].questions[currentQuestion] |json}}</pre>
+
+  <h1>{{test.label}} ({{currentQuestion + 1}} / {{maxQuestion}})</h1>
+  <h2>{{test.blocks[currentBlock].questions[currentQuestion].questionLabel}}</h2>
+  <ul>
+    <li *ngFor="let answer of test.blocks[currentBlock].questions[currentQuestion].answers; let i = index;">
+
+    <bb-radio
+      name="answer"
+      [(ngModel)]="answers[currentQuestion]"
+      [value]="i">
+        {{answerIndexes[i]}} - {{answer.answerLabel}}
+      </bb-radio>
+
+    </li>
+  </ul>
 
   <div class="row">
     <bb-button
-      (click)="next()"
+      (click)="prev()"
+      *ngIf="currentQuestion > 0"
       [disabled]="!form.valid">Pregunta anterior</bb-button>
 
     <bb-button
-      class="mr-auto"
+      class="ml-auto"
       (click)="next()"
+      *ngIf="currentQuestion + 1 < maxQuestion"
       [disabled]="!form.valid">Pregunta siguiente</bb-button>
+
+    <bb-button
+      class="ml-auto"
+      (click)="next()"
+      *ngIf="currentQuestion + 1 == maxQuestion"
+      [disabled]="!form.valid">Finalizar examen</bb-button>
   </div>
 
 

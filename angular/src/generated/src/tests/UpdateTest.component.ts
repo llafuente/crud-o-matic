@@ -13,7 +13,7 @@ import { TestType } from "../models/ITest";
   template: `
 
 <bb-section>
-  <bb-section-header>UpdateTestComponent</bb-section-header>
+  <bb-section-header>Editar examen</bb-section-header>
   <bb-section-content>
     <div>
     <form #f="ngForm" novalidate>
@@ -126,14 +126,14 @@ import { TestType } from "../models/ITest";
   <input
     bb-child
     type="text"
-    id="id-questions_{{blocksId}}_{{questionsId}}"
-    name="questions_{{blocksId}}_{{questionsId}}"
+    id="id-questionLabel_{{blocksId}}_{{questionsId}}"
+    name="questionLabel_{{blocksId}}_{{questionsId}}"
 
-    [(ngModel)]="entity.blocks[blocksId].questions[questionsId].questions"
-    #questions="ngModel"
+    [(ngModel)]="entity.blocks[blocksId].questions[questionsId].questionLabel"
+    #questionLabel="ngModel"
     />
 
-    <bb-errors [model]="questions"></bb-errors>
+    <bb-errors [model]="questionLabel"></bb-errors>
 
 </bb-input-container>
 
@@ -165,14 +165,14 @@ import { TestType } from "../models/ITest";
   <input
     bb-child
     type="text"
-    id="id-answer_{{blocksId}}_{{questionsId}}_{{answersId}}"
-    name="answer_{{blocksId}}_{{questionsId}}_{{answersId}}"
+    id="id-answerLabel_{{blocksId}}_{{questionsId}}_{{answersId}}"
+    name="answerLabel_{{blocksId}}_{{questionsId}}_{{answersId}}"
 
-    [(ngModel)]="entity.blocks[blocksId].questions[questionsId].answers[answersId].answer"
-    #answer="ngModel"
+    [(ngModel)]="entity.blocks[blocksId].questions[questionsId].answers[answersId].answerLabel"
+    #answerLabel="ngModel"
     />
 
-    <bb-errors [model]="answer"></bb-errors>
+    <bb-errors [model]="answerLabel"></bb-errors>
 
 </bb-input-container>
 

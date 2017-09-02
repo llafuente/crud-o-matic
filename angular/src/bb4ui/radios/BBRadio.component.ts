@@ -36,7 +36,7 @@ export class BBRadioComponent implements ControlValueAccessor {
       throw new Error("bb-radio: value is required");
     }
 
-    console.log("bb-radio: ngAfterViewInit", this.name);
+    //console.log("bb-radio: ngAfterViewInit", this.name);
   }
 
   clicked() {
@@ -45,18 +45,18 @@ export class BBRadioComponent implements ControlValueAccessor {
 
   // @ControlValueAccessor interface
   writeValue(value: any) {
-    console.log("writeValue", value);
+    //console.log("writeValue", value);
     this.modelValue = value;
     this._onChangeCallback(value);
   }
 
   registerOnChange(fn: any) {
-    console.log("registerOnChange", fn);
+    //console.log("registerOnChange", fn);
     this._onChangeCallback = fn;
   }
 
   registerOnTouched(fn: any) {
-    console.log("registerOnTouched", fn);
+    //console.log("registerOnTouched", fn);
     this._onTouchedCallback = fn;
   }
 }

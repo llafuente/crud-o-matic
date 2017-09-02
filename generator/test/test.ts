@@ -72,10 +72,16 @@ test.serial("user schema", t => {
   schema.addField(
     "voucherId",
     new Field("Voucher", FieldType.String).setRefTo("Voucher")
+      .setDefault(null)
       .setHTTPDropdown("http://localhost:3004/vouchers", "vouchers", "id", "label")
   );
 
-  
+  schema.addField(
+    "testId",
+    new Field("Test", FieldType.String).setRefTo("Test")
+      .setDefault(null)
+      .setHTTPDropdown("http://localhost:3004/tests", "tests", "id", "label")
+  );
 
   schema.addField(
     "state",
@@ -210,6 +216,7 @@ test.serial("voucher schema", t => {
   schema.baseApiUrl = "";
 
   schema.addField("label", new Field("Etiqueta", FieldType.String).setFrontControl(FrontControls.TEXT));
+  schema.addField("key", new Field("Código", FieldType.String).setFrontControl(FrontControls.TEXT));
   schema.addField("startAt", new Field("Fecha de inicio", FieldType.Date).setFrontControl(FrontControls.DATE));
   schema.addField("endAt", new Field("Fecha de fin", FieldType.Date).setFrontControl(FrontControls.DATE));
   schema.addField(
@@ -217,7 +224,11 @@ test.serial("voucher schema", t => {
     new Field("Permitir descargar manuales", FieldType.Boolean).setFrontControl(FrontControls.CHECKBOX)
   );
   schema.addField("maxUses", new Field("Máximos usos", FieldType.Number).setFrontControl(FrontControls.INTEGER));
-  schema.addField("currentUses", new Field("Usos", FieldType.Number).setFrontControl(FrontControls.STATIC));
+  schema.addField("currentUses",
+    new Field("Usos", FieldType.Number)
+      .setFrontControl(FrontControls.STATIC)
+      .setDefault(0)
+  );
   schema.addField(
     "testId",
     new Field("Test", FieldType.ObjectId).setRefTo("Test")
@@ -263,7 +274,7 @@ test.serial("test schema", t => {
               .setItems(
                 new Field("Pregunta", FieldType.Object)
                   .addProperty(
-                    "questions",
+                    "questionLabel",
                     new Field("Pregunta", FieldType.String).setFrontControl(FrontControls.TEXT)
                   )
                   .addProperty(
@@ -272,7 +283,7 @@ test.serial("test schema", t => {
                       .setFrontControl(FrontControls.ARRAY)
                       .setItems(
                         new Field("Respuesta", FieldType.Object)
-                        .addProperty("answer", new Field("Respuesta", FieldType.String).setFrontControl(FrontControls.TEXT))
+                        .addProperty("answerLabel", new Field("Respuesta", FieldType.String).setFrontControl(FrontControls.TEXT))
                       )
                   )
                   .addProperty(
@@ -309,9 +320,9 @@ test.serial("test schema", t => {
 test.serial("santity smoke checks", t => {
 
   gen.schemas.forEach((schema) => {
-    console.log("\n\n\n\n\n");
+    //console.log("\n\n\n\n\n");
     schema.eachField((fieldName, field) => {
-      console.log(field.name, field.getPath());
+      //console.log(field.name, field.getPath());
       if (field.parentField != null && field.parentField.type != FieldType.Array) {
         t.not(field.name, null);
       }

@@ -5,6 +5,33 @@
     <input bb-child name="userlogin" [(ngModel)]="voucherKey" />
   </bb-input-container>
 
-  <bb-button (click)="redeem()">Comprobar voucher
+  <bb-button (click)="redeem(bbModal)">Comprobar voucher
   </bb-button>
 </form>
+
+<h3>Tests</h3>
+
+<bb-alert *ngIf="test == null">
+No se ha inscrito a ningún test, por favor introduzca un Voucher para empezar un test.
+</bb-alert>
+
+<div class="ml-2" *ngIf="test != null">
+  <h4>{{test.label}}</h4>
+  <p>Instrucciones: {{test.instructions}}</p>
+  <p>Tiempo máximo: {{test.maxTime}} minuto(s)</p>
+  <bb-button [routerLink]="['/test', test.id]">Hacer examen</bb-button>
+</div>
+
+<pre>{{test | json}}</pre>
+
+<bb-modal
+  header="Error"
+  #bbModal>
+  <bb-section-content>
+    <p>Se ha producido un error:</p>
+    <p>{{error?.error?.message || 'Error interno'}}</p>
+  </bb-section-content>
+  <bb-section-footer>
+    <bb-button (click)="bbModal.hide()">Cerrar</bb-button>
+  </bb-section-footer>
+</bb-modal>

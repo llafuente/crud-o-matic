@@ -30,7 +30,7 @@ export const TestSchema = new mongoose.Schema(
             items: {
               type: Object,
               properties: {
-                questions: {
+                questionLabel: {
                   type: String,
                 },
                 answers: {
@@ -38,7 +38,7 @@ export const TestSchema = new mongoose.Schema(
                   items: {
                     type: Object,
                     properties: {
-                      answer: {
+                      answerLabel: {
                         type: String,
                       },
                     },

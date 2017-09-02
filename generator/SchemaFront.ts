@@ -82,7 +82,7 @@ export class SchemaFront {
     comp.declarations = decl.join(";\n") + ";";
     comp.template = `
 <bb-section>
-  <bb-section-header>${this.updateComponent}</bb-section-header>
+  <bb-section-header>${this.updateHeader}</bb-section-header>
   <bb-section-content>
     <div>
     <form #f="ngForm" novalidate>
@@ -137,7 +137,9 @@ export class SchemaFront {
     this.parentSchema.forEachFrontEndField((fieldName, field) => {
       imports = imports.concat(field.getCreateImports());
     });
-    console.log(imports);
+
+    //console.log(imports);
+
     return imports.join("\n");
   }
 
@@ -146,10 +148,21 @@ export class SchemaFront {
     this.parentSchema.forEachFrontEndField((fieldName, field) => {
       switch (field.frontControl) {
         case FrontControls.HTTP_DROPDOWN:
+          let nullable = "";
+          if (field.defaults === null) {
+            nullable = `
+  response.list.unshift({
+    ${JSON.stringify(field.frontData.srcId)}: null,
+    ${JSON.stringify(field.frontData.srcLabel)}: "",
+  });
+`;
+          }
           controls.push(`
 this.http.get("${field.frontData.srcUrl}")
 .subscribe((response: any) => {
   console.log("<-- GET: ${field.frontData.srcUrl}", JSON.stringify(response, null, 2));
+
+  ${nullable}
 
   this.${field.frontData.declaration} = response;
 

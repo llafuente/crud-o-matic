@@ -31,7 +31,13 @@ export const UserSchema = new mongoose.Schema(
     },
     voucherId: {
       type: String,
+      default: null,
       ref: "Voucher",
+    },
+    testId: {
+      type: String,
+      default: null,
+      ref: "Test",
     },
     state: {
       type: String,

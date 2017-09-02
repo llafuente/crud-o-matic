@@ -13,7 +13,7 @@ import { RoleType } from "../models/IRole";
   template: `
 
 <bb-section>
-  <bb-section-header>UpdateRoleComponent</bb-section-header>
+  <bb-section-header>Editar Rol</bb-section-header>
   <bb-section-content>
     <div>
     <form #f="ngForm" novalidate>

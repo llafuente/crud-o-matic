@@ -29,6 +29,8 @@ import { Pagination } from "../common";
 
             <th>Voucher</th>
 
+            <th>Test</th>
+
             <th>State</th>
 
             <th>Stats</th>
@@ -48,6 +50,8 @@ import { Pagination } from "../common";
             <td>{{entity.roleId}}</td>
 
             <td>{{entity.voucherId}}</td>
+
+            <td>{{entity.testId}}</td>
 
             <td>{{entity.state}}</td>
 

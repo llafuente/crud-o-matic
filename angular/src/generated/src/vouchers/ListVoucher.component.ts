@@ -21,6 +21,8 @@ import { Pagination } from "../common";
 
             <th>Etiqueta</th>
 
+            <th>Código</th>
+
             <th>Fecha de inicio</th>
 
             <th>Fecha de fin</th>
@@ -40,6 +42,8 @@ import { Pagination } from "../common";
         <tr *ngFor="let entity of entities?.list; let i = index">
 
             <td>{{entity.label}}</td>
+
+            <td>{{entity.key}}</td>
 
             <td>{{entity.startAt}}</td>
 

@@ -5,7 +5,8 @@ export interface IVoucher {
   createdAt: Date;
   updatedAt: Date;
 
-  label: String;
+  label: string;
+  key: string;
   startAt: Date;
   endAt: Date;
   canDownload: boolean;
@@ -20,12 +21,13 @@ export class VoucherType implements IVoucher {
   createdAt: Date = null;
   updatedAt: Date = null;
 
-  label: String;
+  label: string;
+  key: string;
   startAt: Date;
   endAt: Date;
   canDownload: boolean;
   maxUses: number;
-  currentUses: number;
+  currentUses: number = 0;
   testId: string;
   constructor() {}
 
@@ -33,6 +35,8 @@ export class VoucherType implements IVoucher {
     const r = new VoucherType();
 
     r.label = obj.label;
+
+    r.key = obj.key;
 
     r.startAt = obj.startAt;
 

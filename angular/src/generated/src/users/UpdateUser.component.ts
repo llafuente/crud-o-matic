@@ -13,7 +13,7 @@ import { UserType } from "../models/IUser";
   template: `
 
 <bb-section>
-  <bb-section-header>UpdateUserComponent</bb-section-header>
+  <bb-section-header>Editar usuario</bb-section-header>
   <bb-section-content>
     <div>
     <form #f="ngForm" novalidate>
@@ -86,7 +86,7 @@ import { UserType } from "../models/IUser";
 
     [(ngModel)]="entity.roleId"
     #roleId="ngModel">
-    <option *ngFor="let row of roles.list" [ngValue]="id">{{row.label}}</option>
+    <option *ngFor="let row of roles.list" [ngValue]="row.id">{{row.label}}</option>
     </select>
 
     <bb-errors [model]="roleId"></bb-errors>
@@ -104,10 +104,28 @@ import { UserType } from "../models/IUser";
 
     [(ngModel)]="entity.voucherId"
     #voucherId="ngModel">
-    <option *ngFor="let row of vouchers.list" [ngValue]="id">{{row.label}}</option>
+    <option *ngFor="let row of vouchers.list" [ngValue]="row.id">{{row.label}}</option>
     </select>
 
     <bb-errors [model]="voucherId"></bb-errors>
+
+</bb-input-container>
+
+<bb-input-container
+  label="Test"
+
+  class="bordered top-label">
+  <select
+    bb-child
+    id="id-testId"
+    name="testId"
+
+    [(ngModel)]="entity.testId"
+    #testId="ngModel">
+    <option *ngFor="let row of tests.list" [ngValue]="row.id">{{row.label}}</option>
+    </select>
+
+    <bb-errors [model]="testId"></bb-errors>
 
 </bb-input-container>
 
@@ -230,6 +248,7 @@ export class UpdateUserComponent extends BaseComponent {
 
   roles: any;
   vouchers: any;
+  tests: any;
   stateValues: { id: string; label: string }[] = [{ id: "active", label: "Active" }, { id: "banned", label: "Banned" }];
 
   constructor(injector: Injector, activatedRoute: ActivatedRoute, public http: HttpClient, public router: Router) {
@@ -271,10 +290,31 @@ export class UpdateUserComponent extends BaseComponent {
       (response: any) => {
         console.log("<-- GET: http://localhost:3004/vouchers", JSON.stringify(response, null, 2));
 
+        response.list.unshift({
+          id: null,
+          label: "",
+        });
+
         this.vouchers = response;
       },
       (errorResponse: Response) => {
         console.log("<-- GET Error: http://localhost:3004/vouchers", errorResponse);
+      },
+    );
+
+    this.http.get("http://localhost:3004/tests").subscribe(
+      (response: any) => {
+        console.log("<-- GET: http://localhost:3004/tests", JSON.stringify(response, null, 2));
+
+        response.list.unshift({
+          id: null,
+          label: "",
+        });
+
+        this.tests = response;
+      },
+      (errorResponse: Response) => {
+        console.log("<-- GET Error: http://localhost:3004/tests", errorResponse);
       },
     );
   }

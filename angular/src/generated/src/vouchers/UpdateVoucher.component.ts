@@ -13,7 +13,7 @@ import { VoucherType } from "../models/IVoucher";
   template: `
 
 <bb-section>
-  <bb-section-header>UpdateVoucherComponent</bb-section-header>
+  <bb-section-header>Editar voucher</bb-section-header>
   <bb-section-content>
     <div>
     <form #f="ngForm" novalidate>
@@ -32,6 +32,24 @@ import { VoucherType } from "../models/IVoucher";
     />
 
     <bb-errors [model]="label"></bb-errors>
+
+</bb-input-container>
+
+<bb-input-container
+  label="Código"
+
+  class="bordered top-label">
+  <input
+    bb-child
+    type="text"
+    id="id-key"
+    name="key"
+
+    [(ngModel)]="entity.key"
+    #key="ngModel"
+    />
+
+    <bb-errors [model]="key"></bb-errors>
 
 </bb-input-container>
 
@@ -111,7 +129,7 @@ import { VoucherType } from "../models/IVoucher";
 
     [(ngModel)]="entity.testId"
     #testId="ngModel">
-    <option *ngFor="let row of tests.list" [ngValue]="id">{{row.label}}</option>
+    <option *ngFor="let row of tests.list" [ngValue]="row.id">{{row.label}}</option>
     </select>
 
     <bb-errors [model]="testId"></bb-errors>

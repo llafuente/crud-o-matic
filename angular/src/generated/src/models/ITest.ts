@@ -6,14 +6,14 @@ export interface ITest {
   createdAt: Date;
   updatedAt: Date;
 
-  label: String;
-  instructions: String;
+  label: string;
+  instructions: string;
   randomizeAnwers: boolean;
   blocks: {
-    name: String;
+    name: string;
     questions: {
-      questions: String;
-      answers: { answer: String }[];
+      questionLabel: string;
+      answers: { answerLabel: string }[];
       correcAnswerIndex: number;
     }[];
   }[];
@@ -28,14 +28,14 @@ export class TestType implements ITest {
   createdAt: Date = null;
   updatedAt: Date = null;
 
-  label: String;
-  instructions: String;
+  label: string;
+  instructions: string;
   randomizeAnwers: boolean;
   blocks: {
-    name: String;
+    name: string;
     questions: {
-      questions: String;
-      answers: { answer: String }[];
+      questionLabel: string;
+      answers: { answerLabel: string }[];
       correcAnswerIndex: number;
     }[];
   }[] = [];

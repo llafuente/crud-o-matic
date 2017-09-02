@@ -35,6 +35,24 @@ import { VoucherType } from "../models/IVoucher";
 
 </bb-input-container>
 
+<bb-input-container
+  label="Código"
+
+  class="bordered top-label">
+  <input
+    bb-child
+    type="text"
+    id="id-key"
+    name="key"
+
+    [(ngModel)]="entity.key"
+    #key="ngModel"
+    />
+
+    <bb-errors [model]="key"></bb-errors>
+
+</bb-input-container>
+
 <bb-static label="Fecha de inicio">
 {{entity.startAt | date }}
 </bb-static>
@@ -111,7 +129,7 @@ import { VoucherType } from "../models/IVoucher";
 
     [(ngModel)]="entity.testId"
     #testId="ngModel">
-    <option *ngFor="let row of tests.list" [ngValue]="id">{{row.label}}</option>
+    <option *ngFor="let row of tests.list" [ngValue]="row.id">{{row.label}}</option>
     </select>
 
     <bb-errors [model]="testId"></bb-errors>

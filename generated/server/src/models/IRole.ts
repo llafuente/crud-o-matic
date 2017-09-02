@@ -5,7 +5,7 @@ export interface IRole {
   createdAt: Date;
   updatedAt: Date;
 
-  label: String;
+  label: string;
 }
 
 export class RoleType implements IRole {
@@ -14,7 +14,7 @@ export class RoleType implements IRole {
   createdAt: Date = null;
   updatedAt: Date = null;
 
-  label: String;
+  label: string;
   constructor() {}
 
   static fromJSON(obj: IRole | any): RoleType {
