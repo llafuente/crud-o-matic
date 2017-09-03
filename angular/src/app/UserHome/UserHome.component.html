@@ -1,6 +1,10 @@
 <h3>Introducir Voucher</h3>
 
 <form #form="ngForm">
+  <bb-alert>
+  Introduzca un Voucher para realizar un test
+  </bb-alert>
+
   <bb-input-container label="Nombre de usuario" class="bordered">
     <input bb-child name="userlogin" [(ngModel)]="voucherKey" />
   </bb-input-container>
@@ -12,7 +16,7 @@
 <h3>Tests</h3>
 
 <bb-alert *ngIf="test == null">
-No se ha inscrito a ningún test, por favor introduzca un Voucher para empezar un test.
+No está inscrito a ningún test, por favor introduzca un Voucher válido para empezar un test.
 </bb-alert>
 
 <div class="ml-2" *ngIf="test != null">
@@ -22,7 +26,7 @@ No se ha inscrito a ningún test, por favor introduzca un Voucher para empezar u
   <bb-button [routerLink]="['/test', test.id]">Hacer examen</bb-button>
 </div>
 
-<pre>{{test | json}}</pre>
+<!-- <pre>{{test | json}}</pre> -->
 
 <bb-modal
   header="Error"

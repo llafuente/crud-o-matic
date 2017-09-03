@@ -10,7 +10,7 @@ import { ModalDirective } from "ngx-bootstrap/modal";
 export class BBModalComponent {
   @Input() header: string = null;
   @Input() closeButton = true;
-  @Input() size = "lg";
+  @Input() size = "sm";
 
   @ViewChild("modal") modalManager: ModalDirective;
 

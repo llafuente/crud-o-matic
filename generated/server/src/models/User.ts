@@ -1,81 +1,87 @@
 import mongoose = require("mongoose");
-import { IUser } from "./IUser";
-export * from "./IUser";
-import { pbkdf2Sync, randomBytes } from "crypto";
+import { IUser } from './IUser';
+export * from './IUser';
+import { pbkdf2Sync, randomBytes} from 'crypto';
 
-export interface IUserModel extends IUser, mongoose.Document {}
 
-export const UserSchema = new mongoose.Schema(
-  {
-    userlogin: {
-      type: String,
-      unique: true,
-      required: true,
-      maxlength: 32,
-    },
-    password: {
-      type: String,
-      required: true,
-    },
-    email: {
-      type: String,
-      required: true,
-      maxlength: 255,
-    },
-    salt: {
-      type: String,
-    },
-    roleId: {
-      type: String,
-      ref: "Role",
-    },
-    voucherId: {
-      type: String,
-      default: null,
-      ref: "Voucher",
-    },
-    testId: {
-      type: String,
-      default: null,
-      ref: "Test",
-    },
-    state: {
-      type: String,
-      default: "active",
-      enum: ["active", "banned"],
-    },
-    stats: {
-      type: Array,
-      items: {
-        type: Object,
-        properties: {
-          testId: {
-            type: String,
-          },
-          questionId: {
-            type: String,
-          },
-          startAt: {
-            type: Date,
-          },
-          endAt: {
-            type: Date,
-          },
-          type: {
-            type: String,
-          },
-        },
-      },
-      default: [],
-    },
-  },
-  {
-    collection: "users",
-  },
-);
+export interface IUserModel extends IUser, mongoose.Document { }
+
+export const UserSchema = new mongoose.Schema({
+  userlogin:{
+type: String,
+unique: true,
+required: true,
+maxlength: 32
+},
+password:{
+type: String,
+required: true
+},
+email:{
+type: String,
+required: true,
+maxlength: 255
+},
+salt:{
+type: String
+},
+roleId:{
+type: String,
+ref: "Role"
+},
+voucherId:{
+type: String,
+default: null,
+ref: "Voucher"
+},
+testId:{
+type: String,
+default: null,
+ref: "Test"
+},
+testsDoneIds:{
+type: Array,
+items: {
+type: mongoose.Schema.Types.ObjectId
+},
+default: []
+},
+state:{
+type: String,
+default: "active",
+enum: ["active","banned"]
+},
+stats:{
+type: Array,
+items: {
+type: Object,
+properties: {testId:{
+type: String
+},
+questionId:{
+type: String
+},
+startAt:{
+type: Date
+},
+endAt:{
+type: Date
+},
+type:{
+type: String
+}}
+},
+default: []
+}
+}, {
+  "collection": "users"
+});
+
+
+
 
 function makeSalt() {
-  return randomBytes(16).toString("base64");
+  return randomBytes(16).toString('base64');
 }
 
 function encryptPassword(password, salt) {
@@ -83,12 +89,12 @@ function encryptPassword(password, salt) {
     return null;
   }
 
-  const saltBuff = new Buffer(salt, "base64");
-  return pbkdf2Sync(password, saltBuff, 10000, 64, "sha512").toString("base64");
+  const saltBuff = new Buffer(salt, 'base64');
+  return pbkdf2Sync(password, saltBuff, 10000, 64, 'sha512').toString('base64');
 }
 
-UserSchema.pre("save", function savePasswordHash(next) {
-  if (this.isModified("password")) {
+UserSchema.pre('save', function savePasswordHash(next) {
+  if (this.isModified('password')) {
     this.salt = makeSalt();
     console.log("savePasswordHash", this.password, this.salt);
     this.password = encryptPassword(this.password, this.salt);
@@ -97,20 +103,14 @@ UserSchema.pre("save", function savePasswordHash(next) {
   next();
 });
 
-UserSchema.pre("update", function updatePasswordHash(next) {
+UserSchema.pre('update', function updatePasswordHash(next) {
   const pwd = this._update.$set.password;
   if (pwd) {
     const salt = makeSalt();
     console.log("updatePasswordHash", pwd, salt);
-    this.update(
-      {},
-      {
-        $set: {
-          salt: salt,
-          password: encryptPassword(pwd, salt),
-        },
-      },
-    );
+    this.update({}, { $set: {
+      salt: salt,
+      password: encryptPassword(pwd, salt) } });
   }
 
   next();
@@ -139,5 +139,9 @@ UserSchema.methods.hasPermission = function hasPermission(perm) {
   }
   return true;
 };
+
+
+
+
 
 export const User = mongoose.model<IUserModel>("User", UserSchema);

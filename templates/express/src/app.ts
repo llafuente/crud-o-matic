@@ -13,6 +13,9 @@ import { toJSON as UserToJSON } from './users/routerUser';
 // here goes your custom code will be injected after auth layer
 import { customAppRouter } from './customApp';
 
+// nodemon kill
+process.on('SIGUSR2', () => { process.exit(0); });
+
 <% _.each(generator.schemas, (schema) => { %>
 import <%= schema.backend.routerName %> from './<%= schema.plural %>/<%= schema.backend.routerName %>';
 import { <%= schema.interfaceModel %> } from './models/<%= schema.singularUc %>';

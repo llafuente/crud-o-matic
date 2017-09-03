@@ -6,6 +6,7 @@ import { HttpClient } from "@angular/common/http";
 import { LoggedUser } from "../LoggedUser.service";
 import { ITest } from "../../generated/src/models/ITest";
 import { BaseComponent } from "../../generated/src/Base.component";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "test-component",
@@ -20,6 +21,7 @@ export class TestComponent extends BaseComponent {
   currentQuestion = 0;
   answers: number[] = [null];
   stats: { id: number } = null;
+  testStats: { id: number } = null;
 
   get maxQuestion(): number {
     if (!this.test) return null;
@@ -30,6 +32,8 @@ export class TestComponent extends BaseComponent {
   constructor(
     public injector: Injector,
     public activatedRoute: ActivatedRoute,
+
+    public router: Router,
     public http: HttpClient,
     public user: LoggedUser,
   ) {
@@ -37,6 +41,7 @@ export class TestComponent extends BaseComponent {
     this.testId = this.getRouteParameter("testId");
     this.loadTest(this.testId);
 
+    this.startTest();
     this.startQuestion(0);
   }
 
@@ -57,6 +62,7 @@ export class TestComponent extends BaseComponent {
 
     this.startQuestion(this.currentQuestion);
   }
+
   prev() {
     this.endQuestion(this.currentQuestion);
 
@@ -65,9 +71,18 @@ export class TestComponent extends BaseComponent {
     this.startQuestion(this.currentQuestion);
   }
 
+  finish(bbModal: any, confirmed: boolean) {
+    if (confirmed) {
+      bbModal.hide();
+      this.endTest();
+    } else {
+      bbModal.show();
+    }
+  }
+
   startQuestion(questionId: number) {
     this.http
-      .post(`http://localhost:3004/users/stats/test/${this.testId}/${questionId}/start`, {})
+      .post(`http://localhost:3004/users/stats/question-start/${this.testId}/${questionId}`, {})
       .subscribe((response: any) => {
         console.log("startQuestion", response);
 
@@ -77,9 +92,34 @@ export class TestComponent extends BaseComponent {
 
   endQuestion(questionId: number) {
     this.http
-      .post(`http://localhost:3004/users/stats/test/${this.testId}/${this.stats.id}/end`, {})
+      .post(`http://localhost:3004/users/stats/question-end/${this.testId}/${this.stats.id}`, {})
       .subscribe((response: any) => {
         console.log("endQuestion", response);
       });
+  }
+
+  startTest() {
+    this.http
+      .post(`http://localhost:3004/users/stats/test-start/${this.testId}`, {})
+      .subscribe((response: any) => {
+        console.log("startQuestion", response);
+
+        this.testStats = response;
+      });
+
+  }
+
+  endTest() {
+    this.http
+      .post(`http://localhost:3004/users/stats/test-end/${this.testId}/${this.testStats.id}`, {})
+      .subscribe((response: any) => {
+        console.log("startQuestion", response);
+        this.user.refresh();
+        this.handleSubscription(this.user.onChange.subscribe(() => {
+          this.router.navigate(["/home"]);
+
+        }));
+      });
+
   }
 }

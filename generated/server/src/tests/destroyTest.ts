@@ -1,8 +1,11 @@
 import * as express from "express";
-import { Test } from "../models/Test";
-import { Schema } from "mongoose";
+import { HttpError } from '../HttpError';
+import { ITest } from '../models/ITest';
+import { Test } from '../models/Test';
+import { Schema } from 'mongoose';
 
-export function destroy(_id: Schema.Types.ObjectId | string, next) {
+
+export function destroy(_id: Schema.Types.ObjectId|string, next) {
   Test.findByIdAndRemove(_id, function(err) {
     /* istanbul ignore next */ if (err) {
       return next(err);
@@ -13,7 +16,7 @@ export function destroy(_id: Schema.Types.ObjectId | string, next) {
 }
 
 export function destroyTest(req: express.Request, res: express.Response, next: express.NextFunction) {
-  const id = req.params.testId;
+  const id = req.params['testId'];
 
   console.info(`destroy`, id);
 

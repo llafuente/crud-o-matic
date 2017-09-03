@@ -4,7 +4,7 @@ import { FormsModule } from "@angular/forms";
 import { ModalModule } from "ngx-bootstrap/modal";
 import { TabsModule } from "ngx-bootstrap/tabs";
 import { DatepickerModule } from "ngx-bootstrap/datepicker";
-
+import { TimepickerModule } from 'ngx-bootstrap/timepicker';
 /*
 import { BBInputComponent } from './inputs/BBInput.component';
 export * from './inputs/BBInput.component';
@@ -143,6 +143,7 @@ export const imports = [
   TabsModule.forRoot(),
   ModalModule.forRoot(),
   DatepickerModule.forRoot(),
+  TimepickerModule.forRoot(),
 ];
 
 export const declarations = [
@@ -204,7 +205,7 @@ export const declarations = [
   declarations,
   imports,
   providers: [BBErrorMessages],
-  exports: [...declarations, TabsModule, ModalModule, DatepickerModule],
+  exports: [...declarations, TabsModule, ModalModule, DatepickerModule, TimepickerModule],
 })
 export class BB4UIModule {
   static forRoot(): ModuleWithProviders {

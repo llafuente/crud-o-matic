@@ -77,7 +77,7 @@ export class Field {
 
     this.frontData.srcUrl = srcUrl;
     this.frontData.declaration = declaration;
-    this.frontData.srcModel = declaration + ".list";
+    this.frontData.srcModel = declaration + "?.list"; // safe access
     this.frontData.srcId = srcId;
     this.frontData.srcLabel = srcLabel;
 

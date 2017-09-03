@@ -1,9 +1,12 @@
 import * as express from "express";
 import { Request } from "../app";
+import { HttpError } from '../HttpError';
 //import { User } from './User';
-import { WhereQuery, Order, Operators, Pagination } from "../common";
+import * as mongoose from 'mongoose';
+import { WhereQuery, Order, Operators, Pagination } from '../common';
 
-import { Role, RoleSchema, IRoleModel } from "../models/Role";
+import { IRole } from '../models/IRole';
+import { Role, RoleSchema, IRoleModel } from '../models/Role';
 
 const _ = require("lodash");
 
@@ -13,25 +16,25 @@ const _ = require("lodash");
 
 export function createListQuery(
   /*user: User,*/
-  where: { [s: string]: WhereQuery },
-  sort: { [s: string]: Order },
+  where: { [s: string]: WhereQuery; },
+  sort: { [s: string]: Order; },
   limit: number,
   offset: number,
-  populate: string[],
-  // TODO ): mongoose.DocumentQuery<IRole, mongoose.Document>[] {
+  populate: string[]
+// TODO ): mongoose.DocumentQuery<IRole, mongoose.Document>[] {
 ): any[] {
   if (isNaN(offset)) {
-    throw new Error("offset must be a number");
+    throw new Error('offset must be a number');
   }
 
   if (isNaN(limit)) {
-    throw new Error("limit must be a number");
+    throw new Error('limit must be a number');
   }
 
   let query = Role.find({});
   let qCount = Role.find({}).count();
 
-  /* TODO add restricted to where & sort
+/* TODO add restricted to where & sort
     if (isPathRestricted(path, 'read', user)) {
       err = new ValidationError(null);
       err.errors.sort = {
@@ -42,7 +45,7 @@ export function createListQuery(
   where = _.map(where, (operator: WhereQuery, path: string) => {
     console.log(operator);
 
-    switch (operator.operator) {
+    switch(operator.operator) {
       case Operators.LIKE:
         query = query.where(path).regex(operator.value);
         qCount = qCount.where(path).regex(operator.value);
@@ -77,9 +80,9 @@ export function createListQuery(
     query.populate(path);
   });
 
-  console.log("where", where);
-  console.log("sort", sort);
-  console.log("limit", limit, "offset", offset);
+  console.log('where', where);
+  console.log('sort', sort);
+  console.log('limit', limit, 'offset', offset);
 
   if (offset) {
     query.skip(offset);
@@ -95,11 +98,13 @@ export function createListQuery(
   return [query, qCount];
 }
 
-export function listRole(req: Request, res: express.Response, next: express.NextFunction) {
-  console.log("usersList", JSON.stringify(req.query));
 
-  req.query.limit = req.query.limit ? parseInt(req.query.limit) : 0;
-  req.query.offset = req.query.offset ? parseInt(req.query.offset) : 0;
+
+export function listRole(req: Request, res: express.Response, next: express.NextFunction) {
+  console.log('usersList', JSON.stringify(req.query));
+
+  req.query.limit = req.query.limit ? parseInt(req.query.limit) : 0
+  req.query.offset = req.query.offset ? parseInt(req.query.offset) : 0
 
   try {
     const querys = createListQuery(
@@ -107,7 +112,7 @@ export function listRole(req: Request, res: express.Response, next: express.Next
       req.query.sort,
       req.query.limit,
       req.query.offset,
-      req.query.populate,
+      req.query.populate
     );
 
     querys[0].exec(function(err, mlist: IRoleModel[]) {
@@ -120,7 +125,7 @@ export function listRole(req: Request, res: express.Response, next: express.Next
           return next(err2);
         }
 
-        req.roles = new Pagination<IRoleModel>(mlist, count, req.query.offset, req.query.limit);
+        req["roles"] = new Pagination<IRoleModel>(mlist, count, req.query.offset, req.query.limit);
 
         return next();
       });

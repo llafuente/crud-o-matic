@@ -44,7 +44,7 @@ export const customAppRouter = express
       });
   })
   .post(
-    "/users/stats/test/:testId/:questionId/start",
+    "/users/stats/question-start/:testId/:questionId",
     (req: Request, res: express.Response, next: express.NextFunction) => {
       const testId = req.param("testId", null);
       const questionId = req.param("questionId", null);
@@ -71,7 +71,7 @@ export const customAppRouter = express
     },
   )
   .post(
-    "/users/stats/test/:testId/:statsIdx/end",
+    "/users/stats/question-end/:testId/:statsIdx",
     (req: Request, res: express.Response, next: express.NextFunction) => {
       //const testId = req.param("testId", null);
       const statsIdx = req.param("statsIdx", null);
@@ -85,6 +85,62 @@ export const customAppRouter = express
 
       stats.endAt = new Date();
       req.loggedUser.markModified("stats");
+
+      console.log("update stats: ", stats);
+
+      req.loggedUser
+        .save()
+        .then(userSaved => {
+          res.status(204).json();
+        })
+        .catch(next);
+    },
+  )
+  .post(
+    "/users/stats/test-start/:testId",
+    (req: Request, res: express.Response, next: express.NextFunction) => {
+      const testId = req.param("testId", null);
+
+      // TODO check testId, questionId
+
+      const statsIdx = req.loggedUser.stats.length;
+      req.loggedUser.stats.push({
+        testId: testId,
+        questionId: null,
+        type: "test",
+        startAt: new Date(),
+        endAt: null,
+      });
+
+      req.loggedUser.markModified("stats");
+
+      req.loggedUser
+        .save()
+        .then(userSaved => {
+          res.status(200).json({ id: statsIdx });
+        })
+        .catch(next);
+    },
+  )
+  .post(
+    "/users/stats/test-end/:testId/:statsIdx",
+    (req: Request, res: express.Response, next: express.NextFunction) => {
+      //const testId = req.param("testId", null);
+      const statsIdx = req.param("statsIdx", null);
+
+      // TODO check testId, questionId
+
+      const stats = req.loggedUser.stats[statsIdx];
+      if (!stats) {
+        return res.status(404).json({ message: "Stats not found" });
+      }
+
+      stats.endAt = new Date();
+      req.loggedUser.markModified("stats");
+      req.loggedUser.markModified("testsDoneIds");
+      req.loggedUser.testsDoneIds = req.loggedUser.testsDoneIds || []
+      req.loggedUser.testsDoneIds.push(req.loggedUser.testId);
+      req.loggedUser.testId = null;
 
       console.log("update stats: ", stats);
 

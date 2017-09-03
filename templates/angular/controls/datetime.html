@@ -1,5 +1,5 @@
 <bb-static label="<%= field.label %>">
-{{<%= ngModel %> | date }}
+{{<%= ngModel %> | date: "yyyy-MM-dd H:m:s" }}
 </bb-static>
 
 <datepicker
@@ -11,6 +11,7 @@
   [(ngModel)]="<%= ngModel %>"
   [showWeeks]="false"
   #<%= modelName %>="ngModel"></datepicker>
+  <!-- <timepicker  [(ngModel)]="<%= ngModel %>" [showSeconds]="true"></timepicker> -->
 <!--
   [minDate]="minDate"
   [showWeeks]="true"

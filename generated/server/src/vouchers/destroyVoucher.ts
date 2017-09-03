@@ -1,8 +1,11 @@
 import * as express from "express";
-import { Voucher } from "../models/Voucher";
-import { Schema } from "mongoose";
+import { HttpError } from '../HttpError';
+import { IVoucher } from '../models/IVoucher';
+import { Voucher } from '../models/Voucher';
+import { Schema } from 'mongoose';
 
-export function destroy(_id: Schema.Types.ObjectId | string, next) {
+
+export function destroy(_id: Schema.Types.ObjectId|string, next) {
   Voucher.findByIdAndRemove(_id, function(err) {
     /* istanbul ignore next */ if (err) {
       return next(err);
@@ -13,7 +16,7 @@ export function destroy(_id: Schema.Types.ObjectId | string, next) {
 }
 
 export function destroyVoucher(req: express.Request, res: express.Response, next: express.NextFunction) {
-  const id = req.params.voucherId;
+  const id = req.params['voucherId'];
 
   console.info(`destroy`, id);
 

@@ -1,53 +1,56 @@
+import * as mongoose from 'mongoose';
+
 
 export interface IUser {
-  _id: string | any;
+  _id: string|any;
   id?: string;
   createdAt: Date;
   updatedAt: Date;
 
-  userlogin: string;
-  password: string;
-  email: string;
-  salt: string;
-  roleId: string;
-  voucherId: string;
-  testId: string;
-  state: string;
-  stats: {
-    testId: string;
-    questionId: string;
-    startAt: Date;
-    endAt: Date;
-    type: string;
-  }[];
+  userlogin:string;
+password:string;
+email:string;
+salt:string;
+roleId:string;
+voucherId:string;
+testId:string;
+testsDoneIds:string[];
+state:string;
+stats:{testId:string,
+questionId:string,
+startAt:Date,
+endAt:Date,
+type:string}[];
 
-  authenticate(password: string);
-}
+  
+    authenticate(password: string);
+  
+};
+
 
 export class UserType implements IUser {
-  _id: string | any = null;
+  _id: string|any = null;
   id?: string = null;
   createdAt: Date = null;
   updatedAt: Date = null;
 
-  userlogin: string;
-  password: string;
-  email: string;
-  salt: string;
-  roleId: string;
-  voucherId: string = null;
-  testId: string = null;
-  state: string = "active";
-  stats: {
-    testId: string;
-    questionId: string;
-    startAt: Date;
-    endAt: Date;
-    type: string;
-  }[] = [];
+  userlogin:string;
+password:string;
+email:string;
+salt:string;
+roleId:string;
+voucherId:string = null;
+testId:string = null;
+testsDoneIds:string[] = [];
+state:string = "active";
+stats:{testId:string,
+questionId:string,
+startAt:Date,
+endAt:Date,
+type:string}[] = [];
   constructor() {}
 
-  static fromJSON(obj: IUser | any): UserType {
+  static fromJSON(obj: IUser|any): UserType {
     const r = new UserType();
 
     r.userlogin = obj.userlogin;
@@ -64,6 +67,8 @@ export class UserType implements IUser {
 
     r.testId = obj.testId;
 
+    r.testsDoneIds = obj.testsDoneIds;
+
     r.state = obj.state;
 
     r.stats = obj.stats;
@@ -71,5 +76,7 @@ export class UserType implements IUser {
     return r;
   }
 
-  authenticate(password: string) {}
-}
+  
+    authenticate(password: string) {}
+  
+};

@@ -1,27 +1,18 @@
 <form #form="ngForm" *ngIf="test">
-<!--
-<bb-input-container label="Nombre de usuario" class="bordered">
-  <input bb-child name="userlogin" [(ngModel)]="auth.userlogin" />
-</bb-input-container>
-
-<bb-input-container label="Contraseña" class="bordered">
-  <input bb-child name="password" type="password" [(ngModel)]="auth.password" />
-</bb-input-container>
--->
-
   <!-- <pre>{{test |json}}</pre> -->
-  <pre>{{test.blocks[currentBlock].questions[currentQuestion] |json}}</pre>
+  <!-- <pre>{{test.blocks[currentBlock].questions[currentQuestion] |json}}</pre> -->
 
   <h1>{{test.label}} ({{currentQuestion + 1}} / {{maxQuestion}})</h1>
   <h2>{{test.blocks[currentBlock].questions[currentQuestion].questionLabel}}</h2>
-  <ul>
+  <ul class="list-unstyled">
     <li *ngFor="let answer of test.blocks[currentBlock].questions[currentQuestion].answers; let i = index;">
 
     <bb-radio
       name="answer"
       [(ngModel)]="answers[currentQuestion]"
+      required="required"
       [value]="i">
-        {{answerIndexes[i]}} - {{answer.answerLabel}}
+        <strong>{{answerIndexes[i]}}</strong>: {{answer.answerLabel}}
       </bb-radio>
 
     </li>
@@ -30,8 +21,7 @@
   <div class="row">
     <bb-button
       (click)="prev()"
-      *ngIf="currentQuestion > 0"
-      [disabled]="!form.valid">Pregunta anterior</bb-button>
+      *ngIf="currentQuestion > 0">Pregunta anterior</bb-button>
 
     <bb-button
       class="ml-auto"
@@ -40,11 +30,29 @@
       [disabled]="!form.valid">Pregunta siguiente</bb-button>
 
     <bb-button
+      btn="warning"
       class="ml-auto"
-      (click)="next()"
+      (click)="finish(bbModal, false)"
       *ngIf="currentQuestion + 1 == maxQuestion"
-      [disabled]="!form.valid">Finalizar examen</bb-button>
+      [disabled]="!form.valid">Entregar examen</bb-button>
   </div>
 
 
 </form>
+
+
+<bb-modal
+  header="Entregar examen"
+  size="lg"
+  #bbModal>
+  <bb-section-content>
+    <p>¿Está seguro de entregar el exámen?</p>
+    <p>Un examen entregado no puede ser modificado.</p>
+  </bb-section-content>
+  <bb-section-footer>
+    <div class="d-flex">
+      <bb-button (click)="bbModal.hide()">Volver</bb-button>
+      <bb-button btn="warning" class="ml-auto"(click)="finish(bbModal, true)">Entregar examen</bb-button>
+    </div>
+  </bb-section-footer>
+</bb-modal>

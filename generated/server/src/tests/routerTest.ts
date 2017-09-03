@@ -5,9 +5,9 @@ import { readTest } from "./readTest";
 import { updateTest } from "./updateTest";
 import { listTest } from "./listTest";
 import { destroyTest } from "./destroyTest";
-import { ITestModel } from "../models/Test";
-import { Pagination } from "../common";
-import { authorization } from "../auth";
+import { ITestModel } from '../models/Test';
+import { Pagination } from '../common';
+import { authorization } from '../auth';
 const mongoosemask = require("mongoosemask");
 
 /**
@@ -30,7 +30,7 @@ export function toJSONList(result: Pagination<ITestModel>) {
 }
 
 export function toJSON(entity: ITestModel) {
-  const json = mongoosemask.mask(entity, []);
+  let json = mongoosemask.mask(entity, []);
 
   json.id = json._id;
   delete json._id;
@@ -38,29 +38,48 @@ export function toJSON(entity: ITestModel) {
   return json;
 }
 
-const routerTest = express
-  .Router()
-  .use(authorization(null))
-  .post("/tests", cleanBody, createTest, function(req: Request, res: express.Response, next: express.NextFunction) {
-    res.status(201).json(toJSON(req.test));
-  })
-  .get("/tests", listTest, function(req: Request, res: express.Response, next: express.NextFunction) {
-    res.status(200).json(toJSONList(req.tests));
-  })
-  .get("/tests/:testId", readTest, function(req: Request, res: express.Response, next: express.NextFunction) {
-    res.status(200).json(toJSON(req.test));
-  })
-  .patch("/tests/:testId", cleanBody, readTest, updateTest, function(
-    req: Request,
-    res: express.Response,
-    next: express.NextFunction,
-  ) {
-    res.status(200).json(req.test);
-  })
-  .delete("/tests/:testId", destroyTest, function(req: Request, res: express.Response, next: express.NextFunction) {
+const routerTest = express.Router()
+.use(authorization(null))
+.post(
+  '/tests',
+  cleanBody,
+  createTest,
+  function (req: Request, res: express.Response, next: express.NextFunction) {
+    res.status(201).json(toJSON(req["test"]));
+  }
+)
+.get(
+  '/tests',
+  listTest,
+  function (req: Request, res: express.Response, next: express.NextFunction) {
+    res.status(200).json(toJSONList(req["tests"]));
+  }
+)
+.get(
+  '/tests/:testId',
+  readTest,
+  function (req: Request, res: express.Response, next: express.NextFunction) {
+    res.status(200).json(toJSON(req["test"]));
+  }
+)
+.patch(
+  '/tests/:testId',
+  cleanBody,
+  readTest,
+  updateTest,
+  function (req: Request, res: express.Response, next: express.NextFunction) {
+    res.status(200).json(req["test"]);
+  }
+)
+.delete(
+  '/tests/:testId',
+  destroyTest,
+  function (req: Request, res: express.Response, next: express.NextFunction) {
     res.status(204).send();
-  });
+  }
+);
 
 console.log("express create router routerTest");
 
 export default routerTest;
+

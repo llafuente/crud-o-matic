@@ -1,11 +1,12 @@
 import * as express from "express";
-import { Request } from "../app";
-import { HttpError } from "../HttpError";
-import { IRoleModel } from "../models/Role";
+import { Request } from '../app';
+import { HttpError } from '../HttpError';
+import { IRole } from '../models/IRole';
+import { IRoleModel } from '../models/Role';
 
 interface IUpdateCB {
-  (err: Error | HttpError, savedRow?: IRoleModel);
-}
+  (err: Error|HttpError, savedRow?: IRoleModel)
+};
 
 export function update(/*user,*/ row: IRoleModel, data, next: IUpdateCB) {
   // TODO
@@ -21,7 +22,7 @@ export function update(/*user,*/ row: IRoleModel, data, next: IUpdateCB) {
 
     /* istanbul ignore next */
     if (!savedRow) {
-      return next(new HttpError(422, "database don't return data"));
+      return next(new HttpError(422, 'database don\'t return data'));
     }
 
     return next(null, savedRow);
@@ -29,24 +30,26 @@ export function update(/*user,*/ row: IRoleModel, data, next: IUpdateCB) {
 }
 
 export function updateRole(req: Request, res: express.Response, next: express.NextFunction) {
-  console.info("update body", req.body);
+  console.info('update body', req.body);
 
   if (Array.isArray(req.body)) {
-    return next(new HttpError(422, "body is an array"));
+    return next(new HttpError(422, 'body is an array'));
   }
 
-  if (!req.role) {
-    return next(new HttpError(500, "Cannot fetch role"));
+  if (!req["role"]) {
+   return next(new HttpError(500, 'Cannot fetch role'));
   }
 
-  return update(/*req.user, */ req.role, req.body, function(err, savedRow: IRoleModel) {
+  return update(/*req.user, */req["role"], req.body, function(err, savedRow: IRoleModel) {
     /* istanbul ignore next */ if (err) {
       return next(err);
     }
 
-    console.info("created@database", savedRow);
+    console.info('created@database', savedRow);
 
-    req.role = savedRow;
+    req["role"] = savedRow;
     return next();
   });
 }
+
+

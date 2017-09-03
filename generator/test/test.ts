@@ -84,6 +84,14 @@ test.serial("user schema", t => {
   );
 
   schema.addField(
+    "testsDoneIds",
+    new Field("Tests hechos", FieldType.Array).setItems(
+      new Field("Tests hechos", FieldType.ObjectId)
+    )
+  );
+
+
+  schema.addField(
     "state",
     new Field("State", FieldType.String)
       .setFrontControl(FrontControls.ENUM_DROPDOWN)
