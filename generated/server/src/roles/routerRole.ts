@@ -5,10 +5,16 @@ import { readRole } from "./readRole";
 import { updateRole } from "./updateRole";
 import { listRole } from "./listRole";
 import { destroyRole } from "./destroyRole";
+import { csvRole } from "./csvRole";
 import { IRoleModel } from '../models/Role';
 import { Pagination } from '../common';
 import { authorization } from '../auth';
 const mongoosemask = require("mongoosemask");
+var multer  = require('multer');
+var upload = multer({
+  /* dest: 'uploads/' }*/
+  storage: multer.memoryStorage()
+});
 
 /**
  * clean req.body from data that never must be created/updated
@@ -40,6 +46,14 @@ export function toJSON(entity: IRoleModel) {
 
 const routerRole = express.Router()
 .use(authorization(null))
+.post(
+  '/roles/csv',
+  upload.single('file'),
+  csvRole,
+  function (req: Request, res: express.Response, next: express.NextFunction) {
+    res.status(204).json();
+  }
+)
 .post(
   '/roles',
   cleanBody,

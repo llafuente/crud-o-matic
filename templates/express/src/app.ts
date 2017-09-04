@@ -22,8 +22,22 @@ import { <%= schema.interfaceModel %> } from './models/<%= schema.singularUc %>'
 <% }) %>
 
 // declare our own interface for request to save our variables
+export class Upload {
+  fieldname: string;
+  originalname: string;
+  encoding: string;
+  mimetype: string;
+  size: string;
+  destination: string;
+  filename: string;
+  path: string;
+  buffer: string;
+};
+
 export interface Request extends express.Request {
   loggedUser: IUserModel;
+  file: Upload;
+  files: { [s: string]: Upload; };
 
 <% _.each(generator.schemas, (schema) => { %>
 <%= schema.singular %>: <%= schema.interfaceModel %>;
@@ -51,7 +65,10 @@ mongoose.connect("mongodb://127.0.0.1:27017/test", {
 export const app = express();
 
 app.use(morgan('tiny'))
-app.use(cors())
+app.use(cors({
+  origin: 'http://localhost:3003',
+  credentials: true,
+}))
 
 //use json form parser middlware
 app.use(bodyParser.json());

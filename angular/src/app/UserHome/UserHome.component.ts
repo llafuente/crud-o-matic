@@ -50,7 +50,7 @@ export class UserHomeComponent extends BaseComponent {
         this.user.refresh();
       },
       errorResponse => {
-        console.log("redeem-voucher", errorResponse);
+        console.log("redeem-voucher err", errorResponse);
         this.error = errorResponse;
         bbModal.show();
       },

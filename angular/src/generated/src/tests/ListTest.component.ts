@@ -6,7 +6,7 @@ import { Observable } from 'rxjs/Observable';
 import { BaseComponent } from '../Base.component';
 import { TestType } from '../models/ITest';
 import { Pagination } from '../common';
-
+import { FileUploader } from 'ng2-file-upload';
 /**
  */
 @Component({
@@ -60,7 +60,18 @@ import { Pagination } from '../common';
         <tr>
       </tbody>
     </bb-table>
-    <bb-button [routerLink]="['..', 'create']">Create</bb-button>
+    <bb-button [routerLink]="['..', 'create']">
+      <i class="fa fa-plus" aria-hidden="true"></i>
+      Crear examen
+    </bb-button>
+    <hr />
+    <h4>Importar</h4>
+    <input type="file" ng2FileSelect [uploader]="uploader" />
+    <button type="button" class="btn btn-success btn-s"
+            (click)="uploader.uploadAll()" [disabled]="!uploader.getNotUploadedItems().length">
+        <span class="glyphicon glyphicon-upload"></span> Subir CSV
+    </button>
+
   </bb-section-content>
 </bb-section>
 <!-- <pre>entities: {{entities |json}}</pre> -->
@@ -69,6 +80,11 @@ import { Pagination } from '../common';
 export class ListTestComponent extends BaseComponent {
   loading: boolean = false;
   entities: Pagination<TestType>;
+
+  uploader:FileUploader = new FileUploader({
+    url: "http://localhost:3004/tests/csv",
+    authToken: "Bearer " + localStorage.getItem("access_token"), // this is just an easy hack to use it
+  });
 
   constructor(
     injector: Injector,
@@ -100,7 +116,7 @@ export class ListTestComponent extends BaseComponent {
 
     this.loading = true;
     console.log("--> DELETE: http://localhost:3004/tests/:testId", row);
-    this.http.delete("http://localhost:3004/tests/:testId".replace(":testId", "" + row._id))
+    this.http.delete("http://localhost:3004/tests/:testId".replace(":testId", "" + row.id))
     .subscribe((response: Response) => {
       console.log("<-- DELETE: http://localhost:3004/tests/:testId", response);
       this.entities.list.splice(idx, 1);

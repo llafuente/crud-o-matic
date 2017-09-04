@@ -18,7 +18,6 @@
 <%
   eachField((fieldName, field) => {
     if (field.type == "Array") {
-      console.log(field);
 %>
 
 push<%= field.getPathName() %>(item: any, <%= field.getIndexes().join(", ") %>) {

@@ -8,9 +8,14 @@ export interface IUser {
   updatedAt: Date;
 
   userlogin:string;
-password:string;
+name:string;
+surname:string;
+identifier:string;
 email:string;
+group:string;
+password:string;
 salt:string;
+forceResetPassword:boolean;
 roleId:string;
 voucherId:string;
 testId:string;
@@ -20,7 +25,8 @@ stats:{testId:string,
 questionId:string,
 startAt:Date,
 endAt:Date,
-type:string}[];
+type:string,
+answers:number[]}[];
 
   
     authenticate(password: string);
@@ -35,9 +41,14 @@ export class UserType implements IUser {
   updatedAt: Date = null;
 
   userlogin:string;
-password:string;
+name:string;
+surname:string;
+identifier:string;
 email:string;
+group:string;
+password:string;
 salt:string;
+forceResetPassword:boolean;
 roleId:string;
 voucherId:string = null;
 testId:string = null;
@@ -47,7 +58,8 @@ stats:{testId:string,
 questionId:string,
 startAt:Date,
 endAt:Date,
-type:string}[] = [];
+type:string,
+answers:number[]}[] = [];
   constructor() {}
 
   static fromJSON(obj: IUser|any): UserType {
@@ -55,11 +67,21 @@ type:string}[] = [];
 
     r.userlogin = obj.userlogin;
 
-    r.password = obj.password;
+    r.name = obj.name;
+
+    r.surname = obj.surname;
+
+    r.identifier = obj.identifier;
 
     r.email = obj.email;
 
+    r.group = obj.group;
+
+    r.password = obj.password;
+
     r.salt = obj.salt;
+
+    r.forceResetPassword = obj.forceResetPassword;
 
     r.roleId = obj.roleId;
 

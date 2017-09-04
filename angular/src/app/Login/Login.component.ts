@@ -20,7 +20,6 @@ export class LoginComponent extends BaseComponent {
   constructor(
     injector: Injector,
     activatedRoute: ActivatedRoute,
-
     public router: Router,
     public http: Http,
     public user: LoggedUser,
@@ -34,9 +33,11 @@ export class LoginComponent extends BaseComponent {
         const token = response.json().token;
         console.log("set token", token);
         this.user.setToken(token);
-        this.handleSubscription(this.user.onChange.subscribe(() => {
-          this.router.navigate(["/home"]);
-        }));
+        this.handleSubscription(
+          this.user.onChange.subscribe(() => {
+            this.router.navigate(["/home"]);
+          }),
+        );
       },
       errorResponse => {},
     );

@@ -13,17 +13,37 @@ unique: true,
 required: true,
 maxlength: 32
 },
-password:{
+name:{
 type: String,
-required: true
+required: true,
+maxlength: 32
+},
+surname:{
+type: String,
+required: true,
+maxlength: 32
+},
+identifier:{
+type: String,
+maxlength: 32
 },
 email:{
 type: String,
 required: true,
 maxlength: 255
 },
+group:{
+type: String
+},
+password:{
+type: String,
+required: true
+},
 salt:{
 type: String
+},
+forceResetPassword:{
+type: Boolean
 },
 roleId:{
 type: String,
@@ -35,7 +55,7 @@ default: null,
 ref: "Voucher"
 },
 testId:{
-type: String,
+type: mongoose.Schema.Types.ObjectId,
 default: null,
 ref: "Test"
 },
@@ -44,7 +64,8 @@ type: Array,
 items: {
 type: mongoose.Schema.Types.ObjectId
 },
-default: []
+default: [],
+ref: "Test"
 },
 state:{
 type: String,
@@ -69,6 +90,13 @@ type: Date
 },
 type:{
 type: String
+},
+answers:{
+type: Array,
+items: {
+type: Number
+},
+default: []
 }}
 },
 default: []

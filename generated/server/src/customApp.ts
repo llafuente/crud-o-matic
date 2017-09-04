@@ -2,6 +2,11 @@ import * as express from "express";
 import { Request } from "./app";
 import { Voucher } from "./models/Voucher";
 
+// NOTE
+// these stats apis cannot be called in parelel atm...
+
+// TODO get test-start
+
 export const customAppRouter = express
   .Router()
   .post("/users/redeem-voucher", (req: Request, res: express.Response, next: express.NextFunction) => {
@@ -58,6 +63,7 @@ export const customAppRouter = express
         type: "question",
         startAt: new Date(),
         endAt: null,
+        answers: null,
       });
 
       req.loggedUser.markModified("stats");
@@ -96,37 +102,36 @@ export const customAppRouter = express
         .catch(next);
     },
   )
-  .post(
-    "/users/stats/test-start/:testId",
-    (req: Request, res: express.Response, next: express.NextFunction) => {
-      const testId = req.param("testId", null);
+  .post("/users/stats/test-start/:testId", (req: Request, res: express.Response, next: express.NextFunction) => {
+    const testId = req.param("testId", null);
 
-      // TODO check testId, questionId
+    // TODO check testId, questionId
 
-      const statsIdx = req.loggedUser.stats.length;
-      req.loggedUser.stats.push({
-        testId: testId,
-        questionId: null,
-        type: "test",
-        startAt: new Date(),
-        endAt: null,
-      });
+    const statsIdx = req.loggedUser.stats.length;
+    req.loggedUser.stats.push({
+      testId: testId,
+      questionId: null,
+      type: "test",
+      startAt: new Date(),
+      endAt: null,
+      answers: null,
+    });
 
-      req.loggedUser.markModified("stats");
+    req.loggedUser.markModified("stats");
 
-      req.loggedUser
-        .save()
-        .then(userSaved => {
-          res.status(200).json({ id: statsIdx });
-        })
-        .catch(next);
-    },
-  )
+    req.loggedUser
+      .save()
+      .then(userSaved => {
+        res.status(200).json({ id: statsIdx });
+      })
+      .catch(next);
+  })
   .post(
     "/users/stats/test-end/:testId/:statsIdx",
     (req: Request, res: express.Response, next: express.NextFunction) => {
       //const testId = req.param("testId", null);
       const statsIdx = req.param("statsIdx", null);
+      const answers: number[] = req.body.answers;
 
       // TODO check testId, questionId
 
@@ -136,9 +141,10 @@ export const customAppRouter = express
       }
 
       stats.endAt = new Date();
+      stats.answers = answers;
       req.loggedUser.markModified("stats");
       req.loggedUser.markModified("testsDoneIds");
-      req.loggedUser.testsDoneIds = req.loggedUser.testsDoneIds || []
+      req.loggedUser.testsDoneIds = req.loggedUser.testsDoneIds || [];
       req.loggedUser.testsDoneIds.push(req.loggedUser.testId);
       req.loggedUser.testId = null;
 

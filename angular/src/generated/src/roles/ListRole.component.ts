@@ -6,7 +6,7 @@ import { Observable } from 'rxjs/Observable';
 import { BaseComponent } from '../Base.component';
 import { RoleType } from '../models/IRole';
 import { Pagination } from '../common';
-
+import { FileUploader } from 'ng2-file-upload';
 /**
  */
 @Component({
@@ -36,7 +36,18 @@ import { Pagination } from '../common';
         <tr>
       </tbody>
     </bb-table>
-    <bb-button [routerLink]="['..', 'create']">Create</bb-button>
+    <bb-button [routerLink]="['..', 'create']">
+      <i class="fa fa-plus" aria-hidden="true"></i>
+      Crear Rol
+    </bb-button>
+    <hr />
+    <h4>Importar</h4>
+    <input type="file" ng2FileSelect [uploader]="uploader" />
+    <button type="button" class="btn btn-success btn-s"
+            (click)="uploader.uploadAll()" [disabled]="!uploader.getNotUploadedItems().length">
+        <span class="glyphicon glyphicon-upload"></span> Subir CSV
+    </button>
+
   </bb-section-content>
 </bb-section>
 <!-- <pre>entities: {{entities |json}}</pre> -->
@@ -45,6 +56,11 @@ import { Pagination } from '../common';
 export class ListRoleComponent extends BaseComponent {
   loading: boolean = false;
   entities: Pagination<RoleType>;
+
+  uploader:FileUploader = new FileUploader({
+    url: "http://localhost:3004/roles/csv",
+    authToken: "Bearer " + localStorage.getItem("access_token"), // this is just an easy hack to use it
+  });
 
   constructor(
     injector: Injector,
@@ -76,7 +92,7 @@ export class ListRoleComponent extends BaseComponent {
 
     this.loading = true;
     console.log("--> DELETE: http://localhost:3004/roles/:roleId", row);
-    this.http.delete("http://localhost:3004/roles/:roleId".replace(":roleId", "" + row._id))
+    this.http.delete("http://localhost:3004/roles/:roleId".replace(":roleId", "" + row.id))
     .subscribe((response: Response) => {
       console.log("<-- DELETE: http://localhost:3004/roles/:roleId", response);
       this.entities.list.splice(idx, 1);

@@ -143,6 +143,8 @@ export class Schema {
     }
 
     switch (action) {
+      case "IMPORT":
+        return `${domain}${this.baseApiUrl}/${this.plural}/csv`;
       case "LIST":
       case "CREATE":
         return `${domain}${this.baseApiUrl}/${this.plural}`;

@@ -2,7 +2,7 @@ import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-
+import { FileUploadModule } from 'ng2-file-upload';
 import { CommonModule } from './Common.module';
 
 
@@ -39,6 +39,7 @@ import { routes } from './users/routes';
 @NgModule({
     imports: [
       CommonModule,
+      FileUploadModule,
       ...imports,
     ],
     declarations: declarations,

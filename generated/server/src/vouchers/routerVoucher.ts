@@ -5,10 +5,16 @@ import { readVoucher } from "./readVoucher";
 import { updateVoucher } from "./updateVoucher";
 import { listVoucher } from "./listVoucher";
 import { destroyVoucher } from "./destroyVoucher";
+import { csvVoucher } from "./csvVoucher";
 import { IVoucherModel } from '../models/Voucher';
 import { Pagination } from '../common';
 import { authorization } from '../auth';
 const mongoosemask = require("mongoosemask");
+var multer  = require('multer');
+var upload = multer({
+  /* dest: 'uploads/' }*/
+  storage: multer.memoryStorage()
+});
 
 /**
  * clean req.body from data that never must be created/updated
@@ -40,6 +46,14 @@ export function toJSON(entity: IVoucherModel) {
 
 const routerVoucher = express.Router()
 .use(authorization(null))
+.post(
+  '/vouchers/csv',
+  upload.single('file'),
+  csvVoucher,
+  function (req: Request, res: express.Response, next: express.NextFunction) {
+    res.status(204).json();
+  }
+)
 .post(
   '/vouchers',
   cleanBody,

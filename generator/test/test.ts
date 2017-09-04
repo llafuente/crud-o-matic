@@ -32,6 +32,40 @@ test.serial("user schema", t => {
   );
 
   schema.addField(
+    "name",
+    new Field("Nombre", FieldType.String)
+      .setFrontControl(FrontControls.TEXT)
+      .setMaxlength(32)
+      .setRequired(true)
+  );
+
+  schema.addField(
+    "surname",
+    new Field("Apellidos", FieldType.String)
+      .setFrontControl(FrontControls.TEXT)
+      .setMaxlength(32)
+      .setRequired(true)
+  );
+
+  schema.addField(
+    "identifier",
+    new Field("DNI/Nº Empleado", FieldType.String)
+      .setFrontControl(FrontControls.TEXT)
+      .setMaxlength(32)
+  );
+
+  schema.addField(
+    "email",
+    new Field("Email", FieldType.String).setFrontControl(FrontControls.EMAIL).setMaxlength(255).setRequired(true)
+  );
+
+  schema.addField(
+    "group",
+    new Field("Grupo/Empresa", FieldType.String)
+      .setFrontControl(FrontControls.TEXT)
+  );
+
+  schema.addField(
     "password",
     new Field("Password", FieldType.String)
       .setFrontControl(FrontControls.PASSWORD)
@@ -47,11 +81,6 @@ test.serial("user schema", t => {
   );
 
   schema.addField(
-    "email",
-    new Field("Email", FieldType.String).setFrontControl(FrontControls.EMAIL).setMaxlength(255).setRequired(true)
-  );
-
-  schema.addField(
     "salt",
     new Field("Salt", FieldType.String).setPermissions(
       new FieldPermissions(
@@ -64,6 +93,13 @@ test.serial("user schema", t => {
   );
 
   schema.addField(
+    "forceResetPassword",
+    new Field("Forzar resetar contraseña", FieldType.Boolean)
+      .setPermissions(new FieldPermissions(true, false, true, true))
+      .setFrontControl(FrontControls.CHECKBOX)
+  );
+
+  schema.addField(
     "roleId",
     new Field("Rol", FieldType.String).setRefTo("Role")
       .setHTTPDropdown("http://localhost:3004/roles", "roles", "id", "label")
@@ -72,13 +108,15 @@ test.serial("user schema", t => {
   schema.addField(
     "voucherId",
     new Field("Voucher", FieldType.String).setRefTo("Voucher")
+      .setPermissions(new FieldPermissions(true, false, true, true))
       .setDefault(null)
       .setHTTPDropdown("http://localhost:3004/vouchers", "vouchers", "id", "label")
   );
 
   schema.addField(
     "testId",
-    new Field("Test", FieldType.String).setRefTo("Test")
+    new Field("Test", FieldType.ObjectId).setRefTo("Test")
+      .setPermissions(new FieldPermissions(true, false, true, true))
       .setDefault(null)
       .setHTTPDropdown("http://localhost:3004/tests", "tests", "id", "label")
   );
@@ -88,6 +126,8 @@ test.serial("user schema", t => {
     new Field("Tests hechos", FieldType.Array).setItems(
       new Field("Tests hechos", FieldType.ObjectId)
     )
+    .setRefTo("Test")
+    .setPermissions(new FieldPermissions(true, false, true, true))
   );
 
 
@@ -102,7 +142,9 @@ test.serial("user schema", t => {
   schema.addField(
     "stats",
     new Field("Stats", FieldType.Array)
-      .setFrontControl(FrontControls.ARRAY)
+      //.setFrontControl(FrontControls.ARRAY)
+      .setFrontControl(FrontControls.JSON)
+      .setPermissions(new FieldPermissions(true, false, true, true))
       .setItems(
         new Field("Estadísticas", FieldType.Object)
           .addProperty(
@@ -129,6 +171,13 @@ test.serial("user schema", t => {
           .addProperty(
             "type",
             new Field("Tipo", FieldType.String).setFrontControl(FrontControls.TEXT)
+          )
+          // TODO enum
+          .addProperty(
+            "answers",
+            new Field("Respuestas", FieldType.Array)
+            .setItems(new Field("Respuestas", FieldType.Number))
+            .setFrontControl(FrontControls.TEXT)
           )
       )
   );
@@ -328,9 +377,7 @@ test.serial("test schema", t => {
 test.serial("santity smoke checks", t => {
 
   gen.schemas.forEach((schema) => {
-    //console.log("\n\n\n\n\n");
     schema.eachField((fieldName, field) => {
-      //console.log(field.name, field.getPath());
       if (field.parentField != null && field.parentField.type != FieldType.Array) {
         t.not(field.name, null);
       }

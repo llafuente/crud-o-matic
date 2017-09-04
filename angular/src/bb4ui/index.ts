@@ -4,7 +4,7 @@ import { FormsModule } from "@angular/forms";
 import { ModalModule } from "ngx-bootstrap/modal";
 import { TabsModule } from "ngx-bootstrap/tabs";
 import { DatepickerModule } from "ngx-bootstrap/datepicker";
-import { TimepickerModule } from 'ngx-bootstrap/timepicker';
+import { TimepickerModule } from "ngx-bootstrap/timepicker";
 /*
 import { BBInputComponent } from './inputs/BBInput.component';
 export * from './inputs/BBInput.component';

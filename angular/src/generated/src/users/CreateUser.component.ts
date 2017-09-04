@@ -38,21 +38,60 @@ import { UserType } from '../models/IUser';
 </bb-input-container>
 
 <bb-input-container
-  label="Password"
+  label="Nombre"
   
   class="bordered top-label">
   <input
     bb-child
-    type="password"
-    id="id-password"
-    name="password"
+    type="text"
+    id="id-name"
+    name="name"
     
     required="required"
     
-    [(ngModel)]="entity.password"
-    #password="ngModel" />
+    [(ngModel)]="entity.name"
+    #name="ngModel"
+    />
 
-    <bb-errors [model]="password"></bb-errors>
+    <bb-errors [model]="name"></bb-errors>
+
+</bb-input-container>
+
+<bb-input-container
+  label="Apellidos"
+  
+  class="bordered top-label">
+  <input
+    bb-child
+    type="text"
+    id="id-surname"
+    name="surname"
+    
+    required="required"
+    
+    [(ngModel)]="entity.surname"
+    #surname="ngModel"
+    />
+
+    <bb-errors [model]="surname"></bb-errors>
+
+</bb-input-container>
+
+<bb-input-container
+  label="DNI/Nº Empleado"
+  
+  class="bordered top-label">
+  <input
+    bb-child
+    type="text"
+    id="id-identifier"
+    name="identifier"
+    
+    [(ngModel)]="entity.identifier"
+    #identifier="ngModel"
+    />
+
+    <bb-errors [model]="identifier"></bb-errors>
 
 </bb-input-container>
 
@@ -74,6 +113,49 @@ import { UserType } from '../models/IUser';
     <bb-errors [model]="email"></bb-errors>
 
 </bb-input-container>
+
+<bb-input-container
+  label="Grupo/Empresa"
+  
+  class="bordered top-label">
+  <input
+    bb-child
+    type="text"
+    id="id-group"
+    name="group"
+    
+    [(ngModel)]="entity.group"
+    #group="ngModel"
+    />
+
+    <bb-errors [model]="group"></bb-errors>
+
+</bb-input-container>
+
+<bb-input-container
+  label="Password"
+  
+  class="bordered top-label">
+  <input
+    bb-child
+    type="password"
+    id="id-password"
+    name="password"
+    
+    required="required"
+    
+    [(ngModel)]="entity.password"
+    #password="ngModel" />
+
+    <bb-errors [model]="password"></bb-errors>
+
+</bb-input-container>
+
+<bb-check
+  id="id-forceResetPassword"
+  name="forceResetPassword"
+  
+  [(ngModel)]="entity.forceResetPassword">Forzar resetar contraseña</bb-check>
 
 <bb-input-container
   label="Rol"
@@ -147,91 +229,9 @@ import { UserType } from '../models/IUser';
 
 </bb-input-container>
 
-<h3 class="d-flex">
-  <span>Stats ({{entity?.stats?.length || 0}})</span>
-  <bb-button class="ml-auto" (click)="pushEntityStats({})">
-    <i class="fa fa-plus"></i> Añadir
-  </bb-button>
-</h3>
-
-<div class="ml-1">
-  <div class="d-flex mb-1 p-1"
-    *ngFor="let item of entity?.stats; let statsId = index"
-    style="background-color: rgba(0,0,0,0.025); border: 1px solid rgba(0,0,0,0.05)">
-    <div class="align-self-start text-center" style="width: 2rem">
-    {{statsId + 1}}
-    </div>
-    <div class="pl-1" style="width: 100%; border-left: 4px solid rgba(0,0,0,0.2)">
-      <div class="d-flex">
-        <bb-button class="ml-auto" type="danger" (click)="splice(entity.stats, statsId)">
-          <i class="fa fa-trash-o"></i>
-        </bb-button>
-      </div>
-      <!-- child -->
-      <!-- hidden -->
-
-<!-- hidden -->
-
-<bb-static label="Inicio">
-{{entity.stats[statsId].startAt | date: "yyyy-MM-dd H:m:s" }}
+<bb-static label="Stats" class="bordered top-label">
+<pre>{{entity.stats | json }}</pre>
 </bb-static>
-
-<datepicker
-  id="id-startAt_{{statsId}}"
-  name="startAt_{{statsId}}"
-  
-  [(ngModel)]="entity.stats[statsId].startAt"
-  [showWeeks]="false"
-  #startAt="ngModel"></datepicker>
-  <timepicker  [(ngModel)]="entity.stats[statsId].startAt" [showSeconds]="true"></timepicker>
-<!--
-  [minDate]="minDate"
-  [showWeeks]="true"
-  [dateDisabled]="dateDisabled"
--->
-<bb-errors [model]="startAt"></bb-errors>
-
-<bb-static label="Fin">
-{{entity.stats[statsId].endAt | date: "yyyy-MM-dd H:m:s" }}
-</bb-static>
-
-<datepicker
-  id="id-endAt_{{statsId}}"
-  name="endAt_{{statsId}}"
-  
-  [(ngModel)]="entity.stats[statsId].endAt"
-  [showWeeks]="false"
-  #endAt="ngModel"></datepicker>
-  <timepicker  [(ngModel)]="entity.stats[statsId].endAt" [showSeconds]="true"></timepicker>
-<!--
-  [minDate]="minDate"
-  [showWeeks]="true"
-  [dateDisabled]="dateDisabled"
--->
-<bb-errors [model]="endAt"></bb-errors>
-
-<bb-input-container
-  label="Tipo"
-  
-  class="bordered top-label">
-  <input
-    bb-child
-    type="text"
-    id="id-type_{{statsId}}"
-    name="type_{{statsId}}"
-    
-    [(ngModel)]="entity.stats[statsId].type"
-    #type="ngModel"
-    />
-
-    <bb-errors [model]="type"></bb-errors>
-
-</bb-input-container>
-
-      <!-- end child -->
-    </div>
-  </div>
-</div>
 
       <bb-button [routerLink]="['..', 'list']">Cancelar</bb-button>
       <bb-button (click)="save()">Guardar</bb-button>
@@ -347,6 +347,13 @@ pushEntityTestsDoneIds(item: any, ) {
 pushEntityStats(item: any, ) {
   this.entity.stats = this.entity.stats || [];
   this.entity.stats.push(item);
+}
+
+
+
+pushEntityStatsAnswers(item: any, statsId) {
+  this.entity.stats[statsId].answers = this.entity.stats[statsId].answers || [];
+  this.entity.stats[statsId].answers.push(item);
 }
 
 

@@ -14,6 +14,7 @@ export class SchemaBack {
   listFunction: string;
   updateFunction: string;
   deleteFunction: string;
+  csvImportFunction: string;
   routerName: string;
 
   constructor(json, parentSchema: Schema) {
@@ -28,6 +29,7 @@ export class SchemaBack {
     this.listFunction = `list${this.parentSchema.singularUc}`;
     this.deleteFunction = `destroy${this.parentSchema.singularUc}`;
     this.updateFunction = `update${this.parentSchema.singularUc}`;
+    this.csvImportFunction = `csv${this.parentSchema.singularUc}`;
     this.routerName = `router${this.parentSchema.singularUc}`;
   }
 }

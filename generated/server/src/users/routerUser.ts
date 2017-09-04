@@ -5,10 +5,16 @@ import { readUser } from "./readUser";
 import { updateUser } from "./updateUser";
 import { listUser } from "./listUser";
 import { destroyUser } from "./destroyUser";
+import { csvUser } from "./csvUser";
 import { IUserModel } from '../models/User';
 import { Pagination } from '../common';
 import { authorization } from '../auth';
 const mongoosemask = require("mongoosemask");
+var multer  = require('multer');
+var upload = multer({
+  /* dest: 'uploads/' }*/
+  storage: multer.memoryStorage()
+});
 
 /**
  * clean req.body from data that never must be created/updated
@@ -40,6 +46,14 @@ export function toJSON(entity: IUserModel) {
 
 const routerUser = express.Router()
 .use(authorization(null))
+.post(
+  '/users/csv',
+  upload.single('file'),
+  csvUser,
+  function (req: Request, res: express.Response, next: express.NextFunction) {
+    res.status(204).json();
+  }
+)
 .post(
   '/users',
   cleanBody,

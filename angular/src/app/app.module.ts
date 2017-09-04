@@ -10,7 +10,7 @@ import { GenerateddAppModule } from "../generated/src";
 
 import { JwtModule } from "@auth0/angular-jwt";
 import { components, AppComponent, services } from "./";
-console.log(services);
+
 // imports, declarations are exported to easy unit-testing configuration
 export const imports = [
   BrowserModule,

@@ -24,7 +24,7 @@ export class TestComponent extends BaseComponent {
   stats: { id: number } = null;
   testStats: { id: number } = null;
 
-  @ViewChild('timeExpiredModal') timeExpiredModal;
+  @ViewChild("timeExpiredModal") timeExpiredModal;
 
   get maxQuestion(): number {
     if (!this.test) return null;
@@ -72,7 +72,7 @@ export class TestComponent extends BaseComponent {
           this.timeExpiredModal.show();
           this.finish(null, true, false);
         }
-      }, 1000)
+      }, 1000);
     });
   }
 

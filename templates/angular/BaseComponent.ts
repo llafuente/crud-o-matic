@@ -45,14 +45,14 @@ export class BaseComponent implements /*OnInit, */OnDestroy {
       const d = snapshot.params as any;
       // console.log("route.params", snapshot.params);
       if (d && d[key] !== undefined) {
-        console.log("getParameter", key, d[key]);
+        //console.log("getParameter", key, d[key]);
         return d[key];
       }
 
       snapshot = snapshot.parent;
     } while (snapshot);
 
-    console.log("getParameter", key, null);
+    //console.log("getParameter", key, null);
     return null;
   }
 

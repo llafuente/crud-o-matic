@@ -6,7 +6,7 @@ import { Observable } from 'rxjs/Observable';
 import { BaseComponent } from '../Base.component';
 import { UserType } from '../models/IUser';
 import { Pagination } from '../common';
-
+import { FileUploader } from 'ng2-file-upload';
 /**
  */
 @Component({
@@ -21,19 +21,19 @@ import { Pagination } from '../common';
           
             <th>Userlogin</th>
           
-            <th>Password</th>
+            <th>Nombre</th>
+          
+            <th>Apellidos</th>
+          
+            <th>DNI/Nº Empleado</th>
           
             <th>Email</th>
           
+            <th>Grupo/Empresa</th>
+          
             <th>Rol</th>
           
-            <th>Voucher</th>
-          
-            <th>Test</th>
-          
             <th>State</th>
-          
-            <th>Stats</th>
           
           <th>Actions</th>
         <tr>
@@ -43,19 +43,19 @@ import { Pagination } from '../common';
           
             <td>{{entity.userlogin}}</td>
           
-            <td>{{entity.password}}</td>
+            <td>{{entity.name}}</td>
+          
+            <td>{{entity.surname}}</td>
+          
+            <td>{{entity.identifier}}</td>
           
             <td>{{entity.email}}</td>
           
+            <td>{{entity.group}}</td>
+          
             <td>{{entity.roleId}}</td>
           
-            <td>{{entity.voucherId}}</td>
-          
-            <td>{{entity.testId}}</td>
-          
             <td>{{entity.state}}</td>
-          
-            <td>{{entity.stats}}</td>
           
           <td class="actions">
             <a [routerLink]="['..', 'update', entity.id]"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
@@ -64,7 +64,18 @@ import { Pagination } from '../common';
         <tr>
       </tbody>
     </bb-table>
-    <bb-button [routerLink]="['..', 'create']">Create</bb-button>
+    <bb-button [routerLink]="['..', 'create']">
+      <i class="fa fa-plus" aria-hidden="true"></i>
+      Crear usuario
+    </bb-button>
+    <hr />
+    <h4>Importar</h4>
+    <input type="file" ng2FileSelect [uploader]="uploader" />
+    <button type="button" class="btn btn-success btn-s"
+            (click)="uploader.uploadAll()" [disabled]="!uploader.getNotUploadedItems().length">
+        <span class="glyphicon glyphicon-upload"></span> Subir CSV
+    </button>
+
   </bb-section-content>
 </bb-section>
 <!-- <pre>entities: {{entities |json}}</pre> -->
@@ -73,6 +84,11 @@ import { Pagination } from '../common';
 export class ListUserComponent extends BaseComponent {
   loading: boolean = false;
   entities: Pagination<UserType>;
+
+  uploader:FileUploader = new FileUploader({
+    url: "http://localhost:3004/users/csv",
+    authToken: "Bearer " + localStorage.getItem("access_token"), // this is just an easy hack to use it
+  });
 
   constructor(
     injector: Injector,
@@ -104,7 +120,7 @@ export class ListUserComponent extends BaseComponent {
 
     this.loading = true;
     console.log("--> DELETE: http://localhost:3004/users/:userId", row);
-    this.http.delete("http://localhost:3004/users/:userId".replace(":userId", "" + row._id))
+    this.http.delete("http://localhost:3004/users/:userId".replace(":userId", "" + row.id))
     .subscribe((response: Response) => {
       console.log("<-- DELETE: http://localhost:3004/users/:userId", response);
       this.entities.list.splice(idx, 1);

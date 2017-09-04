@@ -382,8 +382,6 @@ export class Field {
     switch (this.frontControl) {
       case FrontControls.ARRAY:
         let x = this.items.getCreateImports();
-        //console.log("array parentFields", this.getParentFields());
-
         x.push(`import {} from "./.component";`);
         return x;
       default:

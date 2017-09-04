@@ -107,6 +107,12 @@ export class Generator {
 
     this.template(
       schema,
+      join(__dirname, "../templates/express/src/import.ts"),
+      join(path, "src", schema.plural, `${schema.backend.csvImportFunction}.ts`)
+    );
+
+    this.template(
+      schema,
       join(__dirname, "../templates/express/src/router.ts"),
       join(path, "src", schema.plural, `${schema.backend.routerName}.ts`)
     );

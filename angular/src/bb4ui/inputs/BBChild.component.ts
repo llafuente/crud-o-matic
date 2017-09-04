@@ -51,8 +51,6 @@ export class BBChildComponent {
     public ngControl: NgControl,
     public element: ElementRef,
   ) {
-    console.log("parentparentparent", parent);
-
     if (!this.parent) {
       throw new Error("bb-child require a bb-input-container as parent");
     }
@@ -60,8 +58,6 @@ export class BBChildComponent {
   }
 
   ngOnInit(): void {
-    console.log("this.element", this.element);
-
     // NOTE use both events at the same time :)
     this.element.nativeElement.onfocusout = () => {
       this.parent.focused = false;
@@ -90,8 +86,6 @@ export class BBChildComponent {
   ngAfterViewInit(): void {}
 
   onInput() {
-    // console.log('onInput', this.element);
-
     const type = this.element.nativeElement.type;
     switch (type) {
       // some inputs has format as placeholder

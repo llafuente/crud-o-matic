@@ -5,10 +5,16 @@ import { <%= backend.readFunction %> } from "./<%= backend.readFunction %>";
 import { <%= backend.updateFunction %> } from "./<%= backend.updateFunction %>";
 import { <%= backend.listFunction %> } from "./<%= backend.listFunction %>";
 import { <%= backend.deleteFunction %> } from "./<%= backend.deleteFunction %>";
+import { <%= backend.csvImportFunction %> } from "./<%= backend.csvImportFunction %>";
 import { <%= interfaceModel %> } from '../models/<%= singularUc %>';
 import { Pagination } from '../common';
 import { authorization } from '../auth';
 const mongoosemask = require("mongoosemask");
+var multer  = require('multer');
+var upload = multer({
+  /* dest: 'uploads/' }*/
+  storage: multer.memoryStorage()
+});
 
 /**
  * clean req.body from data that never must be created/updated
@@ -40,6 +46,14 @@ export function toJSON(entity: <%= interfaceModel %>) {
 
 const <%= backend.routerName %> = express.Router()
 .use(authorization(null))
+.post(
+  '<%= url("IMPORT") %>',
+  upload.single('file'),
+  <%= backend.csvImportFunction %>,
+  function (req: Request, res: express.Response, next: express.NextFunction) {
+    res.status(204).json();
+  }
+)
 .post(
   '<%= url("CREATE") %>',
   cleanBody,

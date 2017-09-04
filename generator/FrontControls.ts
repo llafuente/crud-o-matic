@@ -13,5 +13,6 @@ export enum FrontControls {
   DATE = "DATE",
   DATETIME = "DATETIME",
   ARRAY = "ARRAY",
-  STATIC = "STATIC"
+  STATIC = "STATIC",
+  JSON = "JSON",
 }

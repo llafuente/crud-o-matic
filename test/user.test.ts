@@ -14,6 +14,7 @@ import * as bodyParser from "body-parser";
 
 const supertest = require("supertest");
 const mongoose = require("mongoose");
+const path = require("path");
 mongoose.Promise = require("bluebird");
 mongoose.set('debug', true);
 
@@ -66,24 +67,32 @@ test.serial("create roles with mongoose", async (t) => {
 });
 
 test.serial("create admin user with mongoose", async (t) => {
-  var user = new User({
-    userlogin: "admin",
-    roleId: adminRole.id,
-    password: "admin",
-    email: "admin@tecnofor.es"
-  });
+  try {
+    var user = new User({
+      userlogin: "admin",
+      name: "admin",
+      surname: "admin",
+      roleId: adminRole.id,
+      password: "admin",
+      email: "admin@tecnofor.es"
+    });
 
-  t.true(user instanceof User);
-  t.not(user.email, null);
-  t.not(user.id.toString(), null);
 
-  user = await user.save();
+    t.true(user instanceof User);
+    t.not(user.email, null);
+    t.not(user.id.toString(), null);
 
-  let newUser = await User.findOne({
-    userlogin: "admin"
-  }).exec();
+    user = await user.save();
 
-  t.is(newUser.email, "admin@tecnofor.es");
+    let newUser = await User.findOne({
+      userlogin: "admin"
+    }).exec();
+
+    t.is(newUser.email, "admin@tecnofor.es");
+  } catch(e) {
+    console.log(e);
+    t.fail(e);
+  }
 });
 
 
@@ -104,6 +113,7 @@ test.cb.serial("logon: /auth", (t) => {
     }
 
     bearer = "Bearer " + response.body.token;
+    console.log(`bearer: ${bearer}`);
 
     t.end();
   });
@@ -114,7 +124,9 @@ test.cb.serial("logon: /auth", (t) => {
 test.serial("create user with mongoose", async (t) => {
   var user = new User({
     userlogin: "mongoose-user",
-    roleId: userRole.id, 
+    name: "mongoose-user-name",
+    surname: "mongoose-user-surname",
+    roleId: userRole.id,
     password: "password",
     email: "mongoose-user@test.com"
   });
@@ -143,6 +155,8 @@ test.cb.serial("create user using API", (t) => {
   .post('/users')
   .send({
     userlogin: "api-user",
+    name: "api-user-name",
+    surname: "api-user-surname",
     password: "password",
     email: "api-user@test.com"
   })
@@ -166,6 +180,8 @@ test.cb.serial("create user using API (2)", (t) => {
   .post('/users')
   .send({
     userlogin: "api-user2",
+    name: "api-user2-name",
+    surname: "api-user2-surname",
     password: "password",
     email: "api-user2@test.com"
   })
@@ -177,6 +193,7 @@ test.cb.serial("create user using API (2)", (t) => {
     if (err) {
       t.fail(err);
     }
+
     userCreatedByApi2 = response.body;
 
     t.end();
@@ -219,6 +236,8 @@ test.cb.serial("create user error using API", (t) => {
   .post('/users')
   .send({
     userlogin: "api-user2",
+    name: "api-user2-name",
+    surname: "api-user2-surname",
     password: "password",
     email: "api-user2@test.com"
   })
@@ -232,6 +251,30 @@ test.cb.serial("create user error using API", (t) => {
     }
 
     const msg = "E11000 duplicate key error collection: test.users index: userlogin";
+    t.is(msg, response.body.message.substring(0, msg.length));
+
+    t.end();
+  });
+});
+
+test.cb.serial("create user error using API 2", (t) => {
+  supertest(app)
+  .post('/users')
+  .send({
+    userlogin: "api-user2",
+    password: "password",
+    email: "api-user2@test.com"
+  })
+  .set('Authorization', bearer)
+  .set('Accept', 'application/json')
+  .expect(400)
+  .expect('Content-Type', /json/)
+  .end(function(err, response) {
+    if (err) {
+      t.fail(err);
+    }
+
+    const msg = "User validation failed: surname: Path `surname` is required., name";
     t.is(msg, response.body.message.substring(0, msg.length));
 
     t.end();
@@ -356,4 +399,29 @@ test.serial("check deleted user using mongoose", async (t) => {
   }).exec();
 
   t.is(newUser, null);
+});
+
+test.cb.serial("create user using CSV", (t) => {
+  supertest(app)
+  .post('/users/csv')
+  .attach('file', path.join(__dirname, 'user.csv'))
+  .set('Authorization', bearer)
+  .set('Accept', 'application/json')
+  .expect(204)
+  .end(function(err, response) {
+    if (err) {
+      t.fail(err);
+    }
+
+    t.end();
+  });
+});
+
+test.serial("check CSV user", async (t) => {
+  let newUser = await User.findOne({
+    userlogin: "csv-admin"
+  }).exec();
+
+  t.not(newUser, null);
+  t.is(newUser.email, "csv-admin@tecnofor.es");
 });

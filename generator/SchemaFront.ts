@@ -138,8 +138,6 @@ export class SchemaFront {
       imports = imports.concat(field.getCreateImports());
     });
 
-    //console.log(imports);
-
     return imports.join("\n");
   }
 
