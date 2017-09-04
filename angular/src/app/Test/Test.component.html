@@ -1,6 +1,11 @@
 <form #form="ngForm" *ngIf="test">
   <!-- <pre>{{test |json}}</pre> -->
   <!-- <pre>{{test.blocks[currentBlock].questions[currentQuestion] |json}}</pre> -->
+  <!-- <pre>{{answers |json}}</pre> -->
+
+  <div class="d-flex">
+    <div class="ml-auto">Tiempo restante: {{countDown()}}</div>
+  </div>
 
   <h1>{{test.label}} ({{currentQuestion + 1}} / {{maxQuestion}})</h1>
   <h2>{{test.blocks[currentBlock].questions[currentQuestion].questionLabel}}</h2>
@@ -32,7 +37,7 @@
     <bb-button
       btn="warning"
       class="ml-auto"
-      (click)="finish(bbModal, false)"
+      (click)="finish(finishExamModal, false)"
       *ngIf="currentQuestion + 1 == maxQuestion"
       [disabled]="!form.valid">Entregar examen</bb-button>
   </div>
@@ -44,15 +49,29 @@
 <bb-modal
   header="Entregar examen"
   size="lg"
-  #bbModal>
+  #finishExamModal>
   <bb-section-content>
     <p>¿Está seguro de entregar el exámen?</p>
     <p>Un examen entregado no puede ser modificado.</p>
   </bb-section-content>
   <bb-section-footer>
     <div class="d-flex">
-      <bb-button (click)="bbModal.hide()">Volver</bb-button>
-      <bb-button btn="warning" class="ml-auto"(click)="finish(bbModal, true)">Entregar examen</bb-button>
+      <bb-button (click)="finishExamModal.hide()">Volver</bb-button>
+      <bb-button btn="warning" class="ml-auto"(click)="finish(finishExamModal, true)">Entregar examen</bb-button>
+    </div>
+  </bb-section-footer>
+</bb-modal>
+
+<bb-modal
+  header="Tiempo de examen agotado"
+  size="lg"
+  #timeExpiredModal>
+  <bb-section-content>
+    <p>El tiempo máximo de exámen se ha superado, el examen ha sido entregado automáticamente</p>
+  </bb-section-content>
+  <bb-section-footer>
+    <div class="d-flex">
+      <bb-button btn="warning" class="ml-auto"(click)="exit()">Ok</bb-button>
     </div>
   </bb-section-footer>
 </bb-modal>

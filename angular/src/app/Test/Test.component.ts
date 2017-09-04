@@ -1,7 +1,7 @@
 import { Injector } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 
-import { Component, Input } from "@angular/core";
+import { Component, Input, ViewChild } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { LoggedUser } from "../LoggedUser.service";
 import { ITest } from "../../generated/src/models/ITest";
@@ -16,12 +16,15 @@ export class TestComponent extends BaseComponent {
   answerIndexes = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k"];
   testId: string = null;
   test: ITest = null;
+  remainingTime: number = null;
 
   currentBlock = 0;
   currentQuestion = 0;
   answers: number[] = [null];
   stats: { id: number } = null;
   testStats: { id: number } = null;
+
+  @ViewChild('timeExpiredModal') timeExpiredModal;
 
   get maxQuestion(): number {
     if (!this.test) return null;
@@ -32,7 +35,6 @@ export class TestComponent extends BaseComponent {
   constructor(
     public injector: Injector,
     public activatedRoute: ActivatedRoute,
-
     public router: Router,
     public http: HttpClient,
     public user: LoggedUser,
@@ -45,10 +47,32 @@ export class TestComponent extends BaseComponent {
     this.startQuestion(0);
   }
 
+  countDown() {
+    if (this.remainingTime == 0) {
+      return "Examen terminado";
+    }
+
+    const s = this.remainingTime % 60;
+    const m = Math.floor(this.remainingTime / 60);
+    const h = Math.floor(this.remainingTime / 3600);
+
+    return `${h}:${m}:${s}`;
+  }
+
   loadTest(testId: string) {
     // load test
     this.http.get("http://localhost:3004/tests/" + testId).subscribe((response: ITest) => {
       this.test = response;
+      //this.remainingTime = this.test.maxTime * 60;
+      this.remainingTime = 15;
+
+      this.interval(() => {
+        --this.remainingTime;
+        if (this.remainingTime == 0) {
+          this.timeExpiredModal.show();
+          this.finish(null, true, false);
+        }
+      }, 1000)
     });
   }
 
@@ -56,9 +80,11 @@ export class TestComponent extends BaseComponent {
     this.endQuestion(this.currentQuestion);
 
     ++this.currentQuestion;
+    /*
     if (this.answers[this.currentQuestion] === undefined) {
       this.answers[this.currentQuestion] = null;
     }
+    */
 
     this.startQuestion(this.currentQuestion);
   }
@@ -71,10 +97,12 @@ export class TestComponent extends BaseComponent {
     this.startQuestion(this.currentQuestion);
   }
 
-  finish(bbModal: any, confirmed: boolean) {
+  finish(bbModal: any, confirmed: boolean, exit: boolean = true) {
     if (confirmed) {
-      bbModal.hide();
-      this.endTest();
+      bbModal && bbModal.hide();
+      this.endQuestion(this.currentQuestion, () => {
+        this.endTest(exit);
+      });
     } else {
       bbModal.show();
     }
@@ -90,36 +118,42 @@ export class TestComponent extends BaseComponent {
       });
   }
 
-  endQuestion(questionId: number) {
+  endQuestion(questionId: number, cb: Function = null) {
     this.http
       .post(`http://localhost:3004/users/stats/question-end/${this.testId}/${this.stats.id}`, {})
       .subscribe((response: any) => {
         console.log("endQuestion", response);
+        cb && cb();
       });
   }
 
   startTest() {
-    this.http
-      .post(`http://localhost:3004/users/stats/test-start/${this.testId}`, {})
-      .subscribe((response: any) => {
-        console.log("startQuestion", response);
+    this.http.post(`http://localhost:3004/users/stats/test-start/${this.testId}`, {}).subscribe((response: any) => {
+      console.log("startQuestion", response);
 
-        this.testStats = response;
-      });
-
+      this.testStats = response;
+    });
   }
 
-  endTest() {
+  endTest(exit: boolean) {
     this.http
-      .post(`http://localhost:3004/users/stats/test-end/${this.testId}/${this.testStats.id}`, {})
+      .post(`http://localhost:3004/users/stats/test-end/${this.testId}/${this.testStats.id}`, {
+        answers: this.answers,
+      })
       .subscribe((response: any) => {
         console.log("startQuestion", response);
         this.user.refresh();
-        this.handleSubscription(this.user.onChange.subscribe(() => {
-          this.router.navigate(["/home"]);
-
-        }));
+        this.handleSubscription(
+          this.user.onChange.subscribe(() => {
+            if (exit) {
+              this.exit();
+            }
+          }),
+        );
       });
+  }
 
+  exit() {
+    this.router.navigate(["/home"]);
   }
 }
