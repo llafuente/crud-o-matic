@@ -24,7 +24,7 @@ export class LoggedUser {
   }
 
   refresh() {
-    this.http.post("http://localhost:3004/me", null).subscribe((response: IUser) => {
+    this.http.post("http://34.229.180.92:3004/me", null).subscribe((response: IUser) => {
       this.me = response;
       this.onChange.next(this);
       //this.onChange.complete();

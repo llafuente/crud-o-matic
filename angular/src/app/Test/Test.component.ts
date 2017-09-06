@@ -61,7 +61,7 @@ export class TestComponent extends BaseComponent {
 
   loadTest(testId: string) {
     // load test
-    this.http.get("http://localhost:3004/tests/" + testId).subscribe((response: ITest) => {
+    this.http.get("http://34.229.180.92:3004/tests/" + testId).subscribe((response: ITest) => {
       this.test = response;
       //this.remainingTime = this.test.maxTime * 60;
       this.remainingTime = 15;
@@ -110,7 +110,7 @@ export class TestComponent extends BaseComponent {
 
   startQuestion(questionId: number) {
     this.http
-      .post(`http://localhost:3004/users/stats/question-start/${this.testId}/${questionId}`, {})
+      .post(`http://34.229.180.92:3004/users/stats/question-start/${this.testId}/${questionId}`, {})
       .subscribe((response: any) => {
         console.log("startQuestion", response);
 
@@ -120,7 +120,7 @@ export class TestComponent extends BaseComponent {
 
   endQuestion(questionId: number, cb: Function = null) {
     this.http
-      .post(`http://localhost:3004/users/stats/question-end/${this.testId}/${this.stats.id}`, {})
+      .post(`http://34.229.180.92:3004/users/stats/question-end/${this.testId}/${this.stats.id}`, {})
       .subscribe((response: any) => {
         console.log("endQuestion", response);
         cb && cb();
@@ -128,7 +128,7 @@ export class TestComponent extends BaseComponent {
   }
 
   startTest() {
-    this.http.post(`http://localhost:3004/users/stats/test-start/${this.testId}`, {}).subscribe((response: any) => {
+    this.http.post(`http://34.229.180.92:3004/users/stats/test-start/${this.testId}`, {}).subscribe((response: any) => {
       console.log("startQuestion", response);
 
       this.testStats = response;
@@ -137,7 +137,7 @@ export class TestComponent extends BaseComponent {
 
   endTest(exit: boolean) {
     this.http
-      .post(`http://localhost:3004/users/stats/test-end/${this.testId}/${this.testStats.id}`, {
+      .post(`http://34.229.180.92:3004/users/stats/test-end/${this.testId}/${this.testStats.id}`, {
         answers: this.answers,
       })
       .subscribe((response: any) => {

@@ -86,22 +86,22 @@ export class ListVoucherComponent extends BaseComponent {
   entities: Pagination<VoucherType>;
 
   uploader: FileUploader = new FileUploader({
-    url: "http://localhost:3004/vouchers/csv",
+    url: "http://34.229.180.92:3004/vouchers/csv",
     authToken: "Bearer " + localStorage.getItem("access_token"), // this is just an easy hack to use it
   });
 
   constructor(injector: Injector, activatedRoute: ActivatedRoute, public http: HttpClient) {
     super(injector, activatedRoute);
 
-    console.log("--> GET: http://localhost:3004/vouchers");
-    this.http.get("http://localhost:3004/vouchers").subscribe(
+    console.log("--> GET: http://34.229.180.92:3004/vouchers");
+    this.http.get("http://34.229.180.92:3004/vouchers").subscribe(
       (response: Pagination<VoucherType>) => {
-        console.log("<-- GET: http://localhost:3004/vouchers", response);
+        console.log("<-- GET: http://34.229.180.92:3004/vouchers", response);
 
         this.entities = Pagination.fromJSON<VoucherType>(VoucherType, response);
       },
       (errorResponse: Response) => {
-        console.log("<-- GET Error: http://localhost:3004/vouchers", errorResponse.json());
+        console.log("<-- GET Error: http://34.229.180.92:3004/vouchers", errorResponse.json());
       },
     );
   }
@@ -116,11 +116,11 @@ export class ListVoucherComponent extends BaseComponent {
     if (this.loading) return;
 
     this.loading = true;
-    console.log("--> DELETE: http://localhost:3004/vouchers/:voucherId", row);
+    console.log("--> DELETE: http://34.229.180.92:3004/vouchers/:voucherId", row);
     this.http
-      .delete("http://localhost:3004/vouchers/:voucherId".replace(":voucherId", "" + row.id))
+      .delete("http://34.229.180.92:3004/vouchers/:voucherId".replace(":voucherId", "" + row.id))
       .subscribe((response: Response) => {
-        console.log("<-- DELETE: http://localhost:3004/vouchers/:voucherId", response);
+        console.log("<-- DELETE: http://34.229.180.92:3004/vouchers/:voucherId", response);
         this.entities.list.splice(idx, 1);
         this.loading = false;
       });

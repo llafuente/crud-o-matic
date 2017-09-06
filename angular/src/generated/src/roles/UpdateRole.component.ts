@@ -62,29 +62,29 @@ export class UpdateRoleComponent extends BaseComponent {
     //this.id = parseInt(this.getRouteParameter("roleId"), 10);
     this.id = this.getRouteParameter("roleId");
 
-    console.log("--> GET: http://localhost:3004/roles/:roleId", this.id);
-    this.http.get("http://localhost:3004/roles/:roleId".replace(":roleId", this.id)).subscribe(
+    console.log("--> GET: http://34.229.180.92:3004/roles/:roleId", this.id);
+    this.http.get("http://34.229.180.92:3004/roles/:roleId".replace(":roleId", this.id)).subscribe(
       (response: RoleType) => {
-        console.log("<-- GET: http://localhost:3004/roles/:roleId", response);
+        console.log("<-- GET: http://34.229.180.92:3004/roles/:roleId", response);
 
         this.entity = response;
       },
       (errorResponse: Response) => {
-        console.log("<-- POST Error: http://localhost:3004/roles/:roleId", errorResponse);
+        console.log("<-- POST Error: http://34.229.180.92:3004/roles/:roleId", errorResponse);
       },
     );
   }
 
   save() {
-    console.log("<-- PATCH: http://localhost:3004/roles/:roleId", JSON.stringify(this.entity, null, 2));
-    this.http.patch("http://localhost:3004/roles/:roleId".replace(":roleId", this.id), this.entity).subscribe(
+    console.log("<-- PATCH: http://34.229.180.92:3004/roles/:roleId", JSON.stringify(this.entity, null, 2));
+    this.http.patch("http://34.229.180.92:3004/roles/:roleId".replace(":roleId", this.id), this.entity).subscribe(
       (response: RoleType) => {
-        console.log("<-- PATCH: http://localhost:3004/roles/:roleId", JSON.stringify(response, null, 2));
+        console.log("<-- PATCH: http://34.229.180.92:3004/roles/:roleId", JSON.stringify(response, null, 2));
 
         this.router.navigate(["../..", "list"], { relativeTo: this.activatedRoute });
       },
       (errorResponse: Response) => {
-        console.log("<-- PATCH Error: http://localhost:3004/roles/:roleId", errorResponse);
+        console.log("<-- PATCH Error: http://34.229.180.92:3004/roles/:roleId", errorResponse);
       },
     );
   }

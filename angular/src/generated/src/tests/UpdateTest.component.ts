@@ -264,29 +264,29 @@ export class UpdateTestComponent extends BaseComponent {
     //this.id = parseInt(this.getRouteParameter("testId"), 10);
     this.id = this.getRouteParameter("testId");
 
-    console.log("--> GET: http://localhost:3004/tests/:testId", this.id);
-    this.http.get("http://localhost:3004/tests/:testId".replace(":testId", this.id)).subscribe(
+    console.log("--> GET: http://34.229.180.92:3004/tests/:testId", this.id);
+    this.http.get("http://34.229.180.92:3004/tests/:testId".replace(":testId", this.id)).subscribe(
       (response: TestType) => {
-        console.log("<-- GET: http://localhost:3004/tests/:testId", response);
+        console.log("<-- GET: http://34.229.180.92:3004/tests/:testId", response);
 
         this.entity = response;
       },
       (errorResponse: Response) => {
-        console.log("<-- POST Error: http://localhost:3004/tests/:testId", errorResponse);
+        console.log("<-- POST Error: http://34.229.180.92:3004/tests/:testId", errorResponse);
       },
     );
   }
 
   save() {
-    console.log("<-- PATCH: http://localhost:3004/tests/:testId", JSON.stringify(this.entity, null, 2));
-    this.http.patch("http://localhost:3004/tests/:testId".replace(":testId", this.id), this.entity).subscribe(
+    console.log("<-- PATCH: http://34.229.180.92:3004/tests/:testId", JSON.stringify(this.entity, null, 2));
+    this.http.patch("http://34.229.180.92:3004/tests/:testId".replace(":testId", this.id), this.entity).subscribe(
       (response: TestType) => {
-        console.log("<-- PATCH: http://localhost:3004/tests/:testId", JSON.stringify(response, null, 2));
+        console.log("<-- PATCH: http://34.229.180.92:3004/tests/:testId", JSON.stringify(response, null, 2));
 
         this.router.navigate(["../..", "list"], { relativeTo: this.activatedRoute });
       },
       (errorResponse: Response) => {
-        console.log("<-- PATCH Error: http://localhost:3004/tests/:testId", errorResponse);
+        console.log("<-- PATCH Error: http://34.229.180.92:3004/tests/:testId", errorResponse);
       },
     );
   }

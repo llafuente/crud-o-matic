@@ -28,7 +28,7 @@ export class LoginComponent extends BaseComponent {
   }
 
   login() {
-    this.http.post("http://localhost:3004/auth", this.auth).subscribe(
+    this.http.post("http://34.229.180.92:3004/auth", this.auth).subscribe(
       response => {
         const token = response.json().token;
         console.log("set token", token);

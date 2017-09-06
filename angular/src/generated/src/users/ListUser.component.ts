@@ -86,22 +86,22 @@ export class ListUserComponent extends BaseComponent {
   entities: Pagination<UserType>;
 
   uploader: FileUploader = new FileUploader({
-    url: "http://localhost:3004/users/csv",
+    url: "http://34.229.180.92:3004/users/csv",
     authToken: "Bearer " + localStorage.getItem("access_token"), // this is just an easy hack to use it
   });
 
   constructor(injector: Injector, activatedRoute: ActivatedRoute, public http: HttpClient) {
     super(injector, activatedRoute);
 
-    console.log("--> GET: http://localhost:3004/users");
-    this.http.get("http://localhost:3004/users").subscribe(
+    console.log("--> GET: http://34.229.180.92:3004/users");
+    this.http.get("http://34.229.180.92:3004/users").subscribe(
       (response: Pagination<UserType>) => {
-        console.log("<-- GET: http://localhost:3004/users", response);
+        console.log("<-- GET: http://34.229.180.92:3004/users", response);
 
         this.entities = Pagination.fromJSON<UserType>(UserType, response);
       },
       (errorResponse: Response) => {
-        console.log("<-- GET Error: http://localhost:3004/users", errorResponse.json());
+        console.log("<-- GET Error: http://34.229.180.92:3004/users", errorResponse.json());
       },
     );
   }
@@ -116,11 +116,11 @@ export class ListUserComponent extends BaseComponent {
     if (this.loading) return;
 
     this.loading = true;
-    console.log("--> DELETE: http://localhost:3004/users/:userId", row);
+    console.log("--> DELETE: http://34.229.180.92:3004/users/:userId", row);
     this.http
-      .delete("http://localhost:3004/users/:userId".replace(":userId", "" + row.id))
+      .delete("http://34.229.180.92:3004/users/:userId".replace(":userId", "" + row.id))
       .subscribe((response: Response) => {
-        console.log("<-- DELETE: http://localhost:3004/users/:userId", response);
+        console.log("<-- DELETE: http://34.229.180.92:3004/users/:userId", response);
         this.entities.list.splice(idx, 1);
         this.loading = false;
       });

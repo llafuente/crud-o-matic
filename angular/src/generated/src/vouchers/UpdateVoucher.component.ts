@@ -165,42 +165,44 @@ export class UpdateVoucherComponent extends BaseComponent {
     //this.id = parseInt(this.getRouteParameter("voucherId"), 10);
     this.id = this.getRouteParameter("voucherId");
 
-    console.log("--> GET: http://localhost:3004/vouchers/:voucherId", this.id);
-    this.http.get("http://localhost:3004/vouchers/:voucherId".replace(":voucherId", this.id)).subscribe(
+    console.log("--> GET: http://34.229.180.92:3004/vouchers/:voucherId", this.id);
+    this.http.get("http://34.229.180.92:3004/vouchers/:voucherId".replace(":voucherId", this.id)).subscribe(
       (response: VoucherType) => {
-        console.log("<-- GET: http://localhost:3004/vouchers/:voucherId", response);
+        console.log("<-- GET: http://34.229.180.92:3004/vouchers/:voucherId", response);
 
         this.entity = response;
       },
       (errorResponse: Response) => {
-        console.log("<-- POST Error: http://localhost:3004/vouchers/:voucherId", errorResponse);
+        console.log("<-- POST Error: http://34.229.180.92:3004/vouchers/:voucherId", errorResponse);
       },
     );
 
-    this.http.get("http://localhost:3004/tests").subscribe(
+    this.http.get("http://34.229.180.92:3004/tests").subscribe(
       (response: any) => {
-        console.log("<-- GET: http://localhost:3004/tests", JSON.stringify(response, null, 2));
+        console.log("<-- GET: http://34.229.180.92:3004/tests", JSON.stringify(response, null, 2));
 
         this.tests = response;
       },
       (errorResponse: Response) => {
-        console.log("<-- GET Error: http://localhost:3004/tests", errorResponse);
+        console.log("<-- GET Error: http://34.229.180.92:3004/tests", errorResponse);
       },
     );
   }
 
   save() {
-    console.log("<-- PATCH: http://localhost:3004/vouchers/:voucherId", JSON.stringify(this.entity, null, 2));
-    this.http.patch("http://localhost:3004/vouchers/:voucherId".replace(":voucherId", this.id), this.entity).subscribe(
-      (response: VoucherType) => {
-        console.log("<-- PATCH: http://localhost:3004/vouchers/:voucherId", JSON.stringify(response, null, 2));
+    console.log("<-- PATCH: http://34.229.180.92:3004/vouchers/:voucherId", JSON.stringify(this.entity, null, 2));
+    this.http
+      .patch("http://34.229.180.92:3004/vouchers/:voucherId".replace(":voucherId", this.id), this.entity)
+      .subscribe(
+        (response: VoucherType) => {
+          console.log("<-- PATCH: http://34.229.180.92:3004/vouchers/:voucherId", JSON.stringify(response, null, 2));
 
-        this.router.navigate(["../..", "list"], { relativeTo: this.activatedRoute });
-      },
-      (errorResponse: Response) => {
-        console.log("<-- PATCH Error: http://localhost:3004/vouchers/:voucherId", errorResponse);
-      },
-    );
+          this.router.navigate(["../..", "list"], { relativeTo: this.activatedRoute });
+        },
+        (errorResponse: Response) => {
+          console.log("<-- PATCH Error: http://34.229.180.92:3004/vouchers/:voucherId", errorResponse);
+        },
+      );
   }
 
   splice(model: any[], index: number) {

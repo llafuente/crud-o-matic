@@ -263,15 +263,15 @@ export class CreateTestComponent extends BaseComponent {
   }
 
   save() {
-    console.log("--> POST: http://localhost:3004/tests", JSON.stringify(this.entity, null, 2));
-    this.http.post("http://localhost:3004/tests", this.entity).subscribe(
+    console.log("--> POST: http://34.229.180.92:3004/tests", JSON.stringify(this.entity, null, 2));
+    this.http.post("http://34.229.180.92:3004/tests", this.entity).subscribe(
       (response: TestType) => {
-        console.log("<-- POST: http://localhost:3004/tests", JSON.stringify(response, null, 2));
+        console.log("<-- POST: http://34.229.180.92:3004/tests", JSON.stringify(response, null, 2));
 
         this.router.navigate(["..", "list"], { relativeTo: this.activatedRoute });
       },
       (errorResponse: Response) => {
-        console.log("<-- POST Error: http://localhost:3004/tests", errorResponse);
+        console.log("<-- POST Error: http://34.229.180.92:3004/tests", errorResponse);
       },
     );
   }

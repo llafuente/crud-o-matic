@@ -5,7 +5,8 @@ import { Generator } from "../";
 import { Schema, SchemaBack, SchemaFront, Field, FieldType, FrontControls, FieldPermissions } from "../Schema";
 
 const generatedPath = join(__dirname, "..", "..", "generated");
-
+//const domain = "http://localhost:3004";
+const domain = "http://34.229.180.92:3004";
 /*
 const fn = async () => Promise.resolve('foo');
 
@@ -102,7 +103,7 @@ test.serial("user schema", t => {
   schema.addField(
     "roleId",
     new Field("Rol", FieldType.String).setRefTo("Role")
-      .setHTTPDropdown("http://localhost:3004/roles", "roles", "id", "label")
+      .setHTTPDropdown(`${domain}/roles`, "roles", "id", "label")
   );
 
   schema.addField(
@@ -110,7 +111,7 @@ test.serial("user schema", t => {
     new Field("Voucher", FieldType.String).setRefTo("Voucher")
       .setPermissions(new FieldPermissions(true, false, true, true))
       .setDefault(null)
-      .setHTTPDropdown("http://localhost:3004/vouchers", "vouchers", "id", "label")
+      .setHTTPDropdown(`${domain}/vouchers`, "vouchers", "id", "label")
   );
 
   schema.addField(
@@ -118,7 +119,7 @@ test.serial("user schema", t => {
     new Field("Test", FieldType.ObjectId).setRefTo("Test")
       .setPermissions(new FieldPermissions(true, false, true, true))
       .setDefault(null)
-      .setHTTPDropdown("http://localhost:3004/tests", "tests", "id", "label")
+      .setHTTPDropdown(`${domain}/tests`, "tests", "id", "label")
   );
 
   schema.addField(
@@ -212,7 +213,7 @@ test.serial("user schema", t => {
       }
 */
 
-  schema.domain = "http://localhost:3004";
+  schema.domain = domain;
   schema.baseApiUrl = "";
 
   t.is(gen.schemas.length, 0);
@@ -252,7 +253,7 @@ test.serial("role schema", t => {
   schema.frontend.createHeader = "Crear Rol";
   schema.frontend.updateHeader = "Editar Rol";
 
-  schema.domain = "http://localhost:3004";
+  schema.domain = domain;
   schema.baseApiUrl = "";
 
   schema.addField("label", new Field("Etiqueta", FieldType.String).setFrontControl(FrontControls.TEXT));
@@ -269,7 +270,7 @@ test.serial("voucher schema", t => {
   schema.frontend.listHeader = "Listado de vouchers";
   schema.frontend.createHeader = "Crear voucher";
   schema.frontend.updateHeader = "Editar voucher";
-  schema.domain = "http://localhost:3004";
+  schema.domain = domain;
   schema.baseApiUrl = "";
 
   schema.addField("label", new Field("Etiqueta", FieldType.String).setFrontControl(FrontControls.TEXT));
@@ -289,7 +290,7 @@ test.serial("voucher schema", t => {
   schema.addField(
     "testId",
     new Field("Test", FieldType.ObjectId).setRefTo("Test")
-      .setHTTPDropdown("http://localhost:3004/tests", "tests", "id", "label")
+      .setHTTPDropdown(`${domain}/tests`, "tests", "id", "label")
   );
 
   gen.addSchema(schema);
@@ -302,7 +303,7 @@ test.serial("test schema", t => {
   schema.frontend.listHeader = "Listado de exámenes";
   schema.frontend.createHeader = "Crear examen";
   schema.frontend.updateHeader = "Editar examen";
-  schema.domain = "http://localhost:3004";
+  schema.domain = domain;
   schema.baseApiUrl = "";
 
   schema.addField(

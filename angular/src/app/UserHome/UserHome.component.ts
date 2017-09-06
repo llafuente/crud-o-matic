@@ -38,13 +38,13 @@ export class UserHomeComponent extends BaseComponent {
 
   loadTest(testId: string) {
     // load test
-    this.http.get("http://localhost:3004/tests/" + testId).subscribe((response: ITest) => {
+    this.http.get("http://34.229.180.92:3004/tests/" + testId).subscribe((response: ITest) => {
       this.test = response;
     });
   }
 
   redeem(bbModal /*TODO type*/) {
-    this.http.post("http://localhost:3004/users/redeem-voucher", { voucherKey: this.voucherKey }).subscribe(
+    this.http.post("http://34.229.180.92:3004/users/redeem-voucher", { voucherKey: this.voucherKey }).subscribe(
       response => {
         console.log("redeem-voucher", response);
         this.user.refresh();

@@ -265,32 +265,32 @@ export class UpdateUserComponent extends BaseComponent {
     //this.id = parseInt(this.getRouteParameter("userId"), 10);
     this.id = this.getRouteParameter("userId");
 
-    console.log("--> GET: http://localhost:3004/users/:userId", this.id);
-    this.http.get("http://localhost:3004/users/:userId".replace(":userId", this.id)).subscribe(
+    console.log("--> GET: http://34.229.180.92:3004/users/:userId", this.id);
+    this.http.get("http://34.229.180.92:3004/users/:userId".replace(":userId", this.id)).subscribe(
       (response: UserType) => {
-        console.log("<-- GET: http://localhost:3004/users/:userId", response);
+        console.log("<-- GET: http://34.229.180.92:3004/users/:userId", response);
 
         this.entity = response;
       },
       (errorResponse: Response) => {
-        console.log("<-- POST Error: http://localhost:3004/users/:userId", errorResponse);
+        console.log("<-- POST Error: http://34.229.180.92:3004/users/:userId", errorResponse);
       },
     );
 
-    this.http.get("http://localhost:3004/roles").subscribe(
+    this.http.get("http://34.229.180.92:3004/roles").subscribe(
       (response: any) => {
-        console.log("<-- GET: http://localhost:3004/roles", JSON.stringify(response, null, 2));
+        console.log("<-- GET: http://34.229.180.92:3004/roles", JSON.stringify(response, null, 2));
 
         this.roles = response;
       },
       (errorResponse: Response) => {
-        console.log("<-- GET Error: http://localhost:3004/roles", errorResponse);
+        console.log("<-- GET Error: http://34.229.180.92:3004/roles", errorResponse);
       },
     );
 
-    this.http.get("http://localhost:3004/vouchers").subscribe(
+    this.http.get("http://34.229.180.92:3004/vouchers").subscribe(
       (response: any) => {
-        console.log("<-- GET: http://localhost:3004/vouchers", JSON.stringify(response, null, 2));
+        console.log("<-- GET: http://34.229.180.92:3004/vouchers", JSON.stringify(response, null, 2));
 
         response.list.unshift({
           id: null,
@@ -300,13 +300,13 @@ export class UpdateUserComponent extends BaseComponent {
         this.vouchers = response;
       },
       (errorResponse: Response) => {
-        console.log("<-- GET Error: http://localhost:3004/vouchers", errorResponse);
+        console.log("<-- GET Error: http://34.229.180.92:3004/vouchers", errorResponse);
       },
     );
 
-    this.http.get("http://localhost:3004/tests").subscribe(
+    this.http.get("http://34.229.180.92:3004/tests").subscribe(
       (response: any) => {
-        console.log("<-- GET: http://localhost:3004/tests", JSON.stringify(response, null, 2));
+        console.log("<-- GET: http://34.229.180.92:3004/tests", JSON.stringify(response, null, 2));
 
         response.list.unshift({
           id: null,
@@ -316,21 +316,21 @@ export class UpdateUserComponent extends BaseComponent {
         this.tests = response;
       },
       (errorResponse: Response) => {
-        console.log("<-- GET Error: http://localhost:3004/tests", errorResponse);
+        console.log("<-- GET Error: http://34.229.180.92:3004/tests", errorResponse);
       },
     );
   }
 
   save() {
-    console.log("<-- PATCH: http://localhost:3004/users/:userId", JSON.stringify(this.entity, null, 2));
-    this.http.patch("http://localhost:3004/users/:userId".replace(":userId", this.id), this.entity).subscribe(
+    console.log("<-- PATCH: http://34.229.180.92:3004/users/:userId", JSON.stringify(this.entity, null, 2));
+    this.http.patch("http://34.229.180.92:3004/users/:userId".replace(":userId", this.id), this.entity).subscribe(
       (response: UserType) => {
-        console.log("<-- PATCH: http://localhost:3004/users/:userId", JSON.stringify(response, null, 2));
+        console.log("<-- PATCH: http://34.229.180.92:3004/users/:userId", JSON.stringify(response, null, 2));
 
         this.router.navigate(["../..", "list"], { relativeTo: this.activatedRoute });
       },
       (errorResponse: Response) => {
-        console.log("<-- PATCH Error: http://localhost:3004/users/:userId", errorResponse);
+        console.log("<-- PATCH Error: http://34.229.180.92:3004/users/:userId", errorResponse);
       },
     );
   }

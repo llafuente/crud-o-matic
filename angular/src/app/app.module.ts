@@ -26,7 +26,7 @@ export const imports = [
         console.log("tokenGetter:", localStorage.getItem("access_token"));
         return localStorage.getItem("access_token");
       },
-      whitelistedDomains: ["localhost:3004"],
+      whitelistedDomains: ["34.229.180.92:3004"],
     },
   }),
 ];
