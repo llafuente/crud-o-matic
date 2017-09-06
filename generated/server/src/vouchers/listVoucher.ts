@@ -1,12 +1,9 @@
 import * as express from "express";
 import { Request } from "../app";
-import { HttpError } from '../HttpError';
 //import { User } from './User';
-import * as mongoose from 'mongoose';
-import { WhereQuery, Order, Operators, Pagination } from '../common';
+import { WhereQuery, Order, Operators, Pagination } from "../common";
 
-import { IVoucher } from '../models/IVoucher';
-import { Voucher, VoucherSchema, IVoucherModel } from '../models/Voucher';
+import { Voucher, VoucherSchema, IVoucherModel } from "../models/Voucher";
 
 const _ = require("lodash");
 
@@ -16,25 +13,25 @@ const _ = require("lodash");
 
 export function createListQuery(
   /*user: User,*/
-  where: { [s: string]: WhereQuery; },
-  sort: { [s: string]: Order; },
+  where: { [s: string]: WhereQuery },
+  sort: { [s: string]: Order },
   limit: number,
   offset: number,
-  populate: string[]
-// TODO ): mongoose.DocumentQuery<IVoucher, mongoose.Document>[] {
+  populate: string[],
+  // TODO ): mongoose.DocumentQuery<IVoucher, mongoose.Document>[] {
 ): any[] {
   if (isNaN(offset)) {
-    throw new Error('offset must be a number');
+    throw new Error("offset must be a number");
   }
 
   if (isNaN(limit)) {
-    throw new Error('limit must be a number');
+    throw new Error("limit must be a number");
   }
 
   let query = Voucher.find({});
   let qCount = Voucher.find({}).count();
 
-/* TODO add restricted to where & sort
+  /* TODO add restricted to where & sort
     if (isPathRestricted(path, 'read', user)) {
       err = new ValidationError(null);
       err.errors.sort = {
@@ -45,7 +42,7 @@ export function createListQuery(
   where = _.map(where, (operator: WhereQuery, path: string) => {
     console.log(operator);
 
-    switch(operator.operator) {
+    switch (operator.operator) {
       case Operators.LIKE:
         query = query.where(path).regex(operator.value);
         qCount = qCount.where(path).regex(operator.value);
@@ -80,9 +77,9 @@ export function createListQuery(
     query.populate(path);
   });
 
-  console.log('where', where);
-  console.log('sort', sort);
-  console.log('limit', limit, 'offset', offset);
+  console.log("where", where);
+  console.log("sort", sort);
+  console.log("limit", limit, "offset", offset);
 
   if (offset) {
     query.skip(offset);
@@ -98,13 +95,11 @@ export function createListQuery(
   return [query, qCount];
 }
 
-
-
 export function listVoucher(req: Request, res: express.Response, next: express.NextFunction) {
-  console.log('usersList', JSON.stringify(req.query));
+  console.log("usersList", JSON.stringify(req.query));
 
-  req.query.limit = req.query.limit ? parseInt(req.query.limit) : 0
-  req.query.offset = req.query.offset ? parseInt(req.query.offset) : 0
+  req.query.limit = req.query.limit ? parseInt(req.query.limit) : 0;
+  req.query.offset = req.query.offset ? parseInt(req.query.offset) : 0;
 
   try {
     const querys = createListQuery(
@@ -112,7 +107,7 @@ export function listVoucher(req: Request, res: express.Response, next: express.N
       req.query.sort,
       req.query.limit,
       req.query.offset,
-      req.query.populate
+      req.query.populate,
     );
 
     querys[0].exec(function(err, mlist: IVoucherModel[]) {
@@ -125,7 +120,7 @@ export function listVoucher(req: Request, res: express.Response, next: express.N
           return next(err2);
         }
 
-        req["vouchers"] = new Pagination<IVoucherModel>(mlist, count, req.query.offset, req.query.limit);
+        req.vouchers = new Pagination<IVoucherModel>(mlist, count, req.query.offset, req.query.limit);
 
         return next();
       });

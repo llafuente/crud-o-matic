@@ -1,68 +1,68 @@
-import * as mongoose from 'mongoose';
-
+import * as mongoose from "mongoose";
 
 export interface IUser {
-  _id: string|any;
+  _id: string | any;
   id?: string;
   createdAt: Date;
   updatedAt: Date;
 
-  userlogin:string;
-name:string;
-surname:string;
-identifier:string;
-email:string;
-group:string;
-password:string;
-salt:string;
-forceResetPassword:boolean;
-roleId:string;
-voucherId:string;
-testId:string;
-testsDoneIds:string[];
-state:string;
-stats:{testId:string,
-questionId:string,
-startAt:Date,
-endAt:Date,
-type:string,
-answers:number[]}[];
+  userlogin: string;
+  name: string;
+  surname: string;
+  identifier: string;
+  email: string;
+  group: string;
+  password: string;
+  salt: string;
+  forceResetPassword: boolean;
+  roleId: string;
+  voucherId: string;
+  testId: string;
+  testsDoneIds: string[];
+  state: string;
+  stats: {
+    testId: string;
+    questionId: string;
+    startAt: Date;
+    endAt: Date;
+    type: string;
+    answers: number[];
+  }[];
 
-  
-    authenticate(password: string);
-  
-};
-
+  authenticate(password: string);
+}
 
 export class UserType implements IUser {
-  _id: string|any = null;
+  _id: string | any = null;
   id?: string = null;
   createdAt: Date = null;
   updatedAt: Date = null;
 
-  userlogin:string;
-name:string;
-surname:string;
-identifier:string;
-email:string;
-group:string;
-password:string;
-salt:string;
-forceResetPassword:boolean;
-roleId:string;
-voucherId:string = null;
-testId:string = null;
-testsDoneIds:string[] = [];
-state:string = "active";
-stats:{testId:string,
-questionId:string,
-startAt:Date,
-endAt:Date,
-type:string,
-answers:number[]}[] = [];
+  userlogin: string;
+  name: string;
+  surname: string;
+  identifier: string;
+  email: string;
+  group: string;
+  password: string;
+  salt: string;
+  forceResetPassword: boolean;
+  roleId: string;
+  voucherId: string = null;
+  testId: string = null;
+  testsDoneIds: string[] = [];
+  state: string = "active";
+  stats: {
+    testId: string;
+    questionId: string;
+    startAt: Date;
+    endAt: Date;
+    type: string;
+    answers: number[];
+  }[] = [];
   constructor() {}
 
-  static fromJSON(obj: IUser|any): UserType {
+  static fromJSON(obj: IUser | any): UserType {
     const r = new UserType();
 
     r.userlogin = obj.userlogin;
@@ -98,7 +98,5 @@ answers:number[]}[] = [];
     return r;
   }
 
-  
-    authenticate(password: string) {}
-  
-};
+  authenticate(password: string) {}
+}

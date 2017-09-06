@@ -1,11 +1,8 @@
 import * as express from "express";
-import { HttpError } from '../HttpError';
-import { IRole } from '../models/IRole';
-import { Role } from '../models/Role';
-import { Schema } from 'mongoose';
+import { Role } from "../models/Role";
+import { Schema } from "mongoose";
 
-
-export function destroy(_id: Schema.Types.ObjectId|string, next) {
+export function destroy(_id: Schema.Types.ObjectId | string, next) {
   Role.findByIdAndRemove(_id, function(err) {
     /* istanbul ignore next */ if (err) {
       return next(err);
@@ -16,7 +13,7 @@ export function destroy(_id: Schema.Types.ObjectId|string, next) {
 }
 
 export function destroyRole(req: express.Request, res: express.Response, next: express.NextFunction) {
-  const id = req.params['roleId'];
+  const id = req.params.roleId;
 
   console.info(`destroy`, id);
 

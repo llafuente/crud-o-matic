@@ -6,14 +6,14 @@ import { updateRole } from "./updateRole";
 import { listRole } from "./listRole";
 import { destroyRole } from "./destroyRole";
 import { csvRole } from "./csvRole";
-import { IRoleModel } from '../models/Role';
-import { Pagination } from '../common';
-import { authorization } from '../auth';
+import { IRoleModel } from "../models/Role";
+import { Pagination } from "../common";
+import { authorization } from "../auth";
 const mongoosemask = require("mongoosemask");
-var multer  = require('multer');
-var upload = multer({
+const multer = require("multer");
+const upload = multer({
   /* dest: 'uploads/' }*/
-  storage: multer.memoryStorage()
+  storage: multer.memoryStorage(),
 });
 
 /**
@@ -36,7 +36,7 @@ export function toJSONList(result: Pagination<IRoleModel>) {
 }
 
 export function toJSON(entity: IRoleModel) {
-  let json = mongoosemask.mask(entity, []);
+  const json = mongoosemask.mask(entity, []);
 
   json.id = json._id;
   delete json._id;
@@ -44,56 +44,36 @@ export function toJSON(entity: IRoleModel) {
   return json;
 }
 
-const routerRole = express.Router()
-.use(authorization(null))
-.post(
-  '/roles/csv',
-  upload.single('file'),
-  csvRole,
-  function (req: Request, res: express.Response, next: express.NextFunction) {
+const routerRole = express
+  .Router()
+  .use(authorization(null))
+  .post("/roles/csv", upload.single("file"), csvRole, function(
+    req: Request,
+    res: express.Response,
+    next: express.NextFunction,
+  ) {
     res.status(204).json();
-  }
-)
-.post(
-  '/roles',
-  cleanBody,
-  createRole,
-  function (req: Request, res: express.Response, next: express.NextFunction) {
-    res.status(201).json(toJSON(req["role"]));
-  }
-)
-.get(
-  '/roles',
-  listRole,
-  function (req: Request, res: express.Response, next: express.NextFunction) {
-    res.status(200).json(toJSONList(req["roles"]));
-  }
-)
-.get(
-  '/roles/:roleId',
-  readRole,
-  function (req: Request, res: express.Response, next: express.NextFunction) {
-    res.status(200).json(toJSON(req["role"]));
-  }
-)
-.patch(
-  '/roles/:roleId',
-  cleanBody,
-  readRole,
-  updateRole,
-  function (req: Request, res: express.Response, next: express.NextFunction) {
-    res.status(200).json(req["role"]);
-  }
-)
-.delete(
-  '/roles/:roleId',
-  destroyRole,
-  function (req: Request, res: express.Response, next: express.NextFunction) {
+  })
+  .post("/roles", cleanBody, createRole, function(req: Request, res: express.Response, next: express.NextFunction) {
+    res.status(201).json(toJSON(req.role));
+  })
+  .get("/roles", listRole, function(req: Request, res: express.Response, next: express.NextFunction) {
+    res.status(200).json(toJSONList(req.roles));
+  })
+  .get("/roles/:roleId", readRole, function(req: Request, res: express.Response, next: express.NextFunction) {
+    res.status(200).json(toJSON(req.role));
+  })
+  .patch("/roles/:roleId", cleanBody, readRole, updateRole, function(
+    req: Request,
+    res: express.Response,
+    next: express.NextFunction,
+  ) {
+    res.status(200).json(req.role);
+  })
+  .delete("/roles/:roleId", destroyRole, function(req: Request, res: express.Response, next: express.NextFunction) {
     res.status(204).send();
-  }
-);
+  });
 
 console.log("express create router routerRole");
 
 export default routerRole;
-

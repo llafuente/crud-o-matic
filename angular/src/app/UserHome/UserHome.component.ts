@@ -12,7 +12,7 @@ import { BaseComponent } from "../../generated/src/Base.component";
   templateUrl: "./UserHome.component.html",
 })
 export class UserHomeComponent extends BaseComponent {
-  voucherKey = "xxx";
+  voucherKey = null;
   test: ITest = null;
   error: any = null;
 

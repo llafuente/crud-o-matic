@@ -1,10 +1,10 @@
-import { Component, Input, OnInit, Injector } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { Http, Response, RequestOptions, Headers } from '@angular/http';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import { BaseComponent } from '../Base.component';
-import { TestType } from '../models/ITest';
+import { Component, Input, OnInit, Injector } from "@angular/core";
+import { Router, ActivatedRoute } from "@angular/router";
+import { Http, Response, RequestOptions, Headers } from "@angular/http";
+import { HttpClient } from "@angular/common/http";
+import { Observable } from "rxjs/Observable";
+import { BaseComponent } from "../Base.component";
+import { TestType } from "../models/ITest";
 
 /**
  */
@@ -19,14 +19,14 @@ import { TestType } from '../models/ITest';
     <form #f="ngForm" novalidate>
     <bb-input-container
   label="Nombre del examén"
-  
+
   class="bordered top-label">
   <input
     bb-child
     type="text"
     id="id-label"
     name="label"
-    
+
     [(ngModel)]="entity.label"
     #label="ngModel"
     />
@@ -37,7 +37,7 @@ import { TestType } from '../models/ITest';
 
 <bb-input-container
   label="Instrucciones"
-  
+
   class="bordered top-label">
   <textarea
     bb-child
@@ -45,7 +45,7 @@ import { TestType } from '../models/ITest';
     id="id-instructions"
     name="instructions"
     [(ngModel)]="entity.instructions"
-    
+
     #instructions="ngModel">
     </textarea>
 
@@ -56,7 +56,7 @@ import { TestType } from '../models/ITest';
 <bb-check
   id="id-randomizeAnwers"
   name="randomizeAnwers"
-  
+
   [(ngModel)]="entity.randomizeAnwers">Aleatorizar respuestas</bb-check>
 
 <h3 class="d-flex">
@@ -82,14 +82,14 @@ import { TestType } from '../models/ITest';
       <!-- child -->
       <bb-input-container
   label="Nombre del bloque"
-  
+
   class="bordered top-label">
   <input
     bb-child
     type="text"
     id="id-name_{{blocksId}}"
     name="name_{{blocksId}}"
-    
+
     [(ngModel)]="entity.blocks[blocksId].name"
     #name="ngModel"
     />
@@ -121,14 +121,14 @@ import { TestType } from '../models/ITest';
       <!-- child -->
       <bb-input-container
   label="Pregunta"
-  
+
   class="bordered top-label">
   <input
     bb-child
     type="text"
     id="id-questionLabel_{{blocksId}}_{{questionsId}}"
     name="questionLabel_{{blocksId}}_{{questionsId}}"
-    
+
     [(ngModel)]="entity.blocks[blocksId].questions[questionsId].questionLabel"
     #questionLabel="ngModel"
     />
@@ -160,14 +160,14 @@ import { TestType } from '../models/ITest';
       <!-- child -->
       <bb-input-container
   label="Respuesta"
-  
+
   class="bordered top-label">
   <input
     bb-child
     type="text"
     id="id-answerLabel_{{blocksId}}_{{questionsId}}_{{answersId}}"
     name="answerLabel_{{blocksId}}_{{questionsId}}_{{answersId}}"
-    
+
     [(ngModel)]="entity.blocks[blocksId].questions[questionsId].answers[answersId].answerLabel"
     #answerLabel="ngModel"
     />
@@ -183,7 +183,7 @@ import { TestType } from '../models/ITest';
 
 <bb-input-container
   label="Índice de la respuesta correcta"
-  
+
   class="bordered top-label">
   <input
     bb-child
@@ -191,7 +191,7 @@ import { TestType } from '../models/ITest';
     step="1"
     id="id-correcAnswerIndex_{{blocksId}}_{{questionsId}}"
     name="correcAnswerIndex_{{blocksId}}_{{questionsId}}"
-    
+
     [(ngModel)]="entity.blocks[blocksId].questions[questionsId].correcAnswerIndex"
     #correcAnswerIndex="ngModel"
     />
@@ -212,7 +212,7 @@ import { TestType } from '../models/ITest';
 
 <bb-input-container
   label="Tiempo máximo (minutos)"
-  
+
   class="bordered top-label">
   <input
     bb-child
@@ -220,7 +220,7 @@ import { TestType } from '../models/ITest';
     step="1"
     id="id-maxTime"
     name="maxTime"
-    
+
     [(ngModel)]="entity.maxTime"
     #maxTime="ngModel"
     />
@@ -244,7 +244,7 @@ import { TestType } from '../models/ITest';
     </div>
   </bb-section-content>
 </bb-section>
-    
+
 `,
 })
 export class UpdateTestComponent extends BaseComponent {
@@ -252,15 +252,7 @@ export class UpdateTestComponent extends BaseComponent {
   id: string;
   entity: TestType = new TestType();
 
-  ;
-
-  constructor(
-    injector: Injector,
-    activatedRoute: ActivatedRoute,
-
-    public http: HttpClient,
-    public router: Router,
-  ) {
+  constructor(injector: Injector, activatedRoute: ActivatedRoute, public http: HttpClient, public router: Router) {
     super(injector, activatedRoute);
   }
   /*
@@ -268,58 +260,54 @@ export class UpdateTestComponent extends BaseComponent {
    */
   ngOnInit(): void {
     // this.loading
-    
+
     //this.id = parseInt(this.getRouteParameter("testId"), 10);
     this.id = this.getRouteParameter("testId");
 
     console.log("--> GET: http://localhost:3004/tests/:testId", this.id);
-    this.http.get("http://localhost:3004/tests/:testId".replace(":testId", this.id))
-    .subscribe((response: TestType) => {
-      console.log("<-- GET: http://localhost:3004/tests/:testId", response);
+    this.http.get("http://localhost:3004/tests/:testId".replace(":testId", this.id)).subscribe(
+      (response: TestType) => {
+        console.log("<-- GET: http://localhost:3004/tests/:testId", response);
 
-      this.entity = response;
-    }, (errorResponse: Response) => {
-      console.log("<-- POST Error: http://localhost:3004/tests/:testId", errorResponse);
-    });
-    
+        this.entity = response;
+      },
+      (errorResponse: Response) => {
+        console.log("<-- POST Error: http://localhost:3004/tests/:testId", errorResponse);
+      },
+    );
   }
 
-    save() {
+  save() {
     console.log("<-- PATCH: http://localhost:3004/tests/:testId", JSON.stringify(this.entity, null, 2));
-    this.http.patch("http://localhost:3004/tests/:testId".replace(":testId", this.id), this.entity)
-    .subscribe((response: TestType) => {
-      console.log("<-- PATCH: http://localhost:3004/tests/:testId", JSON.stringify(response, null, 2));
+    this.http.patch("http://localhost:3004/tests/:testId".replace(":testId", this.id), this.entity).subscribe(
+      (response: TestType) => {
+        console.log("<-- PATCH: http://localhost:3004/tests/:testId", JSON.stringify(response, null, 2));
 
-      this.router.navigate(['../..', 'list'], { relativeTo: this.activatedRoute });
-    }, (errorResponse: Response) => {
-      console.log("<-- PATCH Error: http://localhost:3004/tests/:testId", errorResponse);
-    });
+        this.router.navigate(["../..", "list"], { relativeTo: this.activatedRoute });
+      },
+      (errorResponse: Response) => {
+        console.log("<-- PATCH Error: http://localhost:3004/tests/:testId", errorResponse);
+      },
+    );
   }
 
   splice(model: any[], index: number) {
     model.splice(index, 1);
   }
 
+  pushEntityBlocks(item: any) {
+    this.entity.blocks = this.entity.blocks || [];
+    this.entity.blocks.push(item);
+  }
 
-pushEntityBlocks(item: any, ) {
-  this.entity.blocks = this.entity.blocks || [];
-  this.entity.blocks.push(item);
-}
+  pushEntityBlocksQuestions(item: any, blocksId) {
+    this.entity.blocks[blocksId].questions = this.entity.blocks[blocksId].questions || [];
+    this.entity.blocks[blocksId].questions.push(item);
+  }
 
-
-
-pushEntityBlocksQuestions(item: any, blocksId) {
-  this.entity.blocks[blocksId].questions = this.entity.blocks[blocksId].questions || [];
-  this.entity.blocks[blocksId].questions.push(item);
-}
-
-
-
-pushEntityBlocksQuestionsAnswers(item: any, blocksId, questionsId) {
-  this.entity.blocks[blocksId].questions[questionsId].answers = this.entity.blocks[blocksId].questions[questionsId].answers || [];
-  this.entity.blocks[blocksId].questions[questionsId].answers.push(item);
-}
-
-
-
+  pushEntityBlocksQuestionsAnswers(item: any, blocksId, questionsId) {
+    this.entity.blocks[blocksId].questions[questionsId].answers =
+      this.entity.blocks[blocksId].questions[questionsId].answers || [];
+    this.entity.blocks[blocksId].questions[questionsId].answers.push(item);
+  }
 }

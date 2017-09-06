@@ -1,4 +1,5 @@
 import * as express from "express";
+import * as path from "path";
 import * as bodyParser from "body-parser";
 import { Pagination } from "./common";
 import { HttpError } from "./HttpError";
@@ -71,6 +72,7 @@ app.use(cors({
 }))
 
 //use json form parser middlware
+app.use(express.static(path.join(__dirname, "..", "public")));
 app.use(bodyParser.json());
 
 //use query string parser middlware
@@ -88,7 +90,9 @@ app.post('/auth', function(req: Request, res: express.Response, next: express.Ne
     /* istanbul ignore next */ if (err) {
       return next(err);
     }
-console.log(user);
+
+    //console.log(user);
+
     if (!user || !user.authenticate(req.body.password)) {
       return next(new HttpError(422, 'user not found or invalid pasword'));
     }

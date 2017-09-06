@@ -1,21 +1,19 @@
 import * as express from "express";
 import { Request } from "../app";
-import { HttpError } from '../HttpError';
-import { IVoucher } from '../models/IVoucher';
-import { Voucher } from '../models/Voucher';
-const parse = require('csv-parse/lib/sync');
-
+import { HttpError } from "../HttpError";
+import { Voucher } from "../models/Voucher";
+const parse = require("csv-parse/lib/sync");
 
 export function CSVImport(inputData: string, next) {
-  console.info('create voucher data', inputData);
+  console.info("create voucher data", inputData);
 
   const dataList = parse(inputData, {
     columns: true,
-    comment: '#'
+    comment: "#",
   });
 
   console.log(dataList);
-  dataList.forEach((singleData) => {
+  dataList.forEach(singleData => {
     Voucher.create(singleData, function(err, savedRow) {
       if (err) {
         console.log(err);
@@ -29,10 +27,10 @@ export function CSVImport(inputData: string, next) {
 }
 
 export function csvVoucher(req: Request, res: express.Response, next: express.NextFunction) {
-  console.info('create body', req.body);
+  console.info("create body", req.body);
 
   if (!req.file) {
-    return next(new HttpError(422, 'Excepted an attachment'));
+    return next(new HttpError(422, "Excepted an attachment"));
   }
 
   return CSVImport(req.file.buffer.toString(), function(err, savedRow) {
@@ -40,10 +38,9 @@ export function csvVoucher(req: Request, res: express.Response, next: express.Ne
       return next(err);
     }
 
-    console.info('created@database', savedRow);
+    console.info("created@database", savedRow);
 
-    req["voucher"] = savedRow;
+    req.voucher = savedRow;
     return next();
   });
 }
-

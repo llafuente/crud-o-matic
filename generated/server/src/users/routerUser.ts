@@ -6,14 +6,14 @@ import { updateUser } from "./updateUser";
 import { listUser } from "./listUser";
 import { destroyUser } from "./destroyUser";
 import { csvUser } from "./csvUser";
-import { IUserModel } from '../models/User';
-import { Pagination } from '../common';
-import { authorization } from '../auth';
+import { IUserModel } from "../models/User";
+import { Pagination } from "../common";
+import { authorization } from "../auth";
 const mongoosemask = require("mongoosemask");
-var multer  = require('multer');
-var upload = multer({
+const multer = require("multer");
+const upload = multer({
   /* dest: 'uploads/' }*/
-  storage: multer.memoryStorage()
+  storage: multer.memoryStorage(),
 });
 
 /**
@@ -36,7 +36,7 @@ export function toJSONList(result: Pagination<IUserModel>) {
 }
 
 export function toJSON(entity: IUserModel) {
-  let json = mongoosemask.mask(entity, ["password","salt"]);
+  const json = mongoosemask.mask(entity, ["password", "salt"]);
 
   json.id = json._id;
   delete json._id;
@@ -44,56 +44,36 @@ export function toJSON(entity: IUserModel) {
   return json;
 }
 
-const routerUser = express.Router()
-.use(authorization(null))
-.post(
-  '/users/csv',
-  upload.single('file'),
-  csvUser,
-  function (req: Request, res: express.Response, next: express.NextFunction) {
+const routerUser = express
+  .Router()
+  .use(authorization(null))
+  .post("/users/csv", upload.single("file"), csvUser, function(
+    req: Request,
+    res: express.Response,
+    next: express.NextFunction,
+  ) {
     res.status(204).json();
-  }
-)
-.post(
-  '/users',
-  cleanBody,
-  createUser,
-  function (req: Request, res: express.Response, next: express.NextFunction) {
-    res.status(201).json(toJSON(req["user"]));
-  }
-)
-.get(
-  '/users',
-  listUser,
-  function (req: Request, res: express.Response, next: express.NextFunction) {
-    res.status(200).json(toJSONList(req["users"]));
-  }
-)
-.get(
-  '/users/:userId',
-  readUser,
-  function (req: Request, res: express.Response, next: express.NextFunction) {
-    res.status(200).json(toJSON(req["user"]));
-  }
-)
-.patch(
-  '/users/:userId',
-  cleanBody,
-  readUser,
-  updateUser,
-  function (req: Request, res: express.Response, next: express.NextFunction) {
-    res.status(200).json(req["user"]);
-  }
-)
-.delete(
-  '/users/:userId',
-  destroyUser,
-  function (req: Request, res: express.Response, next: express.NextFunction) {
+  })
+  .post("/users", cleanBody, createUser, function(req: Request, res: express.Response, next: express.NextFunction) {
+    res.status(201).json(toJSON(req.user));
+  })
+  .get("/users", listUser, function(req: Request, res: express.Response, next: express.NextFunction) {
+    res.status(200).json(toJSONList(req.users));
+  })
+  .get("/users/:userId", readUser, function(req: Request, res: express.Response, next: express.NextFunction) {
+    res.status(200).json(toJSON(req.user));
+  })
+  .patch("/users/:userId", cleanBody, readUser, updateUser, function(
+    req: Request,
+    res: express.Response,
+    next: express.NextFunction,
+  ) {
+    res.status(200).json(req.user);
+  })
+  .delete("/users/:userId", destroyUser, function(req: Request, res: express.Response, next: express.NextFunction) {
     res.status(204).send();
-  }
-);
+  });
 
 console.log("express create router routerUser");
 
 export default routerUser;
-
