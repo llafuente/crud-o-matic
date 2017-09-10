@@ -77,10 +77,11 @@ export const customAppRouter = express
     },
   )
   .post(
-    "/users/stats/question-end/:testId/:statsIdx",
+    "/users/stats/question-end/:testId/:statsIdx/:answerIdx",
     (req: Request, res: express.Response, next: express.NextFunction) => {
       //const testId = req.param("testId", null);
       const statsIdx = req.param("statsIdx", null);
+      const answerIdx = req.param("answerIdx", null);
 
       // TODO check testId, questionId
 
@@ -90,6 +91,7 @@ export const customAppRouter = express
       }
 
       stats.endAt = new Date();
+      stats.answers = [answerIdx];
       req.loggedUser.markModified("stats");
 
       console.log("update stats: ", stats);

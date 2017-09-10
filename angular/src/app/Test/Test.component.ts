@@ -137,7 +137,7 @@ export class TestComponent extends BaseComponent {
 
   endQuestion(questionId: number, cb: Function = null) {
     this.http
-      .post(`${this.config.get("domain")}/users/stats/question-end/${this.testId}/${this.stats.id}`, {})
+      .post(`${this.config.get("domain")}/users/stats/question-end/${this.testId}/${this.stats.id}/${this.answers[this.currentQuestion]}`, {})
       .subscribe((response: any) => {
         console.log("endQuestion", response);
         cb && cb();
