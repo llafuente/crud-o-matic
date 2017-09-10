@@ -28,7 +28,7 @@ import { routes } from "./vouchers/routes";
   imports: [CommonModule, FileUploadModule, ...imports],
   declarations: declarations,
   providers: [],
-  exports: _exports,
+  exports: _exports
 })
 export class VouchersModule {
   constructor() {}

@@ -11,6 +11,10 @@ const routes: Routes = [
   },
   {
     path: "login",
+    component: App.UserLoginComponent,
+  },
+  {
+    path: "admin-login",
     component: App.LoginComponent,
   },
   {

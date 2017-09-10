@@ -137,7 +137,9 @@ export class Generator {
 
     this.copy(join(__dirname, "../templates/angular/Root.component.ts"), join(path, "src", "Root.component.ts"));
 
-    this.copy(join(__dirname, "../templates/angular/BaseComponent.ts"), join(path, "src", "Base.component.ts"));
+    this.copy(join(__dirname, "../templates/angular/Base.component.ts"), join(path, "src", "Base.component.ts"));
+
+    this.copy(join(__dirname, "../templates/angular/Config.service.ts"), join(path, "src", "Config.service.ts"));
 
     // src/models
     this.template(

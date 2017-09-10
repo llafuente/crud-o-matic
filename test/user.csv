@@ -1,2 +1,3 @@
-userlogin,name,surname,password,email
-"csv-admin","csv-admin","csv-admin","csv-admin","csv-admin@tecnofor.es"
+userlogin,name,surname,password,email,identifier,roleId
+"csv-admin","csv-admin-name","csv-admin-surname","48938850W","csv-admin@tecnofor.es","48938850W","000000000000000000000001"
+"csv-user","csv-user-name","csv-user-surname","48938850W","csv-user@tecnofor.es","48938850W","000000000000000000000002"

@@ -6,7 +6,7 @@ import { BrowserModule } from "@angular/platform-browser";
 
 import { BB4UIModule } from "../bb4ui";
 import { AppRoutingModule } from "./app.routing";
-import { GenerateddAppModule } from "../generated/src";
+import { GenerateddAppModule, Config } from "../generated/src";
 
 import { JwtModule } from "@auth0/angular-jwt";
 import { components, AppComponent, services } from "./";
@@ -26,7 +26,7 @@ export const imports = [
         console.log("tokenGetter:", localStorage.getItem("access_token"));
         return localStorage.getItem("access_token");
       },
-      whitelistedDomains: ["34.229.180.92:3004"],
+      whitelistedDomains: ["34.229.180.92:3004", "localhost:3004"],
     },
   }),
 ];
@@ -42,4 +42,9 @@ export const _exports = [GenerateddAppModule];
   bootstrap: [AppComponent],
   exports: [_exports],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(config: Config) {
+    //config.set("domain", "http://localhost:3004");
+    config.set("domain", "http://34.229.180.92:3004");
+  }
+}

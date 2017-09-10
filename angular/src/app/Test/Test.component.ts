@@ -10,7 +10,7 @@ import { Router } from "@angular/router";
 
 @Component({
   selector: "test-component",
-  templateUrl: "./Test.component.html",
+  templateUrl: "./Test.component.html"
 })
 export class TestComponent extends BaseComponent {
   answerIndexes = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k"];
@@ -25,6 +25,7 @@ export class TestComponent extends BaseComponent {
   testStats: { id: number } = null;
 
   @ViewChild("timeExpiredModal") timeExpiredModal;
+  @ViewChild("finishExamModal") finishExamModal;
 
   get maxQuestion(): number {
     if (!this.test) return null;
@@ -37,7 +38,7 @@ export class TestComponent extends BaseComponent {
     public activatedRoute: ActivatedRoute,
     public router: Router,
     public http: HttpClient,
-    public user: LoggedUser,
+    public user: LoggedUser
   ) {
     super(injector, activatedRoute);
     this.testId = this.getRouteParameter("testId");
@@ -61,7 +62,7 @@ export class TestComponent extends BaseComponent {
 
   loadTest(testId: string) {
     // load test
-    this.http.get("http://34.229.180.92:3004/tests/" + testId).subscribe((response: ITest) => {
+    this.http.get(`${this.config.get("domain")}/tests/${testId}`).subscribe((response: ITest) => {
       this.test = response;
       //this.remainingTime = this.test.maxTime * 60;
       this.remainingTime = 15;
@@ -69,8 +70,9 @@ export class TestComponent extends BaseComponent {
       this.interval(() => {
         --this.remainingTime;
         if (this.remainingTime == 0) {
+          this.finishExamModal.hide();
           this.timeExpiredModal.show();
-          this.finish(null, true, false);
+          this.finish(false, true, false);
         }
       }, 1000);
     });
@@ -97,20 +99,22 @@ export class TestComponent extends BaseComponent {
     this.startQuestion(this.currentQuestion);
   }
 
-  finish(bbModal: any, confirmed: boolean, exit: boolean = true) {
+  finish(modal: boolean, confirmed: boolean, exit: boolean = true) {
     if (confirmed) {
-      bbModal && bbModal.hide();
+      if (modal) {
+        this.finishExamModal.hide();
+      }
       this.endQuestion(this.currentQuestion, () => {
         this.endTest(exit);
       });
-    } else {
-      bbModal.show();
+    } else if (modal) {
+      this.finishExamModal.show();
     }
   }
 
   startQuestion(questionId: number) {
     this.http
-      .post(`http://34.229.180.92:3004/users/stats/question-start/${this.testId}/${questionId}`, {})
+      .post(`${this.config.get("domain")}/users/stats/question-start/${this.testId}/${questionId}`, {})
       .subscribe((response: any) => {
         console.log("startQuestion", response);
 
@@ -120,7 +124,7 @@ export class TestComponent extends BaseComponent {
 
   endQuestion(questionId: number, cb: Function = null) {
     this.http
-      .post(`http://34.229.180.92:3004/users/stats/question-end/${this.testId}/${this.stats.id}`, {})
+      .post(`${this.config.get("domain")}/users/stats/question-end/${this.testId}/${this.stats.id}`, {})
       .subscribe((response: any) => {
         console.log("endQuestion", response);
         cb && cb();
@@ -128,17 +132,19 @@ export class TestComponent extends BaseComponent {
   }
 
   startTest() {
-    this.http.post(`http://34.229.180.92:3004/users/stats/test-start/${this.testId}`, {}).subscribe((response: any) => {
-      console.log("startQuestion", response);
+    this.http
+      .post(`${this.config.get("domain")}/users/stats/test-start/${this.testId}`, {})
+      .subscribe((response: any) => {
+        console.log("startQuestion", response);
 
-      this.testStats = response;
-    });
+        this.testStats = response;
+      });
   }
 
   endTest(exit: boolean) {
     this.http
-      .post(`http://34.229.180.92:3004/users/stats/test-end/${this.testId}/${this.testStats.id}`, {
-        answers: this.answers,
+      .post(`${this.config.get("domain")}/users/stats/test-end/${this.testId}/${this.testStats.id}`, {
+        answers: this.answers
       })
       .subscribe((response: any) => {
         console.log("startQuestion", response);
@@ -148,7 +154,7 @@ export class TestComponent extends BaseComponent {
             if (exit) {
               this.exit();
             }
-          }),
+          })
         );
       });
   }

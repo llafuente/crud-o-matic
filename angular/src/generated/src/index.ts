@@ -4,6 +4,8 @@ import { FormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
 import { RootComponent } from "./Root.component";
 export * from "./Root.component";
+import { Config } from "./Config.service";
+export * from "./Config.service";
 
 // All modules
 
@@ -32,14 +34,14 @@ export const _exports = [
 
   VouchersModule,
 
-  TestsModule,
+  TestsModule
 ];
 
 @NgModule({
   imports: [BrowserModule, FormsModule, ...imports],
   declarations: [],
-  providers: [],
-  exports: _exports,
+  providers: [Config],
+  exports: _exports
 })
 export class GenerateddAppModule {
   constructor() {}

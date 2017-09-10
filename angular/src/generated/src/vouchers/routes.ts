@@ -19,16 +19,16 @@ export const routes: Routes = [
     children: [
       {
         path: "list",
-        component: ListVoucherComponent,
+        component: ListVoucherComponent
       },
       {
         path: "create",
-        component: CreateVoucherComponent,
+        component: CreateVoucherComponent
       },
       {
         path: "update/:voucherId",
-        component: UpdateVoucherComponent,
-      },
-    ],
-  },
+        component: UpdateVoucherComponent
+      }
+    ]
+  }
 ];

@@ -19,16 +19,16 @@ import { UserType } from "../models/IUser";
     <form #f="ngForm" novalidate>
     <bb-input-container
   label="Userlogin"
-
+  
   class="bordered top-label">
   <input
     bb-child
     type="text"
     id="id-userlogin"
     name="userlogin"
-
+    
     required="required"
-
+    
     [(ngModel)]="entity.userlogin"
     #userlogin="ngModel"
     />
@@ -39,16 +39,16 @@ import { UserType } from "../models/IUser";
 
 <bb-input-container
   label="Nombre"
-
+  
   class="bordered top-label">
   <input
     bb-child
     type="text"
     id="id-name"
     name="name"
-
+    
     required="required"
-
+    
     [(ngModel)]="entity.name"
     #name="ngModel"
     />
@@ -59,16 +59,16 @@ import { UserType } from "../models/IUser";
 
 <bb-input-container
   label="Apellidos"
-
+  
   class="bordered top-label">
   <input
     bb-child
     type="text"
     id="id-surname"
     name="surname"
-
+    
     required="required"
-
+    
     [(ngModel)]="entity.surname"
     #surname="ngModel"
     />
@@ -79,14 +79,14 @@ import { UserType } from "../models/IUser";
 
 <bb-input-container
   label="DNI/Nº Empleado"
-
+  
   class="bordered top-label">
   <input
     bb-child
     type="text"
     id="id-identifier"
     name="identifier"
-
+    
     [(ngModel)]="entity.identifier"
     #identifier="ngModel"
     />
@@ -97,16 +97,16 @@ import { UserType } from "../models/IUser";
 
 <bb-input-container
   label="Email"
-
+  
   class="bordered top-label">
   <input
     bb-child
     type="email" email
     id="id-email"
     name="email"
-
+    
     required="required"
-
+    
     [(ngModel)]="entity.email"
     #email="ngModel" />
 
@@ -116,14 +116,14 @@ import { UserType } from "../models/IUser";
 
 <bb-input-container
   label="Grupo/Empresa"
-
+  
   class="bordered top-label">
   <input
     bb-child
     type="text"
     id="id-group"
     name="group"
-
+    
     [(ngModel)]="entity.group"
     #group="ngModel"
     />
@@ -134,16 +134,16 @@ import { UserType } from "../models/IUser";
 
 <bb-input-container
   label="Password"
-
+  
   class="bordered top-label">
   <input
     bb-child
     type="password"
     id="id-password"
     name="password"
-
+    
     required="required"
-
+    
     [(ngModel)]="entity.password"
     #password="ngModel" />
 
@@ -154,18 +154,18 @@ import { UserType } from "../models/IUser";
 <bb-check
   id="id-forceResetPassword"
   name="forceResetPassword"
-
+  
   [(ngModel)]="entity.forceResetPassword">Forzar resetar contraseña</bb-check>
 
 <bb-input-container
   label="Rol"
-
+  
   class="bordered top-label">
   <select
     bb-child
     id="id-roleId"
     name="roleId"
-
+    
     [(ngModel)]="entity.roleId"
     #roleId="ngModel">
     <option *ngFor="let row of roles?.list" [ngValue]="row.id">{{row.label}}</option>
@@ -177,13 +177,13 @@ import { UserType } from "../models/IUser";
 
 <bb-input-container
   label="Voucher"
-
+  
   class="bordered top-label">
   <select
     bb-child
     id="id-voucherId"
     name="voucherId"
-
+    
     [(ngModel)]="entity.voucherId"
     #voucherId="ngModel">
     <option *ngFor="let row of vouchers?.list" [ngValue]="row.id">{{row.label}}</option>
@@ -195,13 +195,13 @@ import { UserType } from "../models/IUser";
 
 <bb-input-container
   label="Test"
-
+  
   class="bordered top-label">
   <select
     bb-child
     id="id-testId"
     name="testId"
-
+    
     [(ngModel)]="entity.testId"
     #testId="ngModel">
     <option *ngFor="let row of tests?.list" [ngValue]="row.id">{{row.label}}</option>
@@ -211,15 +211,19 @@ import { UserType } from "../models/IUser";
 
 </bb-input-container>
 
+<bb-static label="Tests hechos" class="bordered top-label">
+<pre>{{entity.testsDoneIds | json }}</pre>
+</bb-static>
+
 <bb-input-container
   label="State"
-
+  
   class="bordered top-label">
   <select
     bb-child
     id="id-state"
     name="state"
-
+    
     [(ngModel)]="entity.state"
     #state="ngModel">
     <option *ngFor="let row of stateValues" [ngValue]="row.id">{{row.label}}</option>
@@ -240,8 +244,8 @@ import { UserType } from "../models/IUser";
     </div>
   </bb-section-content>
 </bb-section>
-
-`,
+    
+`
 })
 export class UpdateUserComponent extends BaseComponent {
   loading: false;
@@ -274,7 +278,7 @@ export class UpdateUserComponent extends BaseComponent {
       },
       (errorResponse: Response) => {
         console.log("<-- POST Error: http://34.229.180.92:3004/users/:userId", errorResponse);
-      },
+      }
     );
 
     this.http.get("http://34.229.180.92:3004/roles").subscribe(
@@ -282,10 +286,15 @@ export class UpdateUserComponent extends BaseComponent {
         console.log("<-- GET: http://34.229.180.92:3004/roles", JSON.stringify(response, null, 2));
 
         this.roles = response;
+
+        // TODO this is not safe for nested properties, need a fix :)
+        if (this.entity.roleId === undefined && response.list.length) {
+          this.entity.roleId = response.list[0].id;
+        }
       },
       (errorResponse: Response) => {
         console.log("<-- GET Error: http://34.229.180.92:3004/roles", errorResponse);
-      },
+      }
     );
 
     this.http.get("http://34.229.180.92:3004/vouchers").subscribe(
@@ -294,14 +303,19 @@ export class UpdateUserComponent extends BaseComponent {
 
         response.list.unshift({
           id: null,
-          label: "",
+          label: ""
         });
 
         this.vouchers = response;
+
+        // TODO this is not safe for nested properties, need a fix :)
+        if (this.entity.voucherId === undefined && response.list.length) {
+          this.entity.voucherId = response.list[0].id;
+        }
       },
       (errorResponse: Response) => {
         console.log("<-- GET Error: http://34.229.180.92:3004/vouchers", errorResponse);
-      },
+      }
     );
 
     this.http.get("http://34.229.180.92:3004/tests").subscribe(
@@ -310,14 +324,19 @@ export class UpdateUserComponent extends BaseComponent {
 
         response.list.unshift({
           id: null,
-          label: "",
+          label: ""
         });
 
         this.tests = response;
+
+        // TODO this is not safe for nested properties, need a fix :)
+        if (this.entity.testId === undefined && response.list.length) {
+          this.entity.testId = response.list[0].id;
+        }
       },
       (errorResponse: Response) => {
         console.log("<-- GET Error: http://34.229.180.92:3004/tests", errorResponse);
-      },
+      }
     );
   }
 
@@ -331,7 +350,7 @@ export class UpdateUserComponent extends BaseComponent {
       },
       (errorResponse: Response) => {
         console.log("<-- PATCH Error: http://34.229.180.92:3004/users/:userId", errorResponse);
-      },
+      }
     );
   }
 

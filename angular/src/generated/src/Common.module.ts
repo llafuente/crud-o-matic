@@ -9,7 +9,7 @@ export * from "./Root.component";
 @NgModule({
   imports: [BrowserModule, FormsModule, RouterModule],
   declarations: [RootComponent],
-  exports: [BrowserModule, FormsModule, RouterModule, RootComponent],
+  exports: [BrowserModule, FormsModule, RouterModule, RootComponent]
 })
 export class CommonModule {
   constructor() {}

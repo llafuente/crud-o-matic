@@ -102,7 +102,7 @@ test.serial("user schema", t => {
 
   schema.addField(
     "roleId",
-    new Field("Rol", FieldType.String).setRefTo("Role")
+    new Field("Rol", FieldType.ObjectId).setRefTo("Role")
       .setHTTPDropdown(`${domain}/roles`, "roles", "id", "label")
   );
 
@@ -129,6 +129,7 @@ test.serial("user schema", t => {
     )
     .setRefTo("Test")
     .setPermissions(new FieldPermissions(true, false, true, true))
+    .setFrontControl(FrontControls.JSON)
   );
 
 

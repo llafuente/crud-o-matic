@@ -13,9 +13,9 @@ import * as bodyParser from "body-parser";
 //import * as supertest from "supertest";
 
 const supertest = require("supertest");
-const mongoose = require("mongoose");
+import * as mongoose  from "mongoose";
 const path = require("path");
-mongoose.Promise = require("bluebird");
+(mongoose as any).Promise = require("bluebird");
 mongoose.set('debug', true);
 
 import { app } from "../generated/server/src/app";
@@ -53,16 +53,23 @@ let userRole;
 
 test.serial("create roles with mongoose", async (t) => {
   adminRole = new Role({
+    _id: "000000000000000000000001",
+    //_id: mongoose.Types.ObjectId.createFromHexString('1'),
     label: "Admin"
   });
 
   adminRole = await adminRole.save();
+  t.not(adminRole, undefined);
 
   userRole = new Role({
+    _id: "000000000000000000000002",
+    //_id: mongoose.Types.ObjectId.createFromHexString('000000000000000000000002'),
     label: "User"
   });
 
   userRole = await userRole.save();
+  t.not(userRole, undefined);
+
   t.pass("roles created");
 });
 
@@ -418,10 +425,19 @@ test.cb.serial("create user using CSV", (t) => {
 });
 
 test.serial("check CSV user", async (t) => {
-  let newUser = await User.findOne({
+  let admin = await User.findOne({
     userlogin: "csv-admin"
   }).exec();
 
-  t.not(newUser, null);
-  t.is(newUser.email, "csv-admin@tecnofor.es");
+  t.not(admin, null);
+  t.is(admin.email, "csv-admin@tecnofor.es");
+  t.is(admin.roleId.toString(), "000000000000000000000001");
+
+  let user = await User.findOne({
+    userlogin: "csv-user"
+  }).exec();
+
+  t.not(user, null);
+  t.is(user.email, "csv-user@tecnofor.es");
+  t.is(user.roleId.toString(), "000000000000000000000002");
 });

@@ -1,18 +1,20 @@
 import { OnInit, OnDestroy, Injector } from '@angular/core';
 import { Subscription } from 'rxjs/Rx' ;
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
+import { Config } from './Config.service';
 
 
 export class BaseComponent implements /*OnInit, */OnDestroy {
   timeouts: number[] = [];
   intervals: number[] = [];
   subscriptions: Subscription[] = [];
+  config: Config = null;
 
   constructor(
     public injector: Injector,
     public activatedRoute: ActivatedRoute
   ) {
-    // this.xxx = injector.get(XXX);
+    this.config = injector.get(Config);
   }
 
   handleSubscription(s: Subscription) {

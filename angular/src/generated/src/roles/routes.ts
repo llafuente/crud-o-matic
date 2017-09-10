@@ -19,16 +19,16 @@ export const routes: Routes = [
     children: [
       {
         path: "list",
-        component: ListRoleComponent,
+        component: ListRoleComponent
       },
       {
         path: "create",
-        component: CreateRoleComponent,
+        component: CreateRoleComponent
       },
       {
         path: "update/:roleId",
-        component: UpdateRoleComponent,
-      },
-    ],
-  },
+        component: UpdateRoleComponent
+      }
+    ]
+  }
 ];

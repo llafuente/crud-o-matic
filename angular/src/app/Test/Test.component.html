@@ -37,7 +37,7 @@
     <bb-button
       btn="warning"
       class="ml-auto"
-      (click)="finish(finishExamModal, false)"
+      (click)="finish(true, false)"
       *ngIf="currentQuestion + 1 == maxQuestion"
       [disabled]="!form.valid">Entregar examen</bb-button>
   </div>
@@ -57,7 +57,7 @@
   <bb-section-footer>
     <div class="d-flex">
       <bb-button (click)="finishExamModal.hide()">Volver</bb-button>
-      <bb-button btn="warning" class="ml-auto"(click)="finish(finishExamModal, true)">Entregar examen</bb-button>
+      <bb-button btn="warning" class="ml-auto"(click)="finish(true, true)">Entregar examen</bb-button>
     </div>
   </bb-section-footer>
 </bb-modal>

@@ -1,0 +1,20 @@
+<form #form="ngForm" class="col-6 offset-3">
+  <h1>Iniciar sesión </h1>
+
+  <bb-input-container label="E-mail" class="bordered">
+    <input bb-child name="userlogin" [(ngModel)]="auth.userlogin" />
+  </bb-input-container>
+
+  <bb-input-container label="DNI" class="bordered">
+    <input bb-child name="password" [(ngModel)]="auth.password" />
+  </bb-input-container>
+
+  <div class="d-flex">
+    <bb-button
+      class="ml-auto mr-auto"
+      (click)="login()"
+      [disabled]="!form.valid">Login</bb-button>
+  </div>
+
+
+</form>

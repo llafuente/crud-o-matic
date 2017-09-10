@@ -143,10 +143,11 @@ export class SchemaFront {
 
   getCreateInitialization(): string[] {
     const controls = [];
-    this.parentSchema.forEachFrontEndField((fieldName, field) => {
+    this.parentSchema.forEachFrontEndField((fieldName: string, field: Field) => {
       switch (field.frontControl) {
         case FrontControls.HTTP_DROPDOWN:
           let nullable = "";
+          const ngModel = field.getPath().join(".");
           if (field.defaults === null) {
             nullable = `
   response.list.unshift({
@@ -163,6 +164,11 @@ this.http.get("${field.frontData.srcUrl}")
   ${nullable}
 
   this.${field.frontData.declaration} = response;
+
+  // TODO this is not safe for nested properties, need a fix :)
+  if (this.${ngModel} === undefined && response.list.length) {
+    this.${ngModel} = response.list[0].id;
+  }
 
 }, (errorResponse: Response) => {
   console.log("<-- GET Error: ${field.frontData.srcUrl}", errorResponse);

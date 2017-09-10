@@ -1,3 +1,0 @@
-httpDropdown<%= fieldName %>() {
-
-}

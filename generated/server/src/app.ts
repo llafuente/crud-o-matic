@@ -111,11 +111,11 @@ const secret = "sdkjksf8j2nsk87";
 app
   .post("/auth", function(req: Request, res: express.Response, next: express.NextFunction) {
     console.log(req.body);
-    User.findOne(
-      {
-        userlogin: req.body.userlogin,
-      },
-      function(err, user) {
+    User.findOne({
+      userlogin: req.body.userlogin,
+    })
+      //.populate("roleId")
+      .exec(function(err, user) {
         /* istanbul ignore next */ if (err) {
           return next(err);
         }
@@ -135,8 +135,7 @@ app
             secret,
           ),
         });
-      },
-    );
+      });
   })
   //
   // jwt

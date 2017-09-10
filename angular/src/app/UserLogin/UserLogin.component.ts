@@ -8,10 +8,10 @@ import { Router } from "@angular/router";
 import { LoggedUser } from "../LoggedUser.service";
 
 @Component({
-  selector: "login-component",
-  templateUrl: "./Login.component.html"
+  selector: "userlogin-component",
+  templateUrl: "./UserLogin.component.html"
 })
-export class LoginComponent extends BaseComponent {
+export class UserLoginComponent extends BaseComponent {
   auth: any = {
     userlogin: "admin",
     password: "admin"

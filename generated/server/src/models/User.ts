@@ -46,7 +46,7 @@ export const UserSchema = new mongoose.Schema(
       type: Boolean,
     },
     roleId: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Role",
     },
     voucherId: {

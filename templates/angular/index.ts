@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { RootComponent } from './Root.component';
 export * from './Root.component';
+import { Config } from './Config.service';
+export * from './Config.service';
 
 // All modules
 <% _.each(generator.schemas, (schema) => { %>
@@ -36,6 +38,7 @@ export const _exports = [
     declarations: [
     ],
     providers: [
+      Config
     ],
     exports: _exports
 })

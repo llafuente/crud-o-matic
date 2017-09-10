@@ -86,7 +86,9 @@ app.post('/auth', function(req: Request, res: express.Response, next: express.Ne
   console.log(req.body);
   User.findOne({
     userlogin: req.body.userlogin
-  }, function(err, user) {
+  })
+  //.populate("roleId")
+  .exec(function(err, user) {
     /* istanbul ignore next */ if (err) {
       return next(err);
     }

@@ -19,14 +19,14 @@ import { RoleType } from "../models/IRole";
     <form #f="ngForm" novalidate>
     <bb-input-container
   label="Etiqueta"
-
+  
   class="bordered top-label">
   <input
     bb-child
     type="text"
     id="id-label"
     name="label"
-
+    
     [(ngModel)]="entity.label"
     #label="ngModel"
     />
@@ -42,8 +42,8 @@ import { RoleType } from "../models/IRole";
     </div>
   </bb-section-content>
 </bb-section>
-
-`,
+    
+`
 })
 export class UpdateRoleComponent extends BaseComponent {
   loading: false;
@@ -71,7 +71,7 @@ export class UpdateRoleComponent extends BaseComponent {
       },
       (errorResponse: Response) => {
         console.log("<-- POST Error: http://34.229.180.92:3004/roles/:roleId", errorResponse);
-      },
+      }
     );
   }
 
@@ -85,7 +85,7 @@ export class UpdateRoleComponent extends BaseComponent {
       },
       (errorResponse: Response) => {
         console.log("<-- PATCH Error: http://34.229.180.92:3004/roles/:roleId", errorResponse);
-      },
+      }
     );
   }
 
