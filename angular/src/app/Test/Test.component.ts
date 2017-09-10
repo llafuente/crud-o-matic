@@ -65,9 +65,9 @@ export class TestComponent extends BaseComponent {
 
     ret = h < 10 ? `0${h}` : h;
     ret += ":";
-    ret = m < 10 ? `0${m}` : m;
+    ret += m < 10 ? `0${m}` : m;
     ret += ":";
-    ret = s < 10 ? `0${s}` : s;
+    ret += s < 10 ? `0${s}` : s;
 
     return ret;
   }
