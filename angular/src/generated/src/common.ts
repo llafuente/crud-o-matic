@@ -1,6 +1,6 @@
 export enum Operators {
   LIKE = "LIKE",
-  EQUALS = "EQUALS"
+  EQUALS = "EQUALS",
 }
 
 export class WhereQuery {
@@ -22,5 +22,5 @@ export class Pagination<T> {
 
 export enum Order {
   ASC = 1,
-  DESC = -1
+  DESC = -1,
 }

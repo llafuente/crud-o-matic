@@ -172,19 +172,19 @@ app
 
     console.log("regenerate session: " + req.loggedUser.id.toString());
 
-    return User.findOne({
-      _id: req.loggedUser.id,
-    })
-      .populate("roles")
-      .exec(function(err, dbuser) {
-        if (err || !dbuser) {
-          return next(new HttpError(401, "regenerate session failed"));
-        }
+    return (User.findOne({
+        _id: req.loggedUser.id,
+      })
+        //.populate('roles')
+        .exec(function(err, dbuser) {
+          if (err || !dbuser) {
+            return next(new HttpError(401, "regenerate session failed"));
+          }
 
-        req.loggedUser = dbuser;
-        console.log("user logged: " + JSON.stringify(dbuser.toJSON()));
-        return next();
-      });
+          req.loggedUser = dbuser;
+          console.log("user logged: " + JSON.stringify(dbuser.toJSON()));
+          return next();
+        }) );
   })
   .post("/me", function(req: Request, res: express.Response, next: express.NextFunction) {
     // TODO check token

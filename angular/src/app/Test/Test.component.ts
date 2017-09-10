@@ -10,7 +10,7 @@ import { Router } from "@angular/router";
 
 @Component({
   selector: "test-component",
-  templateUrl: "./Test.component.html"
+  templateUrl: "./Test.component.html",
 })
 export class TestComponent extends BaseComponent {
   answerIndexes = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k"];
@@ -38,7 +38,7 @@ export class TestComponent extends BaseComponent {
     public activatedRoute: ActivatedRoute,
     public router: Router,
     public http: HttpClient,
-    public user: LoggedUser
+    public user: LoggedUser,
   ) {
     super(injector, activatedRoute);
     this.testId = this.getRouteParameter("testId");
@@ -49,30 +49,43 @@ export class TestComponent extends BaseComponent {
   }
 
   countDown() {
-    if (this.remainingTime == 0) {
+    if (this.remainingTime === null) {
+      return "-";
+    }
+
+    if (this.remainingTime <= 0) {
       return "Examen terminado";
     }
+
+    let ret;
 
     const s = this.remainingTime % 60;
     const m = Math.floor(this.remainingTime / 60);
     const h = Math.floor(this.remainingTime / 3600);
 
-    return `${h}:${m}:${s}`;
+    ret = h < 10 ? `0${h}` : h;
+    ret += ":";
+    ret = m < 10 ? `0${m}` : m;
+    ret += ":";
+    ret = s < 10 ? `0${s}` : s;
+
+    return ret;
   }
 
   loadTest(testId: string) {
     // load test
     this.http.get(`${this.config.get("domain")}/tests/${testId}`).subscribe((response: ITest) => {
       this.test = response;
-      //this.remainingTime = this.test.maxTime * 60;
-      this.remainingTime = 15;
+      this.remainingTime = this.test.maxTime * 60;
+      //this.remainingTime = 15;
 
-      this.interval(() => {
+      const interval = this.interval(() => {
         --this.remainingTime;
         if (this.remainingTime == 0) {
           this.finishExamModal.hide();
           this.timeExpiredModal.show();
           this.finish(false, true, false);
+          clearInterval(interval);
         }
       }, 1000);
     });
@@ -144,7 +157,7 @@ export class TestComponent extends BaseComponent {
   endTest(exit: boolean) {
     this.http
       .post(`${this.config.get("domain")}/users/stats/test-end/${this.testId}/${this.testStats.id}`, {
-        answers: this.answers
+        answers: this.answers,
       })
       .subscribe((response: any) => {
         console.log("startQuestion", response);
@@ -154,7 +167,7 @@ export class TestComponent extends BaseComponent {
             if (exit) {
               this.exit();
             }
-          })
+          }),
         );
       });
   }

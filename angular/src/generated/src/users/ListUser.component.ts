@@ -18,45 +18,45 @@ import { FileUploader } from "ng2-file-upload";
     <bb-table>
       <thead>
         <tr>
-          
+
             <th>Userlogin</th>
-          
+
             <th>Nombre</th>
-          
+
             <th>Apellidos</th>
-          
+
             <th>DNI/Nº Empleado</th>
-          
+
             <th>Email</th>
-          
+
             <th>Grupo/Empresa</th>
-          
+
             <th>Rol</th>
-          
+
             <th>State</th>
-          
+
           <th>Actions</th>
         <tr>
       </thead>
       <tbody>
         <tr *ngFor="let entity of entities?.list; let i = index">
-          
+
             <td>{{entity.userlogin}}</td>
-          
+
             <td>{{entity.name}}</td>
-          
+
             <td>{{entity.surname}}</td>
-          
+
             <td>{{entity.identifier}}</td>
-          
+
             <td>{{entity.email}}</td>
-          
+
             <td>{{entity.group}}</td>
-          
+
             <td>{{entity.roleId}}</td>
-          
+
             <td>{{entity.state}}</td>
-          
+
           <td class="actions">
             <a [routerLink]="['..', 'update', entity.id]"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
             <a (click)="destroy(i, entity)"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
@@ -79,7 +79,7 @@ import { FileUploader } from "ng2-file-upload";
   </bb-section-content>
 </bb-section>
 <!-- <pre>entities: {{entities |json}}</pre> -->
-  `
+  `,
 })
 export class ListUserComponent extends BaseComponent {
   loading: boolean = false;
@@ -87,7 +87,7 @@ export class ListUserComponent extends BaseComponent {
 
   uploader: FileUploader = new FileUploader({
     url: "http://34.229.180.92:3004/users/csv",
-    authToken: "Bearer " + localStorage.getItem("access_token") // this is just an easy hack to use it
+    authToken: "Bearer " + localStorage.getItem("access_token"), // this is just an easy hack to use it
   });
 
   constructor(injector: Injector, activatedRoute: ActivatedRoute, public http: HttpClient) {
@@ -102,7 +102,7 @@ export class ListUserComponent extends BaseComponent {
       },
       (errorResponse: Response) => {
         console.log("<-- GET Error: http://34.229.180.92:3004/users", errorResponse.json());
-      }
+      },
     );
   }
   /*

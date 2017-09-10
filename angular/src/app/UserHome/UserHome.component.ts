@@ -11,7 +11,7 @@ import { Router } from "@angular/router";
 
 @Component({
   selector: "user-home-component",
-  templateUrl: "./UserHome.component.html"
+  templateUrl: "./UserHome.component.html",
 })
 export class UserHomeComponent extends BaseComponent {
   voucherKey = null;
@@ -23,7 +23,7 @@ export class UserHomeComponent extends BaseComponent {
     activatedRoute: ActivatedRoute,
     public router: Router,
     public http: HttpClient,
-    public user: LoggedUser
+    public user: LoggedUser,
   ) {
     super(injector, activatedRoute);
     this.handleSubscription(
@@ -31,7 +31,7 @@ export class UserHomeComponent extends BaseComponent {
         if (this.user.me.testId) {
           this.loadTest(this.user.me.testId);
         }
-      })
+      }),
     );
 
     if (this.user.me.testId) {
@@ -53,7 +53,7 @@ export class UserHomeComponent extends BaseComponent {
         this.handleSubscription(
           this.user.onChange.subscribe(() => {
             this.router.navigate(["/test", this.user.me.testId]);
-          })
+          }),
         );
         this.user.refresh();
       },
@@ -61,7 +61,7 @@ export class UserHomeComponent extends BaseComponent {
         console.log("redeem-voucher err", errorResponse);
         this.error = errorResponse;
         bbModal.show();
-      }
+      },
     );
   }
 }

@@ -19,16 +19,16 @@ export const routes: Routes = [
     children: [
       {
         path: "list",
-        component: ListUserComponent
+        component: ListUserComponent,
       },
       {
         path: "create",
-        component: CreateUserComponent
+        component: CreateUserComponent,
       },
       {
         path: "update/:userId",
-        component: UpdateUserComponent
-      }
-    ]
-  }
+        component: UpdateUserComponent,
+      },
+    ],
+  },
 ];

@@ -9,12 +9,12 @@ import { LoggedUser } from "../LoggedUser.service";
 
 @Component({
   selector: "userlogin-component",
-  templateUrl: "./UserLogin.component.html"
+  templateUrl: "./UserLogin.component.html",
 })
 export class UserLoginComponent extends BaseComponent {
   auth: any = {
     userlogin: "admin",
-    password: "admin"
+    password: "admin",
   };
 
   constructor(
@@ -22,7 +22,7 @@ export class UserLoginComponent extends BaseComponent {
     activatedRoute: ActivatedRoute,
     public router: Router,
     public http: Http,
-    public user: LoggedUser
+    public user: LoggedUser,
   ) {
     super(injector, activatedRoute);
   }
@@ -36,10 +36,10 @@ export class UserLoginComponent extends BaseComponent {
         this.handleSubscription(
           this.user.onChange.subscribe(() => {
             this.router.navigate(["/home"]);
-          })
+          }),
         );
       },
-      errorResponse => {}
+      errorResponse => {},
     );
   }
 }

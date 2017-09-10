@@ -143,7 +143,7 @@ app.post('/auth', function(req: Request, res: express.Response, next: express.Ne
   return User.findOne({
     _id: req.loggedUser.id
   })
-  .populate('roles')
+  //.populate('roles')
   .exec(function(err, dbuser) {
     if (err || !dbuser) {
       return next(new HttpError(401, 'regenerate session failed'));
