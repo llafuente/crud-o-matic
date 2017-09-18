@@ -2,14 +2,13 @@ import { FieldPermissions } from "./FieldPermissions";
 import { FieldType } from "./FieldType";
 import { FrontControls } from "./FrontControls";
 import { Schema } from "./Schema";
+import * as url from "url";
 
 export interface IFieldCallback {
-  (fieldName: string, field: Field): void
-};
+  (fieldName: string, field: Field): void;
+}
 
 export class Field {
-  parentField: Field = null;
-  schema: Schema = null;
   name: string = null;
 
   // front
@@ -44,6 +43,9 @@ export class Field {
 
   frontData: any;
 
+  private schema: Schema = null;
+  parentField: Field = null;
+
   constructor(label: string, type: FieldType) {
     this.label = label;
     this.type = type;
@@ -53,6 +55,10 @@ export class Field {
     if (type == FieldType.Array) {
       this.setDefault([]);
     }
+  }
+
+  attach(schema: Schema) {
+    this.schema = schema;
   }
 
   setFrontControl(control: FrontControls, controlHelp: string = ""): Field {
@@ -75,6 +81,11 @@ export class Field {
   setHTTPDropdown(srcUrl: string, declaration: string, srcId: string, srcLabel: string): Field {
     this.frontControl = FrontControls.HTTP_DROPDOWN;
 
+    // is an incomplete URL? use this.domain
+    if (this.frontData.srcUrl != null && url.parse(this.frontData.srcUrl).protocol === null) {
+      this.frontData.srcUrl = "${this.domain}" + this.frontData.srcUrl;
+    }
+
     this.frontData.srcUrl = srcUrl;
     this.frontData.declaration = declaration;
     this.frontData.srcModel = declaration + "?.list"; // safe access
@@ -83,7 +94,7 @@ export class Field {
 
     return this;
   }
-/*
+  /*
   static fromJSON(json: Field): Field {
     if (json.type === undefined) {
       console.error(json);
@@ -133,7 +144,7 @@ export class Field {
 
     return this;
   }
-/*
+  /*
   addProperties(properties: { [s: string]: Field }): Field {
     if (this.type == FieldType.Object && properties) {
       // now cast every property
@@ -247,7 +258,7 @@ export class Field {
         break;
       case FieldType.Object:
         const t = [];
-        for (let i in this.properties) {
+        for (const i in this.properties) {
           t.push(i + ":" + this.properties[i].getTypeScriptType(defaults));
         }
 
@@ -256,7 +267,7 @@ export class Field {
         }
 
         return "{" + t.join(",\n") + "}";
-/*
+      /*
       case FieldType.AutoPrimaryKey:
         return FieldType.Number;
 */
@@ -290,7 +301,7 @@ export class Field {
         d.push(`type: Object`);
 
         const t = [];
-        for (let i in this.properties) {
+        for (const i in this.properties) {
           t.push(i + ":" + this.properties[i].getMongooseType());
         }
 
@@ -358,7 +369,7 @@ export class Field {
 
   getParentFields(): Field[] {
     let t: Field = this;
-    let parentFields = [];
+    const parentFields = [];
     while (t.parentField !== null) {
       parentFields.push(t);
       t = t.parentField;
@@ -372,7 +383,7 @@ export class Field {
     // if it's an object, don't need front type, just get all fields
     if (this.type == FieldType.Object) {
       let t = [];
-      for (let i in this.properties) {
+      for (const i in this.properties) {
         t = t.concat(this.properties[i].getCreateImports());
       }
 
@@ -381,7 +392,7 @@ export class Field {
 
     switch (this.frontControl) {
       case FrontControls.ARRAY:
-        let x = this.items.getCreateImports();
+        const x = this.items.getCreateImports();
         x.push(`import {} from "./.component";`);
         return x;
       default:
@@ -393,12 +404,12 @@ export class Field {
     cb(this.name, this);
 
     if (recursive || this.parentField == null) {
-      switch(this.type) {
+      switch (this.type) {
         case FieldType.Array:
           this.items.each(cb, recursive);
           break;
         case FieldType.Object:
-          for (let fieldName in this.properties) {
+          for (const fieldName in this.properties) {
             this.properties[fieldName].each(cb, recursive);
           }
           break;
@@ -416,8 +427,8 @@ export class Field {
 
   getIndexes(): string[] {
     const parents = this.getParentFields().reverse();
-    let r = [];
-    for (let field of parents) {
+    const r = [];
+    for (const field of parents) {
       if (field.parentField && field.parentField.type === FieldType.Array) {
         r.push(field.parentField.getIndexName());
       }
@@ -425,12 +436,10 @@ export class Field {
     return r;
   }
 
-
   getPathName(): string {
     const parents = this.getParentFields().reverse();
     const r = [];
-    for (let field of parents) {
-
+    for (const field of parents) {
       if (field.name) {
         r.push(field.name[0].toLocaleUpperCase() + field.name.substring(1));
       }
@@ -443,11 +452,11 @@ export class Field {
     const model = [];
 
     const parents = this.getParentFields().reverse();
-    for (let field of parents) {
+    for (const field of parents) {
       if (field.parentField && field.parentField.type === FieldType.Array) {
         let lastModel = model.pop();
-        lastModel += `[${field.parentField.getIndexName()}]`
-        model.push(lastModel)
+        lastModel += `[${field.parentField.getIndexName()}]`;
+        model.push(lastModel);
       }
 
       // this happens for string[] for example

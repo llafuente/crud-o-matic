@@ -8,6 +8,9 @@ export class BaseComponent implements /*OnInit, */ OnDestroy {
   intervals: number[] = [];
   subscriptions: Subscription[] = [];
   config: Config = null;
+  get domain(): string {
+    return this.config.get("domain");
+  }
 
   constructor(public injector: Injector, public activatedRoute: ActivatedRoute) {
     this.config = injector.get(Config);

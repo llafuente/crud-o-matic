@@ -13,7 +13,7 @@ export class ApiAccessPermissions {
     list: PermissionsAllowed,
     create: PermissionsAllowed,
     update: PermissionsAllowed,
-    _delete: PermissionsAllowed
+    _delete: PermissionsAllowed,
   ) {
     this.read = read;
     this.list = list;
@@ -29,7 +29,7 @@ export class ApiAccessPermissions {
         PermissionsAllowed.fromJSON(json.list),
         PermissionsAllowed.fromJSON(json.create),
         PermissionsAllowed.fromJSON(json.update),
-        PermissionsAllowed.fromJSON(json.delete)
+        PermissionsAllowed.fromJSON(json.delete),
       );
     }
 
@@ -38,7 +38,7 @@ export class ApiAccessPermissions {
       new PermissionsAllowed(),
       new PermissionsAllowed(),
       new PermissionsAllowed(),
-      new PermissionsAllowed()
+      new PermissionsAllowed(),
     );
   }
 }

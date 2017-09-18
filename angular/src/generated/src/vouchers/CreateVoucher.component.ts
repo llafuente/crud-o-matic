@@ -162,9 +162,9 @@ export class CreateVoucherComponent extends BaseComponent {
   ngOnInit(): void {
     // this.loading
 
-    this.http.get("http://34.229.180.92:3004/tests").subscribe(
+    this.http.get(`/tests`).subscribe(
       (response: any) => {
-        console.log("<-- GET: http://34.229.180.92:3004/tests", JSON.stringify(response, null, 2));
+        console.log(`<-- GET: /tests`, JSON.stringify(response, null, 2));
 
         this.tests = response;
 
@@ -174,21 +174,21 @@ export class CreateVoucherComponent extends BaseComponent {
         }
       },
       (errorResponse: Response) => {
-        console.log("<-- GET Error: http://34.229.180.92:3004/tests", errorResponse);
+        console.log(`<-- GET Error: /tests`, errorResponse);
       },
     );
   }
 
   save() {
-    console.log("--> POST: http://34.229.180.92:3004/vouchers", JSON.stringify(this.entity, null, 2));
-    this.http.post("http://34.229.180.92:3004/vouchers", this.entity).subscribe(
+    console.log("--> POST: /vouchers", JSON.stringify(this.entity, null, 2));
+    this.http.post(`${this.domain}/vouchers`, this.entity).subscribe(
       (response: VoucherType) => {
-        console.log("<-- POST: http://34.229.180.92:3004/vouchers", JSON.stringify(response, null, 2));
+        console.log("<-- POST: /vouchers", JSON.stringify(response, null, 2));
 
         this.router.navigate(["..", "list"], { relativeTo: this.activatedRoute });
       },
       (errorResponse: Response) => {
-        console.log("<-- POST Error: http://34.229.180.92:3004/vouchers", errorResponse);
+        console.log("<-- POST Error: /vouchers", errorResponse);
       },
     );
   }

@@ -269,21 +269,21 @@ export class UpdateUserComponent extends BaseComponent {
     //this.id = parseInt(this.getRouteParameter("userId"), 10);
     this.id = this.getRouteParameter("userId");
 
-    console.log("--> GET: http://34.229.180.92:3004/users/:userId", this.id);
-    this.http.get("http://34.229.180.92:3004/users/:userId".replace(":userId", this.id)).subscribe(
+    console.log("--> GET: /users/:userId", this.id);
+    this.http.get("/users/:userId".replace(":userId", this.id)).subscribe(
       (response: UserType) => {
-        console.log("<-- GET: http://34.229.180.92:3004/users/:userId", response);
+        console.log("<-- GET: /users/:userId", response);
 
         this.entity = response;
       },
       (errorResponse: Response) => {
-        console.log("<-- POST Error: http://34.229.180.92:3004/users/:userId", errorResponse);
+        console.log("<-- POST Error: /users/:userId", errorResponse);
       },
     );
 
-    this.http.get("http://34.229.180.92:3004/roles").subscribe(
+    this.http.get(`/roles`).subscribe(
       (response: any) => {
-        console.log("<-- GET: http://34.229.180.92:3004/roles", JSON.stringify(response, null, 2));
+        console.log(`<-- GET: /roles`, JSON.stringify(response, null, 2));
 
         this.roles = response;
 
@@ -293,13 +293,13 @@ export class UpdateUserComponent extends BaseComponent {
         }
       },
       (errorResponse: Response) => {
-        console.log("<-- GET Error: http://34.229.180.92:3004/roles", errorResponse);
+        console.log(`<-- GET Error: /roles`, errorResponse);
       },
     );
 
-    this.http.get("http://34.229.180.92:3004/vouchers").subscribe(
+    this.http.get(`/vouchers`).subscribe(
       (response: any) => {
-        console.log("<-- GET: http://34.229.180.92:3004/vouchers", JSON.stringify(response, null, 2));
+        console.log(`<-- GET: /vouchers`, JSON.stringify(response, null, 2));
 
         response.list.unshift({
           id: null,
@@ -314,13 +314,13 @@ export class UpdateUserComponent extends BaseComponent {
         }
       },
       (errorResponse: Response) => {
-        console.log("<-- GET Error: http://34.229.180.92:3004/vouchers", errorResponse);
+        console.log(`<-- GET Error: /vouchers`, errorResponse);
       },
     );
 
-    this.http.get("http://34.229.180.92:3004/tests").subscribe(
+    this.http.get(`/tests`).subscribe(
       (response: any) => {
-        console.log("<-- GET: http://34.229.180.92:3004/tests", JSON.stringify(response, null, 2));
+        console.log(`<-- GET: /tests`, JSON.stringify(response, null, 2));
 
         response.list.unshift({
           id: null,
@@ -335,21 +335,21 @@ export class UpdateUserComponent extends BaseComponent {
         }
       },
       (errorResponse: Response) => {
-        console.log("<-- GET Error: http://34.229.180.92:3004/tests", errorResponse);
+        console.log(`<-- GET Error: /tests`, errorResponse);
       },
     );
   }
 
   save() {
-    console.log("<-- PATCH: http://34.229.180.92:3004/users/:userId", JSON.stringify(this.entity, null, 2));
-    this.http.patch("http://34.229.180.92:3004/users/:userId".replace(":userId", this.id), this.entity).subscribe(
+    console.log("<-- PATCH: /users/:userId", JSON.stringify(this.entity, null, 2));
+    this.http.patch(`${this.domain}/users/:userId`.replace(":userId", this.id), this.entity).subscribe(
       (response: UserType) => {
-        console.log("<-- PATCH: http://34.229.180.92:3004/users/:userId", JSON.stringify(response, null, 2));
+        console.log("<-- PATCH: /users/:userId", JSON.stringify(response, null, 2));
 
         this.router.navigate(["../..", "list"], { relativeTo: this.activatedRoute });
       },
       (errorResponse: Response) => {
-        console.log("<-- PATCH Error: http://34.229.180.92:3004/users/:userId", errorResponse);
+        console.log("<-- PATCH Error: /users/:userId", errorResponse);
       },
     );
   }

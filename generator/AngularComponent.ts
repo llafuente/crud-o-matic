@@ -15,13 +15,9 @@ export class AngularComponent {
   initialization: string = "";
   methods: string = "";
 
-  constructor(
-    public componentName: string,
-    schema: Schema,
-  ) {
+  constructor(public componentName: string, schema: Schema) {
     this.typeName = schema.typeName;
     this.interfaceName = schema.interfaceName;
-
   }
 
   save(destination: string) {

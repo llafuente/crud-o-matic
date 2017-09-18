@@ -74,7 +74,7 @@ export class TestComponent extends BaseComponent {
 
   loadTest(testId: string) {
     // load test
-    this.http.get(`${this.config.get("domain")}/tests/${testId}`).subscribe((response: ITest) => {
+    this.http.get(`${this.domain}/tests/${testId}`).subscribe((response: ITest) => {
       this.test = response;
       this.remainingTime = this.test.maxTime * 60;
       //this.remainingTime = 15;
@@ -127,7 +127,7 @@ export class TestComponent extends BaseComponent {
 
   startQuestion(questionId: number) {
     this.http
-      .post(`${this.config.get("domain")}/users/stats/question-start/${this.testId}/${questionId}`, {})
+      .post(`${this.domain}/users/stats/question-start/${this.testId}/${questionId}`, {})
       .subscribe((response: any) => {
         console.log("startQuestion", response);
 
@@ -137,7 +137,12 @@ export class TestComponent extends BaseComponent {
 
   endQuestion(questionId: number, cb: Function = null) {
     this.http
-      .post(`${this.config.get("domain")}/users/stats/question-end/${this.testId}/${this.stats.id}/${this.answers[this.currentQuestion]}`, {})
+      .post(
+        `${this.domain}/users/stats/question-end/${this.testId}/${this.stats.id}/${this.answers[
+          this.currentQuestion
+        ]}`,
+        {},
+      )
       .subscribe((response: any) => {
         console.log("endQuestion", response);
         cb && cb();
@@ -146,7 +151,7 @@ export class TestComponent extends BaseComponent {
 
   startTest() {
     this.http
-      .post(`${this.config.get("domain")}/users/stats/test-start/${this.testId}`, {})
+      .post(`${this.domain}/users/stats/test-start/${this.testId}`, {})
       .subscribe((response: any) => {
         console.log("startQuestion", response);
 
@@ -156,7 +161,7 @@ export class TestComponent extends BaseComponent {
 
   endTest(exit: boolean) {
     this.http
-      .post(`${this.config.get("domain")}/users/stats/test-end/${this.testId}/${this.testStats.id}`, {
+      .post(`${this.domain}/users/stats/test-end/${this.testId}/${this.testStats.id}`, {
         answers: this.answers,
       })
       .subscribe((response: any) => {

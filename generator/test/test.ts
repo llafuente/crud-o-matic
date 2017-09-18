@@ -5,8 +5,8 @@ import { Generator } from "../";
 import { Schema, SchemaBack, SchemaFront, Field, FieldType, FrontControls, FieldPermissions } from "../Schema";
 
 const generatedPath = join(__dirname, "..", "..", "generated");
-//const domain = "http://localhost:3004";
-const domain = "http://34.229.180.92:3004";
+const domain = "http://localhost:3004";
+//const domain = "http://34.229.180.92:3004";
 /*
 const fn = async () => Promise.resolve('foo');
 
@@ -15,7 +15,7 @@ test(async (t) => {
 });
 */
 
-const gen = new Generator();
+const gen = new Generator(domain, "");
 
 test.serial("user schema", t => {
   const schema: Schema = new Schema("user", gen);
@@ -29,42 +29,30 @@ test.serial("user schema", t => {
       .setFrontControl(FrontControls.TEXT)
       .setUnique(true)
       .setMaxlength(32)
-      .setRequired(true)
+      .setRequired(true),
   );
 
   schema.addField(
     "name",
-    new Field("Nombre", FieldType.String)
-      .setFrontControl(FrontControls.TEXT)
-      .setMaxlength(32)
-      .setRequired(true)
+    new Field("Nombre", FieldType.String).setFrontControl(FrontControls.TEXT).setMaxlength(32).setRequired(true),
   );
 
   schema.addField(
     "surname",
-    new Field("Apellidos", FieldType.String)
-      .setFrontControl(FrontControls.TEXT)
-      .setMaxlength(32)
-      .setRequired(true)
+    new Field("Apellidos", FieldType.String).setFrontControl(FrontControls.TEXT).setMaxlength(32).setRequired(true),
   );
 
   schema.addField(
     "identifier",
-    new Field("DNI/Nº Empleado", FieldType.String)
-      .setFrontControl(FrontControls.TEXT)
-      .setMaxlength(32)
+    new Field("DNI/Nº Empleado", FieldType.String).setFrontControl(FrontControls.TEXT).setMaxlength(32),
   );
 
   schema.addField(
     "email",
-    new Field("Email", FieldType.String).setFrontControl(FrontControls.EMAIL).setMaxlength(255).setRequired(true)
+    new Field("Email", FieldType.String).setFrontControl(FrontControls.EMAIL).setMaxlength(255).setRequired(true),
   );
 
-  schema.addField(
-    "group",
-    new Field("Grupo/Empresa", FieldType.String)
-      .setFrontControl(FrontControls.TEXT)
-  );
+  schema.addField("group", new Field("Grupo/Empresa", FieldType.String).setFrontControl(FrontControls.TEXT));
 
   schema.addField(
     "password",
@@ -75,10 +63,10 @@ test.serial("user schema", t => {
           false, //read
           false, //list
           true, //create
-          true //update
-        )
+          true, //update
+        ),
       )
-      .setRequired(true)
+      .setRequired(true),
   );
 
   schema.addField(
@@ -88,57 +76,58 @@ test.serial("user schema", t => {
         false, //read
         false, //list
         false, //create
-        false //update
-      )
-    )
+        false, //update
+      ),
+    ),
   );
 
   schema.addField(
     "forceResetPassword",
     new Field("Forzar resetar contraseña", FieldType.Boolean)
       .setPermissions(new FieldPermissions(true, false, true, true))
-      .setFrontControl(FrontControls.CHECKBOX)
+      .setFrontControl(FrontControls.CHECKBOX),
   );
 
   schema.addField(
     "roleId",
-    new Field("Rol", FieldType.ObjectId).setRefTo("Role")
-      .setHTTPDropdown(`${domain}/roles`, "roles", "id", "label")
+    new Field("Rol", FieldType.ObjectId).setRefTo("Role").setHTTPDropdown(`/roles`, "roles", "id", "label"),
   );
+
+  t.is(schema.root.properties.roleId.frontData.srcUrl, `/roles`);
 
   schema.addField(
     "voucherId",
-    new Field("Voucher", FieldType.String).setRefTo("Voucher")
+    new Field("Voucher", FieldType.String)
+      .setRefTo("Voucher")
       .setPermissions(new FieldPermissions(true, false, true, true))
       .setDefault(null)
-      .setHTTPDropdown(`${domain}/vouchers`, "vouchers", "id", "label")
+      .setHTTPDropdown(`/vouchers`, "vouchers", "id", "label"),
   );
 
   schema.addField(
     "testId",
-    new Field("Test", FieldType.ObjectId).setRefTo("Test")
+    new Field("Test", FieldType.ObjectId)
+      .setRefTo("Test")
       .setPermissions(new FieldPermissions(true, false, true, true))
       .setDefault(null)
-      .setHTTPDropdown(`${domain}/tests`, "tests", "id", "label")
+      .setHTTPDropdown(`/tests`, "tests", "id", "label"),
   );
 
   schema.addField(
     "testsDoneIds",
-    new Field("Tests hechos", FieldType.Array).setItems(
-      new Field("Tests hechos", FieldType.ObjectId)
-    )
-    .setRefTo("Test")
-    .setPermissions(new FieldPermissions(true, false, true, true))
-    .setFrontControl(FrontControls.JSON)
+    new Field("Tests hechos", FieldType.Array)
+      .setItems(new Field("Tests hechos", FieldType.ObjectId))
+      .setRefTo("Test")
+      .setPermissions(new FieldPermissions(true, false, true, true))
+      .setFrontControl(FrontControls.JSON),
   );
-
 
   schema.addField(
     "state",
     new Field("State", FieldType.String)
       .setFrontControl(FrontControls.ENUM_DROPDOWN)
       .setEnumConstraint(["active", "banned"], ["Active", "Banned"])
-      .setDefault("active")
+      .setDefault("active"),
   );
 
   schema.addField(
@@ -149,41 +138,22 @@ test.serial("user schema", t => {
       .setPermissions(new FieldPermissions(true, false, true, true))
       .setItems(
         new Field("Estadísticas", FieldType.Object)
-          .addProperty(
-            "testId",
-            new Field("Test", FieldType.String)
-          )
-          .addProperty(
-            "questionId",
-            new Field("Pregunta", FieldType.String)
-          )
-          .addProperty(
-            "startAt",
-            new Field("Inicio", FieldType.Date).setFrontControl(FrontControls.DATETIME)
-          )
-          .addProperty(
-            "startAt",
-            new Field("Inicio", FieldType.Date).setFrontControl(FrontControls.DATETIME)
-          )
-          .addProperty(
-            "endAt",
-            new Field("Fin", FieldType.Date).setFrontControl(FrontControls.DATETIME)
-          )
+          .addProperty("testId", new Field("Test", FieldType.String))
+          .addProperty("questionId", new Field("Pregunta", FieldType.String))
+          .addProperty("startAt", new Field("Inicio", FieldType.Date).setFrontControl(FrontControls.DATETIME))
+          .addProperty("startAt", new Field("Inicio", FieldType.Date).setFrontControl(FrontControls.DATETIME))
+          .addProperty("endAt", new Field("Fin", FieldType.Date).setFrontControl(FrontControls.DATETIME))
           // TODO enum
-          .addProperty(
-            "type",
-            new Field("Tipo", FieldType.String).setFrontControl(FrontControls.TEXT)
-          )
+          .addProperty("type", new Field("Tipo", FieldType.String).setFrontControl(FrontControls.TEXT))
           // TODO enum
           .addProperty(
             "answers",
             new Field("Respuestas", FieldType.Array)
-            .setItems(new Field("Respuestas", FieldType.Number))
-            .setFrontControl(FrontControls.TEXT)
-          )
-      )
+              .setItems(new Field("Respuestas", FieldType.Number))
+              .setFrontControl(FrontControls.TEXT),
+          ),
+      ),
   );
-
 
   /*
         "permissions": {
@@ -213,9 +183,6 @@ test.serial("user schema", t => {
         }
       }
 */
-
-  schema.domain = domain;
-  schema.baseApiUrl = "";
 
   t.is(gen.schemas.length, 0);
   gen.addSchema(schema);
@@ -254,9 +221,6 @@ test.serial("role schema", t => {
   schema.frontend.createHeader = "Crear Rol";
   schema.frontend.updateHeader = "Editar Rol";
 
-  schema.domain = domain;
-  schema.baseApiUrl = "";
-
   schema.addField("label", new Field("Etiqueta", FieldType.String).setFrontControl(FrontControls.TEXT));
 
   // TODO add permissions
@@ -271,8 +235,6 @@ test.serial("voucher schema", t => {
   schema.frontend.listHeader = "Listado de vouchers";
   schema.frontend.createHeader = "Crear voucher";
   schema.frontend.updateHeader = "Editar voucher";
-  schema.domain = domain;
-  schema.baseApiUrl = "";
 
   schema.addField("label", new Field("Etiqueta", FieldType.String).setFrontControl(FrontControls.TEXT));
   schema.addField("key", new Field("Código", FieldType.String).setFrontControl(FrontControls.TEXT));
@@ -280,18 +242,16 @@ test.serial("voucher schema", t => {
   schema.addField("endAt", new Field("Fecha de fin", FieldType.Date).setFrontControl(FrontControls.DATE));
   schema.addField(
     "canDownload",
-    new Field("Permitir descargar manuales", FieldType.Boolean).setFrontControl(FrontControls.CHECKBOX)
+    new Field("Permitir descargar manuales", FieldType.Boolean).setFrontControl(FrontControls.CHECKBOX),
   );
   schema.addField("maxUses", new Field("Máximos usos", FieldType.Number).setFrontControl(FrontControls.INTEGER));
-  schema.addField("currentUses",
-    new Field("Usos", FieldType.Number)
-      .setFrontControl(FrontControls.STATIC)
-      .setDefault(0)
+  schema.addField(
+    "currentUses",
+    new Field("Usos", FieldType.Number).setFrontControl(FrontControls.STATIC).setDefault(0),
   );
   schema.addField(
     "testId",
-    new Field("Test", FieldType.ObjectId).setRefTo("Test")
-      .setHTTPDropdown(`${domain}/tests`, "tests", "id", "label")
+    new Field("Test", FieldType.ObjectId).setRefTo("Test").setHTTPDropdown(`/tests`, "tests", "id", "label"),
   );
 
   gen.addSchema(schema);
@@ -304,17 +264,15 @@ test.serial("test schema", t => {
   schema.frontend.listHeader = "Listado de exámenes";
   schema.frontend.createHeader = "Crear examen";
   schema.frontend.updateHeader = "Editar examen";
-  schema.domain = domain;
-  schema.baseApiUrl = "";
 
   schema.addField(
     "label",
-    new Field("Nombre del examén", FieldType.String).setMaxlength(255).setFrontControl(FrontControls.TEXT)
+    new Field("Nombre del examén", FieldType.String).setMaxlength(255).setFrontControl(FrontControls.TEXT),
   );
   schema.addField("instructions", new Field("Instrucciones", FieldType.String).setFrontControl(FrontControls.BIGTEXT));
   schema.addField(
     "randomizeAnwers",
-    new Field("Aleatorizar respuestas", FieldType.Boolean).setFrontControl(FrontControls.CHECKBOX)
+    new Field("Aleatorizar respuestas", FieldType.Boolean).setFrontControl(FrontControls.CHECKBOX),
   );
   schema.addField(
     "blocks",
@@ -324,7 +282,7 @@ test.serial("test schema", t => {
         new Field("Bloque de conocimiento", FieldType.Object)
           .addProperty(
             "name",
-            new Field("Nombre del bloque", FieldType.String).setMaxlength(255).setFrontControl(FrontControls.TEXT)
+            new Field("Nombre del bloque", FieldType.String).setMaxlength(255).setFrontControl(FrontControls.TEXT),
           )
           .addProperty(
             "questions",
@@ -334,39 +292,43 @@ test.serial("test schema", t => {
                 new Field("Pregunta", FieldType.Object)
                   .addProperty(
                     "questionLabel",
-                    new Field("Pregunta", FieldType.String).setFrontControl(FrontControls.TEXT)
+                    new Field("Pregunta", FieldType.String).setFrontControl(FrontControls.TEXT),
                   )
                   .addProperty(
                     "answers",
                     new Field("Respuestas", FieldType.Array)
                       .setFrontControl(FrontControls.ARRAY)
                       .setItems(
-                        new Field("Respuesta", FieldType.Object)
-                        .addProperty("answerLabel", new Field("Respuesta", FieldType.String).setFrontControl(FrontControls.TEXT))
-                      )
+                        new Field("Respuesta", FieldType.Object).addProperty(
+                          "answerLabel",
+                          new Field("Respuesta", FieldType.String).setFrontControl(FrontControls.TEXT),
+                        ),
+                      ),
                   )
                   .addProperty(
                     "correcAnswerIndex",
-                    new Field("Índice de la respuesta correcta", FieldType.Number).setFrontControl(FrontControls.INTEGER)
-                  )
-              )
-          )
-      )
+                    new Field("Índice de la respuesta correcta", FieldType.Number).setFrontControl(
+                      FrontControls.INTEGER,
+                    ),
+                  ),
+              ),
+          ),
+      ),
   );
 
   schema.addField(
     "maxTime",
-    new Field("Tiempo máximo (minutos)", FieldType.Number).setFrontControl(FrontControls.INTEGER)
+    new Field("Tiempo máximo (minutos)", FieldType.Number).setFrontControl(FrontControls.INTEGER),
   );
 
   schema.addField(
     "usersSubscribed",
-    new Field("Usuarios inscritos", FieldType.Number).setFrontControl(FrontControls.STATIC)
+    new Field("Usuarios inscritos", FieldType.Number).setFrontControl(FrontControls.STATIC),
   );
 
   schema.addField(
     "usersDone",
-    new Field("Usuarios que realizaron el examen", FieldType.Number).setFrontControl(FrontControls.STATIC)
+    new Field("Usuarios que realizaron el examen", FieldType.Number).setFrontControl(FrontControls.STATIC),
   );
 
   gen.addSchema(schema);
@@ -377,8 +339,7 @@ test.serial("test schema", t => {
 });
 
 test.serial("santity smoke checks", t => {
-
-  gen.schemas.forEach((schema) => {
+  gen.schemas.forEach(schema => {
     schema.eachField((fieldName, field) => {
       if (field.parentField != null && field.parentField.type != FieldType.Array) {
         t.not(field.name, null);
@@ -394,7 +355,7 @@ test.serial("generation", t => {
   gen.generateAll(
     generatedPath,
     join(generatedPath, "server"),
-    join(__dirname, "..", "..", "angular", "src", "generated")
+    join(__dirname, "..", "..", "angular", "src", "generated"),
   );
 
   t.pass();

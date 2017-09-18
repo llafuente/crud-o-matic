@@ -70,7 +70,7 @@ export class <%= frontend.listComponent %> extends BaseComponent {
   entities: Pagination<<%= typeName %>>;
 
   uploader:FileUploader = new FileUploader({
-    url: <%- JSON.stringify(url('IMPORT', true)) %>,
+    url: `${this.domain}<%- url('IMPORT', true) %>`,
     authToken: "Bearer " + localStorage.getItem("access_token"), // this is just an easy hack to use it
   });
 
@@ -82,14 +82,14 @@ export class <%= frontend.listComponent %> extends BaseComponent {
   ) {
     super(injector, activatedRoute);
 
-    console.log("--> GET: <%= url('LIST', true) %>");
-    this.http.get("<%= url('LIST', true) %>")
+    console.log("--> GET: <%- url('LIST', true) %>");
+    this.http.get(`${this.domain}<%- url('LIST', true) %>`)
     .subscribe((response: Pagination<<%= typeName %>>) => {
-      console.log("<-- GET: <%= url('LIST', true) %>", response);
+      console.log("<-- GET: <%- url('LIST', true) %>", response);
 
       this.entities = Pagination.fromJSON<<%= typeName %>>(<%= typeName %>, response);
     }, (errorResponse: Response) => {
-      console.log("<-- GET Error: <%= url('LIST', true) %>", errorResponse.json());
+      console.log("<-- GET Error: <%- url('LIST', true) %>", errorResponse.json());
     });
   }
   /*
@@ -103,10 +103,10 @@ export class <%= frontend.listComponent %> extends BaseComponent {
     if (this.loading) return;
 
     this.loading = true;
-    console.log("--> DELETE: <%= url('DELETE', true) %>", row);
-    this.http.delete("<%= url('DELETE', true) %>".replace(":<%= entityId %>", "" + row.id))
+    console.log("--> DELETE: <%- url('DELETE', true) %>", row);
+    this.http.delete(`${this.domain}<%- url('DELETE', true) %>`.replace(":<%= entityId %>", "" + row.id))
     .subscribe((response: Response) => {
-      console.log("<-- DELETE: <%= url('DELETE', true) %>", response);
+      console.log("<-- DELETE: <%- url('DELETE', true) %>", response);
       this.entities.list.splice(idx, 1);
       this.loading = false;
     });

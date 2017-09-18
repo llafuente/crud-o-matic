@@ -7,6 +7,6 @@ export enum FieldType {
   Boolean = "Boolean",
   Number = "Number",
   Mixed = "Mixed",
-  ObjectId = "ObjectId"
+  ObjectId = "ObjectId",
   //AutoPrimaryKey = "AutoPrimaryKey",
 }

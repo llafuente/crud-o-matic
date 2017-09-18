@@ -165,21 +165,21 @@ export class UpdateVoucherComponent extends BaseComponent {
     //this.id = parseInt(this.getRouteParameter("voucherId"), 10);
     this.id = this.getRouteParameter("voucherId");
 
-    console.log("--> GET: http://34.229.180.92:3004/vouchers/:voucherId", this.id);
-    this.http.get("http://34.229.180.92:3004/vouchers/:voucherId".replace(":voucherId", this.id)).subscribe(
+    console.log("--> GET: /vouchers/:voucherId", this.id);
+    this.http.get("/vouchers/:voucherId".replace(":voucherId", this.id)).subscribe(
       (response: VoucherType) => {
-        console.log("<-- GET: http://34.229.180.92:3004/vouchers/:voucherId", response);
+        console.log("<-- GET: /vouchers/:voucherId", response);
 
         this.entity = response;
       },
       (errorResponse: Response) => {
-        console.log("<-- POST Error: http://34.229.180.92:3004/vouchers/:voucherId", errorResponse);
+        console.log("<-- POST Error: /vouchers/:voucherId", errorResponse);
       },
     );
 
-    this.http.get("http://34.229.180.92:3004/tests").subscribe(
+    this.http.get(`/tests`).subscribe(
       (response: any) => {
-        console.log("<-- GET: http://34.229.180.92:3004/tests", JSON.stringify(response, null, 2));
+        console.log(`<-- GET: /tests`, JSON.stringify(response, null, 2));
 
         this.tests = response;
 
@@ -189,25 +189,23 @@ export class UpdateVoucherComponent extends BaseComponent {
         }
       },
       (errorResponse: Response) => {
-        console.log("<-- GET Error: http://34.229.180.92:3004/tests", errorResponse);
+        console.log(`<-- GET Error: /tests`, errorResponse);
       },
     );
   }
 
   save() {
-    console.log("<-- PATCH: http://34.229.180.92:3004/vouchers/:voucherId", JSON.stringify(this.entity, null, 2));
-    this.http
-      .patch("http://34.229.180.92:3004/vouchers/:voucherId".replace(":voucherId", this.id), this.entity)
-      .subscribe(
-        (response: VoucherType) => {
-          console.log("<-- PATCH: http://34.229.180.92:3004/vouchers/:voucherId", JSON.stringify(response, null, 2));
+    console.log("<-- PATCH: /vouchers/:voucherId", JSON.stringify(this.entity, null, 2));
+    this.http.patch(`${this.domain}/vouchers/:voucherId`.replace(":voucherId", this.id), this.entity).subscribe(
+      (response: VoucherType) => {
+        console.log("<-- PATCH: /vouchers/:voucherId", JSON.stringify(response, null, 2));
 
-          this.router.navigate(["../..", "list"], { relativeTo: this.activatedRoute });
-        },
-        (errorResponse: Response) => {
-          console.log("<-- PATCH Error: http://34.229.180.92:3004/vouchers/:voucherId", errorResponse);
-        },
-      );
+        this.router.navigate(["../..", "list"], { relativeTo: this.activatedRoute });
+      },
+      (errorResponse: Response) => {
+        console.log("<-- PATCH Error: /vouchers/:voucherId", errorResponse);
+      },
+    );
   }
 
   splice(model: any[], index: number) {

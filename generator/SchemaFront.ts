@@ -8,11 +8,10 @@ import * as path from "path";
 
 const ejs = require("ejs");
 
-const createMethodsHTML = fs.readFileSync(path.join(__dirname, "../templates/angular/src/create.methods.ts"), "utf8")
-const updateMethodsHTML = fs.readFileSync(path.join(__dirname, "../templates/angular/src/update.methods.ts"), "utf8")
+const createMethodsHTML = fs.readFileSync(path.join(__dirname, "../templates/angular/src/create.methods.ts"), "utf8");
+const updateMethodsHTML = fs.readFileSync(path.join(__dirname, "../templates/angular/src/update.methods.ts"), "utf8");
 const createMethods = ejs.compile(createMethodsHTML);
 const updateMethods = ejs.compile(updateMethodsHTML);
-
 
 export class SchemaFront {
   parentSchema: Schema;
@@ -28,7 +27,6 @@ export class SchemaFront {
   createHeader: string;
   updateHeader: string;
 
-
   constructor(json, parentSchema: Schema) {
     this.parentSchema = parentSchema;
 
@@ -41,10 +39,7 @@ export class SchemaFront {
   }
 
   saveCreateComponent(destinationPath: string) {
-    const comp = new AngularComponent(
-      this.createComponent,
-      this.parentSchema
-    );
+    const comp = new AngularComponent(this.createComponent, this.parentSchema);
 
     const decl = this.getCreateDeclarations();
     comp.selector = `create-${this.parentSchema.plural}-component`;
@@ -72,10 +67,7 @@ export class SchemaFront {
   }
 
   saveUpdateComponent(destinationPath: string) {
-    const comp = new AngularComponent(
-      this.updateComponent,
-      this.parentSchema
-    );
+    const comp = new AngularComponent(this.updateComponent, this.parentSchema);
 
     const decl = this.getCreateDeclarations();
     comp.selector = `update-${this.parentSchema.plural}-component`;
@@ -157,9 +149,9 @@ export class SchemaFront {
 `;
           }
           controls.push(`
-this.http.get("${field.frontData.srcUrl}")
+this.http.get(\`${field.frontData.srcUrl}\`)
 .subscribe((response: any) => {
-  console.log("<-- GET: ${field.frontData.srcUrl}", JSON.stringify(response, null, 2));
+  console.log(\`<-- GET: ${field.frontData.srcUrl}\`, JSON.stringify(response, null, 2));
 
   ${nullable}
 
@@ -171,7 +163,7 @@ this.http.get("${field.frontData.srcUrl}")
   }
 
 }, (errorResponse: Response) => {
-  console.log("<-- GET Error: ${field.frontData.srcUrl}", errorResponse);
+  console.log(\`<-- GET Error: ${field.frontData.srcUrl}\`, errorResponse);
 });
 `);
           break;
@@ -183,13 +175,15 @@ this.http.get("${field.frontData.srcUrl}")
   }
 
   getUpdateInitialization(): string[] {
-
-    return [`
+    return [
+      `
     //this.id = parseInt(this.getRouteParameter(${JSON.stringify(this.parentSchema.entityId)}), 10);
     this.id = this.getRouteParameter(${JSON.stringify(this.parentSchema.entityId)});
 
     console.log("--> GET: ${this.parentSchema.url("READ", true)}", this.id);
-    this.http.get(${JSON.stringify(this.parentSchema.url("READ", true))}.replace(${JSON.stringify(":" + this.parentSchema.entityId)}, this.id))
+    this.http.get(${JSON.stringify(this.parentSchema.url("READ", true))}.replace(${JSON.stringify(
+        ":" + this.parentSchema.entityId,
+      )}, this.id))
     .subscribe((response: ${this.parentSchema.typeName}) => {
       console.log("<-- GET: ${this.parentSchema.url("READ", true)}", response);
 
@@ -197,7 +191,8 @@ this.http.get("${field.frontData.srcUrl}")
     }, (errorResponse: Response) => {
       console.log("<-- POST Error: ${this.parentSchema.url("READ", true)}", errorResponse);
     });
-    `].concat(this.getCreateInitialization());
+    `,
+    ].concat(this.getCreateInitialization());
   }
 
   getCreateControlsTS(): string {
@@ -221,8 +216,8 @@ this.http.get("${field.frontData.srcUrl}")
   getFieldControlHTML(fieldName: string, field: Field, indexes: string[] = []): string {
     // if it's an object, don't need front type, just get all fields
     if (field.type == FieldType.Object) {
-      let t = [];
-      for (let i in field.properties) {
+      const t = [];
+      for (const i in field.properties) {
         t.push(this.getFieldControlHTML(i, field.properties[i], indexes));
       }
 
@@ -233,10 +228,10 @@ this.http.get("${field.frontData.srcUrl}")
     const tpl = field.frontControl.toString().toLocaleLowerCase();
 
     const tplCompiled = ejs.compile(
-      fs.readFileSync(path.join(__dirname, "..", "templates", "angular", "controls", `${tpl}.html`), "utf8")
+      fs.readFileSync(path.join(__dirname, "..", "templates", "angular", "controls", `${tpl}.html`), "utf8"),
     );
 
-    let modelName = fieldName;
+    const modelName = fieldName;
     let name = fieldName;
     let id = "id-" + fieldName;
     indexes.forEach(index => {
@@ -285,7 +280,7 @@ this.http.get("${field.frontData.srcUrl}")
       srcUrl: null,
       srcModel: srcModel,
       srcId: srcId,
-      srcLabel: srcLabel
+      srcLabel: srcLabel,
     });
   }
 }

@@ -1,18 +1,12 @@
-import mongoose = require("mongoose");
 import { Generator } from "./Generator";
-import * as fs from "fs";
-import * as path from "path";
 import { FieldType } from "./FieldType";
 export * from "./FieldType";
 import { FrontControls } from "./FrontControls";
 export * from "./FrontControls";
-import { FieldPermissions } from "./FieldPermissions";
 export * from "./FieldPermissions";
 import { Field, IFieldCallback } from "./Field";
 export * from "./Field";
-import { PermissionsAllowed } from "./PermissionsAllowed";
 export * from "./PermissionsAllowed";
-import { ApiAccessPermissions } from "./ApiAccessPermissions";
 export * from "./ApiAccessPermissions";
 import { SchemaFront } from "./SchemaFront";
 export * from "./SchemaFront";
@@ -20,7 +14,6 @@ import { SchemaBack } from "./SchemaBack";
 export * from "./SchemaBack";
 
 const _ = require("lodash");
-const ejs = require("ejs");
 const pluralize = require("pluralize");
 
 export class Schema {
@@ -40,9 +33,6 @@ export class Schema {
   module: string;
   moduleFile: string;
 
-  baseApiUrl: string = "";
-  domain: string = "";
-
   root: Field;
 
   constructor(public singular: string, public generator: Generator) {
@@ -53,7 +43,7 @@ export class Schema {
     this.backend = new SchemaBack({}, this);
     this.frontend = new SchemaFront({}, this);
     this.root = new Field("entity", FieldType.Object);
-    this.root.name = "entity"
+    this.root.name = "entity";
   }
 
   private init() {
@@ -67,7 +57,7 @@ export class Schema {
     this.module = this.plural[0].toLocaleUpperCase() + this.plural.substring(1) + "Module";
     this.moduleFile = this.plural[0].toLocaleUpperCase() + this.plural.substring(1) + ".module";
   }
-/*
+  /*
   static fromJSON(json: any, generator: Generator): Schema {
     if (json.singular === undefined) {
       throw new Error("Schema: singular is required");
@@ -96,6 +86,9 @@ export class Schema {
 */
   addField(fieldName: string, field: Field) {
     this.root.addProperty(fieldName, field);
+    field.each((fname, f) => {
+      f.attach(this);
+    });
   }
 
   forEachBackEndField(cb: IFieldCallback, recursive: boolean = false) {
@@ -139,19 +132,19 @@ export class Schema {
   url(action: string, fullUrl: boolean = false) {
     let domain = "";
     if (fullUrl) {
-      domain = this.domain;
+      domain = this.generator.domain;
     }
 
     switch (action) {
       case "IMPORT":
-        return `${domain}${this.baseApiUrl}/${this.plural}/csv`;
+        return `${this.generator.baseApiUrl}/${this.plural}/csv`;
       case "LIST":
       case "CREATE":
-        return `${domain}${this.baseApiUrl}/${this.plural}`;
+        return `${this.generator.baseApiUrl}/${this.plural}`;
       case "READ":
       case "DELETE":
       case "UPDATE":
-        return `${domain}${this.baseApiUrl}/${this.plural}/:${this.entityId}`;
+        return `${this.generator.baseApiUrl}/${this.plural}/:${this.entityId}`;
     }
 
     throw new Error(`invalid action: ${action}`);

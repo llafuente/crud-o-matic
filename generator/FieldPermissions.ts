@@ -3,7 +3,7 @@ export class FieldPermissions {
     public read: boolean = true,
     public list: boolean = true,
     public create: boolean = true,
-    public update: boolean = true
+    public update: boolean = true,
   ) {}
 
   static fromJSON(json): FieldPermissions {
