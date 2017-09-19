@@ -61,15 +61,15 @@ export class CreateRoleComponent extends BaseComponent {
   }
 
   save() {
-    console.log("--> POST: /roles", JSON.stringify(this.entity, null, 2));
+    console.log("--> POST: ${this.domain}/roles", JSON.stringify(this.entity, null, 2));
     this.http.post(`${this.domain}/roles`, this.entity).subscribe(
       (response: RoleType) => {
-        console.log("<-- POST: /roles", JSON.stringify(response, null, 2));
+        console.log("<-- POST: ${this.domain}/roles", JSON.stringify(response, null, 2));
 
         this.router.navigate(["..", "list"], { relativeTo: this.activatedRoute });
       },
       (errorResponse: Response) => {
-        console.log("<-- POST Error: /roles", errorResponse);
+        console.log("<-- POST Error: ${this.domain}/roles", errorResponse);
       },
     );
   }

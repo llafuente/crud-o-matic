@@ -93,15 +93,15 @@ export class ListVoucherComponent extends BaseComponent {
   constructor(injector: Injector, activatedRoute: ActivatedRoute, public http: HttpClient) {
     super(injector, activatedRoute);
 
-    console.log("--> GET: /vouchers");
+    console.log(`--> GET: ${this.domain}/vouchers`);
     this.http.get(`${this.domain}/vouchers`).subscribe(
       (response: Pagination<VoucherType>) => {
-        console.log("<-- GET: /vouchers", response);
+        console.log("<-- GET: ${this.domain}/vouchers", response);
 
         this.entities = Pagination.fromJSON<VoucherType>(VoucherType, response);
       },
       (errorResponse: Response) => {
-        console.log("<-- GET Error: /vouchers", errorResponse.json());
+        console.log(`<-- GET Error: ${this.domain}/vouchers`, errorResponse.json());
       },
     );
   }
@@ -116,11 +116,11 @@ export class ListVoucherComponent extends BaseComponent {
     if (this.loading) return;
 
     this.loading = true;
-    console.log("--> DELETE: /vouchers/:voucherId", row);
+    console.log(`--> DELETE: ${this.domain}/vouchers/:voucherId`, row);
     this.http
       .delete(`${this.domain}/vouchers/:voucherId`.replace(":voucherId", "" + row.id))
       .subscribe((response: Response) => {
-        console.log("<-- DELETE: /vouchers/:voucherId", response);
+        console.log(`<-- DELETE: ${this.domain}/vouchers/:voucherId`, response);
         this.entities.list.splice(idx, 1);
         this.loading = false;
       });

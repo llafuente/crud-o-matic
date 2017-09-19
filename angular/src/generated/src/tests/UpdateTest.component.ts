@@ -264,29 +264,29 @@ export class UpdateTestComponent extends BaseComponent {
     //this.id = parseInt(this.getRouteParameter("testId"), 10);
     this.id = this.getRouteParameter("testId");
 
-    console.log("--> GET: /tests/:testId", this.id);
-    this.http.get("/tests/:testId".replace(":testId", this.id)).subscribe(
+    console.log(`--> GET: ${this.domain}/tests/:testId`, this.id);
+    this.http.get(`${this.domain}/tests/:testId`.replace(":testId", this.id)).subscribe(
       (response: TestType) => {
-        console.log("<-- GET: /tests/:testId", response);
+        console.log(`<-- GET: ${this.domain}/tests/:testId`, JSON.stringify(response, null, 2));
 
         this.entity = response;
       },
       (errorResponse: Response) => {
-        console.log("<-- POST Error: /tests/:testId", errorResponse);
+        console.log(`<-- POST Error: ${this.domain}/tests/:testId`, errorResponse);
       },
     );
   }
 
   save() {
-    console.log("<-- PATCH: /tests/:testId", JSON.stringify(this.entity, null, 2));
+    console.log(`<-- PATCH: ${this.domain}/tests/:testId`, JSON.stringify(this.entity, null, 2));
     this.http.patch(`${this.domain}/tests/:testId`.replace(":testId", this.id), this.entity).subscribe(
       (response: TestType) => {
-        console.log("<-- PATCH: /tests/:testId", JSON.stringify(response, null, 2));
+        console.log(`<-- PATCH: ${this.domain}/tests/:testId`, JSON.stringify(response, null, 2));
 
         this.router.navigate(["../..", "list"], { relativeTo: this.activatedRoute });
       },
       (errorResponse: Response) => {
-        console.log("<-- PATCH Error: /tests/:testId", errorResponse);
+        console.log("<-- PATCH Error: ${this.domain}/tests/:testId", errorResponse);
       },
     );
   }

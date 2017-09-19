@@ -165,45 +165,49 @@ export class UpdateVoucherComponent extends BaseComponent {
     //this.id = parseInt(this.getRouteParameter("voucherId"), 10);
     this.id = this.getRouteParameter("voucherId");
 
-    console.log("--> GET: /vouchers/:voucherId", this.id);
-    this.http.get("/vouchers/:voucherId".replace(":voucherId", this.id)).subscribe(
+    console.log(`--> GET: ${this.domain}/vouchers/:voucherId`, this.id);
+    this.http.get(`${this.domain}/vouchers/:voucherId`.replace(":voucherId", this.id)).subscribe(
       (response: VoucherType) => {
-        console.log("<-- GET: /vouchers/:voucherId", response);
+        console.log(`<-- GET: ${this.domain}/vouchers/:voucherId`, JSON.stringify(response, null, 2));
 
         this.entity = response;
       },
       (errorResponse: Response) => {
-        console.log("<-- POST Error: /vouchers/:voucherId", errorResponse);
+        console.log(`<-- POST Error: ${this.domain}/vouchers/:voucherId`, errorResponse);
       },
     );
 
-    this.http.get(`/tests`).subscribe(
+    this.http.get(`${this.domain}/tests`).subscribe(
       (response: any) => {
-        console.log(`<-- GET: /tests`, JSON.stringify(response, null, 2));
+        console.log(`<-- GET: ${this.domain}/tests`, JSON.stringify(response, null, 2));
 
         this.tests = response;
 
         // TODO this is not safe for nested properties, need a fix :)
-        if (this.entity.testId === undefined && response.list.length) {
-          this.entity.testId = response.list[0].id;
+        if (this.entity.testId === undefined) {
+          if (response.list.length) {
+            this.entity.testId = response.list[0].id;
+          }
+        } else {
+          // TODO check some are valid, if not nullify
         }
       },
       (errorResponse: Response) => {
-        console.log(`<-- GET Error: /tests`, errorResponse);
+        console.log(`<-- GET Error: ${this.domain}/tests`, errorResponse);
       },
     );
   }
 
   save() {
-    console.log("<-- PATCH: /vouchers/:voucherId", JSON.stringify(this.entity, null, 2));
+    console.log(`<-- PATCH: ${this.domain}/vouchers/:voucherId`, JSON.stringify(this.entity, null, 2));
     this.http.patch(`${this.domain}/vouchers/:voucherId`.replace(":voucherId", this.id), this.entity).subscribe(
       (response: VoucherType) => {
-        console.log("<-- PATCH: /vouchers/:voucherId", JSON.stringify(response, null, 2));
+        console.log(`<-- PATCH: ${this.domain}/vouchers/:voucherId`, JSON.stringify(response, null, 2));
 
         this.router.navigate(["../..", "list"], { relativeTo: this.activatedRoute });
       },
       (errorResponse: Response) => {
-        console.log("<-- PATCH Error: /vouchers/:voucherId", errorResponse);
+        console.log("<-- PATCH Error: ${this.domain}/vouchers/:voucherId", errorResponse);
       },
     );
   }

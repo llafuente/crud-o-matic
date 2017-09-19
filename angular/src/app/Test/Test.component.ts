@@ -138,9 +138,7 @@ export class TestComponent extends BaseComponent {
   endQuestion(questionId: number, cb: Function = null) {
     this.http
       .post(
-        `${this.domain}/users/stats/question-end/${this.testId}/${this.stats.id}/${this.answers[
-          this.currentQuestion
-        ]}`,
+        `${this.domain}/users/stats/question-end/${this.testId}/${this.stats.id}/${this.answers[this.currentQuestion]}`,
         {},
       )
       .subscribe((response: any) => {
@@ -150,13 +148,11 @@ export class TestComponent extends BaseComponent {
   }
 
   startTest() {
-    this.http
-      .post(`${this.domain}/users/stats/test-start/${this.testId}`, {})
-      .subscribe((response: any) => {
-        console.log("startQuestion", response);
+    this.http.post(`${this.domain}/users/stats/test-start/${this.testId}`, {}).subscribe((response: any) => {
+      console.log("startQuestion", response);
 
-        this.testStats = response;
-      });
+      this.testStats = response;
+    });
   }
 
   endTest(exit: boolean) {

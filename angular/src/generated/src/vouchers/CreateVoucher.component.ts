@@ -162,33 +162,37 @@ export class CreateVoucherComponent extends BaseComponent {
   ngOnInit(): void {
     // this.loading
 
-    this.http.get(`/tests`).subscribe(
+    this.http.get(`${this.domain}/tests`).subscribe(
       (response: any) => {
-        console.log(`<-- GET: /tests`, JSON.stringify(response, null, 2));
+        console.log(`<-- GET: ${this.domain}/tests`, JSON.stringify(response, null, 2));
 
         this.tests = response;
 
         // TODO this is not safe for nested properties, need a fix :)
-        if (this.entity.testId === undefined && response.list.length) {
-          this.entity.testId = response.list[0].id;
+        if (this.entity.testId === undefined) {
+          if (response.list.length) {
+            this.entity.testId = response.list[0].id;
+          }
+        } else {
+          // TODO check some are valid, if not nullify
         }
       },
       (errorResponse: Response) => {
-        console.log(`<-- GET Error: /tests`, errorResponse);
+        console.log(`<-- GET Error: ${this.domain}/tests`, errorResponse);
       },
     );
   }
 
   save() {
-    console.log("--> POST: /vouchers", JSON.stringify(this.entity, null, 2));
+    console.log("--> POST: ${this.domain}/vouchers", JSON.stringify(this.entity, null, 2));
     this.http.post(`${this.domain}/vouchers`, this.entity).subscribe(
       (response: VoucherType) => {
-        console.log("<-- POST: /vouchers", JSON.stringify(response, null, 2));
+        console.log("<-- POST: ${this.domain}/vouchers", JSON.stringify(response, null, 2));
 
         this.router.navigate(["..", "list"], { relativeTo: this.activatedRoute });
       },
       (errorResponse: Response) => {
-        console.log("<-- POST Error: /vouchers", errorResponse);
+        console.log("<-- POST Error: ${this.domain}/vouchers", errorResponse);
       },
     );
   }

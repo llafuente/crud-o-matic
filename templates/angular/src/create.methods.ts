@@ -1,6 +1,6 @@
   save() {
     console.log("--> POST: <%- url('CREATE', true) %>", JSON.stringify(this.entity, null, 2));
-    this.http.post(`${this.domain}<%- url('CREATE', true) %>`, this.entity)
+    this.http.post(`<%- url('CREATE', true) %>`, this.entity)
     .subscribe((response: <%= typeName %>) => {
       console.log("<-- POST: <%- url('CREATE', true) %>", JSON.stringify(response, null, 2));
 

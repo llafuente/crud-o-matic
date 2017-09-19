@@ -89,15 +89,15 @@ export class ListTestComponent extends BaseComponent {
   constructor(injector: Injector, activatedRoute: ActivatedRoute, public http: HttpClient) {
     super(injector, activatedRoute);
 
-    console.log("--> GET: /tests");
+    console.log(`--> GET: ${this.domain}/tests`);
     this.http.get(`${this.domain}/tests`).subscribe(
       (response: Pagination<TestType>) => {
-        console.log("<-- GET: /tests", response);
+        console.log("<-- GET: ${this.domain}/tests", response);
 
         this.entities = Pagination.fromJSON<TestType>(TestType, response);
       },
       (errorResponse: Response) => {
-        console.log("<-- GET Error: /tests", errorResponse.json());
+        console.log(`<-- GET Error: ${this.domain}/tests`, errorResponse.json());
       },
     );
   }
@@ -112,9 +112,9 @@ export class ListTestComponent extends BaseComponent {
     if (this.loading) return;
 
     this.loading = true;
-    console.log("--> DELETE: /tests/:testId", row);
+    console.log(`--> DELETE: ${this.domain}/tests/:testId`, row);
     this.http.delete(`${this.domain}/tests/:testId`.replace(":testId", "" + row.id)).subscribe((response: Response) => {
-      console.log("<-- DELETE: /tests/:testId", response);
+      console.log(`<-- DELETE: ${this.domain}/tests/:testId`, response);
       this.entities.list.splice(idx, 1);
       this.loading = false;
     });

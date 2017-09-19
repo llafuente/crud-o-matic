@@ -158,8 +158,12 @@ this.http.get(\`${field.frontData.srcUrl}\`)
   this.${field.frontData.declaration} = response;
 
   // TODO this is not safe for nested properties, need a fix :)
-  if (this.${ngModel} === undefined && response.list.length) {
-    this.${ngModel} = response.list[0].id;
+  if (this.${ngModel} === undefined) {
+    if (response.list.length) {
+      this.${ngModel} = response.list[0].id;
+    }
+  } else {
+    // TODO check some are valid, if not nullify
   }
 
 }, (errorResponse: Response) => {
@@ -180,16 +184,16 @@ this.http.get(\`${field.frontData.srcUrl}\`)
     //this.id = parseInt(this.getRouteParameter(${JSON.stringify(this.parentSchema.entityId)}), 10);
     this.id = this.getRouteParameter(${JSON.stringify(this.parentSchema.entityId)});
 
-    console.log("--> GET: ${this.parentSchema.url("READ", true)}", this.id);
-    this.http.get(${JSON.stringify(this.parentSchema.url("READ", true))}.replace(${JSON.stringify(
+    console.log(\`--> GET: ${this.parentSchema.url("READ", true)}\`, this.id);
+    this.http.get(\`${this.parentSchema.url("READ", true)}\`.replace(${JSON.stringify(
         ":" + this.parentSchema.entityId,
       )}, this.id))
     .subscribe((response: ${this.parentSchema.typeName}) => {
-      console.log("<-- GET: ${this.parentSchema.url("READ", true)}", response);
+      console.log(\`<-- GET: ${this.parentSchema.url("READ", true)}\`, JSON.stringify(response, null, 2));
 
       this.entity = response;
     }, (errorResponse: Response) => {
-      console.log("<-- POST Error: ${this.parentSchema.url("READ", true)}", errorResponse);
+      console.log(\`<-- POST Error: ${this.parentSchema.url("READ", true)}\`, errorResponse);
     });
     `,
     ].concat(this.getCreateInitialization());

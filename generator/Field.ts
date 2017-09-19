@@ -81,12 +81,13 @@ export class Field {
   setHTTPDropdown(srcUrl: string, declaration: string, srcId: string, srcLabel: string): Field {
     this.frontControl = FrontControls.HTTP_DROPDOWN;
 
+
+    this.frontData.srcUrl = srcUrl;
     // is an incomplete URL? use this.domain
-    if (this.frontData.srcUrl != null && url.parse(this.frontData.srcUrl).protocol === null) {
+    if (url.parse(this.frontData.srcUrl).protocol === null) {
       this.frontData.srcUrl = "${this.domain}" + this.frontData.srcUrl;
     }
 
-    this.frontData.srcUrl = srcUrl;
     this.frontData.declaration = declaration;
     this.frontData.srcModel = declaration + "?.list"; // safe access
     this.frontData.srcId = srcId;

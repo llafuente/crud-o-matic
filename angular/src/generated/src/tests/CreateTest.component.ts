@@ -263,15 +263,15 @@ export class CreateTestComponent extends BaseComponent {
   }
 
   save() {
-    console.log("--> POST: /tests", JSON.stringify(this.entity, null, 2));
+    console.log("--> POST: ${this.domain}/tests", JSON.stringify(this.entity, null, 2));
     this.http.post(`${this.domain}/tests`, this.entity).subscribe(
       (response: TestType) => {
-        console.log("<-- POST: /tests", JSON.stringify(response, null, 2));
+        console.log("<-- POST: ${this.domain}/tests", JSON.stringify(response, null, 2));
 
         this.router.navigate(["..", "list"], { relativeTo: this.activatedRoute });
       },
       (errorResponse: Response) => {
-        console.log("<-- POST Error: /tests", errorResponse);
+        console.log("<-- POST Error: ${this.domain}/tests", errorResponse);
       },
     );
   }

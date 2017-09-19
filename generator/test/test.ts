@@ -93,7 +93,7 @@ test.serial("user schema", t => {
     new Field("Rol", FieldType.ObjectId).setRefTo("Role").setHTTPDropdown(`/roles`, "roles", "id", "label"),
   );
 
-  t.is(schema.root.properties.roleId.frontData.srcUrl, `/roles`);
+  t.is(schema.root.properties.roleId.frontData.srcUrl, "${this.domain}/roles");
 
   schema.addField(
     "voucherId",

@@ -62,29 +62,29 @@ export class UpdateRoleComponent extends BaseComponent {
     //this.id = parseInt(this.getRouteParameter("roleId"), 10);
     this.id = this.getRouteParameter("roleId");
 
-    console.log("--> GET: /roles/:roleId", this.id);
-    this.http.get("/roles/:roleId".replace(":roleId", this.id)).subscribe(
+    console.log(`--> GET: ${this.domain}/roles/:roleId`, this.id);
+    this.http.get(`${this.domain}/roles/:roleId`.replace(":roleId", this.id)).subscribe(
       (response: RoleType) => {
-        console.log("<-- GET: /roles/:roleId", response);
+        console.log(`<-- GET: ${this.domain}/roles/:roleId`, JSON.stringify(response, null, 2));
 
         this.entity = response;
       },
       (errorResponse: Response) => {
-        console.log("<-- POST Error: /roles/:roleId", errorResponse);
+        console.log(`<-- POST Error: ${this.domain}/roles/:roleId`, errorResponse);
       },
     );
   }
 
   save() {
-    console.log("<-- PATCH: /roles/:roleId", JSON.stringify(this.entity, null, 2));
+    console.log(`<-- PATCH: ${this.domain}/roles/:roleId`, JSON.stringify(this.entity, null, 2));
     this.http.patch(`${this.domain}/roles/:roleId`.replace(":roleId", this.id), this.entity).subscribe(
       (response: RoleType) => {
-        console.log("<-- PATCH: /roles/:roleId", JSON.stringify(response, null, 2));
+        console.log(`<-- PATCH: ${this.domain}/roles/:roleId`, JSON.stringify(response, null, 2));
 
         this.router.navigate(["../..", "list"], { relativeTo: this.activatedRoute });
       },
       (errorResponse: Response) => {
-        console.log("<-- PATCH Error: /roles/:roleId", errorResponse);
+        console.log("<-- PATCH Error: ${this.domain}/roles/:roleId", errorResponse);
       },
     );
   }

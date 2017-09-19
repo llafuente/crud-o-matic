@@ -65,15 +65,15 @@ export class ListRoleComponent extends BaseComponent {
   constructor(injector: Injector, activatedRoute: ActivatedRoute, public http: HttpClient) {
     super(injector, activatedRoute);
 
-    console.log("--> GET: /roles");
+    console.log(`--> GET: ${this.domain}/roles`);
     this.http.get(`${this.domain}/roles`).subscribe(
       (response: Pagination<RoleType>) => {
-        console.log("<-- GET: /roles", response);
+        console.log("<-- GET: ${this.domain}/roles", response);
 
         this.entities = Pagination.fromJSON<RoleType>(RoleType, response);
       },
       (errorResponse: Response) => {
-        console.log("<-- GET Error: /roles", errorResponse.json());
+        console.log(`<-- GET Error: ${this.domain}/roles`, errorResponse.json());
       },
     );
   }
@@ -88,9 +88,9 @@ export class ListRoleComponent extends BaseComponent {
     if (this.loading) return;
 
     this.loading = true;
-    console.log("--> DELETE: /roles/:roleId", row);
+    console.log(`--> DELETE: ${this.domain}/roles/:roleId`, row);
     this.http.delete(`${this.domain}/roles/:roleId`.replace(":roleId", "" + row.id)).subscribe((response: Response) => {
-      console.log("<-- DELETE: /roles/:roleId", response);
+      console.log(`<-- DELETE: ${this.domain}/roles/:roleId`, response);
       this.entities.list.splice(idx, 1);
       this.loading = false;
     });

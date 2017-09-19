@@ -132,19 +132,19 @@ export class Schema {
   url(action: string, fullUrl: boolean = false) {
     let domain = "";
     if (fullUrl) {
-      domain = this.generator.domain;
+      domain = "\${this.domain}";
     }
 
     switch (action) {
       case "IMPORT":
-        return `${this.generator.baseApiUrl}/${this.plural}/csv`;
+        return `${domain}${this.generator.baseApiUrl}/${this.plural}/csv`;
       case "LIST":
       case "CREATE":
-        return `${this.generator.baseApiUrl}/${this.plural}`;
+        return `${domain}${this.generator.baseApiUrl}/${this.plural}`;
       case "READ":
       case "DELETE":
       case "UPDATE":
-        return `${this.generator.baseApiUrl}/${this.plural}/:${this.entityId}`;
+        return `${domain}${this.generator.baseApiUrl}/${this.plural}/:${this.entityId}`;
     }
 
     throw new Error(`invalid action: ${action}`);
