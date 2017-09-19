@@ -87,4 +87,41 @@ export class BaseComponent implements /*OnInit, */OnDestroy {
     this.intervals.push(t);
     return t;
   }
+  
+  errGrowl(str: string, timeout: number = 10000) {
+    const toastOptions:ToastOptions = {
+      title: str,
+      showClose: true,
+      timeout: timeout,
+      theme: 'bootstrap',
+      onAdd: (toast: ToastData) => {
+        console.log('Toast ' + toast.id + ' has been added!', str);
+      },
+      onRemove: function(toast: ToastData) {
+        console.log('Toast ' + toast.id + ' has been removed!', str);
+      }
+    };
+
+    // Add see all possible types in one shot
+    this.toastyService.info(toastOptions);
+  }
+
+  growl(str: string, timeout: number = 5000) {
+    const toastOptions:ToastOptions = {
+      title: str,
+      //msg: "Good new, everything is working OK!",
+      showClose: true,
+      timeout: timeout,
+      theme: 'bootstrap',
+      onAdd: (toast: ToastData) => {
+        console.log('Toast ' + toast.id + ' has been added!', str);
+      },
+      onRemove: function(toast: ToastData) {
+        console.log('Toast ' + toast.id + ' has been removed!', str);
+      }
+    };
+
+    // Add see all possible types in one shot
+    this.toastyService.info(toastOptions);
+  }
 }
