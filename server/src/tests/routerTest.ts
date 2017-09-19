@@ -10,8 +10,8 @@ import { ITestModel } from "../models/Test";
 import { Pagination } from "../common";
 import { authorization } from "../auth";
 const mongoosemask = require("mongoosemask");
-const multer = require("multer");
-const upload = multer({
+let multer = require("multer");
+let upload = multer({
   /* dest: 'uploads/' }*/
   storage: multer.memoryStorage(),
 });

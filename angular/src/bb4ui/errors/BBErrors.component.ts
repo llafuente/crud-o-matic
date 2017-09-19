@@ -8,12 +8,12 @@ import { BBErrorMessages } from "./BBErrorMessages.service";
   selector: "bb-errors",
   template: `
 <div class="alert alert-danger" *ngIf="!model.valid && (model.dirty || model.touched)">
-  <div *ngIf="model?.errors?.required" class="form-control-feedback">{{messages.required}}</div>
-  <div *ngIf="model?.errors?.minlength" class="form-control-feedback">{{messages.minlength}}</div>
-  <div *ngIf="model?.errors?.maxlength" class="form-control-feedback">{{messages.maxlength}}</div>
-  <div *ngIf="model?.errors?.email" class="form-control-feedback">{{messages.email}}</div>
-  <div *ngIf="model?.errors?.url" class="form-control-feedback">{{messages.url}}</div>
-  <div *ngIf="model?.errors?.pattern" class="form-control-feedback">{{pattern || messages.pattern}}</div>
+  <div *ngIf="model?.errors?.required" class="form-control-feedback">{{ messages.required }}</div>
+  <div *ngIf="model?.errors?.minlength" class="form-control-feedback">{{ messages.minlength }}</div>
+  <div *ngIf="model?.errors?.maxlength" class="form-control-feedback">{{ messages.maxlength }}</div>
+  <div *ngIf="model?.errors?.email" class="form-control-feedback">{{ messages.email }}</div>
+  <div *ngIf="model?.errors?.url" class="form-control-feedback">{{ messages.url }}</div>
+  <div *ngIf="model?.errors?.pattern" class="form-control-feedback">{{ pattern || messages.pattern }}</div>
 </div>
   `,
 })

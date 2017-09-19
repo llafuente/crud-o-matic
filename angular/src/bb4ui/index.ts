@@ -1,9 +1,9 @@
 import { CommonModule } from "@angular/common";
 import { ModuleWithProviders, NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
+import { DatepickerModule } from "ngx-bootstrap/datepicker";
 import { ModalModule } from "ngx-bootstrap/modal";
 import { TabsModule } from "ngx-bootstrap/tabs";
-import { DatepickerModule } from "ngx-bootstrap/datepicker";
 import { TimepickerModule } from "ngx-bootstrap/timepicker";
 /*
 import { BBInputComponent } from './inputs/BBInput.component';
@@ -128,7 +128,10 @@ export * from "./modal/BBModalExample.component";
 
 // examples
 
-import { BBSourceDirective, BBSourceExampleComponent } from "./examples/BBSourceExample.component";
+import {
+  BBSourceDirective,
+  BBSourceExampleComponent,
+} from "./examples/BBSourceExample.component";
 export * from "./examples/BBSourceExample.component";
 
 import { BBFormsExampleComponent } from "./examples/BBFormsExample.component";
@@ -205,7 +208,13 @@ export const declarations = [
   declarations,
   imports,
   providers: [BBErrorMessages],
-  exports: [...declarations, TabsModule, ModalModule, DatepickerModule, TimepickerModule],
+  exports: [
+    ...declarations,
+    TabsModule,
+    ModalModule,
+    DatepickerModule,
+    TimepickerModule,
+  ],
 })
 export class BB4UIModule {
   static forRoot(): ModuleWithProviders {

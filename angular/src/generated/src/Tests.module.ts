@@ -1,6 +1,6 @@
 import { APP_INITIALIZER, NgModule } from "@angular/core";
-import { BrowserModule } from "@angular/platform-browser";
 import { FormsModule } from "@angular/forms";
+import { BrowserModule } from "@angular/platform-browser";
 import { RouterModule } from "@angular/router";
 import { FileUploadModule } from "ng2-file-upload";
 import { CommonModule } from "./Common.module";
@@ -13,21 +13,29 @@ export * from "./tests/ListTest.component";
 import { UpdateTestComponent } from "./tests/UpdateTest.component";
 export * from "./tests/UpdateTest.component";
 
-import { BB4UIModule } from "../../bb4ui";
 import { ToastyModule } from "ng2-toasty";
+import { BB4UIModule } from "../../bb4ui";
 
 import { routes } from "./tests/routes";
 /*export * from './tests/routes';*/
 
-/*export*/ const declarations = [CreateTestComponent, ListTestComponent, UpdateTestComponent];
+/*export*/ const declarations = [
+  CreateTestComponent,
+  ListTestComponent,
+  UpdateTestComponent,
+];
 
-/*export*/ const imports = [BB4UIModule, ToastyModule, RouterModule.forRoot(routes, { useHash: true })];
+/*export*/ const imports = [
+  BB4UIModule,
+  ToastyModule,
+  RouterModule.forRoot(routes, { useHash: true }),
+];
 
 /*export*/ const _exports = [ToastyModule, BB4UIModule, ...declarations];
 
 @NgModule({
   imports: [CommonModule, FileUploadModule, ...imports],
-  declarations: declarations,
+  declarations,
   providers: [],
   exports: _exports,
 })

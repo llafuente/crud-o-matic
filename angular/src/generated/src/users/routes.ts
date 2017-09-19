@@ -1,8 +1,8 @@
 import { Routes } from "@angular/router";
 import { RootComponent } from "../Root.component";
 
-import { ListUserComponent } from "./ListUser.component";
 import { CreateUserComponent } from "./CreateUser.component";
+import { ListUserComponent } from "./ListUser.component";
 import { UpdateUserComponent } from "./UpdateUser.component";
 
 export const routes: Routes = [

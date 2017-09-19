@@ -29,7 +29,7 @@ export class LoginComponent extends BaseComponent {
 
   login() {
     this.http.post(`${this.config.get("domain")}/auth`, this.auth).subscribe(
-      response => {
+      (response) => {
         const token = response.json().token;
         console.log("set token", token);
         this.user.setToken(token);
@@ -39,7 +39,7 @@ export class LoginComponent extends BaseComponent {
           }),
         );
       },
-      err => {
+      (err) => {
         console.log("Error occured.", err);
       },
     );

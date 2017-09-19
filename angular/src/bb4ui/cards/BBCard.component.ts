@@ -6,7 +6,7 @@ import { Component, HostBinding, Input } from "@angular/core";
   selector: "bb-card",
   template: `
 <div class="card d-flex flex-column" style="flex: 1">
-  <div class="card-header"><h2 *ngIf="header">{{header}}</h2></div>
+  <div class="card-header"><h2 *ngIf="header">{{ header }}</h2></div>
 
   <div class="card-block"><ng-content select="bb-section-content"></ng-content></div>
 

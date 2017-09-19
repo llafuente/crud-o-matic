@@ -1,11 +1,11 @@
 import * as express from "express";
 import { Request } from "../app";
 import { HttpError } from "../HttpError";
-import { Test } from "../models/Test";
+import { Voucher } from "../models/Voucher";
 const parse = require("csv-parse/lib/sync");
 
 export function CSVImport(inputData: string, next) {
-  console.info("create test data", inputData);
+  console.info("create voucher data", inputData);
 
   const dataList = parse(inputData, {
     columns: true,
@@ -13,8 +13,8 @@ export function CSVImport(inputData: string, next) {
   });
 
   console.log(dataList);
-  dataList.forEach(singleData => {
-    Test.create(singleData, function(err, savedRow) {
+  dataList.forEach((singleData) => {
+    Voucher.create(singleData, function(err, savedRow) {
       if (err) {
         console.log(err);
       }
@@ -26,7 +26,7 @@ export function CSVImport(inputData: string, next) {
   }, 5000);
 }
 
-export function csvTest(req: Request, res: express.Response, next: express.NextFunction) {
+export function csvVoucher(req: Request, res: express.Response, next: express.NextFunction) {
   console.info("create body", req.body);
 
   if (!req.file) {
@@ -40,7 +40,7 @@ export function csvTest(req: Request, res: express.Response, next: express.NextF
 
     console.info("created@database", savedRow);
 
-    req.test = savedRow;
+    req.voucher = savedRow;
     return next();
   });
 }

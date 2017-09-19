@@ -101,7 +101,9 @@ export class <%= frontend.listComponent %> extends BaseComponent {
   }
 
   destroy(idx: number, row: <%= typeName %>) {
-    if (this.loading) return;
+    if (this.loading) {
+      return;
+    }
 
     this.loading = true;
     console.log(`--> DELETE: <%- url('DELETE', true) %>`, row);

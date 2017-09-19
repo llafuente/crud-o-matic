@@ -12,14 +12,14 @@ import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
   </div>
 
   <bb-alert class="text-center" [type]="null" style="margin-top: 16px;" *ngIf="loadingMessage">
-    <p>{{loadingMessage}}</p>
+    <p>{{ loadingMessage }}</p>
   </bb-alert>
 </div>
 <div *ngIf="!error && !loading">
   <ng-content></ng-content>
 </div>
 <div *ngIf="error && !loading" class="container text-center">
-  <p><i class="ico-cm_alert"></i> {{error === true ? 'Error al obtener la informacion solicitada.' : error}}</p>
+  <p><i class="ico-cm_alert"></i> {{ error === true ? 'Error al obtener la informacion solicitada.' : error }}</p>
   <bb-button
     (click)="doReload()"
   ><i class="fa fa-refresh "></i> Volver a interntarlo</bb-button>

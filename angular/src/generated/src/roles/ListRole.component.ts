@@ -1,12 +1,12 @@
-import { Component, Input, OnInit, Injector } from "@angular/core";
-import { Http, Response, RequestOptions, Headers } from "@angular/http";
 import { HttpClient } from "@angular/common/http";
+import { Component, Injector, Input, OnInit } from "@angular/core";
+import { Headers, Http, RequestOptions, Response } from "@angular/http";
 import { ActivatedRoute } from "@angular/router";
+import { FileUploader } from "ng2-file-upload";
 import { Observable } from "rxjs/Observable";
 import { BaseComponent } from "../Base.component";
-import { RoleType } from "../models/IRole";
 import { Pagination } from "../common";
-import { FileUploader } from "ng2-file-upload";
+import { RoleType } from "../models/IRole";
 /**
  */
 @Component({
@@ -62,7 +62,11 @@ export class ListRoleComponent extends BaseComponent {
     authToken: "Bearer " + localStorage.getItem("access_token"), // this is just an easy hack to use it
   });
 
-  constructor(injector: Injector, activatedRoute: ActivatedRoute, public http: HttpClient) {
+  constructor(
+    injector: Injector,
+    activatedRoute: ActivatedRoute,
+    public http: HttpClient,
+  ) {
     super(injector, activatedRoute);
 
     console.log(`--> GET: ${this.domain}/roles`);
@@ -86,20 +90,27 @@ export class ListRoleComponent extends BaseComponent {
   }
 
   destroy(idx: number, row: RoleType) {
-    if (this.loading) return;
+    if (this.loading) {
+      return;
+    }
 
     this.loading = true;
     console.log(`--> DELETE: ${this.domain}/roles/:roleId`, row);
-    this.http.delete(`${this.domain}/roles/:roleId`.replace(":roleId", "" + row.id)).subscribe(
-      (response: Response) => {
-        console.log(`<-- DELETE: ${this.domain}/roles/:roleId`, response);
-        this.entities.list.splice(idx, 1);
-        this.loading = false;
-      },
-      (errorResponse: Response) => {
-        console.log(`<-- DELETE Error: ${this.domain}/roles/:roleId`, errorResponse);
-        this.errorHandler(errorResponse);
-      },
-    );
+    this.http
+      .delete(`${this.domain}/roles/:roleId`.replace(":roleId", "" + row.id))
+      .subscribe(
+        (response: Response) => {
+          console.log(`<-- DELETE: ${this.domain}/roles/:roleId`, response);
+          this.entities.list.splice(idx, 1);
+          this.loading = false;
+        },
+        (errorResponse: Response) => {
+          console.log(
+            `<-- DELETE Error: ${this.domain}/roles/:roleId`,
+            errorResponse,
+          );
+          this.errorHandler(errorResponse);
+        },
+      );
   }
 }

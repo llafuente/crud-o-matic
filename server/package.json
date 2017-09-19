@@ -1,5 +1,5 @@
 {
-  "name": "crud-o-matic",
+  "name": "crud-o-matic-server",
   "version": "0.0.1",
   "description": "",
   "main": "./src/app.ts",
@@ -10,7 +10,7 @@
     "test": "npm run build && npm ava --verbose ./compiled-js/test/*.js",
     "testcv": "npm run build && npm ava --verbose ./compiled-js/test/*.js",
     "pretty": "prettier --write --parser typescript --print-width 120 \"src/**/*.ts\"",
-    "lint": "npm run pretty && tslint --fix -c ./tslint.json --type-check -p ./tsconfig.json",
+    "lint": "npm run pretty && tslint --force --fix -c ./tslint.json --type-check -p ./tsconfig.json",
     "build": "tsc -p ./tsconfig.json",
     "start": "npm run build && node ./src-js/app.js"
   },

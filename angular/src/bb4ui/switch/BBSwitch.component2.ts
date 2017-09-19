@@ -1,5 +1,12 @@
-import { Component, Input, Output, EventEmitter, HostListener, forwardRef } from "@angular/core";
-import { NG_VALUE_ACCESSOR, ControlValueAccessor } from "@angular/forms";
+import {
+  Component,
+  EventEmitter,
+  forwardRef,
+  HostListener,
+  Input,
+  Output,
+} from "@angular/core";
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
 
 // from: https://github.com/yuyang041060120/angular2-ui-switch
 // adapted to our uses
@@ -52,20 +59,25 @@ export class BBSwitchComponent implements ControlValueAccessor {
     return this._reverse;
   }
 
-  @Input() size: string = "medium";
+  @Input() size = "medium";
   @Output() change = new EventEmitter<boolean>();
-  @Input() color: string = "rgb(100, 189, 99)";
-  @Input() switchOffColor: string = "";
-  @Input() switchColor: string = "#fff";
-  defaultBgColor: string = "#fff";
-  defaultBoColor: string = "#dfdfdf";
+  @Input() color = "rgb(100, 189, 99)";
+  @Input() switchOffColor = "";
+  @Input() switchColor = "#fff";
+  defaultBgColor = "#fff";
+  defaultBoColor = "#dfdfdf";
 
   @Input() checkedMessage: string = null;
   @Input() uncheckedkMessage: string = null;
 
   getSwitchColor() {
-    if (this.reverse) return !this.checked ? this.switchColor : this.switchOffColor || this.switchColor;
-    return this.checked ? this.switchColor : this.switchOffColor || this.switchColor;
+    if (this.reverse)
+      return !this.checked
+        ? this.switchColor
+        : this.switchOffColor || this.switchColor;
+    return this.checked
+      ? this.switchColor
+      : this.switchOffColor || this.switchColor;
   }
 
   ngOnInit() {

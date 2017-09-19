@@ -15,7 +15,7 @@ module.exports = [
         options: {
             context: path.join(__dirname, '..', 'src'),
             output: {
-                path: path.join(__dirname, '..', '..', 'generated', 'server', 'public')
+                path: path.join(__dirname, '..', '..', 'server', 'public')
             },
             postcss: [
                 autoprefixer

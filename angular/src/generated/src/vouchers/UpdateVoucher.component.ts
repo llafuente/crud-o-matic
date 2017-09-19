@@ -1,7 +1,7 @@
-import { Component, Input, OnInit, Injector } from "@angular/core";
-import { Router, ActivatedRoute } from "@angular/router";
-import { Http, Response, RequestOptions, Headers } from "@angular/http";
 import { HttpClient } from "@angular/common/http";
+import { Component, Injector, Input, OnInit } from "@angular/core";
+import { Headers, Http, RequestOptions, Response } from "@angular/http";
+import { ActivatedRoute, Router } from "@angular/router";
 import { Observable } from "rxjs/Observable";
 import { BaseComponent } from "../Base.component";
 import { VoucherType } from "../models/IVoucher";
@@ -153,7 +153,12 @@ export class UpdateVoucherComponent extends BaseComponent {
 
   tests: any;
 
-  constructor(injector: Injector, activatedRoute: ActivatedRoute, public http: HttpClient, public router: Router) {
+  constructor(
+    injector: Injector,
+    activatedRoute: ActivatedRoute,
+    public http: HttpClient,
+    public router: Router,
+  ) {
     super(injector, activatedRoute);
   }
   /*
@@ -166,21 +171,32 @@ export class UpdateVoucherComponent extends BaseComponent {
     this.id = this.getRouteParameter("voucherId");
 
     console.log(`--> GET: ${this.domain}/vouchers/:voucherId`, this.id);
-    this.http.get(`${this.domain}/vouchers/:voucherId`.replace(":voucherId", this.id)).subscribe(
-      (response: VoucherType) => {
-        console.log(`<-- GET: ${this.domain}/vouchers/:voucherId`, JSON.stringify(response, null, 2));
+    this.http
+      .get(`${this.domain}/vouchers/:voucherId`.replace(":voucherId", this.id))
+      .subscribe(
+        (response: VoucherType) => {
+          console.log(
+            `<-- GET: ${this.domain}/vouchers/:voucherId`,
+            JSON.stringify(response, null, 2),
+          );
 
-        this.entity = response;
-      },
-      (errorResponse: Response) => {
-        console.log(`<-- GET Error: ${this.domain}/vouchers/:voucherId`, errorResponse);
-        this.errorHandler(errorResponse);
-      },
-    );
+          this.entity = response;
+        },
+        (errorResponse: Response) => {
+          console.log(
+            `<-- GET Error: ${this.domain}/vouchers/:voucherId`,
+            errorResponse,
+          );
+          this.errorHandler(errorResponse);
+        },
+      );
 
     this.http.get(`${this.domain}/tests`).subscribe(
       (response: any) => {
-        console.log(`<-- GET: ${this.domain}/tests`, JSON.stringify(response, null, 2));
+        console.log(
+          `<-- GET: ${this.domain}/tests`,
+          JSON.stringify(response, null, 2),
+        );
 
         this.tests = response;
 
@@ -200,18 +216,34 @@ export class UpdateVoucherComponent extends BaseComponent {
   }
 
   save() {
-    console.log(`<-- PATCH: ${this.domain}/vouchers/:voucherId`, JSON.stringify(this.entity, null, 2));
-    this.http.patch(`${this.domain}/vouchers/:voucherId`.replace(":voucherId", this.id), this.entity).subscribe(
-      (response: VoucherType) => {
-        console.log(`<-- PATCH: ${this.domain}/vouchers/:voucherId`, JSON.stringify(response, null, 2));
-
-        this.router.navigate(["../..", "list"], { relativeTo: this.activatedRoute });
-      },
-      (errorResponse: Response) => {
-        console.log("<-- PATCH Error: ${this.domain}/vouchers/:voucherId", errorResponse);
-        this.errorHandler(errorResponse);
-      },
+    console.log(
+      `<-- PATCH: ${this.domain}/vouchers/:voucherId`,
+      JSON.stringify(this.entity, null, 2),
     );
+    this.http
+      .patch(
+        `${this.domain}/vouchers/:voucherId`.replace(":voucherId", this.id),
+        this.entity,
+      )
+      .subscribe(
+        (response: VoucherType) => {
+          console.log(
+            `<-- PATCH: ${this.domain}/vouchers/:voucherId`,
+            JSON.stringify(response, null, 2),
+          );
+
+          this.router.navigate(["../..", "list"], {
+            relativeTo: this.activatedRoute,
+          });
+        },
+        (errorResponse: Response) => {
+          console.log(
+            "<-- PATCH Error: ${this.domain}/vouchers/:voucherId",
+            errorResponse,
+          );
+          this.errorHandler(errorResponse);
+        },
+      );
   }
 
   splice(model: any[], index: number) {

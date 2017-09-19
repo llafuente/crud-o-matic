@@ -4,7 +4,7 @@ import { join } from "path";
 import { Generator } from "../";
 import { Schema, SchemaBack, SchemaFront, Field, FieldType, FrontControls, FieldPermissions } from "../Schema";
 
-const generatedPath = join(__dirname, "..", "..", "generated");
+const generatedPath = join(__dirname, "..", "..");
 const domain = "http://localhost:3004";
 //const domain = "http://34.229.180.92:3004";
 /*

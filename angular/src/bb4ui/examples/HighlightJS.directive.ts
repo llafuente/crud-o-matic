@@ -1,4 +1,11 @@
-import { AfterViewChecked, Directive, ElementRef, Input, NgZone, OnInit } from "@angular/core";
+import {
+  AfterViewChecked,
+  Directive,
+  ElementRef,
+  Input,
+  NgZone,
+  OnInit,
+} from "@angular/core";
 
 declare var hljs: any;
 
@@ -13,7 +20,10 @@ export class HighlightJSDirective implements OnInit, AfterViewChecked {
   ngOnInit() {}
 
   ngAfterViewChecked() {
-    if (this.elementRef.nativeElement.innerHTML && this.elementRef.nativeElement.querySelector) {
+    if (
+      this.elementRef.nativeElement.innerHTML &&
+      this.elementRef.nativeElement.querySelector
+    ) {
       console.log(this.elementRef.nativeElement.innerHTML);
       this.zone.runOutsideAngular(() => {
         hljs.configure({ useBR: this.useBr });

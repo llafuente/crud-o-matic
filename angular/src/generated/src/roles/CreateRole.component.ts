@@ -1,7 +1,7 @@
-import { Component, Input, OnInit, Injector } from "@angular/core";
-import { Router, ActivatedRoute } from "@angular/router";
-import { Http, Response, RequestOptions, Headers } from "@angular/http";
 import { HttpClient } from "@angular/common/http";
+import { Component, Injector, Input, OnInit } from "@angular/core";
+import { Headers, Http, RequestOptions, Response } from "@angular/http";
+import { ActivatedRoute, Router } from "@angular/router";
 import { Observable } from "rxjs/Observable";
 import { BaseComponent } from "../Base.component";
 import { RoleType } from "../models/IRole";
@@ -50,7 +50,12 @@ export class CreateRoleComponent extends BaseComponent {
   id: string;
   entity: RoleType = new RoleType();
 
-  constructor(injector: Injector, activatedRoute: ActivatedRoute, public http: HttpClient, public router: Router) {
+  constructor(
+    injector: Injector,
+    activatedRoute: ActivatedRoute,
+    public http: HttpClient,
+    public router: Router,
+  ) {
     super(injector, activatedRoute);
   }
   /*
@@ -61,15 +66,23 @@ export class CreateRoleComponent extends BaseComponent {
   }
 
   save() {
-    console.log("--> POST: ${this.domain}/roles", JSON.stringify(this.entity, null, 2));
+    console.log(
+      `--> POST: ${this.domain}/roles`,
+      JSON.stringify(this.entity, null, 2),
+    );
     this.http.post(`${this.domain}/roles`, this.entity).subscribe(
       (response: RoleType) => {
-        console.log("<-- POST: ${this.domain}/roles", JSON.stringify(response, null, 2));
+        console.log(
+          "<-- POST: ${this.domain}/roles",
+          JSON.stringify(response, null, 2),
+        );
 
-        this.router.navigate(["..", "list"], { relativeTo: this.activatedRoute });
+        this.router.navigate(["..", "list"], {
+          relativeTo: this.activatedRoute,
+        });
       },
       (errorResponse: Response) => {
-        console.log("<-- POST Error: ${this.domain}/roles", errorResponse);
+        console.log(`<-- POST Error: ${this.domain}/roles`, errorResponse);
         this.errorHandler(errorResponse);
       },
     );

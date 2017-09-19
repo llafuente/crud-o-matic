@@ -16,7 +16,7 @@ export const customAppRouter = express
       key: label,
     })
       .exec()
-      .then(voucher => {
+      .then((voucher) => {
         if (!voucher) {
           return res.status(404).json({ message: "No se pudo encontrar el Voucher" });
         }
@@ -70,7 +70,7 @@ export const customAppRouter = express
 
       req.loggedUser
         .save()
-        .then(userSaved => {
+        .then((userSaved) => {
           res.status(200).json({ id: statsIdx });
         })
         .catch(next);
@@ -98,7 +98,7 @@ export const customAppRouter = express
 
       req.loggedUser
         .save()
-        .then(userSaved => {
+        .then((userSaved) => {
           res.status(204).json();
         })
         .catch(next);
@@ -123,7 +123,7 @@ export const customAppRouter = express
 
     req.loggedUser
       .save()
-      .then(userSaved => {
+      .then((userSaved) => {
         res.status(200).json({ id: statsIdx });
       })
       .catch(next);
@@ -154,7 +154,7 @@ export const customAppRouter = express
 
       req.loggedUser
         .save()
-        .then(userSaved => {
+        .then((userSaved) => {
           res.status(204).json();
         })
         .catch(next);

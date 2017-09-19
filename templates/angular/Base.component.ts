@@ -29,12 +29,10 @@ export class BaseComponent implements /*OnInit, */OnDestroy {
   }
 
   errorHandler(errorResponse: Response|IErrorResponse) {
-    let er: IErrorResponse;
-    if (errorResponse instanceof Response) {
-      er = (errorResponse as Response).json();
-    } else {
-      er = (errorResponse as any).error;
-    }
+    const er: IErrorResponse = (errorResponse instanceof Response)
+      ? (errorResponse as Response).json()
+      : (errorResponse as any).error;
+
     console.log("Error occured.", er);
     this.errGrowl(er.message || "Error inesperado");
   }
@@ -70,14 +68,14 @@ export class BaseComponent implements /*OnInit, */OnDestroy {
       const d = snapshot.params as any;
       // console.log("route.params", snapshot.params);
       if (d && d[key] !== undefined) {
-        //console.log("getParameter", key, d[key]);
+        // console.log("getParameter", key, d[key]);
         return d[key];
       }
 
       snapshot = snapshot.parent;
     } while (snapshot);
 
-    //console.log("getParameter", key, null);
+    // console.log("getParameter", key, null);
     return null;
   }
 
@@ -129,7 +127,6 @@ export class BaseComponent implements /*OnInit, */OnDestroy {
   growl(str: string, timeout: number = 5000) {
     const toastOptions:ToastOptions = {
       title: str,
-      //msg: "Good new, everything is working OK!",
       showClose: true,
       timeout: timeout,
       theme: "bootstrap",

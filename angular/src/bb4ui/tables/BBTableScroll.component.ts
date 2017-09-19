@@ -1,14 +1,14 @@
 import {
   Component,
-  Input,
-  HostBinding,
-  ElementRef,
   ContentChild,
   ContentChildren,
+  ElementRef,
+  HostBinding,
+  Input,
+  OnDestroy,
+  QueryList,
   ViewChild,
   ViewChildren,
-  QueryList,
-  OnDestroy,
 } from "@angular/core";
 
 declare var jQuery: any;
@@ -48,12 +48,12 @@ declare var jQuery: any;
 export class BBTableScrollComponent implements OnDestroy {
   @Input() condensed: boolean;
   @Input() inverse: boolean;
-  @Input() striped: boolean = true;
-  @Input() bordered: boolean = true;
-  @Input() hover: boolean = true;
+  @Input() striped = true;
+  @Input() bordered = true;
+  @Input() hover = true;
 
-  @Input() scroll: boolean = false;
-  @Input() height: string = "150px";
+  @Input() scroll = false;
+  @Input() height = "150px";
 
   thead: HTMLHtmlElement;
   tbody: HTMLHtmlElement;
@@ -73,7 +73,9 @@ export class BBTableScrollComponent implements OnDestroy {
   }
 
   getThead() {
-    return jQuery(this.container.nativeElement).children("table").children("thead");
+    return jQuery(this.container.nativeElement)
+      .children("table")
+      .children("thead");
   }
 
   resize() {

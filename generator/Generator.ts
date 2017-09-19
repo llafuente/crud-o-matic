@@ -50,6 +50,7 @@ export class Generator {
     // at server root
     this.copy(join(__dirname, "../templates/express/.gitignore"), join(path, ".gitignore"));
     this.copy(join(__dirname, "../templates/express/package.json"), join(path, "package.json"));
+    this.copy(join(__dirname, "../tslint.json"), join(path, "tslint.json"));
     this.copy(join(__dirname, "../templates/express/tsconfig.json"), join(path, "tsconfig.json"));
 
     // src/models

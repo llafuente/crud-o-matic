@@ -2,12 +2,12 @@
 import { Injector } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 
-import { Component, Input } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { LoggedUser } from "../LoggedUser.service";
-import { ITest } from "../../generated/src/models/ITest";
-import { BaseComponent } from "../../generated/src/Base.component";
+import { Component, Input } from "@angular/core";
 import { Router } from "@angular/router";
+import { BaseComponent } from "../../generated/src/Base.component";
+import { ITest } from "../../generated/src/models/ITest";
+import { LoggedUser } from "../LoggedUser.service";
 
 @Component({
   selector: "user-home-component",
@@ -41,27 +41,33 @@ export class UserHomeComponent extends BaseComponent {
 
   loadTest(testId: string) {
     // load test
-    this.http.get(`${this.config.get("domain")}/tests/${testId}`).subscribe((response: ITest) => {
-      this.test = response;
-    });
+    this.http
+      .get(`${this.config.get("domain")}/tests/${testId}`)
+      .subscribe((response: ITest) => {
+        this.test = response;
+      });
   }
 
   redeem(bbModal /*TODO type*/) {
-    this.http.post(`${this.config.get("domain")}/users/redeem-voucher`, { voucherKey: this.voucherKey }).subscribe(
-      response => {
-        console.log("redeem-voucher", response);
-        this.handleSubscription(
-          this.user.onChange.subscribe(() => {
-            this.router.navigate(["/test", this.user.me.testId]);
-          }),
-        );
-        this.user.refresh();
-      },
-      errorResponse => {
-        console.log("redeem-voucher err", errorResponse);
-        this.error = errorResponse;
-        bbModal.show();
-      },
-    );
+    this.http
+      .post(`${this.config.get("domain")}/users/redeem-voucher`, {
+        voucherKey: this.voucherKey,
+      })
+      .subscribe(
+        (response) => {
+          console.log("redeem-voucher", response);
+          this.handleSubscription(
+            this.user.onChange.subscribe(() => {
+              this.router.navigate(["/test", this.user.me.testId]);
+            }),
+          );
+          this.user.refresh();
+        },
+        (errorResponse) => {
+          console.log("redeem-voucher err", errorResponse);
+          this.error = errorResponse;
+          bbModal.show();
+        },
+      );
   }
 }

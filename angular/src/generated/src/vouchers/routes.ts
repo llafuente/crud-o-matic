@@ -1,8 +1,8 @@
 import { Routes } from "@angular/router";
 import { RootComponent } from "../Root.component";
 
-import { ListVoucherComponent } from "./ListVoucher.component";
 import { CreateVoucherComponent } from "./CreateVoucher.component";
+import { ListVoucherComponent } from "./ListVoucher.component";
 import { UpdateVoucherComponent } from "./UpdateVoucher.component";
 
 export const routes: Routes = [

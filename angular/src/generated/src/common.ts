@@ -8,11 +8,16 @@ export class WhereQuery {
 }
 
 export class Pagination<T> {
-  constructor(public list: T[], public count: number, public offset: number, public limit: number) {}
+  constructor(
+    public list: T[],
+    public count: number,
+    public offset: number,
+    public limit: number,
+  ) {}
 
   static fromJSON<T>(T, obj: any) {
     if (obj) {
-      obj.list.map(item => {
+      obj.list.map((item) => {
         return T.fromJSON(item);
       });
       return new Pagination<T>(obj.list, obj.count, obj.offset, obj.limit);

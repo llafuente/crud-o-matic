@@ -20,14 +20,14 @@ export interface IUser {
   testId: string;
   testsDoneIds: string[];
   state: string;
-  stats: {
+  stats: Array<{
     testId: string;
     questionId: string;
     startAt: Date;
     endAt: Date;
     type: string;
     answers: number[];
-  }[];
+  }>;
 
   authenticate(password: string);
 }
@@ -52,14 +52,14 @@ export class UserType implements IUser {
   testId: string = null;
   testsDoneIds: string[] = [];
   state: string = "active";
-  stats: {
+  stats: Array<{
     testId: string;
     questionId: string;
     startAt: Date;
     endAt: Date;
     type: string;
     answers: number[];
-  }[] = [];
+  }> = [];
   constructor() {}
 
   static fromJSON(obj: IUser | any): UserType {

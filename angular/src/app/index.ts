@@ -16,6 +16,12 @@ export * from "./UserHome/UserHome.component";
 import { LoggedUser } from "./LoggedUser.service";
 export * from "./LoggedUser.service";
 
-export const components = [AppComponent, LoginComponent, TestComponent, UserHomeComponent, UserLoginComponent];
+export const components = [
+  AppComponent,
+  LoginComponent,
+  TestComponent,
+  UserHomeComponent,
+  UserLoginComponent,
+];
 
 export const services = [LoggedUser];

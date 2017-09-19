@@ -1,7 +1,7 @@
-import { Component, Input, OnInit, Injector } from "@angular/core";
-import { Router, ActivatedRoute } from "@angular/router";
-import { Http, Response, RequestOptions, Headers } from "@angular/http";
 import { HttpClient } from "@angular/common/http";
+import { Component, Injector, Input, OnInit } from "@angular/core";
+import { Headers, Http, RequestOptions, Response } from "@angular/http";
+import { ActivatedRoute, Router } from "@angular/router";
 import { Observable } from "rxjs/Observable";
 import { BaseComponent } from "../Base.component";
 import { TestType } from "../models/ITest";
@@ -252,7 +252,12 @@ export class UpdateTestComponent extends BaseComponent {
   id: string;
   entity: TestType = new TestType();
 
-  constructor(injector: Injector, activatedRoute: ActivatedRoute, public http: HttpClient, public router: Router) {
+  constructor(
+    injector: Injector,
+    activatedRoute: ActivatedRoute,
+    public http: HttpClient,
+    public router: Router,
+  ) {
     super(injector, activatedRoute);
   }
   /*
@@ -265,32 +270,56 @@ export class UpdateTestComponent extends BaseComponent {
     this.id = this.getRouteParameter("testId");
 
     console.log(`--> GET: ${this.domain}/tests/:testId`, this.id);
-    this.http.get(`${this.domain}/tests/:testId`.replace(":testId", this.id)).subscribe(
-      (response: TestType) => {
-        console.log(`<-- GET: ${this.domain}/tests/:testId`, JSON.stringify(response, null, 2));
+    this.http
+      .get(`${this.domain}/tests/:testId`.replace(":testId", this.id))
+      .subscribe(
+        (response: TestType) => {
+          console.log(
+            `<-- GET: ${this.domain}/tests/:testId`,
+            JSON.stringify(response, null, 2),
+          );
 
-        this.entity = response;
-      },
-      (errorResponse: Response) => {
-        console.log(`<-- GET Error: ${this.domain}/tests/:testId`, errorResponse);
-        this.errorHandler(errorResponse);
-      },
-    );
+          this.entity = response;
+        },
+        (errorResponse: Response) => {
+          console.log(
+            `<-- GET Error: ${this.domain}/tests/:testId`,
+            errorResponse,
+          );
+          this.errorHandler(errorResponse);
+        },
+      );
   }
 
   save() {
-    console.log(`<-- PATCH: ${this.domain}/tests/:testId`, JSON.stringify(this.entity, null, 2));
-    this.http.patch(`${this.domain}/tests/:testId`.replace(":testId", this.id), this.entity).subscribe(
-      (response: TestType) => {
-        console.log(`<-- PATCH: ${this.domain}/tests/:testId`, JSON.stringify(response, null, 2));
-
-        this.router.navigate(["../..", "list"], { relativeTo: this.activatedRoute });
-      },
-      (errorResponse: Response) => {
-        console.log("<-- PATCH Error: ${this.domain}/tests/:testId", errorResponse);
-        this.errorHandler(errorResponse);
-      },
+    console.log(
+      `<-- PATCH: ${this.domain}/tests/:testId`,
+      JSON.stringify(this.entity, null, 2),
     );
+    this.http
+      .patch(
+        `${this.domain}/tests/:testId`.replace(":testId", this.id),
+        this.entity,
+      )
+      .subscribe(
+        (response: TestType) => {
+          console.log(
+            `<-- PATCH: ${this.domain}/tests/:testId`,
+            JSON.stringify(response, null, 2),
+          );
+
+          this.router.navigate(["../..", "list"], {
+            relativeTo: this.activatedRoute,
+          });
+        },
+        (errorResponse: Response) => {
+          console.log(
+            "<-- PATCH Error: ${this.domain}/tests/:testId",
+            errorResponse,
+          );
+          this.errorHandler(errorResponse);
+        },
+      );
   }
 
   splice(model: any[], index: number) {
@@ -303,7 +332,8 @@ export class UpdateTestComponent extends BaseComponent {
   }
 
   pushEntityBlocksQuestions(item: any, blocksId) {
-    this.entity.blocks[blocksId].questions = this.entity.blocks[blocksId].questions || [];
+    this.entity.blocks[blocksId].questions =
+      this.entity.blocks[blocksId].questions || [];
     this.entity.blocks[blocksId].questions.push(item);
   }
 

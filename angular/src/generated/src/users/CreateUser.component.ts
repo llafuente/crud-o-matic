@@ -1,7 +1,7 @@
-import { Component, Input, OnInit, Injector } from "@angular/core";
-import { Router, ActivatedRoute } from "@angular/router";
-import { Http, Response, RequestOptions, Headers } from "@angular/http";
 import { HttpClient } from "@angular/common/http";
+import { Component, Injector, Input, OnInit } from "@angular/core";
+import { Headers, Http, RequestOptions, Response } from "@angular/http";
+import { ActivatedRoute, Router } from "@angular/router";
 import { Observable } from "rxjs/Observable";
 import { BaseComponent } from "../Base.component";
 import { UserType } from "../models/IUser";
@@ -217,9 +217,17 @@ export class CreateUserComponent extends BaseComponent {
   entity: UserType = new UserType();
 
   roles: any;
-  stateValues: { id: string; label: string }[] = [{ id: "active", label: "Active" }, { id: "banned", label: "Banned" }];
+  stateValues: Array<{ id: string; label: string }> = [
+    { id: "active", label: "Active" },
+    { id: "banned", label: "Banned" },
+  ];
 
-  constructor(injector: Injector, activatedRoute: ActivatedRoute, public http: HttpClient, public router: Router) {
+  constructor(
+    injector: Injector,
+    activatedRoute: ActivatedRoute,
+    public http: HttpClient,
+    public router: Router,
+  ) {
     super(injector, activatedRoute);
   }
   /*
@@ -230,7 +238,10 @@ export class CreateUserComponent extends BaseComponent {
 
     this.http.get(`${this.domain}/roles`).subscribe(
       (response: any) => {
-        console.log(`<-- GET: ${this.domain}/roles`, JSON.stringify(response, null, 2));
+        console.log(
+          `<-- GET: ${this.domain}/roles`,
+          JSON.stringify(response, null, 2),
+        );
 
         this.roles = response;
 
@@ -250,15 +261,23 @@ export class CreateUserComponent extends BaseComponent {
   }
 
   save() {
-    console.log("--> POST: ${this.domain}/users", JSON.stringify(this.entity, null, 2));
+    console.log(
+      `--> POST: ${this.domain}/users`,
+      JSON.stringify(this.entity, null, 2),
+    );
     this.http.post(`${this.domain}/users`, this.entity).subscribe(
       (response: UserType) => {
-        console.log("<-- POST: ${this.domain}/users", JSON.stringify(response, null, 2));
+        console.log(
+          "<-- POST: ${this.domain}/users",
+          JSON.stringify(response, null, 2),
+        );
 
-        this.router.navigate(["..", "list"], { relativeTo: this.activatedRoute });
+        this.router.navigate(["..", "list"], {
+          relativeTo: this.activatedRoute,
+        });
       },
       (errorResponse: Response) => {
-        console.log("<-- POST Error: ${this.domain}/users", errorResponse);
+        console.log(`<-- POST Error: ${this.domain}/users`, errorResponse);
         this.errorHandler(errorResponse);
       },
     );
@@ -279,7 +298,8 @@ export class CreateUserComponent extends BaseComponent {
   }
 
   pushEntityStatsAnswers(item: any, statsId) {
-    this.entity.stats[statsId].answers = this.entity.stats[statsId].answers || [];
+    this.entity.stats[statsId].answers =
+      this.entity.stats[statsId].answers || [];
     this.entity.stats[statsId].answers.push(item);
   }
 }

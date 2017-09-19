@@ -12,7 +12,7 @@ export class Pagination<T> {
 
   static fromJSON<T>(T, obj: any) {
     if (obj) {
-      obj.list.map(item => {
+      obj.list.map((item) => {
         return T.fromJSON(item);
       });
       return new Pagination<T>(obj.list, obj.count, obj.offset, obj.limit);

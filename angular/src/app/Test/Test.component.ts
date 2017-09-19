@@ -1,12 +1,13 @@
+// BaseComponent
 import { Injector } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-
-import { Component, Input, ViewChild } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
-import { LoggedUser } from "../LoggedUser.service";
-import { ITest } from "../../generated/src/models/ITest";
 import { BaseComponent } from "../../generated/src/Base.component";
+
+import { HttpClient } from "@angular/common/http";
+import { Component, Input, ViewChild } from "@angular/core";
 import { Router } from "@angular/router";
+import { ITest } from "../../generated/src/models/ITest";
+import { LoggedUser } from "../LoggedUser.service";
 
 @Component({
   selector: "test-component",
@@ -28,7 +29,9 @@ export class TestComponent extends BaseComponent {
   @ViewChild("finishExamModal") finishExamModal;
 
   get maxQuestion(): number {
-    if (!this.test) return null;
+    if (!this.test) {
+      return null;
+    }
 
     return this.test.blocks[this.currentBlock].questions.length || null;
   }
@@ -74,21 +77,23 @@ export class TestComponent extends BaseComponent {
 
   loadTest(testId: string) {
     // load test
-    this.http.get(`${this.domain}/tests/${testId}`).subscribe((response: ITest) => {
-      this.test = response;
-      this.remainingTime = this.test.maxTime * 60;
-      //this.remainingTime = 15;
+    this.http
+      .get(`${this.domain}/tests/${testId}`)
+      .subscribe((response: ITest) => {
+        this.test = response;
+        this.remainingTime = this.test.maxTime * 60;
+        // this.remainingTime = 15;
 
-      const interval = this.interval(() => {
-        --this.remainingTime;
-        if (this.remainingTime == 0) {
-          this.finishExamModal.hide();
-          this.timeExpiredModal.show();
-          this.finish(false, true, false);
-          clearInterval(interval);
-        }
-      }, 1000);
-    });
+        const interval = this.interval(() => {
+          --this.remainingTime;
+          if (this.remainingTime == 0) {
+            this.finishExamModal.hide();
+            this.timeExpiredModal.show();
+            this.finish(false, true, false);
+            clearInterval(interval);
+          }
+        }, 1000);
+      });
   }
 
   next() {
@@ -112,7 +117,7 @@ export class TestComponent extends BaseComponent {
     this.startQuestion(this.currentQuestion);
   }
 
-  finish(modal: boolean, confirmed: boolean, exit: boolean = true) {
+  finish(modal: boolean, confirmed: boolean, exit = true) {
     if (confirmed) {
       if (modal) {
         this.finishExamModal.hide();
@@ -127,7 +132,11 @@ export class TestComponent extends BaseComponent {
 
   startQuestion(questionId: number) {
     this.http
-      .post(`${this.domain}/users/stats/question-start/${this.testId}/${questionId}`, {})
+      .post(
+        `${this.domain}/users/stats/question-start/${this
+          .testId}/${questionId}`,
+        {},
+      )
       .subscribe((response: any) => {
         console.log("startQuestion", response);
 
@@ -135,10 +144,11 @@ export class TestComponent extends BaseComponent {
       });
   }
 
-  endQuestion(questionId: number, cb: Function = null) {
+  endQuestion(questionId: number, cb: () => void = null) {
     this.http
       .post(
-        `${this.domain}/users/stats/question-end/${this.testId}/${this.stats.id}/${this.answers[this.currentQuestion]}`,
+        `${this.domain}/users/stats/question-end/${this.testId}/${this.stats
+          .id}/${this.answers[this.currentQuestion]}`,
         {},
       )
       .subscribe((response: any) => {
@@ -148,18 +158,24 @@ export class TestComponent extends BaseComponent {
   }
 
   startTest() {
-    this.http.post(`${this.domain}/users/stats/test-start/${this.testId}`, {}).subscribe((response: any) => {
-      console.log("startQuestion", response);
+    this.http
+      .post(`${this.domain}/users/stats/test-start/${this.testId}`, {})
+      .subscribe((response: any) => {
+        console.log("startQuestion", response);
 
-      this.testStats = response;
-    });
+        this.testStats = response;
+      });
   }
 
   endTest(exit: boolean) {
     this.http
-      .post(`${this.domain}/users/stats/test-end/${this.testId}/${this.testStats.id}`, {
-        answers: this.answers,
-      })
+      .post(
+        `${this.domain}/users/stats/test-end/${this.testId}/${this.testStats
+          .id}`,
+        {
+          answers: this.answers,
+        },
+      )
       .subscribe((response: any) => {
         console.log("startQuestion", response);
         this.user.refresh();

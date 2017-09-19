@@ -1,15 +1,15 @@
+import { HttpClientModule } from "@angular/common/http";
 import { NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { HttpModule } from "@angular/http";
-import { HttpClientModule } from "@angular/common/http";
 import { BrowserModule } from "@angular/platform-browser";
 
 import { BB4UIModule } from "../bb4ui";
+import { Config, GenerateddAppModule } from "../generated/src";
 import { AppRoutingModule } from "./app.routing";
-import { GenerateddAppModule, Config } from "../generated/src";
 
 import { JwtModule } from "@auth0/angular-jwt";
-import { components, AppComponent, services } from "./";
+import { AppComponent, components, services } from "./";
 
 // imports, declarations are exported to easy unit-testing configuration
 export const imports = [
@@ -45,6 +45,6 @@ export const _exports = [GenerateddAppModule];
 export class AppModule {
   constructor(config: Config) {
     config.set("domain", "http://localhost:3004");
-    //config.set("domain", "http://34.229.180.92:3004");
+    // config.set("domain", "http://34.229.180.92:3004");
   }
 }

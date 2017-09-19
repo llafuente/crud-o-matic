@@ -1,8 +1,8 @@
 import { Routes } from "@angular/router";
 import { RootComponent } from "../Root.component";
 
-import { ListTestComponent } from "./ListTest.component";
 import { CreateTestComponent } from "./CreateTest.component";
+import { ListTestComponent } from "./ListTest.component";
 import { UpdateTestComponent } from "./UpdateTest.component";
 
 export const routes: Routes = [

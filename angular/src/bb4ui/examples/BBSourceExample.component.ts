@@ -17,7 +17,9 @@ declare var global: any;
 
 const Reflect = global.Reflect;
 
-export const ORIGINAL_TEMPLATE_PROVIDER = new OpaqueToken("ORIGINAL_TEMPLATE_PROVIDER");
+export const ORIGINAL_TEMPLATE_PROVIDER = new OpaqueToken(
+  "ORIGINAL_TEMPLATE_PROVIDER",
+);
 
 export function provideTemplateFrom(component: Type<any>): ExistingProvider {
   return {
@@ -59,7 +61,10 @@ export class BBSourceDirective implements OnInit {
 
   ngOnInit() {
     if (this.componentInst[this.example] !== undefined) {
-      console.warn(`BBSourceDirective: Overriding property '${this.example}' in component '${this.componentName}'`);
+      console.warn(
+        `BBSourceDirective: Overriding property '${this
+          .example}' in component '${this.componentName}'`,
+      );
     }
 
     this.componentInst[this.example] = this._getPieceOfTemplate();
@@ -73,7 +78,10 @@ export class BBSourceDirective implements OnInit {
     const tpl = this._getOuterTemplate(template, matchDirectiveRegex);
 
     if (!tpl) {
-      console.warn(`BBSourceDirective: Failed to extract template for directive '${matchDirective}"${this.example}"'`);
+      console.warn(
+        `BBSourceDirective: Failed to extract template for directive '${matchDirective}"${this
+          .example}"'`,
+      );
       return "";
     }
 
@@ -160,7 +168,10 @@ export class BBSourceDirective implements OnInit {
     const annotations = Reflect.getOwnMetadata("annotations", this.component);
 
     if (!Array.isArray(annotations)) {
-      throw Error(`BBSourceDirective: Annotations not available for type '${this.componentName}'`);
+      throw Error(
+        `BBSourceDirective: Annotations not available for type '${this
+          .componentName}'`,
+      );
     }
 
     return annotations;
@@ -183,7 +194,7 @@ export class BBSourceDirective implements OnInit {
     <ng-content></ng-content>
   </div>
   <div *ngIf="zone == 'source'">
-    <pre><code highlightjs>{{source.trim()}}</code></pre>
+    <pre><code highlightjs>{{ source.trim() }}</code></pre>
   </div>
 </div>
 `,

@@ -9,14 +9,14 @@ export interface ITest {
   label: string;
   instructions: string;
   randomizeAnwers: boolean;
-  blocks: {
+  blocks: Array<{
     name: string;
-    questions: {
+    questions: Array<{
       questionLabel: string;
-      answers: { answerLabel: string }[];
+      answers: Array<{ answerLabel: string }>;
       correcAnswerIndex: number;
-    }[];
-  }[];
+    }>;
+  }>;
   maxTime: number;
   usersSubscribed: number;
   usersDone: number;
@@ -31,14 +31,14 @@ export class TestType implements ITest {
   label: string;
   instructions: string;
   randomizeAnwers: boolean;
-  blocks: {
+  blocks: Array<{
     name: string;
-    questions: {
+    questions: Array<{
       questionLabel: string;
-      answers: { answerLabel: string }[];
+      answers: Array<{ answerLabel: string }>;
       correcAnswerIndex: number;
-    }[];
-  }[] = [];
+    }>;
+  }> = [];
   maxTime: number;
   usersSubscribed: number;
   usersDone: number;

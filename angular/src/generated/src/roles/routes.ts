@@ -1,8 +1,8 @@
 import { Routes } from "@angular/router";
 import { RootComponent } from "../Root.component";
 
-import { ListRoleComponent } from "./ListRole.component";
 import { CreateRoleComponent } from "./CreateRole.component";
+import { ListRoleComponent } from "./ListRole.component";
 import { UpdateRoleComponent } from "./UpdateRole.component";
 
 export const routes: Routes = [

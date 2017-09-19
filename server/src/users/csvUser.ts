@@ -13,7 +13,7 @@ export function CSVImport(inputData: string, next) {
   });
 
   console.log(dataList);
-  dataList.forEach(singleData => {
+  dataList.forEach((singleData) => {
     User.create(singleData, function(err, savedRow) {
       if (err) {
         console.log(err);

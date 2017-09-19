@@ -1,7 +1,7 @@
-import { Component, Input, OnInit, Injector } from "@angular/core";
-import { Router, ActivatedRoute } from "@angular/router";
-import { Http, Response, RequestOptions, Headers } from "@angular/http";
 import { HttpClient } from "@angular/common/http";
+import { Component, Injector, Input, OnInit } from "@angular/core";
+import { Headers, Http, RequestOptions, Response } from "@angular/http";
+import { ActivatedRoute, Router } from "@angular/router";
 import { Observable } from "rxjs/Observable";
 import { BaseComponent } from "../Base.component";
 import { VoucherType } from "../models/IVoucher";
@@ -153,7 +153,12 @@ export class CreateVoucherComponent extends BaseComponent {
 
   tests: any;
 
-  constructor(injector: Injector, activatedRoute: ActivatedRoute, public http: HttpClient, public router: Router) {
+  constructor(
+    injector: Injector,
+    activatedRoute: ActivatedRoute,
+    public http: HttpClient,
+    public router: Router,
+  ) {
     super(injector, activatedRoute);
   }
   /*
@@ -164,7 +169,10 @@ export class CreateVoucherComponent extends BaseComponent {
 
     this.http.get(`${this.domain}/tests`).subscribe(
       (response: any) => {
-        console.log(`<-- GET: ${this.domain}/tests`, JSON.stringify(response, null, 2));
+        console.log(
+          `<-- GET: ${this.domain}/tests`,
+          JSON.stringify(response, null, 2),
+        );
 
         this.tests = response;
 
@@ -184,15 +192,23 @@ export class CreateVoucherComponent extends BaseComponent {
   }
 
   save() {
-    console.log("--> POST: ${this.domain}/vouchers", JSON.stringify(this.entity, null, 2));
+    console.log(
+      `--> POST: ${this.domain}/vouchers`,
+      JSON.stringify(this.entity, null, 2),
+    );
     this.http.post(`${this.domain}/vouchers`, this.entity).subscribe(
       (response: VoucherType) => {
-        console.log("<-- POST: ${this.domain}/vouchers", JSON.stringify(response, null, 2));
+        console.log(
+          "<-- POST: ${this.domain}/vouchers",
+          JSON.stringify(response, null, 2),
+        );
 
-        this.router.navigate(["..", "list"], { relativeTo: this.activatedRoute });
+        this.router.navigate(["..", "list"], {
+          relativeTo: this.activatedRoute,
+        });
       },
       (errorResponse: Response) => {
-        console.log("<-- POST Error: ${this.domain}/vouchers", errorResponse);
+        console.log(`<-- POST Error: ${this.domain}/vouchers`, errorResponse);
         this.errorHandler(errorResponse);
       },
     );

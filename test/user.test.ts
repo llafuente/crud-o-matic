@@ -4,10 +4,10 @@ import test from "ava";
 import { join } from "path";
 import { mkdirSync } from "fs";
 
-import { User, IUser } from "../generated/server/src/models/User";
-import { Role, IRole } from "../generated/server/src/models/Role";
-import routerUser from "../generated/server/src/users/routerUser";
-import { Pagination } from "../generated/server/src/common";
+import { User, IUser } from "../server/src/models/User";
+import { Role, IRole } from "../server/src/models/Role";
+import routerUser from "../server/src/users/routerUser";
+import { Pagination } from "../server/src/common";
 import * as express from "express";
 import * as bodyParser from "body-parser";
 //import * as supertest from "supertest";
@@ -18,7 +18,7 @@ const path = require("path");
 (mongoose as any).Promise = require("bluebird");
 mongoose.set('debug', true);
 
-import { app } from "../generated/server/src/app";
+import { app } from "../server/src/app";
 let db;
 
 test.cb.serial("connect to mongo", (t) => {

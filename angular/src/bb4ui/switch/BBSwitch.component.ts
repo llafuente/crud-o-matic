@@ -1,5 +1,12 @@
-import { Component, Input, Output, EventEmitter, HostListener, forwardRef } from "@angular/core";
-import { NG_VALUE_ACCESSOR, ControlValueAccessor } from "@angular/forms";
+import {
+  Component,
+  EventEmitter,
+  forwardRef,
+  HostListener,
+  Input,
+  Output,
+} from "@angular/core";
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
 import { BBCheckBaseComponent } from "../checkbox/BBCheckBase.component";
 
 // styles from: https://github.com/yuyang041060120/angular2-ui-switch
@@ -41,17 +48,22 @@ export class BBSwitchComponent extends BBCheckBaseComponent {
   @Input() checkedMessage: string = null;
   @Input() uncheckedkMessage: string = null;
 
-  @Input() size: string = "medium";
+  @Input() size = "medium";
   @Output() change = new EventEmitter<boolean>();
-  @Input() color: string = "rgb(100, 189, 99)";
-  @Input() switchOffColor: string = "";
-  @Input() switchColor: string = "#fff";
-  defaultBgColor: string = "#fff";
-  defaultBoColor: string = "#dfdfdf";
+  @Input() color = "rgb(100, 189, 99)";
+  @Input() switchOffColor = "";
+  @Input() switchColor = "#fff";
+  defaultBgColor = "#fff";
+  defaultBoColor = "#dfdfdf";
 
   getSwitchColor() {
-    if (this.reverse) return !this.boolModelValue ? this.switchColor : this.switchOffColor || this.switchColor;
-    return this.boolModelValue ? this.switchColor : this.switchOffColor || this.switchColor;
+    if (this.reverse)
+      return !this.boolModelValue
+        ? this.switchColor
+        : this.switchOffColor || this.switchColor;
+    return this.boolModelValue
+      ? this.switchColor
+      : this.switchOffColor || this.switchColor;
   }
 
   ngAfterViewInit() {
