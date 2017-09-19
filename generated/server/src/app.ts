@@ -123,7 +123,7 @@ app
         //console.log(user);
 
         if (!user || !user.authenticate(req.body.password)) {
-          return next(new HttpError(422, "user not found or invalid pasword"));
+          return next(new HttpError(400, "user not found or invalid pasword"));
         }
 
         return res.status(200).json({

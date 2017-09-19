@@ -70,7 +70,8 @@ export class UpdateRoleComponent extends BaseComponent {
         this.entity = response;
       },
       (errorResponse: Response) => {
-        console.log(`<-- POST Error: ${this.domain}/roles/:roleId`, errorResponse);
+        console.log(`<-- GET Error: ${this.domain}/roles/:roleId`, errorResponse);
+        this.errorHandler(errorResponse);
       },
     );
   }
@@ -85,6 +86,7 @@ export class UpdateRoleComponent extends BaseComponent {
       },
       (errorResponse: Response) => {
         console.log("<-- PATCH Error: ${this.domain}/roles/:roleId", errorResponse);
+        this.errorHandler(errorResponse);
       },
     );
   }

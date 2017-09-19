@@ -99,18 +99,18 @@ test.serial("user schema", t => {
     "voucherId",
     new Field("Voucher", FieldType.String)
       .setRefTo("Voucher")
-      .setPermissions(new FieldPermissions(true, false, true, true))
+      .setPermissions(new FieldPermissions(true, false, false, false))
       .setDefault(null)
-      .setHTTPDropdown(`/vouchers`, "vouchers", "id", "label"),
+      //.setHTTPDropdown(`/vouchers`, "vouchers", "id", "label"),
   );
 
   schema.addField(
     "testId",
     new Field("Test", FieldType.ObjectId)
       .setRefTo("Test")
-      .setPermissions(new FieldPermissions(true, false, true, true))
+      .setPermissions(new FieldPermissions(true, false, false, false))
       .setDefault(null)
-      .setHTTPDropdown(`/tests`, "tests", "id", "label"),
+      //.setHTTPDropdown(`/tests`, "tests", "id", "label"),
   );
 
   schema.addField(

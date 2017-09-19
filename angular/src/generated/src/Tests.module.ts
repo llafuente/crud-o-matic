@@ -14,15 +14,16 @@ import { UpdateTestComponent } from "./tests/UpdateTest.component";
 export * from "./tests/UpdateTest.component";
 
 import { BB4UIModule } from "../../bb4ui";
+import { ToastyModule } from "ng2-toasty";
 
 import { routes } from "./tests/routes";
 /*export * from './tests/routes';*/
 
 /*export*/ const declarations = [CreateTestComponent, ListTestComponent, UpdateTestComponent];
 
-/*export*/ const imports = [BB4UIModule, RouterModule.forRoot(routes, { useHash: true })];
+/*export*/ const imports = [BB4UIModule, ToastyModule, RouterModule.forRoot(routes, { useHash: true })];
 
-/*export*/ const _exports = [...declarations];
+/*export*/ const _exports = [ToastyModule, BB4UIModule, ...declarations];
 
 @NgModule({
   imports: [CommonModule, FileUploadModule, ...imports],

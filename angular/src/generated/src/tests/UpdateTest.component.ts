@@ -272,7 +272,8 @@ export class UpdateTestComponent extends BaseComponent {
         this.entity = response;
       },
       (errorResponse: Response) => {
-        console.log(`<-- POST Error: ${this.domain}/tests/:testId`, errorResponse);
+        console.log(`<-- GET Error: ${this.domain}/tests/:testId`, errorResponse);
+        this.errorHandler(errorResponse);
       },
     );
   }
@@ -287,6 +288,7 @@ export class UpdateTestComponent extends BaseComponent {
       },
       (errorResponse: Response) => {
         console.log("<-- PATCH Error: ${this.domain}/tests/:testId", errorResponse);
+        this.errorHandler(errorResponse);
       },
     );
   }

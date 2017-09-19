@@ -39,7 +39,9 @@ export class LoginComponent extends BaseComponent {
           }),
         );
       },
-      errorResponse => {},
+      err => {
+        console.log("Error occured.", err);
+      },
     );
   }
 }

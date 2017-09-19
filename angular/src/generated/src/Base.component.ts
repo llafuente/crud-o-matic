@@ -2,18 +2,38 @@ import { OnInit, OnDestroy, Injector } from "@angular/core";
 import { Subscription } from "rxjs/Rx";
 import { ActivatedRoute, ActivatedRouteSnapshot } from "@angular/router";
 import { Config } from "./Config.service";
+import { ToastData, ToastyService, ToastOptions } from "ng2-toasty";
+import { Response } from "@angular/http";
+
+interface IErrorResponse {
+  message: string;
+}
 
 export class BaseComponent implements /*OnInit, */ OnDestroy {
   timeouts: number[] = [];
   intervals: number[] = [];
   subscriptions: Subscription[] = [];
   config: Config = null;
+  toastyService: ToastyService;
+
   get domain(): string {
     return this.config.get("domain");
   }
 
   constructor(public injector: Injector, public activatedRoute: ActivatedRoute) {
     this.config = injector.get(Config);
+    this.toastyService = injector.get(ToastyService);
+  }
+
+  errorHandler(errorResponse: Response | IErrorResponse) {
+    let er: IErrorResponse;
+    if (errorResponse instanceof Response) {
+      er = (errorResponse as Response).json();
+    } else {
+      er = (errorResponse as any).error;
+    }
+    console.log("Error occured.", er);
+    this.errGrowl(er.message || "Error inesperado");
   }
 
   handleSubscription(s: Subscription) {
@@ -81,5 +101,42 @@ export class BaseComponent implements /*OnInit, */ OnDestroy {
     const t = setInterval(fn, miliseconds);
     this.intervals.push(t);
     return t;
+  }
+
+  errGrowl(str: string, timeout: number = 10000) {
+    const toastOptions: ToastOptions = {
+      title: str,
+      showClose: true,
+      timeout: timeout,
+      theme: "bootstrap",
+      onAdd: (toast: ToastData) => {
+        console.log("Toast " + toast.id + " has been added!", str);
+      },
+      onRemove: function(toast: ToastData) {
+        console.log("Toast " + toast.id + " has been removed!", str);
+      },
+    };
+
+    // Add see all possible types in one shot
+    this.toastyService.info(toastOptions);
+  }
+
+  growl(str: string, timeout: number = 5000) {
+    const toastOptions: ToastOptions = {
+      title: str,
+      //msg: "Good new, everything is working OK!",
+      showClose: true,
+      timeout: timeout,
+      theme: "bootstrap",
+      onAdd: (toast: ToastData) => {
+        console.log("Toast " + toast.id + " has been added!", str);
+      },
+      onRemove: function(toast: ToastData) {
+        console.log("Toast " + toast.id + " has been removed!", str);
+      },
+    };
+
+    // Add see all possible types in one shot
+    this.toastyService.info(toastOptions);
   }
 }

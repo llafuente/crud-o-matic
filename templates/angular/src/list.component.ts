@@ -89,7 +89,8 @@ export class <%= frontend.listComponent %> extends BaseComponent {
 
       this.entities = Pagination.fromJSON<<%= typeName %>>(<%= typeName %>, response);
     }, (errorResponse: Response) => {
-      console.log(`<-- GET Error: <%- url('LIST', true) %>`, errorResponse.json());
+      console.log(`<-- GET Error: <%- url('LIST', true) %>`, errorResponse);
+      this.errorHandler(errorResponse);
     });
   }
   /*
@@ -109,6 +110,9 @@ export class <%= frontend.listComponent %> extends BaseComponent {
       console.log(`<-- DELETE: <%- url('DELETE', true) %>`, response);
       this.entities.list.splice(idx, 1);
       this.loading = false;
+    }, (errorResponse: Response) => {
+      console.log(`<-- DELETE Error: <%- url('DELETE', true) %>`, errorResponse);
+      this.errorHandler(errorResponse);
     });
   }
 }

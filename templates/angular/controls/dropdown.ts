@@ -4,7 +4,9 @@
 // TODO fetch<%= singularUc =>() must be added to constructor
 
 fetch<%= singularUc =>() {
-  this.http.get("<%= srcUrl %>").subscribe((response) => {
+  this.http.get("<%= srcUrl %>")
+  .subscribe((response) => {
     this.<%= srcModel %> = response;
-  });
+  },
+  this.errorHandler.bind(this));
 }

@@ -70,6 +70,7 @@ export class CreateRoleComponent extends BaseComponent {
       },
       (errorResponse: Response) => {
         console.log("<-- POST Error: ${this.domain}/roles", errorResponse);
+        this.errorHandler(errorResponse);
       },
     );
   }

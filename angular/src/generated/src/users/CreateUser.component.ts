@@ -175,42 +175,6 @@ import { UserType } from "../models/IUser";
 
 </bb-input-container>
 
-<bb-input-container
-  label="Voucher"
-
-  class="bordered top-label">
-  <select
-    bb-child
-    id="id-voucherId"
-    name="voucherId"
-
-    [(ngModel)]="entity.voucherId"
-    #voucherId="ngModel">
-    <option *ngFor="let row of vouchers?.list" [ngValue]="row.id">{{row.label}}</option>
-    </select>
-
-    <bb-errors [model]="voucherId"></bb-errors>
-
-</bb-input-container>
-
-<bb-input-container
-  label="Test"
-
-  class="bordered top-label">
-  <select
-    bb-child
-    id="id-testId"
-    name="testId"
-
-    [(ngModel)]="entity.testId"
-    #testId="ngModel">
-    <option *ngFor="let row of tests?.list" [ngValue]="row.id">{{row.label}}</option>
-    </select>
-
-    <bb-errors [model]="testId"></bb-errors>
-
-</bb-input-container>
-
 <bb-static label="Tests hechos" class="bordered top-label">
 <pre>{{entity.testsDoneIds | json }}</pre>
 </bb-static>
@@ -253,8 +217,6 @@ export class CreateUserComponent extends BaseComponent {
   entity: UserType = new UserType();
 
   roles: any;
-  vouchers: any;
-  tests: any;
   stateValues: { id: string; label: string }[] = [{ id: "active", label: "Active" }, { id: "banned", label: "Banned" }];
 
   constructor(injector: Injector, activatedRoute: ActivatedRoute, public http: HttpClient, public router: Router) {
@@ -285,56 +247,6 @@ export class CreateUserComponent extends BaseComponent {
         console.log(`<-- GET Error: ${this.domain}/roles`, errorResponse);
       },
     );
-
-    this.http.get(`${this.domain}/vouchers`).subscribe(
-      (response: any) => {
-        console.log(`<-- GET: ${this.domain}/vouchers`, JSON.stringify(response, null, 2));
-
-        response.list.unshift({
-          id: null,
-          label: "",
-        });
-
-        this.vouchers = response;
-
-        // TODO this is not safe for nested properties, need a fix :)
-        if (this.entity.voucherId === undefined) {
-          if (response.list.length) {
-            this.entity.voucherId = response.list[0].id;
-          }
-        } else {
-          // TODO check some are valid, if not nullify
-        }
-      },
-      (errorResponse: Response) => {
-        console.log(`<-- GET Error: ${this.domain}/vouchers`, errorResponse);
-      },
-    );
-
-    this.http.get(`${this.domain}/tests`).subscribe(
-      (response: any) => {
-        console.log(`<-- GET: ${this.domain}/tests`, JSON.stringify(response, null, 2));
-
-        response.list.unshift({
-          id: null,
-          label: "",
-        });
-
-        this.tests = response;
-
-        // TODO this is not safe for nested properties, need a fix :)
-        if (this.entity.testId === undefined) {
-          if (response.list.length) {
-            this.entity.testId = response.list[0].id;
-          }
-        } else {
-          // TODO check some are valid, if not nullify
-        }
-      },
-      (errorResponse: Response) => {
-        console.log(`<-- GET Error: ${this.domain}/tests`, errorResponse);
-      },
-    );
   }
 
   save() {
@@ -347,6 +259,7 @@ export class CreateUserComponent extends BaseComponent {
       },
       (errorResponse: Response) => {
         console.log("<-- POST Error: ${this.domain}/users", errorResponse);
+        this.errorHandler(errorResponse);
       },
     );
   }

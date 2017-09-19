@@ -97,7 +97,8 @@ export class ListTestComponent extends BaseComponent {
         this.entities = Pagination.fromJSON<TestType>(TestType, response);
       },
       (errorResponse: Response) => {
-        console.log(`<-- GET Error: ${this.domain}/tests`, errorResponse.json());
+        console.log(`<-- GET Error: ${this.domain}/tests`, errorResponse);
+        this.errorHandler(errorResponse);
       },
     );
   }
@@ -113,10 +114,16 @@ export class ListTestComponent extends BaseComponent {
 
     this.loading = true;
     console.log(`--> DELETE: ${this.domain}/tests/:testId`, row);
-    this.http.delete(`${this.domain}/tests/:testId`.replace(":testId", "" + row.id)).subscribe((response: Response) => {
-      console.log(`<-- DELETE: ${this.domain}/tests/:testId`, response);
-      this.entities.list.splice(idx, 1);
-      this.loading = false;
-    });
+    this.http.delete(`${this.domain}/tests/:testId`.replace(":testId", "" + row.id)).subscribe(
+      (response: Response) => {
+        console.log(`<-- DELETE: ${this.domain}/tests/:testId`, response);
+        this.entities.list.splice(idx, 1);
+        this.loading = false;
+      },
+      (errorResponse: Response) => {
+        console.log(`<-- DELETE Error: ${this.domain}/tests/:testId`, errorResponse);
+        this.errorHandler(errorResponse);
+      },
+    );
   }
 }

@@ -7,14 +7,18 @@ import { Http } from "@angular/http";
 import { Router } from "@angular/router";
 import { LoggedUser } from "../LoggedUser.service";
 
+interface IAuthResponse {
+  token: string;
+};
+
 @Component({
   selector: "userlogin-component",
   templateUrl: "./UserLogin.component.html",
 })
 export class UserLoginComponent extends BaseComponent {
   auth: any = {
-    userlogin: "admin",
-    password: "admin",
+    userlogin: "",
+    password: "",
   };
 
   constructor(
@@ -28,18 +32,16 @@ export class UserLoginComponent extends BaseComponent {
   }
 
   login() {
-    this.http.post(`${this.config.get("domain")}/auth`, this.auth).subscribe(
-      response => {
-        const token = response.json().token;
-        console.log("set token", token);
-        this.user.setToken(token);
-        this.handleSubscription(
-          this.user.onChange.subscribe(() => {
-            this.router.navigate(["/home"]);
-          }),
-        );
-      },
-      errorResponse => {},
-    );
+    this.http.post(`${this.domain}/auth`, this.auth).subscribe((response: ) => {
+      const token = (response.json() as IAuthResponse).token;
+      console.log("set token", token);
+      this.user.setToken(token);
+
+      this.handleSubscription(
+        this.user.onChange.subscribe(() => {
+          this.router.navigate(["/home"]);
+        }),
+      );
+    }, this.errorHandler.bind(this));
   }
 }

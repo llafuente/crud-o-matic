@@ -14,15 +14,16 @@ import { UpdateVoucherComponent } from "./vouchers/UpdateVoucher.component";
 export * from "./vouchers/UpdateVoucher.component";
 
 import { BB4UIModule } from "../../bb4ui";
+import { ToastyModule } from "ng2-toasty";
 
 import { routes } from "./vouchers/routes";
 /*export * from './vouchers/routes';*/
 
 /*export*/ const declarations = [CreateVoucherComponent, ListVoucherComponent, UpdateVoucherComponent];
 
-/*export*/ const imports = [BB4UIModule, RouterModule.forRoot(routes, { useHash: true })];
+/*export*/ const imports = [BB4UIModule, ToastyModule, RouterModule.forRoot(routes, { useHash: true })];
 
-/*export*/ const _exports = [...declarations];
+/*export*/ const _exports = [ToastyModule, BB4UIModule, ...declarations];
 
 @NgModule({
   imports: [CommonModule, FileUploadModule, ...imports],

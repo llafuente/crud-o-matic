@@ -101,7 +101,8 @@ export class ListVoucherComponent extends BaseComponent {
         this.entities = Pagination.fromJSON<VoucherType>(VoucherType, response);
       },
       (errorResponse: Response) => {
-        console.log(`<-- GET Error: ${this.domain}/vouchers`, errorResponse.json());
+        console.log(`<-- GET Error: ${this.domain}/vouchers`, errorResponse);
+        this.errorHandler(errorResponse);
       },
     );
   }
@@ -117,12 +118,16 @@ export class ListVoucherComponent extends BaseComponent {
 
     this.loading = true;
     console.log(`--> DELETE: ${this.domain}/vouchers/:voucherId`, row);
-    this.http
-      .delete(`${this.domain}/vouchers/:voucherId`.replace(":voucherId", "" + row.id))
-      .subscribe((response: Response) => {
+    this.http.delete(`${this.domain}/vouchers/:voucherId`.replace(":voucherId", "" + row.id)).subscribe(
+      (response: Response) => {
         console.log(`<-- DELETE: ${this.domain}/vouchers/:voucherId`, response);
         this.entities.list.splice(idx, 1);
         this.loading = false;
-      });
+      },
+      (errorResponse: Response) => {
+        console.log(`<-- DELETE Error: ${this.domain}/vouchers/:voucherId`, errorResponse);
+        this.errorHandler(errorResponse);
+      },
+    );
   }
 }

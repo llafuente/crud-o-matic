@@ -16,6 +16,7 @@ export * from './<%= plural %>/<%= frontend.updateComponentFile %>';
 
 
 import { BB4UIModule } from "../../bb4ui";
+import { ToastyModule } from "ng2-toasty";
 
 import { routes } from './<%= plural %>/routes';
 /*export * from './<%= plural %>/routes';*/
@@ -28,10 +29,13 @@ import { routes } from './<%= plural %>/routes';
 
 /*export*/ const imports = [
   BB4UIModule,
+  ToastyModule,
   RouterModule.forRoot(routes, { useHash: true })
 ];
 
 /*export*/ const _exports = [
+  ToastyModule,
+  BB4UIModule,
   ...declarations
 ];
 

@@ -272,6 +272,7 @@ export class CreateTestComponent extends BaseComponent {
       },
       (errorResponse: Response) => {
         console.log("<-- POST Error: ${this.domain}/tests", errorResponse);
+        this.errorHandler(errorResponse);
       },
     );
   }

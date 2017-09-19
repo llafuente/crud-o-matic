@@ -173,7 +173,8 @@ export class UpdateVoucherComponent extends BaseComponent {
         this.entity = response;
       },
       (errorResponse: Response) => {
-        console.log(`<-- POST Error: ${this.domain}/vouchers/:voucherId`, errorResponse);
+        console.log(`<-- GET Error: ${this.domain}/vouchers/:voucherId`, errorResponse);
+        this.errorHandler(errorResponse);
       },
     );
 
@@ -208,6 +209,7 @@ export class UpdateVoucherComponent extends BaseComponent {
       },
       (errorResponse: Response) => {
         console.log("<-- PATCH Error: ${this.domain}/vouchers/:voucherId", errorResponse);
+        this.errorHandler(errorResponse);
       },
     );
   }

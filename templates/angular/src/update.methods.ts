@@ -7,6 +7,7 @@
       this.router.navigate(['../..', 'list'], { relativeTo: this.activatedRoute });
     }, (errorResponse: Response) => {
       console.log("<-- PATCH Error: <%- url('UPDATE', true) %>", errorResponse);
+      this.errorHandler(errorResponse);
     });
   }
 

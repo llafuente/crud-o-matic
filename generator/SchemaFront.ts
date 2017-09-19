@@ -193,7 +193,8 @@ this.http.get(\`${field.frontData.srcUrl}\`)
 
       this.entity = response;
     }, (errorResponse: Response) => {
-      console.log(\`<-- POST Error: ${this.parentSchema.url("READ", true)}\`, errorResponse);
+      console.log(\`<-- GET Error: ${this.parentSchema.url("READ", true)}\`, errorResponse);
+      this.errorHandler(errorResponse);
     });
     `,
     ].concat(this.getCreateInitialization());

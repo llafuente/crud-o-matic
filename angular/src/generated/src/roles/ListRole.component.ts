@@ -73,7 +73,8 @@ export class ListRoleComponent extends BaseComponent {
         this.entities = Pagination.fromJSON<RoleType>(RoleType, response);
       },
       (errorResponse: Response) => {
-        console.log(`<-- GET Error: ${this.domain}/roles`, errorResponse.json());
+        console.log(`<-- GET Error: ${this.domain}/roles`, errorResponse);
+        this.errorHandler(errorResponse);
       },
     );
   }
@@ -89,10 +90,16 @@ export class ListRoleComponent extends BaseComponent {
 
     this.loading = true;
     console.log(`--> DELETE: ${this.domain}/roles/:roleId`, row);
-    this.http.delete(`${this.domain}/roles/:roleId`.replace(":roleId", "" + row.id)).subscribe((response: Response) => {
-      console.log(`<-- DELETE: ${this.domain}/roles/:roleId`, response);
-      this.entities.list.splice(idx, 1);
-      this.loading = false;
-    });
+    this.http.delete(`${this.domain}/roles/:roleId`.replace(":roleId", "" + row.id)).subscribe(
+      (response: Response) => {
+        console.log(`<-- DELETE: ${this.domain}/roles/:roleId`, response);
+        this.entities.list.splice(idx, 1);
+        this.loading = false;
+      },
+      (errorResponse: Response) => {
+        console.log(`<-- DELETE Error: ${this.domain}/roles/:roleId`, errorResponse);
+        this.errorHandler(errorResponse);
+      },
+    );
   }
 }

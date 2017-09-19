@@ -193,6 +193,7 @@ export class CreateVoucherComponent extends BaseComponent {
       },
       (errorResponse: Response) => {
         console.log("<-- POST Error: ${this.domain}/vouchers", errorResponse);
+        this.errorHandler(errorResponse);
       },
     );
   }
