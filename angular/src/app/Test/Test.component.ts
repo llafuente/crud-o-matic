@@ -48,9 +48,6 @@ export class TestComponent extends BaseComponent {
     super(injector, activatedRoute);
     this.testId = this.getRouteParameter("testId");
     this.loadTest(this.testId);
-
-    this.startTest();
-    this.startQuestion(0);
   }
 
   countDown() {
@@ -95,6 +92,8 @@ export class TestComponent extends BaseComponent {
             clearInterval(interval);
           }
         }, 1000);
+
+        this.resumeOrStartTest();
       });
   }
 
@@ -156,6 +155,24 @@ export class TestComponent extends BaseComponent {
       .subscribe((response: any) => {
         console.log("endQuestion", response);
         cb && cb();
+      });
+  }
+
+  resumeOrStartTest() {
+    this.http
+      .post(`${this.domain}/users/test/resume/${this.testId}`, {})
+      .subscribe((response: any) => {
+        console.log("startQuestion", response);
+
+        if (response.id === null) {
+          this.startTest();
+          this.startQuestion(0);
+        } else {
+          this.testStats = response;
+          this.answers = response.answers;
+          this.remainingTime -= response.elapsedTime;
+          this.startQuestion(0);
+        }
       });
   }
 

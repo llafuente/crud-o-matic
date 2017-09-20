@@ -66,6 +66,8 @@ export const customAppRouter = express
         answers: null,
       });
 
+      //req.loggedUser.stats = [];
+
       req.loggedUser.markModified("stats");
 
       req.loggedUser
@@ -104,6 +106,39 @@ export const customAppRouter = express
         .catch(next);
     },
   )
+  .post("/users/test/resume/:testId", (req: Request, res: express.Response, next: express.NextFunction) => {
+    for (let statsIdx = 0; statsIdx < req.loggedUser.stats.length; ++statsIdx) {
+      const s = req.loggedUser.stats[statsIdx];
+
+      if (s.type == "test" && s.endAt == null) {
+        console.log("incomplete test found at", statsIdx, s);
+
+        const answers = [];
+        let elapsedTime = 0;
+
+        for (let stat2 of req.loggedUser.stats) {
+          if (stat2.type == "question" && stat2.answers) {
+            answers[stat2.questionId] = stat2.answers[0];
+          }
+          if (stat2.endAt !== null) {
+            elapsedTime = stat2.endAt.getTime() - stat2.startAt.getTime();
+          }
+        }
+
+        return res.status(200).json({
+          id: statsIdx,
+          answers,
+          elapsedTime: Math.floor(elapsedTime / 1000), // seconds
+        });
+      }
+    }
+
+    res.status(200).json({
+      id: null,
+      answers: null,
+      elapsedTime: null
+    });
+  })
   .post("/users/stats/test-start/:testId", (req: Request, res: express.Response, next: express.NextFunction) => {
     const testId = req.param("testId", null);
 
