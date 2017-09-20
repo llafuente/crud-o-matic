@@ -1,4 +1,4 @@
-<h3>Introducir Voucher</h3>
+<h1 class="underline">Introducir Voucher</h1>
 
 <form #form="ngForm">
   <bb-alert>
@@ -6,11 +6,10 @@
   </bb-alert>
 
   <bb-input-container label="Voucher" class="bordered">
-    <input bb-child name="userlogin" [(ngModel)]="voucherKey" />
+    <input bb-child name="voucher" [(ngModel)]="voucherKey" />
   </bb-input-container>
 
-  <bb-button (click)="redeem(bbModal)">Comprobar voucher
-  </bb-button>
+  <bb-button (click)="redeem(bbModal)">Comprobar</bb-button>
 </form>
 
 <hr />

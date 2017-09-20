@@ -52,7 +52,7 @@ db.createCollection("test")
 ```
 # requisite npm i -g nodemon
 cd C:\Users\llafuente-pc\Documents\GitHub\crud-o-matic
-cd generated\server
+cd server
 nodemon
 # or: npm start
 ```

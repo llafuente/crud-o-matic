@@ -1,27 +1,38 @@
-<form #form="ngForm" *ngIf="test">
+<form #form="ngForm" *ngIf="test" id="test-container">
   <!-- <pre>{{test |json}}</pre> -->
   <!-- <pre>{{test.blocks[currentBlock].questions[currentQuestion] |json}}</pre> -->
   <!-- <pre>{{answers |json}}</pre> -->
 
   <div class="d-flex">
-    <div class="ml-auto">Tiempo restante: {{countDown()}}</div>
+    <div class="ml-auto"><i class="fa fa-clock-o" aria-hidden="true"></i> Tiempo restante: {{countDown()}}</div>
   </div>
 
-  <h1>{{test.label}} ({{currentQuestion + 1}} / {{maxQuestion}})</h1>
-  <h2>{{test.blocks[currentBlock].questions[currentQuestion].questionLabel}}</h2>
+  <hr class="hidden" />
+
+  <h1 class="underline d-flex">
+  <span>{{test.label}}</span>
+  <span class="ml-auto">({{currentQuestion + 1}} / {{maxQuestion}})</span>
+  </h1>
+  <h3>{{test.blocks[currentBlock].questions[currentQuestion].questionLabel}}</h3>
+
+  <hr class="hidden half" />
+
   <ul class="list-unstyled">
     <li *ngFor="let answer of test.blocks[currentBlock].questions[currentQuestion].answers; let i = index;">
 
     <bb-radio
+      class="middle"
       name="answer"
       [(ngModel)]="answers[currentQuestion]"
       required="required"
       [value]="i">
-        <strong>{{answerIndexes[i]}}</strong>: {{answer.answerLabel}}
+        <h5><strong>{{answerIndexes[i]}}</strong>: {{answer.answerLabel}}</h5>
       </bb-radio>
 
     </li>
   </ul>
+
+  <hr />
 
   <div class="row">
     <bb-button
@@ -37,7 +48,7 @@
     <bb-button
       btn="warning"
       class="ml-auto"
-      (click)="finish(true, false)"
+      (click)="finish(true, false, false)"
       *ngIf="currentQuestion + 1 == maxQuestion"
       [disabled]="!form.valid">Entregar examen</bb-button>
   </div>
@@ -65,6 +76,7 @@
 <bb-modal
   header="Tiempo de examen agotado"
   size="lg"
+  [closeButton]="false"
   #timeExpiredModal>
   <bb-section-content>
     <p>El tiempo máximo de exámen se ha superado, el examen ha sido entregado automáticamente</p>
@@ -72,6 +84,21 @@
   <bb-section-footer>
     <div class="d-flex">
       <bb-button btn="warning" class="ml-auto"(click)="exit()">Ok</bb-button>
+    </div>
+  </bb-section-footer>
+</bb-modal>
+
+<bb-modal
+  header="Examen entregado con éxito"
+  size="lg"
+  [closeButton]="false"
+  #doneModal>
+  <bb-section-content>
+    <p>El exámen ha sido entegado.</p>
+  </bb-section-content>
+  <bb-section-footer>
+    <div class="d-flex">
+      <bb-button btn="warning" class="ml-auto"(click)="exit()">Salir</bb-button>
     </div>
   </bb-section-footer>
 </bb-modal>

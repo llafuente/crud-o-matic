@@ -210,3 +210,18 @@ datepicker .btn.btn-secondary {
 bb-section-footer {
   width: 100%;
 }
+hr.hidden {
+  visibility: hidden;
+}
+hr.half {
+  margin-top: 0.5rem;
+  bottom-top: 0.5rem;
+}
+hr.2x {
+  margin-top: 2rem;
+  bottom-top: 2rem;
+}
+hr.3x {
+  margin-top: 3rem;
+  bottom-top: 3rem;
+}

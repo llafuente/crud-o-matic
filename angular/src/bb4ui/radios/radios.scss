@@ -2,3 +2,6 @@ bb-radio.disabled {
   pointer-events:none;
   color: $grey400;
 }
+bb-radio.middle .custom-control-description {
+  padding-top: 3px;
+}

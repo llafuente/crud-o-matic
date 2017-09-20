@@ -8,6 +8,7 @@ import { Component, Input, ViewChild } from "@angular/core";
 import { Router } from "@angular/router";
 import { ITest } from "../../generated/src/models/ITest";
 import { LoggedUser } from "../LoggedUser.service";
+import { ModalDirective } from "ngx-bootstrap";
 
 @Component({
   selector: "test-component",
@@ -25,8 +26,9 @@ export class TestComponent extends BaseComponent {
   stats: { id: number } = null;
   testStats: { id: number } = null;
 
-  @ViewChild("timeExpiredModal") timeExpiredModal;
-  @ViewChild("finishExamModal") finishExamModal;
+  @ViewChild("timeExpiredModal") timeExpiredModal: ModalDirective;
+  @ViewChild("finishExamModal") finishExamModal: ModalDirective;
+  @ViewChild("doneModal") doneModal: ModalDirective;
 
   get maxQuestion(): number {
     if (!this.test) {
@@ -89,7 +91,7 @@ export class TestComponent extends BaseComponent {
           if (this.remainingTime == 0) {
             this.finishExamModal.hide();
             this.timeExpiredModal.show();
-            this.finish(false, true, false);
+            this.finish(false, true, true);
             clearInterval(interval);
           }
         }, 1000);
@@ -117,13 +119,13 @@ export class TestComponent extends BaseComponent {
     this.startQuestion(this.currentQuestion);
   }
 
-  finish(modal: boolean, confirmed: boolean, exit = true) {
+  finish(modal: boolean, confirmed: boolean, forced) {
     if (confirmed) {
       if (modal) {
         this.finishExamModal.hide();
       }
       this.endQuestion(this.currentQuestion, () => {
-        this.endTest(exit);
+        this.endTest(forced);
       });
     } else if (modal) {
       this.finishExamModal.show();
@@ -167,7 +169,7 @@ export class TestComponent extends BaseComponent {
       });
   }
 
-  endTest(exit: boolean) {
+  endTest(forced: boolean) {
     this.http
       .post(
         `${this.domain}/users/stats/test-end/${this.testId}/${this.testStats
@@ -179,13 +181,9 @@ export class TestComponent extends BaseComponent {
       .subscribe((response: any) => {
         console.log("startQuestion", response);
         this.user.refresh();
-        this.handleSubscription(
-          this.user.onChange.subscribe(() => {
-            if (exit) {
-              this.exit();
-            }
-          }),
-        );
+        if (!forced) {
+          this.doneModal.show();
+        }
       });
   }
 
