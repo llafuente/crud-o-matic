@@ -32,6 +32,7 @@ export class UserLoginComponent extends BaseComponent {
   }
 
   login() {
+    console.log(`POST: ${this.domain}/api/v1/auth`);
     this.http
       .post(`${this.domain}/api/v1/auth`, this.auth)
       .subscribe((response: Response) => {

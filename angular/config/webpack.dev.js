@@ -7,9 +7,15 @@ const webpack = require('webpack');
 module.exports = {
 
   devtool: 'cheap-module-source-map',
-  /*devServer: {
-   historyApiFallback: true
-   },*/
+  devServer: {
+   //historyApiFallback: true
+    "port": 3003,
+    "inline": true,
+    proxy: [{
+      context: ["/api"],
+      target: "http://localhost:3004",
+    }]
+  },
   entry: require('./webpack.entry'),
   output: require('./webpack.output'),
   resolve: require('./webpack.resolve'),

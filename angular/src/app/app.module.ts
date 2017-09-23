@@ -12,7 +12,11 @@ import { JwtModule } from "@auth0/angular-jwt";
 import { AppComponent, components, services } from "./";
 
 // TODO calculate hostname
-//const domain = location.hostname + (location.port != "80" ? `:${location.port}` : "");
+//const domain = location.protocol + "//" + location.hostname + (location.port != "80" ? `:${parseInt(location.port, 10)+1}` : "");
+const domain =
+  location.hostname + (location.port != "80" ? `:${location.port}` : "");
+const fullDomain = location.protocol + "//" + domain;
+console.log("working domain", domain);
 
 // imports, declarations are exported to easy unit-testing configuration
 export const imports = [
@@ -29,7 +33,7 @@ export const imports = [
         console.log("tokenGetter:", localStorage.getItem("access_token"));
         return localStorage.getItem("access_token");
       },
-      whitelistedDomains: ["34.229.180.92:3004", "localhost:3004"],
+      whitelistedDomains: [domain],
     },
   }),
 ];
@@ -47,7 +51,8 @@ export const _exports = [GenerateddAppModule];
 })
 export class AppModule {
   constructor(config: Config) {
-    config.set("domain", "http://localhost:3004");
+    config.set("domain", fullDomain);
+    //config.set("domain", "http://localhost:3004");
     // config.set("domain", "http://34.229.180.92:3004");
   }
 }
