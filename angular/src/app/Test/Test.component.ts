@@ -6,9 +6,9 @@ import { BaseComponent } from "../../generated/src/Base.component";
 import { HttpClient } from "@angular/common/http";
 import { Component, Input, ViewChild } from "@angular/core";
 import { Router } from "@angular/router";
+import { ModalDirective } from "ngx-bootstrap";
 import { ITest } from "../../generated/src/models/ITest";
 import { LoggedUser } from "../LoggedUser.service";
-import { ModalDirective } from "ngx-bootstrap";
 
 @Component({
   selector: "test-component",
@@ -77,7 +77,7 @@ export class TestComponent extends BaseComponent {
   loadTest(testId: string) {
     // load test
     this.http
-      .get(`${this.domain}/tests/${testId}`)
+      .get(`${this.domain}/api/v1/tests/${testId}`)
       .subscribe((response: ITest) => {
         this.test = response;
         this.remainingTime = this.test.maxTime * 60;
@@ -134,7 +134,7 @@ export class TestComponent extends BaseComponent {
   startQuestion(questionId: number) {
     this.http
       .post(
-        `${this.domain}/users/stats/question-start/${this
+        `${this.domain}/api/v1/users/stats/question-start/${this
           .testId}/${questionId}`,
         {},
       )
@@ -148,8 +148,8 @@ export class TestComponent extends BaseComponent {
   endQuestion(questionId: number, cb: () => void = null) {
     this.http
       .post(
-        `${this.domain}/users/stats/question-end/${this.testId}/${this.stats
-          .id}/${this.answers[this.currentQuestion]}`,
+        `${this.domain}/api/v1/users/stats/question-end/${this.testId}/${this
+          .stats.id}/${this.answers[this.currentQuestion]}`,
         {},
       )
       .subscribe((response: any) => {
@@ -160,7 +160,7 @@ export class TestComponent extends BaseComponent {
 
   resumeOrStartTest() {
     this.http
-      .post(`${this.domain}/users/test/resume/${this.testId}`, {})
+      .post(`${this.domain}/api/v1/users/test/resume/${this.testId}`, {})
       .subscribe((response: any) => {
         console.log("startQuestion", response);
 
@@ -178,7 +178,7 @@ export class TestComponent extends BaseComponent {
 
   startTest() {
     this.http
-      .post(`${this.domain}/users/stats/test-start/${this.testId}`, {})
+      .post(`${this.domain}/api/v1/users/stats/test-start/${this.testId}`, {})
       .subscribe((response: any) => {
         console.log("startQuestion", response);
 
@@ -189,8 +189,8 @@ export class TestComponent extends BaseComponent {
   endTest(forced: boolean) {
     this.http
       .post(
-        `${this.domain}/users/stats/test-end/${this.testId}/${this.testStats
-          .id}`,
+        `${this.domain}/api/v1/users/stats/test-end/${this.testId}/${this
+          .testStats.id}`,
         {
           answers: this.answers,
         },

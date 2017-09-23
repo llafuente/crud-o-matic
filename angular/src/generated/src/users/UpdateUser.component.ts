@@ -142,8 +142,6 @@ import { UserType } from "../models/IUser";
     id="id-password"
     name="password"
 
-    required="required"
-
     [(ngModel)]="entity.password"
     #password="ngModel" />
 
@@ -202,7 +200,7 @@ import { UserType } from "../models/IUser";
 </bb-static>
 
       <bb-button [routerLink]="['../..', 'list']">Cancelar</bb-button>
-      <bb-button (click)="save()">Guardar</bb-button>
+      <bb-button [disabled]="!f.valid" (click)="save()">Guardar</bb-button>
     </form>
     <!-- <pre>entity: {{entity | json}}</pre> -->
     </div>
@@ -239,13 +237,13 @@ export class UpdateUserComponent extends BaseComponent {
     //this.id = parseInt(this.getRouteParameter("userId"), 10);
     this.id = this.getRouteParameter("userId");
 
-    console.log(`--> GET: ${this.domain}/users/:userId`, this.id);
+    console.log(`--> GET: ${this.domain}/api/v1/users/:userId`, this.id);
     this.http
-      .get(`${this.domain}/users/:userId`.replace(":userId", this.id))
+      .get(`${this.domain}/api/v1/users/:userId`.replace(":userId", this.id))
       .subscribe(
         (response: UserType) => {
           console.log(
-            `<-- GET: ${this.domain}/users/:userId`,
+            `<-- GET: ${this.domain}/api/v1/users/:userId`,
             JSON.stringify(response, null, 2),
           );
 
@@ -253,17 +251,17 @@ export class UpdateUserComponent extends BaseComponent {
         },
         (errorResponse: Response) => {
           console.log(
-            `<-- GET Error: ${this.domain}/users/:userId`,
+            `<-- GET Error: ${this.domain}/api/v1/users/:userId`,
             errorResponse,
           );
           this.errorHandler(errorResponse);
         },
       );
 
-    this.http.get(`${this.domain}/roles`).subscribe(
+    this.http.get(`${this.domain}/api/v1/roles`).subscribe(
       (response: any) => {
         console.log(
-          `<-- GET: ${this.domain}/roles`,
+          `<-- GET: ${this.domain}/api/v1/roles`,
           JSON.stringify(response, null, 2),
         );
 
@@ -279,25 +277,28 @@ export class UpdateUserComponent extends BaseComponent {
         }
       },
       (errorResponse: Response) => {
-        console.log(`<-- GET Error: ${this.domain}/roles`, errorResponse);
+        console.log(
+          `<-- GET Error: ${this.domain}/api/v1/roles`,
+          errorResponse,
+        );
       },
     );
   }
 
   save() {
     console.log(
-      `<-- PATCH: ${this.domain}/users/:userId`,
+      `<-- PATCH: ${this.domain}/api/v1/users/:userId`,
       JSON.stringify(this.entity, null, 2),
     );
     this.http
       .patch(
-        `${this.domain}/users/:userId`.replace(":userId", this.id),
+        `${this.domain}/api/v1/users/:userId`.replace(":userId", this.id),
         this.entity,
       )
       .subscribe(
         (response: UserType) => {
           console.log(
-            `<-- PATCH: ${this.domain}/users/:userId`,
+            `<-- PATCH: ${this.domain}/api/v1/users/:userId`,
             JSON.stringify(response, null, 2),
           );
 
@@ -307,7 +308,7 @@ export class UpdateUserComponent extends BaseComponent {
         },
         (errorResponse: Response) => {
           console.log(
-            "<-- PATCH Error: ${this.domain}/users/:userId",
+            "<-- PATCH Error: ${this.domain}/api/v1/users/:userId",
             errorResponse,
           );
           this.errorHandler(errorResponse);

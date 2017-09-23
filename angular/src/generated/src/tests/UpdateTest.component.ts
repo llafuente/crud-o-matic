@@ -238,7 +238,7 @@ import { TestType } from "../models/ITest";
 </bb-static>
 
       <bb-button [routerLink]="['../..', 'list']">Cancelar</bb-button>
-      <bb-button (click)="save()">Guardar</bb-button>
+      <bb-button [disabled]="!f.valid" (click)="save()">Guardar</bb-button>
     </form>
     <!-- <pre>entity: {{entity | json}}</pre> -->
     </div>
@@ -269,13 +269,13 @@ export class UpdateTestComponent extends BaseComponent {
     //this.id = parseInt(this.getRouteParameter("testId"), 10);
     this.id = this.getRouteParameter("testId");
 
-    console.log(`--> GET: ${this.domain}/tests/:testId`, this.id);
+    console.log(`--> GET: ${this.domain}/api/v1/tests/:testId`, this.id);
     this.http
-      .get(`${this.domain}/tests/:testId`.replace(":testId", this.id))
+      .get(`${this.domain}/api/v1/tests/:testId`.replace(":testId", this.id))
       .subscribe(
         (response: TestType) => {
           console.log(
-            `<-- GET: ${this.domain}/tests/:testId`,
+            `<-- GET: ${this.domain}/api/v1/tests/:testId`,
             JSON.stringify(response, null, 2),
           );
 
@@ -283,7 +283,7 @@ export class UpdateTestComponent extends BaseComponent {
         },
         (errorResponse: Response) => {
           console.log(
-            `<-- GET Error: ${this.domain}/tests/:testId`,
+            `<-- GET Error: ${this.domain}/api/v1/tests/:testId`,
             errorResponse,
           );
           this.errorHandler(errorResponse);
@@ -293,18 +293,18 @@ export class UpdateTestComponent extends BaseComponent {
 
   save() {
     console.log(
-      `<-- PATCH: ${this.domain}/tests/:testId`,
+      `<-- PATCH: ${this.domain}/api/v1/tests/:testId`,
       JSON.stringify(this.entity, null, 2),
     );
     this.http
       .patch(
-        `${this.domain}/tests/:testId`.replace(":testId", this.id),
+        `${this.domain}/api/v1/tests/:testId`.replace(":testId", this.id),
         this.entity,
       )
       .subscribe(
         (response: TestType) => {
           console.log(
-            `<-- PATCH: ${this.domain}/tests/:testId`,
+            `<-- PATCH: ${this.domain}/api/v1/tests/:testId`,
             JSON.stringify(response, null, 2),
           );
 
@@ -314,7 +314,7 @@ export class UpdateTestComponent extends BaseComponent {
         },
         (errorResponse: Response) => {
           console.log(
-            "<-- PATCH Error: ${this.domain}/tests/:testId",
+            "<-- PATCH Error: ${this.domain}/api/v1/tests/:testId",
             errorResponse,
           );
           this.errorHandler(errorResponse);

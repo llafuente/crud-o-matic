@@ -13,6 +13,7 @@ import * as bodyParser from "body-parser";
 //import * as supertest from "supertest";
 
 const supertest = require("supertest");
+const baseApiUrl= "/api/v1";
 import * as mongoose  from "mongoose";
 const path = require("path");
 (mongoose as any).Promise = require("bluebird");
@@ -106,7 +107,7 @@ test.serial("create admin user with mongoose", async (t) => {
 let bearer;
 test.cb.serial("logon: /auth", (t) => {
   supertest(app)
-  .post(`/auth`)
+  .post(`${baseApiUrl}/auth`)
   .send({
     userlogin: "admin",
     password: "admin",
@@ -159,7 +160,7 @@ let userCreatedByApi2;
 
 test.cb.serial("create user using API", (t) => {
   supertest(app)
-  .post('/users')
+  .post(`${baseApiUrl}/users`)
   .send({
     userlogin: "api-user",
     name: "api-user-name",
@@ -184,7 +185,7 @@ test.cb.serial("create user using API", (t) => {
 
 test.cb.serial("create user using API (2)", (t) => {
   supertest(app)
-  .post('/users')
+  .post(`${baseApiUrl}/users`)
   .send({
     userlogin: "api-user2",
     name: "api-user2-name",
@@ -217,7 +218,7 @@ test.serial("check created user using mongoose", async (t) => {
 
 test.cb.serial("check created user using API", (t) => {
   supertest(app)
-  .get(`/users/${userCreatedByApi.id}`)
+  .get(`${baseApiUrl}/users/${userCreatedByApi.id}`)
   .set('Authorization', bearer)
   .set('Accept', 'application/json')
   .expect(200)
@@ -240,7 +241,7 @@ test.cb.serial("check created user using API", (t) => {
 
 test.cb.serial("create user error using API", (t) => {
   supertest(app)
-  .post('/users')
+  .post(`${baseApiUrl}/users`)
   .send({
     userlogin: "api-user2",
     name: "api-user2-name",
@@ -266,7 +267,7 @@ test.cb.serial("create user error using API", (t) => {
 
 test.cb.serial("create user error using API 2", (t) => {
   supertest(app)
-  .post('/users')
+  .post(`${baseApiUrl}/users`)
   .send({
     userlogin: "api-user2",
     password: "password",
@@ -291,7 +292,7 @@ test.cb.serial("create user error using API 2", (t) => {
 
 test.cb.serial("get users using API", (t) => {
   supertest(app)
-  .get('/users')
+  .get(`${baseApiUrl}/users`)
   .set('Authorization', bearer)
   .set('Accept', 'application/json')
   .expect(200)
@@ -318,7 +319,7 @@ test.cb.serial("get users using API", (t) => {
 
 test.cb.serial("get users using API where", (t) => {
   supertest(app)
-  .get('/users?where[email][operator]=EQUALS&where[email][value]=api-user@test.com')
+  .get(`${baseApiUrl}/users?where[email][operator]=EQUALS&where[email][value]=api-user@test.com`)
   .set('Authorization', bearer)
   .set('Accept', 'application/json')
   .expect(200)
@@ -341,7 +342,7 @@ test.cb.serial("get users using API where", (t) => {
 
 test.cb.serial("update user using API", (t) => {
   supertest(app)
-  .patch(`/users/${userCreatedByApi.id}`)
+  .patch(`${baseApiUrl}/users/${userCreatedByApi.id}`)
   .send({
     email: "updated-email@test.com"
   })
@@ -363,7 +364,7 @@ test.cb.serial("update user using API", (t) => {
 
 test.cb.serial("check changes using API where", (t) => {
   supertest(app)
-  .get('/users?where[email][operator]=EQUALS&where[email][value]=updated-email@test.com')
+  .get(`${baseApiUrl}/users?where[email][operator]=EQUALS&where[email][value]=updated-email@test.com`)
   .set('Authorization', bearer)
   .set('Accept', 'application/json')
   .expect(200)
@@ -386,7 +387,7 @@ test.cb.serial("check changes using API where", (t) => {
 
 test.cb.serial("delete user using API", (t) => {
   supertest(app)
-  .delete(`/users/${userCreatedByApi.id}`)
+  .delete(`${baseApiUrl}/users/${userCreatedByApi.id}`)
   .set('Authorization', bearer)
   .set('Accept', 'application/json')
   .expect(204)
@@ -410,7 +411,7 @@ test.serial("check deleted user using mongoose", async (t) => {
 
 test.cb.serial("create user using CSV", (t) => {
   supertest(app)
-  .post('/users/csv')
+  .post(`${baseApiUrl}/users/csv`)
   .attach('file', path.join(__dirname, 'user.csv'))
   .set('Authorization', bearer)
   .set('Accept', 'application/json')

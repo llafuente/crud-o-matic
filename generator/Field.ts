@@ -1,6 +1,8 @@
 import { FieldPermissions } from "./FieldPermissions";
 import { FieldType } from "./FieldType";
 import { FrontControls } from "./FrontControls";
+import { FrontList } from "./FrontList";
+import { FrontCreate, FrontUpdate } from "./FrontOptions";
 import { Schema } from "./Schema";
 import * as url from "url";
 
@@ -43,8 +45,12 @@ export class Field {
 
   frontData: any;
 
-  private schema: Schema = null;
   parentField: Field = null;
+  private schema: Schema = null;
+
+  private frontList: FrontList = new FrontList();
+  private frontCreate: FrontCreate = new FrontCreate();
+  private frontUpdate: FrontUpdate = new FrontUpdate();
 
   constructor(label: string, type: FieldType) {
     this.label = label;
@@ -83,7 +89,7 @@ export class Field {
 
 
     this.frontData.srcUrl = srcUrl;
-    // is an incomplete URL? use this.domain
+    // is a relative URL? make it absolute
     if (url.parse(this.frontData.srcUrl).protocol === null) {
       this.frontData.srcUrl = "${this.domain}" + this.frontData.srcUrl;
     }
@@ -210,6 +216,8 @@ export class Field {
 
   setRequired(required: boolean): Field {
     this.required = required;
+    this.frontCreate.setRequired(required);
+    this.frontUpdate.setRequired(required);
 
     return this;
   }
@@ -467,5 +475,17 @@ export class Field {
     }
 
     return model;
+  }
+
+  getFrontList() {
+    return this.frontList;
+  }
+
+  getFrontCreate() {
+    return this.frontCreate;
+  }
+
+  getFrontUpdate() {
+    return this.frontUpdate;
   }
 }

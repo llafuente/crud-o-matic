@@ -33,7 +33,7 @@ export class UserLoginComponent extends BaseComponent {
 
   login() {
     this.http
-      .post(`${this.domain}/auth`, this.auth)
+      .post(`${this.domain}/api/v1/auth`, this.auth)
       .subscribe((response: Response) => {
         const token = (response.json() as IAuthResponse).token;
         console.log("set token", token);

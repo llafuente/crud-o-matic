@@ -15,7 +15,7 @@ test(async (t) => {
 });
 */
 
-const gen = new Generator(domain, "");
+const gen = new Generator(domain, "/api/v1");
 
 test.serial("user schema", t => {
   const schema: Schema = new Schema("user", gen);
@@ -32,10 +32,11 @@ test.serial("user schema", t => {
       .setRequired(true),
   );
 
-  schema.addField(
+  let f = schema.addField(
     "name",
     new Field("Nombre", FieldType.String).setFrontControl(FrontControls.TEXT).setMaxlength(32).setRequired(true),
   );
+  f.getFrontList().enableFiltering();
 
   schema.addField(
     "surname",
@@ -54,7 +55,7 @@ test.serial("user schema", t => {
 
   schema.addField("group", new Field("Grupo/Empresa", FieldType.String).setFrontControl(FrontControls.TEXT));
 
-  schema.addField(
+  f = schema.addField(
     "password",
     new Field("Password", FieldType.String)
       .setFrontControl(FrontControls.PASSWORD)
@@ -66,8 +67,23 @@ test.serial("user schema", t => {
           true, //update
         ),
       )
-      .setRequired(true),
   );
+
+  t.is(schema.root.properties.password.required, false);
+  t.is(schema.root.properties.password.getFrontCreate().required, false);
+  t.is(schema.root.properties.password.getFrontUpdate().required, false);
+
+  f.setRequired(true);
+
+  t.is(schema.root.properties.password.required, true);
+  t.is(schema.root.properties.password.getFrontCreate().required, true);
+  t.is(schema.root.properties.password.getFrontUpdate().required, true);
+
+  f.getFrontUpdate().setRequired(false);
+
+  t.is(schema.root.properties.password.required, true);
+  t.is(schema.root.properties.password.getFrontCreate().required, true);
+  t.is(schema.root.properties.password.getFrontUpdate().required, false);
 
   schema.addField(
     "salt",
@@ -90,10 +106,10 @@ test.serial("user schema", t => {
 
   schema.addField(
     "roleId",
-    new Field("Rol", FieldType.ObjectId).setRefTo("Role").setHTTPDropdown(`/roles`, "roles", "id", "label"),
+    new Field("Rol", FieldType.ObjectId).setRefTo("Role").setHTTPDropdown(`${gen.baseApiUrl}/roles`, "roles", "id", "label"),
   );
 
-  t.is(schema.root.properties.roleId.frontData.srcUrl, "${this.domain}/roles");
+  t.is(schema.root.properties.roleId.frontData.srcUrl, `\${this.domain}${gen.baseApiUrl}/roles`);
 
   schema.addField(
     "voucherId",
@@ -101,7 +117,7 @@ test.serial("user schema", t => {
       .setRefTo("Voucher")
       .setPermissions(new FieldPermissions(true, false, false, false))
       .setDefault(null)
-      //.setHTTPDropdown(`/vouchers`, "vouchers", "id", "label"),
+      //.setHTTPDropdown(`${gen.baseApiUrl}/vouchers`, "vouchers", "id", "label"),
   );
 
   schema.addField(
@@ -110,7 +126,7 @@ test.serial("user schema", t => {
       .setRefTo("Test")
       .setPermissions(new FieldPermissions(true, false, false, false))
       .setDefault(null)
-      //.setHTTPDropdown(`/tests`, "tests", "id", "label"),
+      //.setHTTPDropdown(`${gen.baseApiUrl}/tests`, "tests", "id", "label"),
   );
 
   schema.addField(
@@ -251,7 +267,7 @@ test.serial("voucher schema", t => {
   );
   schema.addField(
     "testId",
-    new Field("Test", FieldType.ObjectId).setRefTo("Test").setHTTPDropdown(`/tests`, "tests", "id", "label"),
+    new Field("Test", FieldType.ObjectId).setRefTo("Test").setHTTPDropdown(`${gen.baseApiUrl}/tests`, "tests", "id", "label"),
   );
 
   gen.addSchema(schema);

@@ -36,7 +36,7 @@ import { RoleType } from "../models/IRole";
 </bb-input-container>
 
       <bb-button [routerLink]="['../..', 'list']">Cancelar</bb-button>
-      <bb-button (click)="save()">Guardar</bb-button>
+      <bb-button [disabled]="!f.valid" (click)="save()">Guardar</bb-button>
     </form>
     <!-- <pre>entity: {{entity | json}}</pre> -->
     </div>
@@ -67,13 +67,13 @@ export class UpdateRoleComponent extends BaseComponent {
     //this.id = parseInt(this.getRouteParameter("roleId"), 10);
     this.id = this.getRouteParameter("roleId");
 
-    console.log(`--> GET: ${this.domain}/roles/:roleId`, this.id);
+    console.log(`--> GET: ${this.domain}/api/v1/roles/:roleId`, this.id);
     this.http
-      .get(`${this.domain}/roles/:roleId`.replace(":roleId", this.id))
+      .get(`${this.domain}/api/v1/roles/:roleId`.replace(":roleId", this.id))
       .subscribe(
         (response: RoleType) => {
           console.log(
-            `<-- GET: ${this.domain}/roles/:roleId`,
+            `<-- GET: ${this.domain}/api/v1/roles/:roleId`,
             JSON.stringify(response, null, 2),
           );
 
@@ -81,7 +81,7 @@ export class UpdateRoleComponent extends BaseComponent {
         },
         (errorResponse: Response) => {
           console.log(
-            `<-- GET Error: ${this.domain}/roles/:roleId`,
+            `<-- GET Error: ${this.domain}/api/v1/roles/:roleId`,
             errorResponse,
           );
           this.errorHandler(errorResponse);
@@ -91,18 +91,18 @@ export class UpdateRoleComponent extends BaseComponent {
 
   save() {
     console.log(
-      `<-- PATCH: ${this.domain}/roles/:roleId`,
+      `<-- PATCH: ${this.domain}/api/v1/roles/:roleId`,
       JSON.stringify(this.entity, null, 2),
     );
     this.http
       .patch(
-        `${this.domain}/roles/:roleId`.replace(":roleId", this.id),
+        `${this.domain}/api/v1/roles/:roleId`.replace(":roleId", this.id),
         this.entity,
       )
       .subscribe(
         (response: RoleType) => {
           console.log(
-            `<-- PATCH: ${this.domain}/roles/:roleId`,
+            `<-- PATCH: ${this.domain}/api/v1/roles/:roleId`,
             JSON.stringify(response, null, 2),
           );
 
@@ -112,7 +112,7 @@ export class UpdateRoleComponent extends BaseComponent {
         },
         (errorResponse: Response) => {
           console.log(
-            "<-- PATCH Error: ${this.domain}/roles/:roleId",
+            "<-- PATCH Error: ${this.domain}/api/v1/roles/:roleId",
             errorResponse,
           );
           this.errorHandler(errorResponse);

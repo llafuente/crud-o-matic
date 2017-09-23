@@ -86,7 +86,7 @@ export class ListVoucherComponent extends BaseComponent {
   entities: Pagination<VoucherType>;
 
   uploader: FileUploader = new FileUploader({
-    url: `${this.domain}/vouchers/csv`,
+    url: `${this.domain}/api/v1/vouchers/csv`,
     authToken: "Bearer " + localStorage.getItem("access_token"), // this is just an easy hack to use it
   });
 
@@ -97,15 +97,18 @@ export class ListVoucherComponent extends BaseComponent {
   ) {
     super(injector, activatedRoute);
 
-    console.log(`--> GET: ${this.domain}/vouchers`);
-    this.http.get(`${this.domain}/vouchers`).subscribe(
+    console.log(`--> GET: ${this.domain}/api/v1/vouchers`);
+    this.http.get(`${this.domain}/api/v1/vouchers`).subscribe(
       (response: Pagination<VoucherType>) => {
-        console.log("<-- GET: ${this.domain}/vouchers", response);
+        console.log("<-- GET: ${this.domain}/api/v1/vouchers", response);
 
         this.entities = Pagination.fromJSON<VoucherType>(VoucherType, response);
       },
       (errorResponse: Response) => {
-        console.log(`<-- GET Error: ${this.domain}/vouchers`, errorResponse);
+        console.log(
+          `<-- GET Error: ${this.domain}/api/v1/vouchers`,
+          errorResponse,
+        );
         this.errorHandler(errorResponse);
       },
     );
@@ -123,15 +126,18 @@ export class ListVoucherComponent extends BaseComponent {
     }
 
     this.loading = true;
-    console.log(`--> DELETE: ${this.domain}/vouchers/:voucherId`, row);
+    console.log(`--> DELETE: ${this.domain}/api/v1/vouchers/:voucherId`, row);
     this.http
       .delete(
-        `${this.domain}/vouchers/:voucherId`.replace(":voucherId", "" + row.id),
+        `${this.domain}/api/v1/vouchers/:voucherId`.replace(
+          ":voucherId",
+          "" + row.id,
+        ),
       )
       .subscribe(
         (response: Response) => {
           console.log(
-            `<-- DELETE: ${this.domain}/vouchers/:voucherId`,
+            `<-- DELETE: ${this.domain}/api/v1/vouchers/:voucherId`,
             response,
           );
           this.entities.list.splice(idx, 1);
@@ -139,7 +145,7 @@ export class ListVoucherComponent extends BaseComponent {
         },
         (errorResponse: Response) => {
           console.log(
-            `<-- DELETE Error: ${this.domain}/vouchers/:voucherId`,
+            `<-- DELETE Error: ${this.domain}/api/v1/vouchers/:voucherId`,
             errorResponse,
           );
           this.errorHandler(errorResponse);

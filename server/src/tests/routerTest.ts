@@ -47,30 +47,38 @@ export function toJSON(entity: ITestModel) {
 const routerTest = express
   .Router()
   .use(authorization(null))
-  .post("/tests/csv", upload.single("file"), csvTest, function(
+  .post("/api/v1/tests/csv", upload.single("file"), csvTest, function(
     req: Request,
     res: express.Response,
     next: express.NextFunction,
   ) {
     res.status(204).json();
   })
-  .post("/tests", cleanBody, createTest, function(req: Request, res: express.Response, next: express.NextFunction) {
+  .post("/api/v1/tests", cleanBody, createTest, function(
+    req: Request,
+    res: express.Response,
+    next: express.NextFunction,
+  ) {
     res.status(201).json(toJSON(req.test));
   })
-  .get("/tests", listTest, function(req: Request, res: express.Response, next: express.NextFunction) {
+  .get("/api/v1/tests", listTest, function(req: Request, res: express.Response, next: express.NextFunction) {
     res.status(200).json(toJSONList(req.tests));
   })
-  .get("/tests/:testId", readTest, function(req: Request, res: express.Response, next: express.NextFunction) {
+  .get("/api/v1/tests/:testId", readTest, function(req: Request, res: express.Response, next: express.NextFunction) {
     res.status(200).json(toJSON(req.test));
   })
-  .patch("/tests/:testId", cleanBody, readTest, updateTest, function(
+  .patch("/api/v1/tests/:testId", cleanBody, readTest, updateTest, function(
     req: Request,
     res: express.Response,
     next: express.NextFunction,
   ) {
     res.status(200).json(req.test);
   })
-  .delete("/tests/:testId", destroyTest, function(req: Request, res: express.Response, next: express.NextFunction) {
+  .delete("/api/v1/tests/:testId", destroyTest, function(
+    req: Request,
+    res: express.Response,
+    next: express.NextFunction,
+  ) {
     res.status(204).send();
   });
 

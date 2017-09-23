@@ -109,7 +109,7 @@ app.use(
 // authentication layer
 const secret = "sdkjksf8j2nsk87";
 app
-  .post("/auth", function(req: Request, res: express.Response, next: express.NextFunction) {
+  .post("/api/v1/auth", function(req: Request, res: express.Response, next: express.NextFunction) {
     console.log(req.body);
     User.findOne({
       userlogin: req.body.userlogin,
@@ -186,7 +186,7 @@ app
           return next();
         }) );
   })
-  .post("/me", function(req: Request, res: express.Response, next: express.NextFunction) {
+  .post("/api/v1/me", function(req: Request, res: express.Response, next: express.NextFunction) {
     // TODO check token
     if (!req.headers.authorization) {
       return next(new HttpError(401, "no session"));

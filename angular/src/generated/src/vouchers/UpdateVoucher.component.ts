@@ -137,7 +137,7 @@ import { VoucherType } from "../models/IVoucher";
 </bb-input-container>
 
       <bb-button [routerLink]="['../..', 'list']">Cancelar</bb-button>
-      <bb-button (click)="save()">Guardar</bb-button>
+      <bb-button [disabled]="!f.valid" (click)="save()">Guardar</bb-button>
     </form>
     <!-- <pre>entity: {{entity | json}}</pre> -->
     </div>
@@ -170,13 +170,18 @@ export class UpdateVoucherComponent extends BaseComponent {
     //this.id = parseInt(this.getRouteParameter("voucherId"), 10);
     this.id = this.getRouteParameter("voucherId");
 
-    console.log(`--> GET: ${this.domain}/vouchers/:voucherId`, this.id);
+    console.log(`--> GET: ${this.domain}/api/v1/vouchers/:voucherId`, this.id);
     this.http
-      .get(`${this.domain}/vouchers/:voucherId`.replace(":voucherId", this.id))
+      .get(
+        `${this.domain}/api/v1/vouchers/:voucherId`.replace(
+          ":voucherId",
+          this.id,
+        ),
+      )
       .subscribe(
         (response: VoucherType) => {
           console.log(
-            `<-- GET: ${this.domain}/vouchers/:voucherId`,
+            `<-- GET: ${this.domain}/api/v1/vouchers/:voucherId`,
             JSON.stringify(response, null, 2),
           );
 
@@ -184,17 +189,17 @@ export class UpdateVoucherComponent extends BaseComponent {
         },
         (errorResponse: Response) => {
           console.log(
-            `<-- GET Error: ${this.domain}/vouchers/:voucherId`,
+            `<-- GET Error: ${this.domain}/api/v1/vouchers/:voucherId`,
             errorResponse,
           );
           this.errorHandler(errorResponse);
         },
       );
 
-    this.http.get(`${this.domain}/tests`).subscribe(
+    this.http.get(`${this.domain}/api/v1/tests`).subscribe(
       (response: any) => {
         console.log(
-          `<-- GET: ${this.domain}/tests`,
+          `<-- GET: ${this.domain}/api/v1/tests`,
           JSON.stringify(response, null, 2),
         );
 
@@ -210,25 +215,31 @@ export class UpdateVoucherComponent extends BaseComponent {
         }
       },
       (errorResponse: Response) => {
-        console.log(`<-- GET Error: ${this.domain}/tests`, errorResponse);
+        console.log(
+          `<-- GET Error: ${this.domain}/api/v1/tests`,
+          errorResponse,
+        );
       },
     );
   }
 
   save() {
     console.log(
-      `<-- PATCH: ${this.domain}/vouchers/:voucherId`,
+      `<-- PATCH: ${this.domain}/api/v1/vouchers/:voucherId`,
       JSON.stringify(this.entity, null, 2),
     );
     this.http
       .patch(
-        `${this.domain}/vouchers/:voucherId`.replace(":voucherId", this.id),
+        `${this.domain}/api/v1/vouchers/:voucherId`.replace(
+          ":voucherId",
+          this.id,
+        ),
         this.entity,
       )
       .subscribe(
         (response: VoucherType) => {
           console.log(
-            `<-- PATCH: ${this.domain}/vouchers/:voucherId`,
+            `<-- PATCH: ${this.domain}/api/v1/vouchers/:voucherId`,
             JSON.stringify(response, null, 2),
           );
 
@@ -238,7 +249,7 @@ export class UpdateVoucherComponent extends BaseComponent {
         },
         (errorResponse: Response) => {
           console.log(
-            "<-- PATCH Error: ${this.domain}/vouchers/:voucherId",
+            "<-- PATCH Error: ${this.domain}/api/v1/vouchers/:voucherId",
             errorResponse,
           );
           this.errorHandler(errorResponse);

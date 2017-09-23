@@ -84,11 +84,13 @@ export class Schema {
     return schema;
   }
 */
-  addField(fieldName: string, field: Field) {
+  addField(fieldName: string, field: Field) : Field {
     this.root.addProperty(fieldName, field);
     field.each((fname, f) => {
       f.attach(this);
     });
+
+    return field;
   }
 
   forEachBackEndField(cb: IFieldCallback, recursive: boolean = false) {

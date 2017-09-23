@@ -9,7 +9,7 @@ import { Voucher } from "./models/Voucher";
 
 export const customAppRouter = express
   .Router()
-  .post("/users/redeem-voucher", (req: Request, res: express.Response, next: express.NextFunction) => {
+  .post("/api/v1/users/redeem-voucher", (req: Request, res: express.Response, next: express.NextFunction) => {
     const label = req.body.voucherKey;
 
     Voucher.findOne({
@@ -49,7 +49,7 @@ export const customAppRouter = express
       });
   })
   .post(
-    "/users/stats/question-start/:testId/:questionId",
+    "/api/v1/users/stats/question-start/:testId/:questionId",
     (req: Request, res: express.Response, next: express.NextFunction) => {
       const testId = req.param("testId", null);
       const questionId = req.param("questionId", null);
@@ -79,7 +79,7 @@ export const customAppRouter = express
     },
   )
   .post(
-    "/users/stats/question-end/:testId/:statsIdx/:answerIdx",
+    "/api/v1/users/stats/question-end/:testId/:statsIdx/:answerIdx",
     (req: Request, res: express.Response, next: express.NextFunction) => {
       //const testId = req.param("testId", null);
       const statsIdx = req.param("statsIdx", null);
@@ -106,7 +106,7 @@ export const customAppRouter = express
         .catch(next);
     },
   )
-  .post("/users/test/resume/:testId", (req: Request, res: express.Response, next: express.NextFunction) => {
+  .post("/api/v1/users/test/resume/:testId", (req: Request, res: express.Response, next: express.NextFunction) => {
     for (let statsIdx = 0; statsIdx < req.loggedUser.stats.length; ++statsIdx) {
       const s = req.loggedUser.stats[statsIdx];
 
@@ -116,7 +116,7 @@ export const customAppRouter = express
         const answers = [];
         let elapsedTime = 0;
 
-        for (let stat2 of req.loggedUser.stats) {
+        for (const stat2 of req.loggedUser.stats) {
           if (stat2.type == "question" && stat2.answers) {
             answers[stat2.questionId] = stat2.answers[0];
           }
@@ -136,10 +136,10 @@ export const customAppRouter = express
     res.status(200).json({
       id: null,
       answers: null,
-      elapsedTime: null
+      elapsedTime: null,
     });
   })
-  .post("/users/stats/test-start/:testId", (req: Request, res: express.Response, next: express.NextFunction) => {
+  .post("/api/v1/users/stats/test-start/:testId", (req: Request, res: express.Response, next: express.NextFunction) => {
     const testId = req.param("testId", null);
 
     // TODO check testId, questionId
@@ -164,7 +164,7 @@ export const customAppRouter = express
       .catch(next);
   })
   .post(
-    "/users/stats/test-end/:testId/:statsIdx",
+    "/api/v1/users/stats/test-end/:testId/:statsIdx",
     (req: Request, res: express.Response, next: express.NextFunction) => {
       //const testId = req.param("testId", null);
       const statsIdx = req.param("statsIdx", null);

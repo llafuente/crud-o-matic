@@ -137,7 +137,7 @@ import { VoucherType } from "../models/IVoucher";
 </bb-input-container>
 
       <bb-button [routerLink]="['..', 'list']">Cancelar</bb-button>
-      <bb-button (click)="save()">Guardar</bb-button>
+      <bb-button [disabled]="!f.valid" (click)="save()">Guardar</bb-button>
     </form>
     <!-- <pre>entity: {{entity | json}}</pre> -->
     </div>
@@ -167,10 +167,10 @@ export class CreateVoucherComponent extends BaseComponent {
   ngOnInit(): void {
     // this.loading
 
-    this.http.get(`${this.domain}/tests`).subscribe(
+    this.http.get(`${this.domain}/api/v1/tests`).subscribe(
       (response: any) => {
         console.log(
-          `<-- GET: ${this.domain}/tests`,
+          `<-- GET: ${this.domain}/api/v1/tests`,
           JSON.stringify(response, null, 2),
         );
 
@@ -186,20 +186,23 @@ export class CreateVoucherComponent extends BaseComponent {
         }
       },
       (errorResponse: Response) => {
-        console.log(`<-- GET Error: ${this.domain}/tests`, errorResponse);
+        console.log(
+          `<-- GET Error: ${this.domain}/api/v1/tests`,
+          errorResponse,
+        );
       },
     );
   }
 
   save() {
     console.log(
-      `--> POST: ${this.domain}/vouchers`,
+      `--> POST: ${this.domain}/api/v1/vouchers`,
       JSON.stringify(this.entity, null, 2),
     );
-    this.http.post(`${this.domain}/vouchers`, this.entity).subscribe(
+    this.http.post(`${this.domain}/api/v1/vouchers`, this.entity).subscribe(
       (response: VoucherType) => {
         console.log(
-          "<-- POST: ${this.domain}/vouchers",
+          "<-- POST: ${this.domain}/api/v1/vouchers",
           JSON.stringify(response, null, 2),
         );
 
@@ -208,7 +211,10 @@ export class CreateVoucherComponent extends BaseComponent {
         });
       },
       (errorResponse: Response) => {
-        console.log(`<-- POST Error: ${this.domain}/vouchers`, errorResponse);
+        console.log(
+          `<-- POST Error: ${this.domain}/api/v1/vouchers`,
+          errorResponse,
+        );
         this.errorHandler(errorResponse);
       },
     );

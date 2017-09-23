@@ -82,7 +82,7 @@ app.use(bodyParser.urlencoded({
 
 // authentication layer
 const secret = "sdkjksf8j2nsk87";
-app.post('/auth', function(req: Request, res: express.Response, next: express.NextFunction) {
+app.post('<%= generator.baseApiUrl%>/auth', function(req: Request, res: express.Response, next: express.NextFunction) {
   console.log(req.body);
   User.findOne({
     userlogin: req.body.userlogin
@@ -154,7 +154,7 @@ app.post('/auth', function(req: Request, res: express.Response, next: express.Ne
     return next();
   });
 })
-.post('/me', function(req: Request, res: express.Response, next: express.NextFunction) {
+.post('<%= generator.baseApiUrl%>/me', function(req: Request, res: express.Response, next: express.NextFunction) {
   // TODO check token
   if (!req.headers.authorization) {
     return next(new HttpError(401, 'no session'));

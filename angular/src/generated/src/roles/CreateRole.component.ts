@@ -36,7 +36,7 @@ import { RoleType } from "../models/IRole";
 </bb-input-container>
 
       <bb-button [routerLink]="['..', 'list']">Cancelar</bb-button>
-      <bb-button (click)="save()">Guardar</bb-button>
+      <bb-button [disabled]="!f.valid" (click)="save()">Guardar</bb-button>
     </form>
     <!-- <pre>entity: {{entity | json}}</pre> -->
     </div>
@@ -67,13 +67,13 @@ export class CreateRoleComponent extends BaseComponent {
 
   save() {
     console.log(
-      `--> POST: ${this.domain}/roles`,
+      `--> POST: ${this.domain}/api/v1/roles`,
       JSON.stringify(this.entity, null, 2),
     );
-    this.http.post(`${this.domain}/roles`, this.entity).subscribe(
+    this.http.post(`${this.domain}/api/v1/roles`, this.entity).subscribe(
       (response: RoleType) => {
         console.log(
-          "<-- POST: ${this.domain}/roles",
+          "<-- POST: ${this.domain}/api/v1/roles",
           JSON.stringify(response, null, 2),
         );
 
@@ -82,7 +82,10 @@ export class CreateRoleComponent extends BaseComponent {
         });
       },
       (errorResponse: Response) => {
-        console.log(`<-- POST Error: ${this.domain}/roles`, errorResponse);
+        console.log(
+          `<-- POST Error: ${this.domain}/api/v1/roles`,
+          errorResponse,
+        );
         this.errorHandler(errorResponse);
       },
     );

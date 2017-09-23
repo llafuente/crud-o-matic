@@ -30,7 +30,7 @@ export class LoggedUser {
 
   refresh() {
     this.http
-      .post(`${this.config.get("domain")}/me`, null)
+      .post(`${this.config.get("domain")}/api/v1/me`, null)
       .subscribe((response: IUser) => {
         this.me = response;
         this.onChange.next(this);

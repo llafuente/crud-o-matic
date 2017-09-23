@@ -47,30 +47,38 @@ export function toJSON(entity: IUserModel) {
 const routerUser = express
   .Router()
   .use(authorization(null))
-  .post("/users/csv", upload.single("file"), csvUser, function(
+  .post("/api/v1/users/csv", upload.single("file"), csvUser, function(
     req: Request,
     res: express.Response,
     next: express.NextFunction,
   ) {
     res.status(204).json();
   })
-  .post("/users", cleanBody, createUser, function(req: Request, res: express.Response, next: express.NextFunction) {
+  .post("/api/v1/users", cleanBody, createUser, function(
+    req: Request,
+    res: express.Response,
+    next: express.NextFunction,
+  ) {
     res.status(201).json(toJSON(req.user));
   })
-  .get("/users", listUser, function(req: Request, res: express.Response, next: express.NextFunction) {
+  .get("/api/v1/users", listUser, function(req: Request, res: express.Response, next: express.NextFunction) {
     res.status(200).json(toJSONList(req.users));
   })
-  .get("/users/:userId", readUser, function(req: Request, res: express.Response, next: express.NextFunction) {
+  .get("/api/v1/users/:userId", readUser, function(req: Request, res: express.Response, next: express.NextFunction) {
     res.status(200).json(toJSON(req.user));
   })
-  .patch("/users/:userId", cleanBody, readUser, updateUser, function(
+  .patch("/api/v1/users/:userId", cleanBody, readUser, updateUser, function(
     req: Request,
     res: express.Response,
     next: express.NextFunction,
   ) {
     res.status(200).json(req.user);
   })
-  .delete("/users/:userId", destroyUser, function(req: Request, res: express.Response, next: express.NextFunction) {
+  .delete("/api/v1/users/:userId", destroyUser, function(
+    req: Request,
+    res: express.Response,
+    next: express.NextFunction,
+  ) {
     res.status(204).send();
   });
 

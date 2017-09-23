@@ -1,7 +1,7 @@
 <bb-check
   id="<%= id %>"
   name="<%= name %>"
-  <% if (field.required) {%>
+  <% if (options.required) {%>
   required="required"
   <% } %>
   [(ngModel)]="<%= ngModel %>"><%= field.label %></bb-check>

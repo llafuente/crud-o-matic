@@ -5,7 +5,7 @@
 <datepicker
   id="<%= id %>"
   name="<%= name %>"
-  <% if (field.required) {%>
+  <% if (options.required) {%>
   required="required"
   <% } %>
   [(ngModel)]="<%= ngModel %>"

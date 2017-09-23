@@ -2,6 +2,7 @@ import { Schema } from "./Schema";
 import { FrontControls } from "./FrontControls";
 import { Field } from "./Field";
 import { FieldType } from "./FieldType";
+import { FrontOptions } from "./FrontOptions";
 import { AngularComponent } from "./AngularComponent";
 import * as fs from "fs";
 import * as path from "path";
@@ -52,7 +53,7 @@ export class SchemaFront {
     <form #f="ngForm" novalidate>
     ${this.getCreateControlsHTML()}
       <bb-button [routerLink]="['..', 'list']">Cancelar</bb-button>
-      <bb-button (click)="save()">Guardar</bb-button>
+      <bb-button [disabled]="!f.valid" (click)="save()">Guardar</bb-button>
     </form>
     <!-- <pre>entity: {{entity | json}}</pre> -->
     </div>
@@ -78,9 +79,9 @@ export class SchemaFront {
   <bb-section-content>
     <div>
     <form #f="ngForm" novalidate>
-    ${this.getCreateControlsHTML()}
+    ${this.getUpdateControlsHTML()}
       <bb-button [routerLink]="['../..', 'list']">Cancelar</bb-button>
-      <bb-button (click)="save()">Guardar</bb-button>
+      <bb-button [disabled]="!f.valid" (click)="save()">Guardar</bb-button>
     </form>
     <!-- <pre>entity: {{entity | json}}</pre> -->
     </div>
@@ -97,7 +98,16 @@ export class SchemaFront {
   getCreateControlsHTML(): string {
     const controls = [];
     this.parentSchema.forEachFrontEndField((fieldName, field) => {
-      controls.push(this.getFieldControlHTML(fieldName, field));
+      controls.push(this.getFieldControlHTML(fieldName, field, field.getFrontCreate()));
+    });
+
+    return controls.join("\n");
+  }
+
+  getUpdateControlsHTML(): string {
+    const controls = [];
+    this.parentSchema.forEachFrontEndField((fieldName, field) => {
+      controls.push(this.getFieldControlHTML(fieldName, field, field.getFrontUpdate()));
     });
 
     return controls.join("\n");
@@ -218,12 +228,13 @@ this.http.get(\`${field.frontData.srcUrl}\`)
         return "";
     }
   }
-  getFieldControlHTML(fieldName: string, field: Field, indexes: string[] = []): string {
+
+  getFieldControlHTML(fieldName: string, field: Field, options: FrontOptions, indexes: string[] = []): string {
     // if it's an object, don't need front type, just get all fields
     if (field.type == FieldType.Object) {
       const t = [];
       for (const i in field.properties) {
-        t.push(this.getFieldControlHTML(i, field.properties[i], indexes));
+        t.push(this.getFieldControlHTML(i, field.properties[i], options, indexes));
       }
 
       return t.join("\n");
@@ -254,7 +265,7 @@ this.http.get(\`${field.frontData.srcUrl}\`)
       case FrontControls.ARRAY:
         indexName = field.getIndexName();
         indexes.push(indexName);
-        childControls = this.getFieldControlHTML(null, field.items, indexes);
+        childControls = this.getFieldControlHTML(null, field.items, options, indexes);
         indexes.pop();
         break;
       case FrontControls.HTTP_DROPDOWN:
@@ -272,15 +283,16 @@ this.http.get(\`${field.frontData.srcUrl}\`)
     const ngModel = field.getPath();
 
     return tplCompiled({
-      field: field,
-      id: id,
-      name: name,
+      field,
+      id,
+      name,
       ngModel: ngModel.join("."),
-      modelName: modelName,
+      modelName,
       safeNgModel: ngModel.join("?."),
-      indexName: indexName,
-      childControls: childControls,
-      indexes: indexes,
+      indexName,
+      childControls,
+      indexes,
+      options,
 
       srcUrl: null,
       srcModel: srcModel,

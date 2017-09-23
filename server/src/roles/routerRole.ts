@@ -47,30 +47,38 @@ export function toJSON(entity: IRoleModel) {
 const routerRole = express
   .Router()
   .use(authorization(null))
-  .post("/roles/csv", upload.single("file"), csvRole, function(
+  .post("/api/v1/roles/csv", upload.single("file"), csvRole, function(
     req: Request,
     res: express.Response,
     next: express.NextFunction,
   ) {
     res.status(204).json();
   })
-  .post("/roles", cleanBody, createRole, function(req: Request, res: express.Response, next: express.NextFunction) {
+  .post("/api/v1/roles", cleanBody, createRole, function(
+    req: Request,
+    res: express.Response,
+    next: express.NextFunction,
+  ) {
     res.status(201).json(toJSON(req.role));
   })
-  .get("/roles", listRole, function(req: Request, res: express.Response, next: express.NextFunction) {
+  .get("/api/v1/roles", listRole, function(req: Request, res: express.Response, next: express.NextFunction) {
     res.status(200).json(toJSONList(req.roles));
   })
-  .get("/roles/:roleId", readRole, function(req: Request, res: express.Response, next: express.NextFunction) {
+  .get("/api/v1/roles/:roleId", readRole, function(req: Request, res: express.Response, next: express.NextFunction) {
     res.status(200).json(toJSON(req.role));
   })
-  .patch("/roles/:roleId", cleanBody, readRole, updateRole, function(
+  .patch("/api/v1/roles/:roleId", cleanBody, readRole, updateRole, function(
     req: Request,
     res: express.Response,
     next: express.NextFunction,
   ) {
     res.status(200).json(req.role);
   })
-  .delete("/roles/:roleId", destroyRole, function(req: Request, res: express.Response, next: express.NextFunction) {
+  .delete("/api/v1/roles/:roleId", destroyRole, function(
+    req: Request,
+    res: express.Response,
+    next: express.NextFunction,
+  ) {
     res.status(204).send();
   });
 

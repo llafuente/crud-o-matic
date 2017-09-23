@@ -238,7 +238,7 @@ import { TestType } from "../models/ITest";
 </bb-static>
 
       <bb-button [routerLink]="['..', 'list']">Cancelar</bb-button>
-      <bb-button (click)="save()">Guardar</bb-button>
+      <bb-button [disabled]="!f.valid" (click)="save()">Guardar</bb-button>
     </form>
     <!-- <pre>entity: {{entity | json}}</pre> -->
     </div>
@@ -269,13 +269,13 @@ export class CreateTestComponent extends BaseComponent {
 
   save() {
     console.log(
-      `--> POST: ${this.domain}/tests`,
+      `--> POST: ${this.domain}/api/v1/tests`,
       JSON.stringify(this.entity, null, 2),
     );
-    this.http.post(`${this.domain}/tests`, this.entity).subscribe(
+    this.http.post(`${this.domain}/api/v1/tests`, this.entity).subscribe(
       (response: TestType) => {
         console.log(
-          "<-- POST: ${this.domain}/tests",
+          "<-- POST: ${this.domain}/api/v1/tests",
           JSON.stringify(response, null, 2),
         );
 
@@ -284,7 +284,10 @@ export class CreateTestComponent extends BaseComponent {
         });
       },
       (errorResponse: Response) => {
-        console.log(`<-- POST Error: ${this.domain}/tests`, errorResponse);
+        console.log(
+          `<-- POST Error: ${this.domain}/api/v1/tests`,
+          errorResponse,
+        );
         this.errorHandler(errorResponse);
       },
     );

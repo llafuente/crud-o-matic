@@ -86,7 +86,7 @@ export class ListUserComponent extends BaseComponent {
   entities: Pagination<UserType>;
 
   uploader: FileUploader = new FileUploader({
-    url: `${this.domain}/users/csv`,
+    url: `${this.domain}/api/v1/users/csv`,
     authToken: "Bearer " + localStorage.getItem("access_token"), // this is just an easy hack to use it
   });
 
@@ -97,15 +97,18 @@ export class ListUserComponent extends BaseComponent {
   ) {
     super(injector, activatedRoute);
 
-    console.log(`--> GET: ${this.domain}/users`);
-    this.http.get(`${this.domain}/users`).subscribe(
+    console.log(`--> GET: ${this.domain}/api/v1/users`);
+    this.http.get(`${this.domain}/api/v1/users`).subscribe(
       (response: Pagination<UserType>) => {
-        console.log("<-- GET: ${this.domain}/users", response);
+        console.log("<-- GET: ${this.domain}/api/v1/users", response);
 
         this.entities = Pagination.fromJSON<UserType>(UserType, response);
       },
       (errorResponse: Response) => {
-        console.log(`<-- GET Error: ${this.domain}/users`, errorResponse);
+        console.log(
+          `<-- GET Error: ${this.domain}/api/v1/users`,
+          errorResponse,
+        );
         this.errorHandler(errorResponse);
       },
     );
@@ -123,18 +126,23 @@ export class ListUserComponent extends BaseComponent {
     }
 
     this.loading = true;
-    console.log(`--> DELETE: ${this.domain}/users/:userId`, row);
+    console.log(`--> DELETE: ${this.domain}/api/v1/users/:userId`, row);
     this.http
-      .delete(`${this.domain}/users/:userId`.replace(":userId", "" + row.id))
+      .delete(
+        `${this.domain}/api/v1/users/:userId`.replace(":userId", "" + row.id),
+      )
       .subscribe(
         (response: Response) => {
-          console.log(`<-- DELETE: ${this.domain}/users/:userId`, response);
+          console.log(
+            `<-- DELETE: ${this.domain}/api/v1/users/:userId`,
+            response,
+          );
           this.entities.list.splice(idx, 1);
           this.loading = false;
         },
         (errorResponse: Response) => {
           console.log(
-            `<-- DELETE Error: ${this.domain}/users/:userId`,
+            `<-- DELETE Error: ${this.domain}/api/v1/users/:userId`,
             errorResponse,
           );
           this.errorHandler(errorResponse);

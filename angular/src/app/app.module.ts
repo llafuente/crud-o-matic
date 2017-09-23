@@ -11,6 +11,9 @@ import { AppRoutingModule } from "./app.routing";
 import { JwtModule } from "@auth0/angular-jwt";
 import { AppComponent, components, services } from "./";
 
+// TODO calculate hostname
+//const domain = location.hostname + (location.port != "80" ? `:${location.port}` : "");
+
 // imports, declarations are exported to easy unit-testing configuration
 export const imports = [
   BrowserModule,

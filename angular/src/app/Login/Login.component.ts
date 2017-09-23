@@ -28,20 +28,22 @@ export class LoginComponent extends BaseComponent {
   }
 
   login() {
-    this.http.post(`${this.config.get("domain")}/auth`, this.auth).subscribe(
-      (response) => {
-        const token = response.json().token;
-        console.log("set token", token);
-        this.user.setToken(token);
-        this.handleSubscription(
-          this.user.onChange.subscribe(() => {
-            this.router.navigate(["/home"]);
-          }),
-        );
-      },
-      (err) => {
-        console.log("Error occured.", err);
-      },
-    );
+    this.http
+      .post(`${this.config.get("domain")}/api/v1/auth`, this.auth)
+      .subscribe(
+        (response) => {
+          const token = response.json().token;
+          console.log("set token", token);
+          this.user.setToken(token);
+          this.handleSubscription(
+            this.user.onChange.subscribe(() => {
+              this.router.navigate(["/home"]);
+            }),
+          );
+        },
+        (err) => {
+          console.log("Error occured.", err);
+        },
+      );
   }
 }

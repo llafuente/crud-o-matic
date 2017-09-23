@@ -202,7 +202,7 @@ import { UserType } from "../models/IUser";
 </bb-static>
 
       <bb-button [routerLink]="['..', 'list']">Cancelar</bb-button>
-      <bb-button (click)="save()">Guardar</bb-button>
+      <bb-button [disabled]="!f.valid" (click)="save()">Guardar</bb-button>
     </form>
     <!-- <pre>entity: {{entity | json}}</pre> -->
     </div>
@@ -236,10 +236,10 @@ export class CreateUserComponent extends BaseComponent {
   ngOnInit(): void {
     // this.loading
 
-    this.http.get(`${this.domain}/roles`).subscribe(
+    this.http.get(`${this.domain}/api/v1/roles`).subscribe(
       (response: any) => {
         console.log(
-          `<-- GET: ${this.domain}/roles`,
+          `<-- GET: ${this.domain}/api/v1/roles`,
           JSON.stringify(response, null, 2),
         );
 
@@ -255,20 +255,23 @@ export class CreateUserComponent extends BaseComponent {
         }
       },
       (errorResponse: Response) => {
-        console.log(`<-- GET Error: ${this.domain}/roles`, errorResponse);
+        console.log(
+          `<-- GET Error: ${this.domain}/api/v1/roles`,
+          errorResponse,
+        );
       },
     );
   }
 
   save() {
     console.log(
-      `--> POST: ${this.domain}/users`,
+      `--> POST: ${this.domain}/api/v1/users`,
       JSON.stringify(this.entity, null, 2),
     );
-    this.http.post(`${this.domain}/users`, this.entity).subscribe(
+    this.http.post(`${this.domain}/api/v1/users`, this.entity).subscribe(
       (response: UserType) => {
         console.log(
-          "<-- POST: ${this.domain}/users",
+          "<-- POST: ${this.domain}/api/v1/users",
           JSON.stringify(response, null, 2),
         );
 
@@ -277,7 +280,10 @@ export class CreateUserComponent extends BaseComponent {
         });
       },
       (errorResponse: Response) => {
-        console.log(`<-- POST Error: ${this.domain}/users`, errorResponse);
+        console.log(
+          `<-- POST Error: ${this.domain}/api/v1/users`,
+          errorResponse,
+        );
         this.errorHandler(errorResponse);
       },
     );
