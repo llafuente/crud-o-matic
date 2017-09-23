@@ -42,7 +42,7 @@ export class UserHomeComponent extends BaseComponent {
   loadTest(testId: string) {
     // load test
     this.http
-      .get(`${this.config.get("domain")}/tests/${testId}`)
+      .get(`${this.domain}/api/v1/tests/${testId}`)
       .subscribe((response: ITest) => {
         this.test = response;
       });
@@ -50,7 +50,7 @@ export class UserHomeComponent extends BaseComponent {
 
   redeem(bbModal /*TODO type*/) {
     this.http
-      .post(`${this.config.get("domain")}/users/redeem-voucher`, {
+      .post(`${this.domain}/api/v1/users/redeem-voucher`, {
         voucherKey: this.voucherKey,
       })
       .subscribe(

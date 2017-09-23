@@ -9,11 +9,11 @@
 
   <hr class="hidden" />
 
-  <h1 class="underline d-flex">
+  <h2 class="underline d-flex">
   <span>{{test.label}}</span>
   <span class="ml-auto">({{currentQuestion + 1}} / {{maxQuestion}})</span>
-  </h1>
-  <h3><span class="blue">{{currentQuestion + 1}}</span>. {{test.blocks[currentBlock].questions[currentQuestion].questionLabel}}</h3>
+  </h2>
+  <h4><span class="blue">{{currentQuestion + 1}}</span>. {{test.blocks[currentBlock].questions[currentQuestion].questionLabel}}</h4>
 
   <hr class="hidden half" />
 
@@ -26,7 +26,7 @@
       [(ngModel)]="answers[currentQuestion]"
       required="required"
       [value]="i">
-        <h5><strong>{{answerIndexes[i]}}</strong>: {{answer.answerLabel}}</h5>
+        <h6><strong class="blue">{{answerIndexes[i]}})</strong> {{answer.answerLabel}}</h6>
       </bb-radio>
 
     </li>

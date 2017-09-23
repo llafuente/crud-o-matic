@@ -10,6 +10,7 @@ import { Voucher } from "./models/Voucher";
 export const customAppRouter = express
   .Router()
   .post("/api/v1/users/redeem-voucher", (req: Request, res: express.Response, next: express.NextFunction) => {
+    console.log("BODY:", req.body);
     const label = req.body.voucherKey;
 
     Voucher.findOne({

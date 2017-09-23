@@ -47,11 +47,8 @@ bb-section > section > h1 {
   }
 }
 
-h1.underline {
-  /*
-  border-bottom: 1px dashed $blue-light;
-  padding-bottom: 0.5rem;
-  */
+h1.underline,
+h2.underline {
   background-image: linear-gradient(to right, $blue-light 33%, rgba(255,255,255,0) 0%);
   background-position: bottom;
   background-size: 5px 1px;
