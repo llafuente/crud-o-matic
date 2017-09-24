@@ -1,7 +1,7 @@
 import * as express from "express";
 import { Request } from "../app";
 import { HttpError } from "../HttpError";
-import { IRoleModel } from "../models/Role";
+import { IRoleModel, Role } from "../models/Role";
 
 interface IUpdateCB {
   (err: Error | HttpError, savedRow?: IRoleModel);
@@ -45,6 +45,26 @@ export function updateRole(req: Request, res: express.Response, next: express.Ne
     }
 
     console.info("created@database", savedRow);
+
+    req.role = savedRow;
+    return next();
+  });
+}
+
+export function cloneRole(req: Request, res: express.Response, next: express.NextFunction) {
+  const row = req.role;
+
+  if (!row) {
+    return next(new HttpError(500, "Cannot fetch role"));
+  }
+
+  console.info("cloning", row.toJSON());
+
+  row._id = null;
+  Role.create(row.toJSON(), function(err, savedRow) {
+    if (!savedRow) {
+      return next(new HttpError(422, "database don't return data"));
+    }
 
     req.role = savedRow;
     return next();

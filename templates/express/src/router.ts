@@ -2,7 +2,7 @@ import * as express from "express";
 import { Request } from "../app";
 import { <%= backend.createFunction %> } from "./<%= backend.createFunction %>";
 import { <%= backend.readFunction %> } from "./<%= backend.readFunction %>";
-import { <%= backend.updateFunction %> } from "./<%= backend.updateFunction %>";
+import { <%= backend.updateFunction %>, <%= backend.cloneFunction %> } from "./<%= backend.updateFunction %>";
 import { <%= backend.listFunction %> } from "./<%= backend.listFunction %>";
 import { <%= backend.deleteFunction %> } from "./<%= backend.deleteFunction %>";
 import { <%= backend.csvImportFunction %> } from "./<%= backend.csvImportFunction %>";
@@ -52,6 +52,15 @@ const <%= backend.routerName %> = express.Router()
   <%= backend.csvImportFunction %>,
   function (req: Request, res: express.Response, next: express.NextFunction) {
     res.status(204).json();
+  }
+)
+.post(
+  '<%= url("CLONE") %>',
+  cleanBody,
+  <%= backend.readFunction %>,
+  <%= backend.cloneFunction %>,
+  function (req: Request, res: express.Response, next: express.NextFunction) {
+    res.status(200).json(req[<%- JSON.stringify(singular) %>]);
   }
 )
 .post(

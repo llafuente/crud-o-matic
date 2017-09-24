@@ -2,7 +2,7 @@ import * as express from "express";
 import { Request } from "../app";
 import { createTest } from "./createTest";
 import { readTest } from "./readTest";
-import { updateTest } from "./updateTest";
+import { updateTest, cloneTest } from "./updateTest";
 import { listTest } from "./listTest";
 import { destroyTest } from "./destroyTest";
 import { csvTest } from "./csvTest";
@@ -53,6 +53,13 @@ const routerTest = express
     next: express.NextFunction,
   ) {
     res.status(204).json();
+  })
+  .post("/api/v1/tests/:testId/clone", cleanBody, readTest, cloneTest, function(
+    req: Request,
+    res: express.Response,
+    next: express.NextFunction,
+  ) {
+    res.status(200).json(req.test);
   })
   .post("/api/v1/tests", cleanBody, createTest, function(
     req: Request,

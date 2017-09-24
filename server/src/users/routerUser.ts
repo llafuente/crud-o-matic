@@ -2,7 +2,7 @@ import * as express from "express";
 import { Request } from "../app";
 import { createUser } from "./createUser";
 import { readUser } from "./readUser";
-import { updateUser } from "./updateUser";
+import { updateUser, cloneUser } from "./updateUser";
 import { listUser } from "./listUser";
 import { destroyUser } from "./destroyUser";
 import { csvUser } from "./csvUser";
@@ -53,6 +53,13 @@ const routerUser = express
     next: express.NextFunction,
   ) {
     res.status(204).json();
+  })
+  .post("/api/v1/users/:userId/clone", cleanBody, readUser, cloneUser, function(
+    req: Request,
+    res: express.Response,
+    next: express.NextFunction,
+  ) {
+    res.status(200).json(req.user);
   })
   .post("/api/v1/users", cleanBody, createUser, function(
     req: Request,

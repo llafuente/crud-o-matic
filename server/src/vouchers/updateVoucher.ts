@@ -1,7 +1,7 @@
 import * as express from "express";
 import { Request } from "../app";
 import { HttpError } from "../HttpError";
-import { IVoucherModel } from "../models/Voucher";
+import { IVoucherModel, Voucher } from "../models/Voucher";
 
 interface IUpdateCB {
   (err: Error | HttpError, savedRow?: IVoucherModel);
@@ -45,6 +45,26 @@ export function updateVoucher(req: Request, res: express.Response, next: express
     }
 
     console.info("created@database", savedRow);
+
+    req.voucher = savedRow;
+    return next();
+  });
+}
+
+export function cloneVoucher(req: Request, res: express.Response, next: express.NextFunction) {
+  const row = req.voucher;
+
+  if (!row) {
+    return next(new HttpError(500, "Cannot fetch voucher"));
+  }
+
+  console.info("cloning", row.toJSON());
+
+  row._id = null;
+  Voucher.create(row.toJSON(), function(err, savedRow) {
+    if (!savedRow) {
+      return next(new HttpError(422, "database don't return data"));
+    }
 
     req.voucher = savedRow;
     return next();

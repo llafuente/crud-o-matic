@@ -138,6 +138,8 @@ export class Schema {
     }
 
     switch (action) {
+      case "CLONE":
+        return `${domain}${this.generator.baseApiUrl}/${this.plural}/:${this.entityId}/clone`;
       case "IMPORT":
         return `${domain}${this.generator.baseApiUrl}/${this.plural}/csv`;
       case "LIST":

@@ -2,7 +2,7 @@ import * as express from "express";
 import { Request } from '../app';
 import { HttpError } from '../HttpError';
 import { <%= interfaceName %> } from '../models/<%= interfaceName %>';
-import { <%= interfaceModel %> } from '../models/<%= singularUc %>';
+import { <%= interfaceModel %>, <%= singularUc %> } from '../models/<%= singularUc %>';
 
 interface IUpdateCB {
   (err: Error|HttpError, savedRow?: <%= interfaceModel %>)
@@ -52,4 +52,22 @@ export function <%= backend.updateFunction %>(req: Request, res: express.Respons
   });
 }
 
+export function <%= backend.cloneFunction %>(req: Request, res: express.Response, next: express.NextFunction) {
+  const row = req[<%- JSON.stringify(singular) %>];
 
+  if (!row) {
+   return next(new HttpError(500, 'Cannot fetch <%= singular %>'));
+  }
+
+  console.info('cloning', row.toJSON());
+
+  row._id = null;
+  <%= singularUc %>.create(row.toJSON(), function(err, savedRow) {
+    if (!savedRow) {
+      return next(new HttpError(422, 'database don\'t return data'));
+    }
+
+    req[<%- JSON.stringify(singular) %>] = savedRow;
+    return next();
+  });
+}

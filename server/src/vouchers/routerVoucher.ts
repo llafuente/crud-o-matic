@@ -2,7 +2,7 @@ import * as express from "express";
 import { Request } from "../app";
 import { createVoucher } from "./createVoucher";
 import { readVoucher } from "./readVoucher";
-import { updateVoucher } from "./updateVoucher";
+import { updateVoucher, cloneVoucher } from "./updateVoucher";
 import { listVoucher } from "./listVoucher";
 import { destroyVoucher } from "./destroyVoucher";
 import { csvVoucher } from "./csvVoucher";
@@ -53,6 +53,13 @@ const routerVoucher = express
     next: express.NextFunction,
   ) {
     res.status(204).json();
+  })
+  .post("/api/v1/vouchers/:voucherId/clone", cleanBody, readVoucher, cloneVoucher, function(
+    req: Request,
+    res: express.Response,
+    next: express.NextFunction,
+  ) {
+    res.status(200).json(req.voucher);
   })
   .post("/api/v1/vouchers", cleanBody, createVoucher, function(
     req: Request,

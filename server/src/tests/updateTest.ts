@@ -1,7 +1,7 @@
 import * as express from "express";
 import { Request } from "../app";
 import { HttpError } from "../HttpError";
-import { ITestModel } from "../models/Test";
+import { ITestModel, Test } from "../models/Test";
 
 interface IUpdateCB {
   (err: Error | HttpError, savedRow?: ITestModel);
@@ -45,6 +45,26 @@ export function updateTest(req: Request, res: express.Response, next: express.Ne
     }
 
     console.info("created@database", savedRow);
+
+    req.test = savedRow;
+    return next();
+  });
+}
+
+export function cloneTest(req: Request, res: express.Response, next: express.NextFunction) {
+  const row = req.test;
+
+  if (!row) {
+    return next(new HttpError(500, "Cannot fetch test"));
+  }
+
+  console.info("cloning", row.toJSON());
+
+  row._id = null;
+  Test.create(row.toJSON(), function(err, savedRow) {
+    if (!savedRow) {
+      return next(new HttpError(422, "database don't return data"));
+    }
 
     req.test = savedRow;
     return next();

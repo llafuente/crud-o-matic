@@ -1,7 +1,7 @@
 import * as express from "express";
 import { Request } from "../app";
 import { HttpError } from "../HttpError";
-import { IUserModel } from "../models/User";
+import { IUserModel, User } from "../models/User";
 
 interface IUpdateCB {
   (err: Error | HttpError, savedRow?: IUserModel);
@@ -45,6 +45,26 @@ export function updateUser(req: Request, res: express.Response, next: express.Ne
     }
 
     console.info("created@database", savedRow);
+
+    req.user = savedRow;
+    return next();
+  });
+}
+
+export function cloneUser(req: Request, res: express.Response, next: express.NextFunction) {
+  const row = req.user;
+
+  if (!row) {
+    return next(new HttpError(500, "Cannot fetch user"));
+  }
+
+  console.info("cloning", row.toJSON());
+
+  row._id = null;
+  User.create(row.toJSON(), function(err, savedRow) {
+    if (!savedRow) {
+      return next(new HttpError(422, "database don't return data"));
+    }
 
     req.user = savedRow;
     return next();

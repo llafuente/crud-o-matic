@@ -2,7 +2,7 @@ import * as express from "express";
 import { Request } from "../app";
 import { createRole } from "./createRole";
 import { readRole } from "./readRole";
-import { updateRole } from "./updateRole";
+import { updateRole, cloneRole } from "./updateRole";
 import { listRole } from "./listRole";
 import { destroyRole } from "./destroyRole";
 import { csvRole } from "./csvRole";
@@ -53,6 +53,13 @@ const routerRole = express
     next: express.NextFunction,
   ) {
     res.status(204).json();
+  })
+  .post("/api/v1/roles/:roleId/clone", cleanBody, readRole, cloneRole, function(
+    req: Request,
+    res: express.Response,
+    next: express.NextFunction,
+  ) {
+    res.status(200).json(req.role);
   })
   .post("/api/v1/roles", cleanBody, createRole, function(
     req: Request,

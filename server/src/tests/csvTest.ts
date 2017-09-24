@@ -4,12 +4,15 @@ import { HttpError } from "../HttpError";
 import { Test } from "../models/Test";
 const parse = require("csv-parse/lib/sync");
 
-export function CSVImport(inputData: string, next) {
-  console.info("create test data", inputData);
+export function CSVImport(inputData: string, delimeter: string, escape: string, next) {
+  console.info("CSV test data\n", inputData, "\n");
+  console.info("delimeter", delimeter, "escape", escape);
 
   const dataList = parse(inputData, {
     columns: true,
     comment: "#",
+    delimiter: delimeter,
+    escape: escape,
   });
 
   console.log(dataList);
@@ -27,13 +30,16 @@ export function CSVImport(inputData: string, next) {
 }
 
 export function csvTest(req: Request, res: express.Response, next: express.NextFunction) {
-  console.info("create body", req.body);
+  console.info("csv import body", req.body);
 
   if (!req.file) {
     return next(new HttpError(422, "Excepted an attachment"));
   }
 
-  return CSVImport(req.file.buffer.toString(), function(err, savedRow) {
+  return CSVImport(req.file.buffer.toString(), req.body.delimeter || ";", req.body.escape || "\"", function(
+    err,
+    savedRow,
+  ) {
     /* istanbul ignore next */ if (err) {
       return next(err);
     }

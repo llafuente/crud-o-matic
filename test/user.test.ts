@@ -409,10 +409,11 @@ test.serial("check deleted user using mongoose", async (t) => {
   t.is(newUser, null);
 });
 
-test.cb.serial("create user using CSV", (t) => {
+test.cb.serial("create user using CSV comma", (t) => {
   supertest(app)
   .post(`${baseApiUrl}/users/csv`)
   .attach('file', path.join(__dirname, 'user.csv'))
+  .field("delimeter", ",")
   .set('Authorization', bearer)
   .set('Accept', 'application/json')
   .expect(204)
@@ -425,7 +426,46 @@ test.cb.serial("create user using CSV", (t) => {
   });
 });
 
-test.serial("check CSV user", async (t) => {
+test.serial("check CSV user comma", async (t) => {
+  let admin = await User.findOne({
+    userlogin: "csv-admin"
+  }).exec();
+
+  t.not(admin, null);
+  t.is(admin.email, "csv-admin@tecnofor.es");
+  t.is(admin.roleId.toString(), "000000000000000000000001");
+
+  await admin.remove();
+
+  let user = await User.findOne({
+    userlogin: "csv-user"
+  }).exec();
+
+  t.not(user, null);
+  t.is(user.email, "csv-user@tecnofor.es");
+  t.is(user.roleId.toString(), "000000000000000000000002");
+
+  await user.remove();
+});
+
+
+test.cb.serial("create user using CSV semicolon", (t) => {
+  supertest(app)
+  .post(`${baseApiUrl}/users/csv`)
+  .attach('file', path.join(__dirname, 'user2.csv'))
+  .set('Authorization', bearer)
+  .set('Accept', 'application/json')
+  .expect(204)
+  .end(function(err, response) {
+    if (err) {
+      t.fail(err);
+    }
+
+    t.end();
+  });
+});
+
+test.serial("check CSV user semicolon", async (t) => {
   let admin = await User.findOne({
     userlogin: "csv-admin"
   }).exec();
