@@ -146,7 +146,7 @@ import { VoucherType } from "../models/IVoucher";
 
 `,
 })
-export class UpdateVoucherComponent extends BaseComponent {
+export class UpdateVoucherComponent extends BaseComponent implements OnInit {
   loading: false;
   id: string;
   entity: VoucherType = new VoucherType();

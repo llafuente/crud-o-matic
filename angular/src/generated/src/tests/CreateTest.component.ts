@@ -247,7 +247,7 @@ import { TestType } from "../models/ITest";
 
 `,
 })
-export class CreateTestComponent extends BaseComponent {
+export class CreateTestComponent extends BaseComponent implements OnInit {
   loading: false;
   id: string;
   entity: TestType = new TestType();

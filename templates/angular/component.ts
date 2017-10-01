@@ -14,7 +14,7 @@ import { <%= typeName %> } from '../models/<%= interfaceName %>';
 <%- template %>
 `,
 })
-export class <%= componentName %> extends BaseComponent {
+export class <%= componentName %> extends BaseComponent implements OnInit {
   loading: false;
   id: string;
   entity: <%= typeName %> = new <%= typeName %>();

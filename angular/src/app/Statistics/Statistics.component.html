@@ -1,0 +1,91 @@
+<!--
+<pre>{{entities | json}}</pre>
+<pre>{{test | json}}</pre>
+<pre>{{usersInTest | json}}</pre>
+<pre>{{testAnswers | json}}</pre>
+-->
+<bb-section>
+  <bb-section-header>Listado de exámenes</bb-section-header>
+  <bb-section-content>
+    <bb-table *ngIf="test == null">
+      <thead>
+        <tr>
+          <th>Nombre del examén</th>
+          <th>Usuarios que realizaron el examen</th>
+          <th>Actions</th>
+        <tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let entity of entities?.list; let i = index">
+          <td>{{entity.label}}</td>
+          <td>{{entity.usersDone}}</td>
+          <td class="actions">
+            <a (click)="generateStats(entity)"><i class="fa fa-bar-chart" aria-hidden="true"></i></a>
+          </td>
+        <tr>
+      </tbody>
+    </bb-table>
+
+    <div *ngIf="test != null">
+      <h1>Estadísticas de: {{test.label}}</h1>
+
+      <h3>Exámen resuelto</h3>
+      <div *ngFor="let question of test?.blocks[0].questions; let currentQuestion = index">
+        <h4><span class="blue">{{currentQuestion + 1}}</span>. {{question.questionLabel}}</h4>
+
+        <hr class="hidden half" />
+
+        <ul class="list-unstyled">
+          <li *ngFor="let answer of question?.answers; let currentAnswer = index;">
+          <bb-radio
+            class="middle"
+            name="answer_{{currentQuestion}}_{{currentAnswer}}"
+            [(ngModel)]="testAnswers[currentQuestion]"
+            disabled="disabled"
+            [value]="currentAnswer">
+              <h6><strong class="blue">{{answerIndexes[currentAnswer]}})</strong> {{answer.answerLabel}}</h6>
+            </bb-radio>
+          </li>
+        </ul>
+      </div>
+
+      <hr />
+
+      <h3>Respuesta por usuario</h3>
+      <bb-table>
+        <thead>
+          <tr>
+            <th>Nombre y apellidos</th>
+            <th *ngFor="let question of test?.blocks[0].questions; let i = index">
+            {{i}}
+            </th>
+            <th>Resultado</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let user of usersInTest; let iuser = index">
+            <td>{{user.name}} {{user.surname}}</td>
+
+            <td *ngFor="let question of test?.blocks[0].questions; let i = index">
+            <!-- {{user.stat.answers[i]}} - {{testAnswers[i]}} - -->
+              <i
+                [class.fa-check]="user.stat.answers[i] == testAnswers[i]"
+                [class.green]="user.stat.answers[i] == testAnswers[i]"
+                [class.fa-times]="user.stat.answers[i] != testAnswers[i]"
+                [class.red]="user.stat.answers[i] != testAnswers[i]"
+              class="fa" aria-hidden="true"></i>
+            </td>
+
+            <td>
+              {{user.result}}%
+            </td>
+          </tr>
+        </tbody>
+
+      </bb-table>
+
+    </div>
+
+  </bb-section-content>
+</bb-section>

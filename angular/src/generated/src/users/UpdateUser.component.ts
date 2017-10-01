@@ -209,7 +209,7 @@ import { UserType } from "../models/IUser";
 
 `,
 })
-export class UpdateUserComponent extends BaseComponent {
+export class UpdateUserComponent extends BaseComponent implements OnInit {
   loading: false;
   id: string;
   entity: UserType = new UserType();

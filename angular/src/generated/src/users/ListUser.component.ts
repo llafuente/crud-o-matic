@@ -86,7 +86,7 @@ import { UserType } from "../models/IUser";
 <!-- <pre>entities: {{entities |json}}</pre> -->
   `,
 })
-export class ListUserComponent extends BaseComponent {
+export class ListUserComponent extends BaseComponent implements OnInit {
   loading: boolean = false;
   entities: Pagination<UserType>;
 
@@ -103,9 +103,9 @@ export class ListUserComponent extends BaseComponent {
   ) {
     super(injector, activatedRoute);
 
-    //this.uploader.onCompleteItem = (item:any, response:any, status:any, headers:any) => {
+    // this.uploader.onCompleteItem = (item:any, response:any, status:any, headers:any) => {
     this.uploader.onCompleteAll = () => {
-      //console.log("item uploaded", response);
+      // console.log("item uploaded", response);
       this.uploading = false;
 
       // TODO handle response: onErrorItem
@@ -119,7 +119,7 @@ export class ListUserComponent extends BaseComponent {
     console.log(`--> GET: ${this.domain}/api/v1/users`);
     this.http.get(`${this.domain}/api/v1/users`).subscribe(
       (response: Pagination<UserType>) => {
-        console.log("<-- GET: ${this.domain}/api/v1/users", response);
+        console.log(`<-- GET: ${this.domain}/api/v1/users`, response);
 
         this.entities = Pagination.fromJSON<UserType>(UserType, response);
       },

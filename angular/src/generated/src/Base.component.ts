@@ -93,13 +93,13 @@ export class BaseComponent implements /*OnInit, */ OnDestroy {
     return null;
   }
 
-  timeout(fn: Function, miliseconds: number): number {
+  timeout(fn: () => void, miliseconds: number): number {
     const t = setTimeout(fn, miliseconds);
     this.timeouts.push(t);
     return t;
   }
 
-  interval(fn: Function, miliseconds: number): number {
+  interval(fn: () => void, miliseconds: number): number {
     const t = setInterval(fn, miliseconds);
     this.intervals.push(t);
     return t;
@@ -114,7 +114,7 @@ export class BaseComponent implements /*OnInit, */ OnDestroy {
       onAdd: (toast: ToastData) => {
         console.log("Toast " + toast.id + " has been added!", str);
       },
-      onRemove(toast: ToastData) {
+      onRemove: (toast: ToastData) => {
         console.log("Toast " + toast.id + " has been removed!", str);
       },
     };
@@ -132,7 +132,7 @@ export class BaseComponent implements /*OnInit, */ OnDestroy {
       onAdd: (toast: ToastData) => {
         console.log("Toast " + toast.id + " has been added!", str);
       },
-      onRemove(toast: ToastData) {
+      onRemove: (toast: ToastData) => {
         console.log("Toast " + toast.id + " has been removed!", str);
       },
     };

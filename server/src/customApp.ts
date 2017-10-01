@@ -164,35 +164,38 @@ export const customAppRouter = express
       })
       .catch(next);
   })
-  .post(
-    "/api/v1/users/stats/test-end/:testId/:statsIdx",
-    (req: Request, res: express.Response, next: express.NextFunction) => {
-      //const testId = req.param("testId", null);
-      const statsIdx = req.param("statsIdx", null);
-      const answers: number[] = req.body.answers;
+  .post("/api/v1/users/stats/test-end/:testId/", (req: Request, res: express.Response, next: express.NextFunction) => {
+    const testId = req.param("testId", null);
 
-      // TODO check testId, questionId
+    const answers: number[] = req.body.answers;
 
-      const stats = req.loggedUser.stats[statsIdx];
-      if (!stats) {
-        return res.status(404).json({ message: "Stats not found" });
+    // TODO check testId, questionId
+
+    let stats = null;
+    req.loggedUser.stats.forEach((stat) => {
+      if (stat.type == "test" && stat.testId == testId) {
+        stats = stat;
       }
+    });
 
-      stats.endAt = new Date();
-      stats.answers = answers;
-      req.loggedUser.markModified("stats");
-      req.loggedUser.markModified("testsDoneIds");
-      req.loggedUser.testsDoneIds = req.loggedUser.testsDoneIds || [];
-      req.loggedUser.testsDoneIds.push(req.loggedUser.testId);
-      req.loggedUser.testId = null;
+    if (!stats) {
+      return res.status(404).json({ message: "Stats not found" });
+    }
 
-      console.log("update stats: ", stats);
+    stats.endAt = new Date();
+    stats.answers = answers;
+    req.loggedUser.markModified("stats");
+    req.loggedUser.markModified("testsDoneIds");
+    req.loggedUser.testsDoneIds = req.loggedUser.testsDoneIds || [];
+    req.loggedUser.testsDoneIds.push(req.loggedUser.testId);
+    req.loggedUser.testId = null;
 
-      req.loggedUser
-        .save()
-        .then((userSaved) => {
-          res.status(204).json();
-        })
-        .catch(next);
-    },
-  );
+    console.log("update stats: ", stats);
+
+    req.loggedUser
+      .save()
+      .then((userSaved) => {
+        res.status(204).json();
+      })
+      .catch(next);
+  });

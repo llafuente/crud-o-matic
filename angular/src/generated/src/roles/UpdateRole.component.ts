@@ -45,7 +45,7 @@ import { RoleType } from "../models/IRole";
 
 `,
 })
-export class UpdateRoleComponent extends BaseComponent {
+export class UpdateRoleComponent extends BaseComponent implements OnInit {
   loading: false;
   id: string;
   entity: RoleType = new RoleType();

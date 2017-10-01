@@ -70,7 +70,7 @@ import { FileUploader } from 'ng2-file-upload';
 <!-- <pre>entities: {{entities |json}}</pre> -->
   `,
 })
-export class <%= frontend.listComponent %> extends BaseComponent {
+export class <%= frontend.listComponent %> extends BaseComponent implements OnInit {
   loading: boolean = false;
   entities: Pagination<<%= typeName %>>;
 
@@ -88,9 +88,9 @@ export class <%= frontend.listComponent %> extends BaseComponent {
   ) {
     super(injector, activatedRoute);
 
-    //this.uploader.onCompleteItem = (item:any, response:any, status:any, headers:any) => {
+    // this.uploader.onCompleteItem = (item:any, response:any, status:any, headers:any) => {
     this.uploader.onCompleteAll = () => {
-      //console.log("item uploaded", response);
+      // console.log("item uploaded", response);
       this.uploading = false;
 
       // TODO handle response: onErrorItem
@@ -104,7 +104,7 @@ export class <%= frontend.listComponent %> extends BaseComponent {
     console.log(`--> GET: <%- url('LIST', true) %>`);
     this.http.get(`<%- url('LIST', true) %>`)
     .subscribe((response: Pagination<<%= typeName %>>) => {
-      console.log("<-- GET: <%- url('LIST', true) %>", response);
+      console.log(`<-- GET: <%- url('LIST', true) %>`, response);
 
       this.entities = Pagination.fromJSON<<%= typeName %>>(<%= typeName %>, response);
     }, (errorResponse: Response) => {

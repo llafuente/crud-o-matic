@@ -13,6 +13,9 @@ export * from "./Test/Test.component";
 import { UserHomeComponent } from "./UserHome/UserHome.component";
 export * from "./UserHome/UserHome.component";
 
+import { StatisticsComponent } from "./Statistics/Statistics.component";
+export * from "./Statistics/Statistics.component";
+
 import { LoggedUser } from "./LoggedUser.service";
 export * from "./LoggedUser.service";
 
@@ -21,6 +24,7 @@ export const components = [
   LoginComponent,
   TestComponent,
   UserHomeComponent,
+  StatisticsComponent,
   UserLoginComponent,
 ];
 

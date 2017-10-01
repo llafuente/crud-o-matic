@@ -28,7 +28,8 @@ test.serial("user schema", t => {
     new Field("Userlogin", FieldType.String)
       .setFrontControl(FrontControls.TEXT)
       .setUnique(true)
-      .setMaxlength(32)
+      .setMaxlength(64)
+      .setLowercase(true)
       .setRequired(true),
   );
 
@@ -50,7 +51,11 @@ test.serial("user schema", t => {
 
   schema.addField(
     "email",
-    new Field("Email", FieldType.String).setFrontControl(FrontControls.EMAIL).setMaxlength(255).setRequired(true),
+    new Field("Email", FieldType.String)
+    .setFrontControl(FrontControls.EMAIL)
+    .setMaxlength(255)
+    .setRequired(true)
+    .setLowercase(true),
   );
 
   schema.addField("group", new Field("Grupo/Empresa", FieldType.String).setFrontControl(FrontControls.TEXT));

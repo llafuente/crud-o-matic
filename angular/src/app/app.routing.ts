@@ -25,6 +25,11 @@ const routes: Routes = [
     path: "home",
     component: App.UserHomeComponent,
   },
+  {
+    path: "statistics",
+    component: App.StatisticsComponent,
+  },
+
   //  {
   //    path: "",
   //    redirectTo: "typography",

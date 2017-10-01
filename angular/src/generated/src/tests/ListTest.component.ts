@@ -82,7 +82,7 @@ import { TestType } from "../models/ITest";
 <!-- <pre>entities: {{entities |json}}</pre> -->
   `,
 })
-export class ListTestComponent extends BaseComponent {
+export class ListTestComponent extends BaseComponent implements OnInit {
   loading: boolean = false;
   entities: Pagination<TestType>;
 
@@ -99,9 +99,9 @@ export class ListTestComponent extends BaseComponent {
   ) {
     super(injector, activatedRoute);
 
-    //this.uploader.onCompleteItem = (item:any, response:any, status:any, headers:any) => {
+    // this.uploader.onCompleteItem = (item:any, response:any, status:any, headers:any) => {
     this.uploader.onCompleteAll = () => {
-      //console.log("item uploaded", response);
+      // console.log("item uploaded", response);
       this.uploading = false;
 
       // TODO handle response: onErrorItem
@@ -115,7 +115,7 @@ export class ListTestComponent extends BaseComponent {
     console.log(`--> GET: ${this.domain}/api/v1/tests`);
     this.http.get(`${this.domain}/api/v1/tests`).subscribe(
       (response: Pagination<TestType>) => {
-        console.log("<-- GET: ${this.domain}/api/v1/tests", response);
+        console.log(`<-- GET: ${this.domain}/api/v1/tests`, response);
 
         this.entities = Pagination.fromJSON<TestType>(TestType, response);
       },

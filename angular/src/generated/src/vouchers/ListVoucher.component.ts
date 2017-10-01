@@ -86,7 +86,7 @@ import { VoucherType } from "../models/IVoucher";
 <!-- <pre>entities: {{entities |json}}</pre> -->
   `,
 })
-export class ListVoucherComponent extends BaseComponent {
+export class ListVoucherComponent extends BaseComponent implements OnInit {
   loading: boolean = false;
   entities: Pagination<VoucherType>;
 
@@ -103,9 +103,9 @@ export class ListVoucherComponent extends BaseComponent {
   ) {
     super(injector, activatedRoute);
 
-    //this.uploader.onCompleteItem = (item:any, response:any, status:any, headers:any) => {
+    // this.uploader.onCompleteItem = (item:any, response:any, status:any, headers:any) => {
     this.uploader.onCompleteAll = () => {
-      //console.log("item uploaded", response);
+      // console.log("item uploaded", response);
       this.uploading = false;
 
       // TODO handle response: onErrorItem
@@ -119,7 +119,7 @@ export class ListVoucherComponent extends BaseComponent {
     console.log(`--> GET: ${this.domain}/api/v1/vouchers`);
     this.http.get(`${this.domain}/api/v1/vouchers`).subscribe(
       (response: Pagination<VoucherType>) => {
-        console.log("<-- GET: ${this.domain}/api/v1/vouchers", response);
+        console.log(`<-- GET: ${this.domain}/api/v1/vouchers`, response);
 
         this.entities = Pagination.fromJSON<VoucherType>(VoucherType, response);
       },

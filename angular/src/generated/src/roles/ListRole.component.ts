@@ -58,7 +58,7 @@ import { RoleType } from "../models/IRole";
 <!-- <pre>entities: {{entities |json}}</pre> -->
   `,
 })
-export class ListRoleComponent extends BaseComponent {
+export class ListRoleComponent extends BaseComponent implements OnInit {
   loading: boolean = false;
   entities: Pagination<RoleType>;
 
@@ -75,9 +75,9 @@ export class ListRoleComponent extends BaseComponent {
   ) {
     super(injector, activatedRoute);
 
-    //this.uploader.onCompleteItem = (item:any, response:any, status:any, headers:any) => {
+    // this.uploader.onCompleteItem = (item:any, response:any, status:any, headers:any) => {
     this.uploader.onCompleteAll = () => {
-      //console.log("item uploaded", response);
+      // console.log("item uploaded", response);
       this.uploading = false;
 
       // TODO handle response: onErrorItem
@@ -91,7 +91,7 @@ export class ListRoleComponent extends BaseComponent {
     console.log(`--> GET: ${this.domain}/api/v1/roles`);
     this.http.get(`${this.domain}/api/v1/roles`).subscribe(
       (response: Pagination<RoleType>) => {
-        console.log("<-- GET: ${this.domain}/api/v1/roles", response);
+        console.log(`<-- GET: ${this.domain}/api/v1/roles`, response);
 
         this.entities = Pagination.fromJSON<RoleType>(RoleType, response);
       },

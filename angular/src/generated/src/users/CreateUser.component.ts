@@ -211,7 +211,7 @@ import { UserType } from "../models/IUser";
 
 `,
 })
-export class CreateUserComponent extends BaseComponent {
+export class CreateUserComponent extends BaseComponent implements OnInit {
   loading: false;
   id: string;
   entity: UserType = new UserType();

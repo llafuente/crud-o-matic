@@ -188,13 +188,9 @@ export class TestComponent extends BaseComponent {
 
   endTest(forced: boolean) {
     this.http
-      .post(
-        `${this.domain}/api/v1/users/stats/test-end/${this.testId}/${this
-          .testStats.id}`,
-        {
-          answers: this.answers,
-        },
-      )
+      .post(`${this.domain}/api/v1/users/stats/test-end/${this.testId}`, {
+        answers: this.answers,
+      })
       .subscribe((response: any) => {
         console.log("startQuestion", response);
         this.user.refresh();
