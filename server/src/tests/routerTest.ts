@@ -1,11 +1,13 @@
 import * as express from "express";
+import * as path from "path";
 import { Request } from "../app";
+import { HttpError } from "../HttpError";
 import { createTest } from "./createTest";
 import { readTest } from "./readTest";
 import { updateTest, cloneTest } from "./updateTest";
 import { listTest } from "./listTest";
 import { destroyTest } from "./destroyTest";
-import { csvTest } from "./csvTest";
+import { csvTest, xmlTest } from "./csvTest";
 import { ITestModel } from "../models/Test";
 import { Pagination } from "../common";
 import { authorization } from "../auth";
@@ -47,13 +49,33 @@ export function toJSON(entity: ITestModel) {
 const routerTest = express
   .Router()
   .use(authorization(null))
-  .post("/api/v1/tests/csv", upload.single("file"), csvTest, function(
-    req: Request,
-    res: express.Response,
-    next: express.NextFunction,
-  ) {
-    res.status(204).json();
-  })
+  .post(
+    "/api/v1/tests/csv",
+    upload.single("file"),
+    function(req: Request, res: express.Response, next: express.NextFunction) {
+      if (!req.file) {
+        return next(new HttpError(422, "Excepted an attachment"));
+      }
+
+      console.log("\n\n\n\n\n\n\n\n");
+      console.log("req.file", req.file);
+      console.log("\n\n\n\n\n");
+
+      switch (path.extname(req.file.originalname)) {
+        case ".csv":
+          csvTest(req, res, next);
+          break;
+        case ".xml":
+          xmlTest(req, res, next);
+          break;
+        default:
+          return next(new HttpError(422, "Unsupported format: csv & xml"));
+      }
+    },
+    function(req: Request, res: express.Response, next: express.NextFunction) {
+      res.status(204).json();
+    },
+  )
   .post("/api/v1/tests/:testId/clone", cleanBody, readTest, cloneTest, function(
     req: Request,
     res: express.Response,

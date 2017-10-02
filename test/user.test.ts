@@ -482,3 +482,78 @@ test.serial("check CSV user semicolon", async (t) => {
   t.is(user.email, "csv-user@tecnofor.es");
   t.is(user.roleId.toString(), "000000000000000000000002");
 });
+
+
+test.cb.serial("create user using XML EXCEL", (t) => {
+  supertest(app)
+  .post(`${baseApiUrl}/users/csv`)
+  .attach('file', path.join(__dirname, 'users.xml'))
+  .set('Authorization', bearer)
+  .set('Accept', 'application/json')
+  .expect(204)
+  .end(function(err, response) {
+    if (err) {
+      t.fail(err);
+    }
+
+    t.end();
+  });
+});
+
+test.serial("check XML EXCEL users", async (t) => {
+  let admin = await User.findOne({
+    userlogin: "xxxx@xxxx.xxx"
+  }).exec();
+
+
+  t.not(admin, null);
+  t.is(admin.email, "xxxx@xxxx.xxx");
+  t.is(admin.roleId.toString(), "000000000000000000000002");
+
+  let user = await User.findOne({
+    userlogin: "yyyy@xxxx.xxx"
+  }).exec();
+
+  t.not(user, null);
+  t.is(user.email, "yyyy@xxxx.xxx");
+  t.is(user.roleId.toString(), "000000000000000000000002");
+});
+
+
+test.cb.serial("error while importing XML EXCEL", (t) => {
+  supertest(app)
+  .post(`${baseApiUrl}/users/csv`)
+  .attach('file', path.join(__dirname, 'users-err.xml'))
+  .set('Authorization', bearer)
+  .set('Accept', 'application/json')
+  .expect(404)
+  .end(function(err, response) {
+    if (err) {
+      t.fail(err);
+    }
+
+    t.is(response.body.message, 'User validation failed: name: Path `name` (`ABCDEFGHIJKLMNÑOPQRSTUVWXYZABCDEFGHIJKLMNÑOPQRSTUVWXYZ`) is longer than the maximum allowed length (32).')
+
+    t.end();
+  });
+});
+/*
+test.serial("check XML EXCEL users", async (t) => {
+  let admin = await User.findOne({
+    userlogin: "xxxx@xxxx.xxx"
+  }).exec();
+
+
+  t.not(admin, null);
+  t.is(admin.email, "xxxx@xxxx.xxx");
+  t.is(admin.roleId.toString(), "000000000000000000000002");
+
+  let user = await User.findOne({
+    userlogin: "yyyy@xxxx.xxx"
+  }).exec();
+
+  t.not(user, null);
+  t.is(user.email, "yyyy@xxxx.xxx");
+  t.is(user.roleId.toString(), "000000000000000000000002");
+});
+*/

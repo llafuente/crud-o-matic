@@ -16,6 +16,7 @@ export class SchemaBack {
   cloneFunction: string;
   deleteFunction: string;
   csvImportFunction: string;
+  xmlImportFunction: string;
   routerName: string;
 
   constructor(json, parentSchema: Schema) {
@@ -32,6 +33,7 @@ export class SchemaBack {
     this.updateFunction = `update${this.parentSchema.singularUc}`;
     this.cloneFunction = `clone${this.parentSchema.singularUc}`;
     this.csvImportFunction = `csv${this.parentSchema.singularUc}`;
+    this.xmlImportFunction = `xml${this.parentSchema.singularUc}`;
     this.routerName = `router${this.parentSchema.singularUc}`;
   }
 }

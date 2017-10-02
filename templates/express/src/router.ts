@@ -1,11 +1,13 @@
 import * as express from "express";
+import * as path from "path";
 import { Request } from "../app";
+import { HttpError } from "../HttpError";
 import { <%= backend.createFunction %> } from "./<%= backend.createFunction %>";
 import { <%= backend.readFunction %> } from "./<%= backend.readFunction %>";
 import { <%= backend.updateFunction %>, <%= backend.cloneFunction %> } from "./<%= backend.updateFunction %>";
 import { <%= backend.listFunction %> } from "./<%= backend.listFunction %>";
 import { <%= backend.deleteFunction %> } from "./<%= backend.deleteFunction %>";
-import { <%= backend.csvImportFunction %> } from "./<%= backend.csvImportFunction %>";
+import { <%= backend.csvImportFunction %>, <%= backend.xmlImportFunction %> } from "./<%= backend.csvImportFunction %>";
 import { <%= interfaceModel %> } from '../models/<%= singularUc %>';
 import { Pagination } from '../common';
 import { authorization } from '../auth';
@@ -49,7 +51,26 @@ const <%= backend.routerName %> = express.Router()
 .post(
   '<%= url("IMPORT") %>',
   upload.single('file'),
-  <%= backend.csvImportFunction %>,
+  function (req: Request, res: express.Response, next: express.NextFunction) {
+    if (!req.file) {
+      return next(new HttpError(422, "Excepted an attachment"));
+    }
+
+    console.log("\n\n\n\n\n\n\n\n");
+    console.log("req.file", req.file);
+    console.log("\n\n\n\n\n");
+
+    switch(path.extname(req.file.originalname)) {
+      case ".csv":
+        <%= backend.csvImportFunction %>(req, res, next);
+        break;
+      case ".xml":
+        <%= backend.xmlImportFunction %>(req, res, next);
+        break;
+      default:
+        return next(new HttpError(422, "Unsupported format: csv & xml"));
+    }
+  },
   function (req: Request, res: express.Response, next: express.NextFunction) {
     res.status(204).json();
   }

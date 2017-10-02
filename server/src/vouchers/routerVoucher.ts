@@ -1,11 +1,13 @@
 import * as express from "express";
+import * as path from "path";
 import { Request } from "../app";
+import { HttpError } from "../HttpError";
 import { createVoucher } from "./createVoucher";
 import { readVoucher } from "./readVoucher";
 import { updateVoucher, cloneVoucher } from "./updateVoucher";
 import { listVoucher } from "./listVoucher";
 import { destroyVoucher } from "./destroyVoucher";
-import { csvVoucher } from "./csvVoucher";
+import { csvVoucher, xmlVoucher } from "./csvVoucher";
 import { IVoucherModel } from "../models/Voucher";
 import { Pagination } from "../common";
 import { authorization } from "../auth";
@@ -47,13 +49,33 @@ export function toJSON(entity: IVoucherModel) {
 const routerVoucher = express
   .Router()
   .use(authorization(null))
-  .post("/api/v1/vouchers/csv", upload.single("file"), csvVoucher, function(
-    req: Request,
-    res: express.Response,
-    next: express.NextFunction,
-  ) {
-    res.status(204).json();
-  })
+  .post(
+    "/api/v1/vouchers/csv",
+    upload.single("file"),
+    function(req: Request, res: express.Response, next: express.NextFunction) {
+      if (!req.file) {
+        return next(new HttpError(422, "Excepted an attachment"));
+      }
+
+      console.log("\n\n\n\n\n\n\n\n");
+      console.log("req.file", req.file);
+      console.log("\n\n\n\n\n");
+
+      switch (path.extname(req.file.originalname)) {
+        case ".csv":
+          csvVoucher(req, res, next);
+          break;
+        case ".xml":
+          xmlVoucher(req, res, next);
+          break;
+        default:
+          return next(new HttpError(422, "Unsupported format: csv & xml"));
+      }
+    },
+    function(req: Request, res: express.Response, next: express.NextFunction) {
+      res.status(204).json();
+    },
+  )
   .post("/api/v1/vouchers/:voucherId/clone", cleanBody, readVoucher, cloneVoucher, function(
     req: Request,
     res: express.Response,

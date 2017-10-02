@@ -16,7 +16,7 @@
     "pretty": "prettier --write --parser typescript --print-width 120 \"generator/**/*.ts\"",
     "lint": "npm run pretty && tslint --fix -c ./tslint.json --type-check -p ./generator/tsconfig.json",
     "build-generator": "tsc -p ./generator/tsconfig.json",
-    "build-test": "tsc -p ./test/tsconfig.json && cp ./test/user.csv ./test-js/test/user.csv && cp ./test/user2.csv ./test-js/test/user2.csv",
+    "build-test": "tsc -p ./test/tsconfig.json && cp ./test/*.csv ./test-js/test/ && cp ./test/*.xml ./test-js/test/",
     "build": "npm run build-generator"
   },
   "author": "llafuente@noboxout.com",
@@ -72,7 +72,8 @@
     "sinon": "^2.4.1",
     "supertest": "^3.0.0",
     "tap": "^10.7.0",
-    "tslint": "^5.7.0"
+    "tslint": "^5.7.0",
+    "xlsx": "^0.11.5"
   },
   "nyc": {
     "exclude": [

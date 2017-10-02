@@ -1,11 +1,13 @@
 import * as express from "express";
+import * as path from "path";
 import { Request } from "../app";
+import { HttpError } from "../HttpError";
 import { createUser } from "./createUser";
 import { readUser } from "./readUser";
 import { updateUser, cloneUser } from "./updateUser";
 import { listUser } from "./listUser";
 import { destroyUser } from "./destroyUser";
-import { csvUser } from "./csvUser";
+import { csvUser, xmlUser } from "./csvUser";
 import { IUserModel } from "../models/User";
 import { Pagination } from "../common";
 import { authorization } from "../auth";
@@ -47,13 +49,33 @@ export function toJSON(entity: IUserModel) {
 const routerUser = express
   .Router()
   .use(authorization(null))
-  .post("/api/v1/users/csv", upload.single("file"), csvUser, function(
-    req: Request,
-    res: express.Response,
-    next: express.NextFunction,
-  ) {
-    res.status(204).json();
-  })
+  .post(
+    "/api/v1/users/csv",
+    upload.single("file"),
+    function(req: Request, res: express.Response, next: express.NextFunction) {
+      if (!req.file) {
+        return next(new HttpError(422, "Excepted an attachment"));
+      }
+
+      console.log("\n\n\n\n\n\n\n\n");
+      console.log("req.file", req.file);
+      console.log("\n\n\n\n\n");
+
+      switch (path.extname(req.file.originalname)) {
+        case ".csv":
+          csvUser(req, res, next);
+          break;
+        case ".xml":
+          xmlUser(req, res, next);
+          break;
+        default:
+          return next(new HttpError(422, "Unsupported format: csv & xml"));
+      }
+    },
+    function(req: Request, res: express.Response, next: express.NextFunction) {
+      res.status(204).json();
+    },
+  )
   .post("/api/v1/users/:userId/clone", cleanBody, readUser, cloneUser, function(
     req: Request,
     res: express.Response,

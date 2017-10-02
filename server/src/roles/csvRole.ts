@@ -1,32 +1,31 @@
 import * as express from "express";
 import { Request } from "../app";
 import { HttpError } from "../HttpError";
+import { IRole } from "../models/IRole";
 import { Role } from "../models/Role";
 const parse = require("csv-parse/lib/sync");
+const XLSX = require("xlsx");
+const async = require("async");
 
-export function CSVImport(inputData: string, delimeter: string, escape: string, next) {
-  console.info("CSV role data\n", inputData, "\n");
-  console.info("delimeter", delimeter, "escape", escape);
+export function importList(list: IRole[], next) {
+  console.log("importList", list);
 
-  const dataList = parse(inputData, {
-    columns: true,
-    comment: "#",
-    delimiter: delimeter,
-    escape: escape,
-  });
+  async.each(
+    list,
+    function(data, callback) {
+      Role.create(data, function(err, savedRow) {
+        if (err) {
+          console.log(err);
+          return callback(err);
+        }
 
-  console.log(dataList);
-  dataList.forEach((singleData) => {
-    Role.create(singleData, function(err, savedRow) {
-      if (err) {
-        console.log(err);
-      }
-    });
-  });
-
-  setTimeout(() => {
-    return next(null);
-  }, 5000);
+        return callback();
+      });
+    },
+    function(err) {
+      return next(err);
+    },
+  );
 }
 
 export function csvRole(req: Request, res: express.Response, next: express.NextFunction) {
@@ -36,10 +35,46 @@ export function csvRole(req: Request, res: express.Response, next: express.NextF
     return next(new HttpError(422, "Excepted an attachment"));
   }
 
-  return CSVImport(req.file.buffer.toString(), req.body.delimeter || ";", req.body.escape || "\"", function(
-    err,
-    savedRow,
-  ) {
+  const dataList = parse(req.file.buffer.toString(), {
+    columns: true,
+    comment: "#",
+    delimiter: req.body.delimeter || ";",
+    escape: req.body.escape || "\"",
+  });
+
+  return importList(dataList, function(err, savedRow) {
+    /* istanbul ignore next */ if (err) {
+      return next(err);
+    }
+
+    console.info("created@database", savedRow);
+
+    req.role = savedRow;
+    return next();
+  });
+}
+
+export function xmlRole(req: Request, res: express.Response, next: express.NextFunction) {
+  console.info("xml import body", req.body);
+
+  if (!req.file) {
+    return next(new HttpError(422, "Excepted an attachment"));
+  }
+
+  let workbook = XLSX.read(req.file.buffer, { type: "buffer" });
+  const sheets = Object.keys(workbook.Sheets);
+  if (workbook.SheetNames.length > 1) {
+    return next(new HttpError(422, "Can only import one sheet page"));
+  }
+
+  console.log(XLSX.utils.sheet_to_csv(workbook.Sheets[workbook.SheetNames[0]]));
+
+  const dataList = parse(XLSX.utils.sheet_to_csv(workbook.Sheets[workbook.SheetNames[0]]), {
+    columns: true,
+    comment: "#",
+  });
+
+  return importList(dataList, function(err, savedRow) {
     /* istanbul ignore next */ if (err) {
       return next(err);
     }

@@ -1,11 +1,13 @@
 import * as express from "express";
+import * as path from "path";
 import { Request } from "../app";
+import { HttpError } from "../HttpError";
 import { createRole } from "./createRole";
 import { readRole } from "./readRole";
 import { updateRole, cloneRole } from "./updateRole";
 import { listRole } from "./listRole";
 import { destroyRole } from "./destroyRole";
-import { csvRole } from "./csvRole";
+import { csvRole, xmlRole } from "./csvRole";
 import { IRoleModel } from "../models/Role";
 import { Pagination } from "../common";
 import { authorization } from "../auth";
@@ -47,13 +49,33 @@ export function toJSON(entity: IRoleModel) {
 const routerRole = express
   .Router()
   .use(authorization(null))
-  .post("/api/v1/roles/csv", upload.single("file"), csvRole, function(
-    req: Request,
-    res: express.Response,
-    next: express.NextFunction,
-  ) {
-    res.status(204).json();
-  })
+  .post(
+    "/api/v1/roles/csv",
+    upload.single("file"),
+    function(req: Request, res: express.Response, next: express.NextFunction) {
+      if (!req.file) {
+        return next(new HttpError(422, "Excepted an attachment"));
+      }
+
+      console.log("\n\n\n\n\n\n\n\n");
+      console.log("req.file", req.file);
+      console.log("\n\n\n\n\n");
+
+      switch (path.extname(req.file.originalname)) {
+        case ".csv":
+          csvRole(req, res, next);
+          break;
+        case ".xml":
+          xmlRole(req, res, next);
+          break;
+        default:
+          return next(new HttpError(422, "Unsupported format: csv & xml"));
+      }
+    },
+    function(req: Request, res: express.Response, next: express.NextFunction) {
+      res.status(204).json();
+    },
+  )
   .post("/api/v1/roles/:roleId/clone", cleanBody, readRole, cloneRole, function(
     req: Request,
     res: express.Response,
