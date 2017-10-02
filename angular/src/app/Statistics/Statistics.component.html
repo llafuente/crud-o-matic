@@ -52,10 +52,10 @@
       <hr />
 
       <h3>Respuesta por usuario</h3>
-      <bb-table>
+      <bb-table [condensed]="true">
         <thead>
           <tr>
-            <th>Nombre y apellidos</th>
+            <th class="nowrap">Nombre y apellidos</th>
             <th *ngFor="let question of test?.blocks[0].questions; let i = index">
             {{i}}
             </th>
@@ -65,7 +65,7 @@
 
         <tbody>
           <tr *ngFor="let user of usersInTest; let iuser = index">
-            <td>{{user.name}} {{user.surname}}</td>
+            <td class="nowrap">{{user.name}} {{user.surname}}</td>
 
             <td *ngFor="let question of test?.blocks[0].questions; let i = index">
             <!-- {{user.stat.answers[i]}} - {{testAnswers[i]}} - -->
@@ -77,7 +77,7 @@
               class="fa" aria-hidden="true"></i>
             </td>
 
-            <td>
+            <td class="text-center">
               {{user.result}}%
             </td>
           </tr>

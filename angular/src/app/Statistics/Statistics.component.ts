@@ -23,7 +23,21 @@ import { LoggedUser } from "../LoggedUser.service";
   templateUrl: "./Statistics.component.html",
 })
 export class StatisticsComponent extends BaseComponent {
-  answerIndexes = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k"];
+  answerIndexes = [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+  ];
   entities: Pagination<TestType>;
   users: Pagination<UserType>;
   usersInTest: UserType[];
@@ -90,22 +104,29 @@ export class StatisticsComponent extends BaseComponent {
 
     this.users.list.forEach((user) => {
       if (user.testsDoneIds.indexOf(test.id) !== -1) {
-        this.usersInTest.push(user);
-        user.stats.forEach((stat) => {
-          if (stat.type == "test" && stat.testId == test.id) {
-            (user as any).stat = stat; // this is the stat that matters
-            (user as any).result = 0; // this is the stat that matters
-            stat.answers.forEach((answerIdx, idx) => {
-              if (this.testAnswers[idx] == answerIdx) {
-                ++(user as any).result;
-              }
-            });
-
-            (user as any).result *= 100;
-            (user as any).result /= this.testAnswers.length;
-            (user as any).result = Math.floor((user as any).result);
+        let stat = null;
+        for (let i = 0; i < user.stats.length; ++i) {
+          const s = user.stats[i];
+          if (s.type == "test" && s.testId == test.id) {
+            stat = s;
           }
-        });
+        }
+
+        if (stat) {
+          this.usersInTest.push(user);
+          user.stats = null;
+          (user as any).stat = stat; // this is the stat that matters
+          (user as any).result = 0; // this is the stat that matters
+          stat.answers.forEach((answerIdx, idx) => {
+            if (this.testAnswers[idx] == answerIdx) {
+              ++(user as any).result;
+            }
+          });
+
+          (user as any).result *= 100;
+          (user as any).result /= this.testAnswers.length;
+          (user as any).result = Math.floor((user as any).result);
+        }
       }
     });
   }
