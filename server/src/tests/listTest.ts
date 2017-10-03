@@ -1,7 +1,7 @@
 import * as express from "express";
 import { Request } from "../app";
 //import { User } from './User';
-import { WhereQuery, Order, Operators, Pagination } from "../common";
+import { WhereQuery, Order, Operators, Pagination, ListQueryParams } from "../common";
 
 import { Test, TestSchema, ITestModel } from "../models/Test";
 
@@ -18,13 +18,14 @@ export function createListQuery(
   limit: number,
   offset: number,
   populate: string[],
+  fields: string[],
   // TODO ): mongoose.DocumentQuery<ITest, mongoose.Document>[] {
 ): any[] {
-  if (isNaN(offset)) {
+  if (offset !== null && isNaN(offset)) {
     throw new Error("offset must be a number");
   }
 
-  if (isNaN(limit)) {
+  if (limit !== null && isNaN(limit)) {
     throw new Error("limit must be a number");
   }
 
@@ -60,7 +61,7 @@ export function createListQuery(
       throw new Error("sort[" + key + "] not found");
     }
 
-    return s === Order.ASC ? Order.ASC : Order.DESC;
+    return [key, s === Order.ASC ? Order.ASC : Order.DESC];
   });
 
   _.each(populate, (path: string) => {
@@ -80,6 +81,7 @@ export function createListQuery(
   console.log("where", where);
   console.log("sort", sort);
   console.log("limit", limit, "offset", offset);
+  console.log("fields", fields);
 
   if (offset) {
     query.skip(offset);
@@ -89,6 +91,10 @@ export function createListQuery(
     query.limit(limit);
   }
 
+  if (fields.length) {
+    query.select(fields.join(" "));
+  }
+
   // http://mongoosejs.com/docs/api.html#query_Query-sort
   query.sort(sort);
 
@@ -96,19 +102,12 @@ export function createListQuery(
 }
 
 export function listTest(req: Request, res: express.Response, next: express.NextFunction) {
-  console.log("usersList", JSON.stringify(req.query));
+  const query: ListQueryParams = ListQueryParams.fromJSON(req.query);
 
-  req.query.limit = req.query.limit ? parseInt(req.query.limit) : 0;
-  req.query.offset = req.query.offset ? parseInt(req.query.offset) : 0;
+  console.log("usersList", JSON.stringify(query));
 
   try {
-    const querys = createListQuery(
-      req.query.where,
-      req.query.sort,
-      req.query.limit,
-      req.query.offset,
-      req.query.populate,
-    );
+    const querys = createListQuery(query.where, query.sort, query.limit, query.offset, query.populate, query.fields);
 
     querys[0].exec(function(err, mlist: ITestModel[]) {
       /* istanbul ignore next */ if (err) {
@@ -120,7 +119,7 @@ export function listTest(req: Request, res: express.Response, next: express.Next
           return next(err2);
         }
 
-        req.tests = new Pagination<ITestModel>(mlist, count, req.query.offset, req.query.limit);
+        req.tests = new Pagination<ITestModel>(mlist, count, query.offset, query.limit);
 
         return next();
       });

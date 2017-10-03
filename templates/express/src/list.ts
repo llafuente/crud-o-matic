@@ -3,7 +3,7 @@ import { Request } from "../app";
 import { HttpError } from '../HttpError';
 //import { User } from './User';
 import * as mongoose from 'mongoose';
-import { WhereQuery, Order, Operators, Pagination } from '../common';
+import { WhereQuery, Order, Operators, Pagination, ListQueryParams } from '../common';
 
 import { <%= interfaceName %> } from '../models/<%= interfaceName %>';
 import { <%= singularUc %>, <%= schemaName %>, <%= interfaceModel %> } from '../models/<%= singularUc %>';
@@ -20,14 +20,15 @@ export function createListQuery(
   sort: { [s: string]: Order; },
   limit: number,
   offset: number,
-  populate: string[]
+  populate: string[],
+  fields: string[],
 // TODO ): mongoose.DocumentQuery<<%= interfaceName %>, mongoose.Document>[] {
 ): any[] {
-  if (isNaN(offset)) {
+  if (offset !== null && isNaN(offset)) {
     throw new Error('offset must be a number');
   }
 
-  if (isNaN(limit)) {
+  if (limit !== null && isNaN(limit)) {
     throw new Error('limit must be a number');
   }
 
@@ -63,7 +64,7 @@ export function createListQuery(
       throw new Error("sort[" + key + "] not found");
     }
 
-    return s === Order.ASC ? Order.ASC : Order.DESC;
+    return [key, s === Order.ASC ? Order.ASC : Order.DESC];
   });
 
   _.each(populate, (path: string) => {
@@ -80,9 +81,10 @@ export function createListQuery(
     query.populate(path);
   });
 
-  console.log('where', where);
-  console.log('sort', sort);
-  console.log('limit', limit, 'offset', offset);
+  console.log("where", where);
+  console.log("sort", sort);
+  console.log("limit", limit, "offset", offset);
+  console.log("fields", fields);
 
   if (offset) {
     query.skip(offset);
@@ -90,6 +92,10 @@ export function createListQuery(
 
   if (limit) {
     query.limit(limit);
+  }
+
+  if (fields.length) {
+    query.select(fields.join(" "));
   }
 
   // http://mongoosejs.com/docs/api.html#query_Query-sort
@@ -101,18 +107,18 @@ export function createListQuery(
 
 
 export function <%= backend.listFunction %>(req: Request, res: express.Response, next: express.NextFunction) {
-  console.log('usersList', JSON.stringify(req.query));
+  const query: ListQueryParams = ListQueryParams.fromJSON(req.query);
 
-  req.query.limit = req.query.limit ? parseInt(req.query.limit) : 0
-  req.query.offset = req.query.offset ? parseInt(req.query.offset) : 0
+  console.log('usersList', JSON.stringify(query));
 
   try {
     const querys = createListQuery(
-      req.query.where,
-      req.query.sort,
-      req.query.limit,
-      req.query.offset,
-      req.query.populate
+      query.where,
+      query.sort,
+      query.limit,
+      query.offset,
+      query.populate,
+      query.fields,
     );
 
     querys[0].exec(function(err, mlist: <%= interfaceModel %>[]) {
@@ -125,7 +131,7 @@ export function <%= backend.listFunction %>(req: Request, res: express.Response,
           return next(err2);
         }
 
-        req[<%- JSON.stringify(plural) %>] = new Pagination<<%= interfaceModel %>>(mlist, count, req.query.offset, req.query.limit);
+        req[<%- JSON.stringify(plural) %>] = new Pagination<<%= interfaceModel %>>(mlist, count, query.offset, query.limit);
 
         return next();
       });

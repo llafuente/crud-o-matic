@@ -7,10 +7,12 @@ import { mkdirSync } from "fs";
 import { User, IUser } from "../server/src/models/User";
 import { Role, IRole } from "../server/src/models/Role";
 import routerUser from "../server/src/users/routerUser";
-import { Pagination } from "../server/src/common";
+import { Order, Operators, WhereQuery, Pagination, ListQueryParams } from "../server/src/common";
 import * as express from "express";
 import * as bodyParser from "body-parser";
 //import * as supertest from "supertest";
+import * as _ from "lodash";
+const qs = require("qs");
 
 const supertest = require("supertest");
 const baseApiUrl= "/api/v1";
@@ -537,7 +539,7 @@ test.cb.serial("error while importing XML EXCEL", (t) => {
     t.end();
   });
 });
-/*
+
 test.serial("check XML EXCEL users", async (t) => {
   let admin = await User.findOne({
     userlogin: "xxxx@xxxx.xxx"
@@ -556,4 +558,102 @@ test.serial("check XML EXCEL users", async (t) => {
   t.is(user.email, "yyyy@xxxx.xxx");
   t.is(user.roleId.toString(), "000000000000000000000002");
 });
-*/
+
+test.cb.serial("test user pagination I", (t) => {
+  supertest(app)
+  .get(`${baseApiUrl}/users`)
+   .query(
+     new ListQueryParams(2, 0, { name: Order.ASC }, null, null, ["userlogin", "name"])
+   )
+  .set('Authorization', bearer)
+  .set('Accept', 'application/json')
+  .expect(200)
+  .expect('Content-Type', /json/)
+  .end(function(err, response) {
+    if (err) {
+      t.fail(err);
+    }
+    const body: Pagination<IUser> = response.body;
+
+    body.list = _.map(body.list, _.partial(_.omit, _, ["id"]));
+
+    t.deepEqual(body, { list:
+   [ { userlogin: 'yyyy@xxxx.xxx',
+       name: 'xmluser2', },
+     { userlogin: 'xxxx@xxxx.xxx',
+       name: 'xmluser1', } ],
+  count: 8,
+  offset: 0,
+  limit: 2 });
+
+    t.end();
+  });
+});
+
+test.cb.serial("test user pagination II", (t) => {
+  supertest(app)
+  .get(`${baseApiUrl}/users`)
+   .query(
+     new ListQueryParams(2, 2, { name: Order.ASC }, null, null, ["userlogin", "name"])
+   )
+  .set('Authorization', bearer)
+  .set('Accept', 'application/json')
+  .expect(200)
+  .expect('Content-Type', /json/)
+  .end(function(err, response) {
+    if (err) {
+      t.fail(err);
+    }
+    const body: Pagination<IUser> = response.body;
+
+    body.list = _.map(body.list, _.partial(_.omit, _, ["id"]));
+
+    t.deepEqual(body, { list:
+   [ { userlogin: 'mongoose-user',
+       name: 'mongoose-user-name', },
+     { userlogin: 'csv-user',
+       name: 'csv-user-name', } ],
+  count: 8,
+  offset: 2,
+  limit: 2 });
+
+    t.end();
+  });
+});
+
+test.cb.serial("test user pagination III", (t) => {
+  console.log(new ListQueryParams(1, 0, { name: Order.ASC }, null, ["roleId"]));
+  supertest(app)
+  .get(`${baseApiUrl}/users`)
+   .query(
+      qs.stringify(
+        new ListQueryParams(1, 0, { name: Order.ASC }, null, ["roleId"], ["userlogin", "name", "roleId"])
+      )
+   )
+  .set('Authorization', bearer)
+  .set('Accept', 'application/json')
+  .expect(200)
+  .expect('Content-Type', /json/)
+  .end(function(err, response) {
+    if (err) {
+      t.fail(err);
+    }
+    const body: Pagination<IUser> = response.body;
+
+    body.list = _.map(body.list, _.partial(_.omit, _, ["id"]));
+
+    t.deepEqual(body as any, { list:
+   [ { userlogin: 'yyyy@xxxx.xxx',
+       name: 'xmluser2',
+       roleId: {
+  __v: 0,
+  _id: '000000000000000000000002',
+  label: 'User',
+}} ],
+  count: 8,
+  offset: 0,
+  limit: 1 });
+
+    t.end();
+  });
+});

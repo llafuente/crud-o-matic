@@ -29,3 +29,28 @@ export enum Order {
   ASC = 1,
   DESC = -1,
 }
+
+export class ListQueryParams {
+  constructor(
+    public limit: number = null,
+    public offset: number = null,
+    public sort: { [s: string]: Order } = null,
+    public where: { [s: string]: WhereQuery } = null,
+    public populate: string[] = null,
+    public fields: string[] = [],
+  ) {}
+
+  static fromJSON(obj: any) {
+    if (obj) {
+      return new ListQueryParams(
+        obj.limit ? parseInt(obj.limit, 10) : 0,
+        obj.offset ? parseInt(obj.offset, 10) : 0,
+        obj.sort,
+        obj.where,
+        obj.populate,
+        obj.fields || [],
+      );
+    }
+    return new ListQueryParams();
+  }
+}
