@@ -14,7 +14,7 @@
     "lint-generated-server": "cd server && npm run pretty && npm run lint",
     "lint-generated-client": "cd angular && npm run lintts",
     "pretty": "prettier --write --parser typescript --print-width 120 \"generator/**/*.ts\"",
-    "lint": "npm run pretty && tslint --fix -c ./tslint.json --type-check -p ./generator/tsconfig.json",
+    "lint": "npm run pretty && tslint --fix -c ./tslint.json --type-check -p ./generator/tsconfig.json && tslint --fix -c ./tslint.json ./test/*.ts",
     "build-generator": "tsc -p ./generator/tsconfig.json",
     "build-test": "tsc -p ./test/tsconfig.json && cp ./test/*.csv ./test-js/test/ && cp ./test/*.xml ./test-js/test/",
     "build": "npm run build-generator"
