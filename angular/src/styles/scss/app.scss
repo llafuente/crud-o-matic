@@ -29,5 +29,14 @@ $fa-font-path: "~font-awesome/fonts";
     -moz-transform:rotate(-90deg);
     filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
   }
+  .printwrap {
+    white-space: normal !important;
+  }
+  .printnowrap {
+    white-space: nowrap !important;
+  }
+}
 
+.table-sm th, .table-sm td {
+  padding: 0.05rem !important;
 }
