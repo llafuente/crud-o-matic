@@ -27,7 +27,17 @@ const routes: Routes = [
   },
   {
     path: "statistics",
-    component: App.StatisticsComponent,
+    component: App.RootComponent,
+    children: [
+      {
+        path: "",
+        component: App.StatisticsComponent,
+      },
+      {
+        path: ":testId",
+        component: App.StatisticsOneComponent,
+      },
+    ],
   },
 
   //  {

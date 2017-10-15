@@ -197,6 +197,24 @@ import { UserType } from "../models/IUser";
 
 </bb-input-container>
 
+<bb-input-container
+  label="Tags"
+   help="Categorización para estadísticas"
+  class="bordered top-label">
+  <input
+    bb-child
+    type="text"
+    id="id-tags"
+    name="tags"
+
+    [(ngModel)]="entity.tags"
+    #tags="ngModel"
+    />
+
+    <bb-errors [model]="tags"></bb-errors>
+
+</bb-input-container>
+
 <bb-static label="Stats" class="bordered top-label">
 <pre>{{entity.stats | json }}</pre>
 </bb-static>

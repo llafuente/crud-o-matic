@@ -19,6 +19,7 @@ export interface ITest {
   maxTime: number;
   usersSubscribed: number;
   usersDone: number;
+  tags: string;
 }
 
 export class TestType implements ITest {
@@ -41,6 +42,7 @@ export class TestType implements ITest {
   maxTime: number;
   usersSubscribed: number;
   usersDone: number;
+  tags: string;
   constructor() {}
 
   static fromJSON(obj: ITest | any): TestType {
@@ -59,6 +61,8 @@ export class TestType implements ITest {
     r.usersSubscribed = obj.usersSubscribed;
 
     r.usersDone = obj.usersDone;
+
+    r.tags = obj.tags;
 
     return r;
   }

@@ -1,3 +1,6 @@
+import { RootComponent } from "./Root.component";
+export * from "./Root.component";
+
 import { AppComponent } from "./app.component";
 export * from "./app.component";
 
@@ -16,15 +19,20 @@ export * from "./UserHome/UserHome.component";
 import { StatisticsComponent } from "./Statistics/Statistics.component";
 export * from "./Statistics/Statistics.component";
 
+import { StatisticsOneComponent } from "./Statistics/StatisticsOne.component";
+export * from "./Statistics/StatisticsOne.component";
+
 import { LoggedUser } from "./LoggedUser.service";
 export * from "./LoggedUser.service";
 
 export const components = [
+  RootComponent,
   AppComponent,
   LoginComponent,
   TestComponent,
   UserHomeComponent,
   StatisticsComponent,
+  StatisticsOneComponent,
   UserLoginComponent,
 ];
 

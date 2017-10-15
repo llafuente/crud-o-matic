@@ -23,15 +23,9 @@ import { TestType } from "../models/ITest";
 
             <th>Instrucciones</th>
 
-            <th>Aleatorizar respuestas</th>
-
-            <th>Bloques de conocimiento</th>
-
             <th>Tiempo máximo (minutos)</th>
 
-            <th>Usuarios inscritos</th>
-
-            <th>Usuarios que realizaron el examen</th>
+            <th>Tags</th>
 
           <th>Actions</th>
         <tr>
@@ -43,15 +37,9 @@ import { TestType } from "../models/ITest";
 
             <td>{{entity.instructions}}</td>
 
-            <td>{{entity.randomizeAnwers}}</td>
-
-            <td>{{entity.blocks}}</td>
-
             <td>{{entity.maxTime}}</td>
 
-            <td>{{entity.usersSubscribed}}</td>
-
-            <td>{{entity.usersDone}}</td>
+            <td>{{entity.tags}}</td>
 
           <td class="actions">
             <a [routerLink]="['..', 'update', entity.id]"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>

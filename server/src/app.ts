@@ -71,7 +71,7 @@ mongoose.Promise = require("bluebird");
 mongoose.set("debug", true);
 
 mongoose.connect(
-  "mongodb://127.0.0.1:27017/test",
+  process.env.MONGO_URI || "mongodb://127.0.0.1:27017/test",
   {
     promiseLibrary: require("bluebird"),
     useMongoClient: true,
@@ -81,7 +81,7 @@ mongoose.connect(
       throw err;
     }
 
-    console.log("connected to mongodb");
+    console.log("connected to mongodb:", process.env.MONGO_URI || "mongodb://127.0.0.1:27017/test");
   },
 );
 

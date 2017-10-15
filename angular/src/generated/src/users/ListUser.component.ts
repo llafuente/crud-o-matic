@@ -35,6 +35,8 @@ import { UserType } from "../models/IUser";
 
             <th>State</th>
 
+            <th>Tags</th>
+
           <th>Actions</th>
         <tr>
       </thead>
@@ -56,6 +58,8 @@ import { UserType } from "../models/IUser";
             <td>{{entity.roleId}}</td>
 
             <td>{{entity.state}}</td>
+
+            <td>{{entity.tags}}</td>
 
           <td class="actions">
             <a [routerLink]="['..', 'update', entity.id]"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>

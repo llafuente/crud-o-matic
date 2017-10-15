@@ -1,0 +1,121 @@
+<!--
+<pre>{{entities | json}}</pre>
+<pre>{{test | json}}</pre>
+<pre>{{usersInTest | json}}</pre>
+<pre>{{testAnswers | json}}</pre>
+-->
+<bb-section>
+  <bb-section-header>Estadísticas de: {{test?.label}} / {{test?.tags}}</bb-section-header>
+  <bb-section-content>
+
+    <h3>Exámen resuelto</h3>
+    <div class="question" *ngFor="let question of test?.blocks[0].questions; let currentQuestion = index">
+      <h4><span class="blue">{{currentQuestion + 1}}</span>. {{question.questionLabel}}</h4>
+
+      <ul class="list-unstyled">
+        <li *ngFor="let answer of question?.answers; let currentAnswer = index;">
+        <bb-radio
+          class="middle"
+          name="answer_{{currentQuestion}}_{{currentAnswer}}"
+          [(ngModel)]="testAnswers[currentQuestion]"
+          disabled="disabled"
+          [value]="currentAnswer">
+            <h6><strong class="blue">{{answerIndexes[currentAnswer]}})</strong> {{answer.answerLabel}}</h6>
+          </bb-radio>
+        </li>
+      </ul>
+    </div>
+
+    <hr />
+
+    <h3>Estadísticas del exámen</h3>
+
+    <bb-table [condensed]="true">
+      <thead>
+        <tr>
+          <th>Pregunta</th>
+          <th>Aciertos</th>
+          <th>Errores</th>
+          <th>%</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr>
+          <td>{{test?.tags}}</td>
+          <td>{{tResults.ok}}</td>
+          <td>{{tResults.ko}}</td>
+          <td>{{percentage(tResults.ok, tResults.ko)}}%</td>
+        </tr>
+      </tbody>
+    </bb-table>
+
+    <hr />
+
+    <h3>Desglose por pregunta</h3>
+
+    <bb-table [condensed]="true">
+      <thead>
+        <tr>
+          <th>Pregunta</th>
+          <th>Aciertos</th>
+          <th>Errores</th>
+          <th>%</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let row of qResults; let i = index">
+          <td>{{i + 1}}</td>
+          <td>{{row.ok}}</td>
+          <td>{{row.ko}}</td>
+          <td>{{percentage(row.ok, row.ko)}}%</td>
+        </tr>
+      </tbody>
+    </bb-table>
+
+    <hr />
+    <div class="landscapex">
+
+      <h3>Desglose por usuario</h3>
+
+      <bb-table [condensed]="true">
+        <thead>
+          <tr>
+            <th class="nowrap">Nombre y apellidos</th>
+            <th *ngFor="let question of test?.blocks[0].questions; let i = index">
+            {{i + 1}}
+            </th>
+            <th>Aciertos</th>
+            <th>Errores</th>
+            <th>%</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let user of usersInTest; let iuser = index">
+            <td class="nowrap">{{user.name}} {{user.surname}}</td>
+
+            <td *ngFor="let question of test?.blocks[0].questions; let i = index">
+            <!-- {{user.stat.answers[i]}} - {{testAnswers[i]}} - -->
+              <i
+                [class.fa-check]="user.stat.answers[i] == testAnswers[i]"
+                [class.green]="user.stat.answers[i] == testAnswers[i]"
+                [class.fa-times]="user.stat.answers[i] != testAnswers[i]"
+                [class.red]="user.stat.answers[i] != testAnswers[i]"
+              class="fa" aria-hidden="true"></i>
+            </td>
+
+            <td>{{user.sucesses}}</td>
+            <td>{{user.failures}}</td>
+            <td class="text-center">
+              {{user.result}}%
+            </td>
+          </tr>
+        </tbody>
+
+      </bb-table>
+    </div>
+
+  </bb-section-content>
+</bb-section>

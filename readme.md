@@ -76,3 +76,9 @@ $ npm install @types/cookie-parser --save-dev
 $ npm install @types/morgan --save-dev
 $ npm install @types/errorhandler --save-dev
 $ npm install @types/method-override --save-dev
+
+
+db.roles.remove({})
+db.tests.remove({})
+db.users.remove({})
+db.vouchers.remove({})

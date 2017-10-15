@@ -65,6 +65,9 @@ export const TestSchema = new mongoose.Schema(
     usersDone: {
       type: Number,
     },
+    tags: {
+      type: String,
+    },
   },
   {
     collection: "tests",

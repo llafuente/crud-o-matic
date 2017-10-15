@@ -1,4 +1,5 @@
 process.env.NODE_ENV = "test";
+process.env.MONGO_URI = "mongodb://127.0.0.1:27017/unit-test";
 
 import test from "ava";
 import { join } from "path";
@@ -26,7 +27,7 @@ import { app } from "../server/src/app";
 test.cb.serial("connect to mongo", (t) => {
   t.plan(1);
 
-  mongoose.connect("mongodb://127.0.0.1:27017/test", {
+  mongoose.connect(process.env.MONGO_URI, {
     promiseLibrary: require("bluebird"),
     useMongoClient: true,
   }, function(err) {
@@ -84,6 +85,11 @@ test.serial("create admin user with mongoose", async(t) => {
       roleId: adminRole.id,
       password: "admin",
       email: "admin@tecnofor.es",
+      testsDoneIds: [
+        mongoose.Types.ObjectId("000000000000000000000001"),
+        mongoose.Types.ObjectId("000000000000000000000002"),
+        mongoose.Types.ObjectId("000000000000000000000003"),
+      ]
     });
 
 
@@ -209,12 +215,18 @@ test.cb.serial("create user using API (2)", (t) => {
   });
 });
 
-test.serial("check created user using mongoose", async(t) => {
+test.serial("check created users using mongoose", async(t) => {
   const newUser = await User.findOne({
     _id: userCreatedByApi.id,
   }).exec();
 
   t.not(newUser, null);
+
+  const newUser2 = await User.findOne({
+    _id: userCreatedByApi2.id,
+  }).exec();
+
+  t.not(newUser2, null);
 });
 
 test.cb.serial("check created user using API", (t) => {
@@ -259,7 +271,10 @@ test.cb.serial("create user error using API", (t) => {
       t.fail(err);
     }
 
-    const msg = "E11000 duplicate key error collection: test.users index: userlogin";
+    const msg = "E11000 duplicate key error collection: unit-test.users index: user";
+
+    console.log(response.body);
+
     t.is(msg, response.body.message.substring(0, msg.length));
 
     t.end();
@@ -652,6 +667,44 @@ test.cb.serial("test user pagination III", (t) => {
                                count: 8,
                                offset: 0,
                                limit: 1 });
+
+    t.end();
+  });
+});
+
+test.cb.serial("test user pagination IV", (t) => {
+  console.log(new ListQueryParams(1, 0, { name: Order.ASC }, null, ["roleId"]));
+  supertest(app)
+  .get(`${baseApiUrl}/users`)
+   .query(
+      qs.stringify(
+        new ListQueryParams(0, 0, null, {
+          "testsDoneIds": new WhereQuery(Operators.IN, "000000000000000000000002")
+        },
+        null,
+        ["userlogin", "name","roleId"]
+      )),
+   )
+  .set("Authorization", bearer)
+  .set("Accept", "application/json")
+  .expect(200)
+  .expect("Content-Type", /json/)
+  .end(function(err, response) {
+    if (err) {
+      t.fail(err);
+    }
+    const body: Pagination<IUser> = response.body;
+
+    body.list = _.map(body.list, _.partial(_.omit, _, ["id"]));
+
+    t.deepEqual(body as any, { list:
+   [ { userlogin: "admin",
+       name: "admin",
+       roleId: "000000000000000000000001",
+     } ],
+                               count: 1,
+                               offset: 0,
+                               limit: 0 });
 
     t.end();
   });

@@ -1,6 +1,7 @@
 export enum Operators {
   LIKE = "LIKE",
   EQUALS = "EQUALS",
+  IN = "IN",
 }
 
 export class WhereQuery {

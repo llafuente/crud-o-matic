@@ -17,7 +17,7 @@ test(async (t) => {
 
 const gen = new Generator(domain, "/api/v1");
 
-test.serial("user schema", t => {
+test.serial("create user schema", t => {
   const schema: Schema = new Schema("user", gen);
   schema.frontend.listHeader = "Listado de usuarios";
   schema.frontend.createHeader = "Crear usuario";
@@ -152,6 +152,11 @@ test.serial("user schema", t => {
   );
 
   schema.addField(
+    "tags",
+    new Field("Tags", FieldType.String).setFrontControl(FrontControls.TEXT, "Categorización para estadísticas")
+  );
+
+  schema.addField(
     "stats",
     new Field("Stats", FieldType.Array)
       //.setFrontControl(FrontControls.ARRAY)
@@ -236,7 +241,7 @@ test.serial("user schema", t => {
   //t.is(gen.schemas[0].backend.apiAccess.create.allowed, false);
 });
 
-test.serial("role schema", t => {
+test.serial("create role schema", t => {
   const schema: Schema = new Schema("role", gen);
   schema.frontend.listHeader = "Listado de roles";
   schema.frontend.createHeader = "Crear Rol";
@@ -251,7 +256,7 @@ test.serial("role schema", t => {
   t.is(schema.singular, "role");
 });
 
-test.serial("voucher schema", t => {
+test.serial("create voucher schema", t => {
   const schema: Schema = new Schema("voucher", gen);
   schema.frontend.listHeader = "Listado de vouchers";
   schema.frontend.createHeader = "Crear voucher";
@@ -280,7 +285,7 @@ test.serial("voucher schema", t => {
   t.is(schema.singular, "voucher");
 });
 
-test.serial("test schema", t => {
+test.serial("create test schema", t => {
   const schema: Schema = new Schema("test", gen);
   schema.frontend.listHeader = "Listado de exámenes";
   schema.frontend.createHeader = "Crear examen";
@@ -293,12 +298,14 @@ test.serial("test schema", t => {
   schema.addField("instructions", new Field("Instrucciones", FieldType.String).setFrontControl(FrontControls.BIGTEXT));
   schema.addField(
     "randomizeAnwers",
-    new Field("Aleatorizar respuestas", FieldType.Boolean).setFrontControl(FrontControls.CHECKBOX),
+    new Field("Aleatorizar respuestas", FieldType.Boolean).setFrontControl(FrontControls.CHECKBOX)
+    .setPermissions(new FieldPermissions(true, false, true, true)),
   );
   schema.addField(
     "blocks",
     new Field("Bloques de conocimiento", FieldType.Array)
       .setFrontControl(FrontControls.ARRAY)
+      .setPermissions(new FieldPermissions(true, false, true, true)) // do not list [object Object]
       .setItems(
         new Field("Bloque de conocimiento", FieldType.Object)
           .addProperty(
@@ -344,12 +351,19 @@ test.serial("test schema", t => {
 
   schema.addField(
     "usersSubscribed",
-    new Field("Usuarios inscritos", FieldType.Number).setFrontControl(FrontControls.STATIC),
+    new Field("Usuarios inscritos", FieldType.Number).setFrontControl(FrontControls.STATIC)
+    .setPermissions(new FieldPermissions(true, false, true, true)), // do not list [object Object]
   );
 
   schema.addField(
     "usersDone",
-    new Field("Usuarios que realizaron el examen", FieldType.Number).setFrontControl(FrontControls.STATIC),
+    new Field("Usuarios que realizaron el examen", FieldType.Number).setFrontControl(FrontControls.STATIC)
+    .setPermissions(new FieldPermissions(true, false, true, true)), // do not list [object Object]
+  );
+
+  schema.addField(
+    "tags",
+    new Field("Tags", FieldType.String).setFrontControl(FrontControls.TEXT, "Categorización para estadísticas")
   );
 
   gen.addSchema(schema);

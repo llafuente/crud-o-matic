@@ -74,6 +74,9 @@ export const UserSchema = new mongoose.Schema(
       default: "active",
       enum: ["active", "banned"],
     },
+    tags: {
+      type: String,
+    },
     stats: {
       type: Array,
       items: {

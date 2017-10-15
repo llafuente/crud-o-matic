@@ -19,6 +19,7 @@ export interface IUser {
   testId: string;
   testsDoneIds: string[];
   state: string;
+  tags: string;
   stats: {
     testId: string;
     questionId: string;
@@ -51,6 +52,7 @@ export class UserType implements IUser {
   testId: string = null;
   testsDoneIds: string[] = [];
   state: string = "active";
+  tags: string;
   stats: {
     testId: string;
     questionId: string;
@@ -91,6 +93,8 @@ export class UserType implements IUser {
     r.testsDoneIds = obj.testsDoneIds;
 
     r.state = obj.state;
+
+    r.tags = obj.tags;
 
     r.stats = obj.stats;
 

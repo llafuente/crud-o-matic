@@ -9,3 +9,25 @@ $fa-font-path: "~font-awesome/fonts";
 @import '../../bb4ui/post-bb4ui.scss';
 
 @import '../../../node_modules/ng2-toasty/style-bootstrap.css';
+
+
+@media print {
+  nav, footer {
+    display: none !important;
+  }
+
+  hr {
+    page-break-before: always;
+  }
+
+  .question {
+    page-break-inside: avoid;
+  }
+
+  .landscape {
+    -webkit-transform: rotate(-90deg);
+    -moz-transform:rotate(-90deg);
+    filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+  }
+
+}

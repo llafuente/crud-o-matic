@@ -41,9 +41,23 @@ export function createListQuery(
 */
 
   where = _.map(where, (operator: WhereQuery, path: string) => {
-    console.log(operator);
+    // console.log("-- where", path, operator);
 
     switch (operator.operator) {
+      case Operators.IN:
+        const options = UserSchema.path(path);
+        const items = (options as any).options.items;
+        // console.log(items);
+
+        // TODO REVIEW it's working for array of ObjectIds... and the rest ?
+        if (Array.isArray(operator.value)) {
+          query = query.where(path).in(operator.value);
+          qCount = qCount.where(path).in(operator.value);
+        } else {
+          query = query.where(path).in([items.type.prototype.cast(operator.value)]);
+          qCount = qCount.where(path).in([items.type.prototype.cast(operator.value)]);
+        }
+        break;
       case Operators.LIKE:
         query = query.where(path).regex(operator.value);
         qCount = qCount.where(path).regex(operator.value);
@@ -78,10 +92,10 @@ export function createListQuery(
     query.populate(path);
   });
 
-  console.log("where", where);
-  console.log("sort", sort);
-  console.log("limit", limit, "offset", offset);
-  console.log("fields", fields);
+  // console.log("where", where);
+  // console.log("sort", sort);
+  // console.log("limit", limit, "offset", offset);
+  // console.log("fields", fields);
 
   if (offset) {
     query.skip(offset);
@@ -104,7 +118,7 @@ export function createListQuery(
 export function listUser(req: Request, res: express.Response, next: express.NextFunction) {
   const query: ListQueryParams = ListQueryParams.fromJSON(req.query);
 
-  console.log("usersList", JSON.stringify(query));
+  console.log("listUser:", JSON.stringify(query));
 
   try {
     const querys = createListQuery(query.where, query.sort, query.limit, query.offset, query.populate, query.fields);
