@@ -36,13 +36,16 @@ const routes: Routes = [
       {
         path: ":testId",
         component: App.RootComponent,
-        children: [{
-          path: "",
-          component: App.StatisticsOneComponent,
-        }, {
-          path: "user/:userId",
-          component: App.TestUserComponent,
-        }]
+        children: [
+          {
+            path: "",
+            component: App.StatisticsOneComponent,
+          },
+          {
+            path: "user/:userId",
+            component: App.TestUserComponent,
+          },
+        ],
       },
     ],
   },

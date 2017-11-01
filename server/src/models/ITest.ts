@@ -14,6 +14,7 @@ export interface ITest {
       questionLabel: string;
       answers: { answerLabel: string }[];
       correcAnswerIndex: number;
+      invalidate: boolean;
     }[];
   }[];
   maxTime: number;
@@ -37,6 +38,7 @@ export class TestType implements ITest {
       questionLabel: string;
       answers: { answerLabel: string }[];
       correcAnswerIndex: number;
+      invalidate: boolean;
     }[];
   }[] = [];
   maxTime: number;

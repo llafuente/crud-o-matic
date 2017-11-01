@@ -48,6 +48,9 @@ export const TestSchema = new mongoose.Schema(
                 correcAnswerIndex: {
                   type: Number,
                 },
+                invalidate: {
+                  type: Boolean,
+                },
               },
             },
             default: [],

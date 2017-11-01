@@ -9,6 +9,7 @@ import { Response } from "@angular/http";
 import { Router } from "@angular/router";
 import { ModalDirective } from "ngx-bootstrap";
 import * as qs from "qs";
+import * as XLSX from "xlsx";
 import {
   ListQueryParams,
   Operators,
@@ -19,7 +20,6 @@ import {
 import { TestType } from "../../generated/src/models/ITest";
 import { UserType } from "../../generated/src/models/IUser";
 import { LoggedUser } from "../LoggedUser.service";
-import * as XLSX from "xlsx";
 
 import * as fileSaver from "file-saver";
 
@@ -32,11 +32,12 @@ export class StatisticsOneComponent extends BaseComponent {
 
   entities: Pagination<TestType>;
   users: Pagination<UserType>;
-  usersInTest: UserType[];
   testAnswers: number[];
+  validAnswers: number = 0;
   test: TestType = null;
-  tResults: { ok: number, ko: number } = { ok: 0, ko: 0 };
-  qResults: { ok: number, ko: number }[] = [];
+  tResults: { ok: number; ko: number } = { ok: 0, ko: 0 };
+  qResults: Array<{ ok: number; ko: number }> = [];
+  flatternQuestions: any[] = [];
 
   constructor(
     public injector: Injector,
@@ -111,38 +112,44 @@ export class StatisticsOneComponent extends BaseComponent {
   }
 
   generateStats() {
+    this.users.list.filter((user) => {
+      let stat = null;
+      for (let i = 0; i < user.stats.length; ++i) {
+        const s = user.stats[i];
+        if (s.type == "test" && s.testId == this.test.id) {
+          stat = s;
+          stat.answers = stat.answers.map((x) => {
+            return parseInt(x, 10);
+          });
+        }
+      }
+
+      if (!stat) {
+        return false;
+      }
+      user.stats = null;
+
+      (user as any).stat = stat; // this is the stat that matters
+      (user as any).ok = 0; // this is the stat that matters
+      (user as any).ko = 0; // this is the stat that matters
+    });
+
+    let idx = 0;
     this.testAnswers = [];
     this.test.blocks.forEach((block) => {
       block.questions.forEach((question) => {
+        this.flatternQuestions.push(question);
+
         question.answers[0].answerLabel;
         // NOTE -1, because in the editor human are confortable with 1-X range
         this.qResults[this.testAnswers.length] = { ok: 0, ko: 0 };
         this.testAnswers.push(question.correcAnswerIndex - 1);
-      });
-    });
-    this.usersInTest = [];
 
-    this.users.list.forEach((user) => {
-      if (user.testsDoneIds.indexOf(this.test.id) !== -1) {
-        let stat = null;
-        for (let i = 0; i < user.stats.length; ++i) {
-          const s = user.stats[i];
-          if (s.type == "test" && s.testId == this.test.id) {
-            stat = s;
-          }
-        }
-
-        if (stat) {
-          this.usersInTest.push(user);
-          user.stats = null;
-          (user as any).stat = stat; // this is the stat that matters
-          (user as any).ok = 0; // this is the stat that matters
-          (user as any).ko = 0; // this is the stat that matters
-
-          stat.answers = stat.answers.map((x) => { return parseInt(x, 10); });
-
-          stat.answers.forEach((answerIdx, idx) => {
-            if (this.testAnswers[idx] == answerIdx) {
+        if (!question.invalidate) {
+          ++this.validAnswers;
+          for (let user of this.users.list) {
+            const stat = (user as any).stat;
+            if (this.testAnswers[idx] == stat.answers[idx]) {
               ++this.tResults.ok;
               ++this.qResults[idx].ok;
               ++(user as any).ok;
@@ -151,26 +158,21 @@ export class StatisticsOneComponent extends BaseComponent {
               ++this.qResults[idx].ko;
               ++(user as any).ko;
             }
-          });
-
-          (user as any).result = (user as any).ok * 100;
-          (user as any).result /= this.testAnswers.length;
-          (user as any).result = Math.floor((user as any).result);
+          }
         }
-      }
+        ++idx;
+      });
     });
+
+    for (let user of this.users.list) {
+      (user as any).result = Math.floor((user as any).ok * 100 / this.validAnswers);
+    }
   }
 
   toExcel() {
-    const answersData: any[] = [
-      ["Pregunta", "Respuesta correcta"]
-    ];
-    const questionsData: any[] = [
-      ["Pregunta", "Aciertos", "Errores"]
-    ];
-    const usersData: any[] = [
-      ["Nombre y apellidos"]
-    ];
+    const answersData: any[] = [["Pregunta", "Respuesta correcta"]];
+    const questionsData: any[] = [["Pregunta", "Aciertos", "Errores"]];
+    const usersData: any[] = [["Nombre y apellidos"]];
 
     const testData: any[] = [
       ["Examen", this.test.label],
@@ -181,8 +183,8 @@ export class StatisticsOneComponent extends BaseComponent {
       ["Exámen"],
     ];
     let i = 1;
-    for (let block of this.test.blocks) {
-      for (let question of block.questions) {
+    for (const block of this.test.blocks) {
+      for (const question of block.questions) {
         answersData.push([i, question.correcAnswerIndex]);
         usersData[0].push(`Respuesta ${i}`);
         ++i;
@@ -193,11 +195,11 @@ export class StatisticsOneComponent extends BaseComponent {
     usersData[0].push(`%`);
 
     i = 1;
-    for (let block of this.test.blocks) {
-      for (let question of block.questions) {
+    for (const block of this.test.blocks) {
+      for (const question of block.questions) {
         testData.push(["Pregunta", i, question.questionLabel]);
         let j = 1;
-        for (let answer of question.answers) {
+        for (const answer of question.answers) {
           testData.push(["Respuesta", j, answer.answerLabel]);
           ++j;
         }
@@ -206,67 +208,72 @@ export class StatisticsOneComponent extends BaseComponent {
     }
 
     i = 1;
-    for (let q of this.qResults) {
+    for (const q of this.qResults) {
       questionsData.push([i, q.ok, q.ko]);
       ++i;
     }
 
-    for (let user of this.usersInTest) {
-      usersData.push([user.name + " " + user.surname].concat((user as any).stat.answers
-      .map((x) => {
-        return "number" == typeof x ? x + 1 : x;
-      })).concat([
-        (user as any).ok,
-        (user as any).ko,
-        this.percentage((user as any).ok, (user as any).ko),
-      ]));
+    for (const user of this.users.list) {
+      usersData.push(
+        [user.name + " " + user.surname]
+          .concat(
+            (user as any).stat.answers.map((x) => {
+              return "number" == typeof x ? x + 1 : x;
+            }),
+          )
+          .concat([
+            (user as any).ok,
+            (user as any).ko,
+            this.percentage((user as any).ok, (user as any).ko),
+          ]),
+      );
     }
 
-
-    const workbook = {
-      SheetNames: ["Examen", "Respuestas", "Preguntas", "Usuarios"],
-      Sheets: {
+    const workbook = {
+      SheetNames: ["Examen", "Respuestas", "Preguntas", "Usuarios"],
+      Sheets: {
         Examen: XLSX.utils.aoa_to_sheet(testData),
         Respuestas: XLSX.utils.aoa_to_sheet(answersData),
         Preguntas: XLSX.utils.aoa_to_sheet(questionsData),
         Usuarios: XLSX.utils.aoa_to_sheet(usersData),
-      }
+      },
     };
-     
     /* Add the sheet name to the list */
     //workbook.SheetNames.push(ws_name);
     /* Load the worksheet object */
     //workbook.Sheets[ws_name] = ws;
 
     //var wopts = { bookType:'xlsx', bookSST:false, type:'binary' };
-    var wopts = { bookType: 'xlml', bookSST: false, type: 'binary' };
-    var wbout = XLSX.write(workbook, wopts as any);
+    const wopts = { bookType: "xlml", bookSST: false, type: "binary" };
+    const wbout = XLSX.write(workbook, wopts as any);
 
     // console.log("wbout", wbout);
     // this.downloadFile("export.xml", wbout);
 
     function s2ab(s) {
-      var buf = new ArrayBuffer(s.length);
-      var view = new Uint8Array(buf);
-      for (var i = 0; i != s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
+      const buf = new ArrayBuffer(s.length);
+      const view = new Uint8Array(buf);
+      for (let i = 0; i != s.length; ++i) view[i] = s.charCodeAt(i) & 0xff;
       return buf;
     }
 
-    var blob = new Blob([s2ab(wbout)], {type: "text/xml;charset=utf-8"});
-
+    const blob = new Blob([s2ab(wbout)], { type: "text/xml;charset=utf-8" });
 
     fileSaver.saveAs(blob, "export.xml", true);
   }
 
   downloadFile(filename: string, contents: string) {
-    var data, link;
+    let data, link;
 
-    link = document.createElement('a');
+    link = document.createElement("a");
     // 'data:text/csv;charset=utf-8,' + contents;
     // link.setAttribute('href', data);
     //link.setAttribute('href', 'data:text/xml;charset=utf-8,' + encodeURI(contents));
-    link.setAttribute('href', 'data:application/ocstream;charset=utf-8,' + encodeURI(contents));
-    link.setAttribute('download', filename);
+    link.setAttribute(
+      "href",
+      "data:application/ocstream;charset=utf-8," + encodeURI(contents),
+    );
+    link.setAttribute("download", filename);
     link.click();
   }
 }

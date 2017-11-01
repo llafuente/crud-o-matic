@@ -338,6 +338,12 @@ test.serial("create test schema", t => {
                     new Field("Índice de la respuesta correcta", FieldType.Number).setFrontControl(
                       FrontControls.INTEGER,
                     ),
+                  )
+                  .addProperty(
+                    "invalidate",
+                    new Field("Invalidar prgunta?", FieldType.Boolean).setFrontControl(
+                      FrontControls.CHECKBOX,
+                    ),
                   ),
               ),
           ),

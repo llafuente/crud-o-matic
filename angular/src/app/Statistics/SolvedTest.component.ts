@@ -10,9 +10,8 @@ import { UserType } from "../../generated/src/models/IUser";
 @Component({
   selector: "solved-test",
   template: `
-<div class="question" *ngFor="let question of test?.blocks[0].questions; let currentQuestion = index">
-  <h4><span class="blue">{{currentQuestion + 1}}</span>. {{question.questionLabel}}</h4>
-
+<div class="question" *ngFor="let question of test?.blocks[0].questions; let currentQuestion = index" [style.opacity]="question.invalidate ? 0.7 : 1">
+  <h4><span class="blue">{{currentQuestion + 1}}</span>. {{question.questionLabel}} <span class="badge badge-danger" *ngIf="question.invalidate">Pregunta invalidada</span></h4>
   <ul class="list-unstyled">
     <li *ngFor="let answer of question?.answers; let currentAnswer = index;">
       <h6>

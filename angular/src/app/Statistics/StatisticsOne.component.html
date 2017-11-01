@@ -1,7 +1,6 @@
 <!--
 <pre>{{entities | json}}</pre>
 <pre>{{test | json}}</pre>
-<pre>{{usersInTest | json}}</pre>
 <pre>{{testAnswers | json}}</pre>
 -->
 <bb-section>
@@ -67,27 +66,27 @@
     <hr />
     <div class="landscapex">
 
-      <h3>Desglose por usuario ({{usersInTest?.length}})</h3>
+      <h3>Desglose por usuario ({{users?.list?.length}})</h3>
 
       <bb-table [condensed]="true">
         <thead>
           <tr>
             <th class="nowrap">Nombre y apellidos</th>
-            <th *ngFor="let question of test?.blocks[0].questions; let i = index">
+            <th class="text-center" *ngFor="let question of flatternQuestions; let i = index" [class.bg-danger]="question.invalidate">
             {{i + 1}}
             </th>
-            <th>Aciertos</th>
-            <th>Errores</th>
-            <th>%</th>
+            <th class="text-center">Aciertos</th>
+            <th class="text-center">Errores</th>
+            <th class="text-center">%</th>
             <th class="print-hidden"></th>
           </tr>
         </thead>
 
         <tbody>
-          <tr *ngFor="let user of usersInTest; let iuser = index">
+          <tr *ngFor="let user of users?.list; let iuser = index">
             <td class="nowrap">{{user.name}} {{user.surname}}</td>
 
-            <td *ngFor="let question of test?.blocks[0].questions; let i = index">
+            <td class="text-center" *ngFor="let question of flatternQuestions; let i = index" [style.backgroundColor]="question.invalidate ? '#e77d8e' : ''">
             <!-- {{user.stat.answers[i]}} - {{testAnswers[i]}} - -->
               <i
                 [class.fa-check]="user.stat.answers[i] == testAnswers[i]"
@@ -97,8 +96,8 @@
               class="fa" aria-hidden="true"></i>
             </td>
 
-            <td>{{user.ok}}</td>
-            <td>{{user.ko}}</td>
+            <td class="text-center">{{user.ok}}</td>
+            <td class="text-center">{{user.ko}}</td>
             <td class="text-center">
               {{user.result}}%
             </td>

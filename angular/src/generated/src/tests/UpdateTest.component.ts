@@ -200,6 +200,12 @@ import { TestType } from "../models/ITest";
 
 </bb-input-container>
 
+<bb-check
+  id="id-invalidate_{{blocksId}}_{{questionsId}}"
+  name="invalidate_{{blocksId}}_{{questionsId}}"
+
+  [(ngModel)]="entity.blocks[blocksId].questions[questionsId].invalidate">Invalidar prgunta?</bb-check>
+
       <!-- end child -->
     </div>
   </div>
