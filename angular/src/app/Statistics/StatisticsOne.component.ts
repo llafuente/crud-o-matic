@@ -29,21 +29,7 @@ import * as fileSaver from "file-saver";
 })
 export class StatisticsOneComponent extends BaseComponent {
   testId: string;
-  answerIndexes = [
-    "1",
-    "2",
-    "3",
-    "4",
-    "5",
-    "6",
-    "7",
-    "8",
-    "9",
-    "10",
-    "11",
-    "12",
-    "13",
-  ];
+
   entities: Pagination<TestType>;
   users: Pagination<UserType>;
   usersInTest: UserType[];
@@ -152,6 +138,9 @@ export class StatisticsOneComponent extends BaseComponent {
           (user as any).stat = stat; // this is the stat that matters
           (user as any).ok = 0; // this is the stat that matters
           (user as any).ko = 0; // this is the stat that matters
+
+          stat.answers = stat.answers.map((x) => { return parseInt(x, 10); });
+
           stat.answers.forEach((answerIdx, idx) => {
             if (this.testAnswers[idx] == answerIdx) {
               ++this.tResults.ok;
@@ -223,7 +212,10 @@ export class StatisticsOneComponent extends BaseComponent {
     }
 
     for (let user of this.usersInTest) {
-      usersData.push([user.name + " " + user.surname].concat((user as any).stat.answers).concat([
+      usersData.push([user.name + " " + user.surname].concat((user as any).stat.answers
+      .map((x) => {
+        return "number" == typeof x ? x + 1 : x;
+      })).concat([
         (user as any).ok,
         (user as any).ko,
         this.percentage((user as any).ok, (user as any).ko),

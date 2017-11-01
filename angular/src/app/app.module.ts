@@ -33,7 +33,7 @@ export const imports = [
         console.log("tokenGetter:", localStorage.getItem("access_token"));
         return localStorage.getItem("access_token");
       },
-      whitelistedDomains: [domain],
+      whitelistedDomains: [domain /*, "elearning.tecnofor.us:3004"*/],
     },
   }),
 ];
@@ -52,7 +52,6 @@ export const _exports = [GenerateddAppModule];
 export class AppModule {
   constructor(config: Config) {
     config.set("domain", fullDomain);
-    //config.set("domain", "http://localhost:3004");
-    // config.set("domain", "http://34.229.180.92:3004");
+    //config.set("domain", "http://elearning.tecnofor.us:3004");
   }
 }

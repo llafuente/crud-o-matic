@@ -35,7 +35,14 @@ const routes: Routes = [
       },
       {
         path: ":testId",
-        component: App.StatisticsOneComponent,
+        component: App.RootComponent,
+        children: [{
+          path: "",
+          component: App.StatisticsOneComponent,
+        }, {
+          path: "user/:userId",
+          component: App.TestUserComponent,
+        }]
       },
     ],
   },

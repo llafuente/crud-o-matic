@@ -13,21 +13,8 @@
     </div>
 
     <h3>Exámen resuelto</h3>
-    <div class="question" *ngFor="let question of test?.blocks[0].questions; let currentQuestion = index">
-      <h4><span class="blue">{{currentQuestion + 1}}</span>. {{question.questionLabel}}</h4>
 
-      <ul class="list-unstyled">
-        <li *ngFor="let answer of question?.answers; let currentAnswer = index;">
-          <h6>
-            <i
-              [class.fa-check-square-o]="testAnswers[currentQuestion] == currentAnswer"
-              [class.fa-square-o]="testAnswers[currentQuestion] != currentAnswer"
-              class="fa" aria-hidden="true"></i>
-            <strong class="blue">{{answerIndexes[currentAnswer]}})</strong> {{answer.answerLabel}}
-          </h6>
-        </li>
-      </ul>
-    </div>
+    <solved-test [test]="test" [answers]="testAnswers"></solved-test>
 
     <hr />
 
@@ -92,6 +79,7 @@
             <th>Aciertos</th>
             <th>Errores</th>
             <th>%</th>
+            <th class="print-hidden"></th>
           </tr>
         </thead>
 
@@ -113,6 +101,11 @@
             <td>{{user.ko}}</td>
             <td class="text-center">
               {{user.result}}%
+            </td>
+            <td class="print-hidden">
+              <a [routerLink]="['/statistics', testId, 'user', user.id]" title="Ver exámen resuelto del usuario">
+                <i class="fa fa-external-link" aria-hidden="true"></i>
+              </a>
             </td>
           </tr>
         </tbody>

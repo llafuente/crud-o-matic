@@ -35,6 +35,9 @@ $fa-font-path: "~font-awesome/fonts";
   .printnowrap {
     white-space: nowrap !important;
   }
+  .print-hidden {
+    display: none;
+  }
 }
 
 .table-sm th, .table-sm td {
