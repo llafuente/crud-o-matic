@@ -112,7 +112,7 @@ export class StatisticsOneComponent extends BaseComponent {
   }
 
   generateStats() {
-    this.users.list.filter((user) => {
+    this.users.list = this.users.list.filter((user) => {
       let stat = null;
       for (let i = 0; i < user.stats.length; ++i) {
         const s = user.stats[i];
@@ -132,6 +132,7 @@ export class StatisticsOneComponent extends BaseComponent {
       (user as any).stat = stat; // this is the stat that matters
       (user as any).ok = 0; // this is the stat that matters
       (user as any).ko = 0; // this is the stat that matters
+      return true;
     });
 
     let idx = 0;
@@ -147,17 +148,18 @@ export class StatisticsOneComponent extends BaseComponent {
 
         if (!question.invalidate) {
           ++this.validAnswers;
-          for (let user of this.users.list) {
-            const stat = (user as any).stat;
-            if (this.testAnswers[idx] == stat.answers[idx]) {
-              ++this.tResults.ok;
-              ++this.qResults[idx].ok;
-              ++(user as any).ok;
-            } else {
-              ++this.tResults.ko;
-              ++this.qResults[idx].ko;
-              ++(user as any).ko;
-            }
+        }
+
+        for (let user of this.users.list) {
+          const stat = (user as any).stat;
+          if (this.testAnswers[idx] == stat.answers[idx]) {
+            ++this.tResults.ok;
+            ++this.qResults[idx].ok;
+            ++(user as any).ok;
+          } else {
+            ++this.tResults.ko;
+            ++this.qResults[idx].ko;
+            ++(user as any).ko;
           }
         }
         ++idx;

@@ -1,7 +1,7 @@
 <!--
 <pre>{{entities | json}}</pre>
 <pre>{{test | json}}</pre>
-<pre>{{testAnswers | json}}</pre>
+<pre>{{flatternQuestions | json}}</pre>
 -->
 <bb-section>
   <bb-section-header>Estadísticas de: {{test?.label}} / {{test?.tags}}</bb-section-header>
@@ -41,7 +41,7 @@
 
     <hr />
 
-    <h3>Desglose por pregunta ({{qResults?.length}})</h3>
+    <h3>Desglose por pregunta ({{flatternQuestions?.length}})</h3>
 
     <bb-table [condensed]="true">
       <thead>
@@ -50,15 +50,19 @@
           <th>Aciertos</th>
           <th>Errores</th>
           <th>%</th>
+          <th>Estado</th>
         </tr>
       </thead>
 
       <tbody>
-        <tr *ngFor="let row of qResults; let i = index">
+        <tr *ngFor="let row of qResults; let i = index" [style.backgroundColor]="flatternQuestions[i].invalidate ? '#e77d8e' : ''">
           <td>{{i + 1}}</td>
           <td>{{row.ok}}</td>
           <td>{{row.ko}}</td>
           <td>{{percentage(row.ok, row.ko)}}%</td>
+          <td>
+            <span *ngIf="flatternQuestions[i].invalidate">Invalidada</span>
+          </td>
         </tr>
       </tbody>
     </bb-table>
@@ -72,7 +76,7 @@
         <thead>
           <tr>
             <th class="nowrap">Nombre y apellidos</th>
-            <th class="text-center" *ngFor="let question of flatternQuestions; let i = index" [class.bg-danger]="question.invalidate">
+            <th class="text-center" *ngFor="let question of flatternQuestions; let i = index" [style.backgroundColor]="question.invalidate ? '#e77d8e' : ''">
             {{i + 1}}
             </th>
             <th class="text-center">Aciertos</th>
